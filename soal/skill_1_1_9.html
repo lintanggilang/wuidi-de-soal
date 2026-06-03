@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 1.1.9 - Implement Throttling and Overcoming Rate Limits</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 1: Data Ingestion and Transformation (34%) &mdash; Task 1.1: Perform data ingestion</div>
+            <h1>Skill 1.1.9: Implement Throttling and Overcoming Rate Limits</h1>
+            <p class="description">DynamoDB, Amazon RDS, Kinesis — handling ProvisionedThroughputExceededException, connection limits, and API rate limiting</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A data pipeline writes to a DynamoDB table with provisioned capacity of 5,000 WCUs. During peak data ingestion, the pipeline experiences ProvisionedThroughputExceededException errors. The engineer wants to handle spikes without over-provisioning. Which solution BEST handles unpredictable traffic patterns?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Switch the DynamoDB table to On-Demand capacity mode</li>
+                <li><span class="option-label">B.</span> Enable DynamoDB Auto Scaling with target utilization of 70%</li>
+                <li><span class="option-label">C.</span> Implement exponential backoff with jitter in the data pipeline</li>
+                <li><span class="option-label">D.</span> Increase provisioned WCUs to 50,000 to handle any spike</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">On-Demand capacity mode secara otomatis menyesuaikan kapasitas berdasarkan traffic aktual tanpa planning. Ini ideal untuk unpredictable workloads. Tidak ada throttling selama traffic tidak melebihi 2x previous peak. Opsi B (Auto Scaling) memiliki delay 5-15 menit untuk merespons spike, sehingga masih bisa throttle selama ramp-up. Opsi C (backoff) hanya menangani retry tapi tidak menyelesaikan kapasitas. Opsi D (50K WCUs) mahal dan tetap bisa insufficient untuk spike tak terduga.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A Kinesis Data Stream has 10 shards with producers writing at 8 MB/s total. Producers occasionally receive ProvisionedThroughputExceededException. Investigation reveals that 60% of records use the same partition key. What is the root cause and the BEST solution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Hot shard due to partition key skew; redesign the partition key to distribute writes more evenly across shards</li>
+                <li><span class="option-label">B.</span> Insufficient total stream capacity; double the number of shards to 20</li>
+                <li><span class="option-label">C.</span> Producer retry logic is causing duplicate writes; implement deduplication</li>
+                <li><span class="option-label">D.</span> Stream encryption is causing throughput overhead; disable encryption</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Dengan 10 shards, total kapasitas adalah 10 MB/s write. Traffic 8 MB/s seharusnya cukup. Masalahnya adalah 60% records menggunakan partition key yang sama, sehingga satu shard menerima ~4.8 MB/s (melebihi 1 MB/s per shard limit). Solusinya adalah mendesain ulang partition key untuk distribusi merata. Opsi B menambah shard tapi hot shard tetap menerima semua traffic yang sama. Opsi C (deduplication) tidak relevan dengan throttling. Opsi D (encryption) overhead negligible.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">An AWS Glue ETL job reads from an Amazon RDS MySQL database with max_connections set to 150. The Glue job uses 100 DPUs, and each DPU opens multiple connections. The job fails with "Too many connections" error. Which configuration change resolves this without modifying the RDS instance?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Reduce the Glue job's number of workers and use hashpartitions with a value lower than max_connections</li>
+                <li><span class="option-label">B.</span> Use Amazon RDS Proxy in front of the database to pool connections</li>
+                <li><span class="option-label">C.</span> Increase the Glue job timeout to allow connections to queue</li>
+                <li><span class="option-label">D.</span> Enable Glue Auto Scaling to dynamically adjust the number of connections</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Glue hashpartitions menentukan jumlah koneksi paralel ke database. Dengan menetapkan hashpartitions ke nilai di bawah max_connections (misalnya 50), Glue membatasi jumlah concurrent connections. Mengurangi workers juga mengurangi parallelism. Opsi B (RDS Proxy) valid tapi "without modifying the RDS instance" — RDS Proxy adalah komponen terpisah yang bisa ditambahkan. Opsi C (timeout) tidak menyelesaikan connection limit. Opsi D (Auto Scaling) bisa menambah lebih banyak workers yang memperburuk masalah.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A data engineer is writing records to a DynamoDB table using BatchWriteItem. The response frequently contains UnprocessedItems. The table has provisioned capacity. What is the MOST appropriate approach to handle UnprocessedItems?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Retry the UnprocessedItems with exponential backoff, starting with a short delay and doubling with each retry</li>
+                <li><span class="option-label">B.</span> Immediately retry all items in the batch including already processed ones</li>
+                <li><span class="option-label">C.</span> Increase batch size to 100 items to reduce the number of API calls</li>
+                <li><span class="option-label">D.</span> Log the UnprocessedItems and continue processing new batches</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">UnprocessedItems menunjukkan items yang gagal karena throttling. Best practice adalah retry hanya UnprocessedItems (bukan seluruh batch) dengan exponential backoff untuk memberikan waktu tabel recover. AWS SDK melakukan ini secara default. Opsi B membuang resources karena memproses ulang items yang sudah berhasil. Opsi C (batch size 100) — BatchWriteItem sudah dibatasi 25 items per batch. Opsi D (skip) menyebabkan data loss.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A real-time data pipeline ingests data from 1,000 IoT devices into Kinesis Data Streams. Each device sends data every second. The Kinesis PutRecord API is experiencing throttling. The current stream has 5 shards. The data engineer wants to reduce API throttling WITHOUT adding more shards. Which approach is MOST effective?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Switch from PutRecord to PutRecords (batch API) to aggregate multiple records into fewer API calls</li>
+                <li><span class="option-label">B.</span> Use the Kinesis Producer Library (KPL) with aggregation enabled to combine multiple user records into single Kinesis records</li>
+                <li><span class="option-label">C.</span> Implement client-side buffering with a 1-second window before sending</li>
+                <li><span class="option-label">D.</span> Enable server-side encryption to optimize record processing</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">KPL aggregation menggabungkan multiple user records menjadi satu Kinesis record, dramatically mengurangi jumlah API calls. Dengan 1,000 records/detik dan 5 shards (limit 1,000 records/shard/detik = 5,000 total), throttling mungkin terjadi karena hot partition. KPL juga memiliki built-in retry dan batching. Opsi A (PutRecords) mengurangi HTTP calls tapi masih 1 record = 1 Kinesis record. Opsi C (buffering) membantu tapi kurang sophisticated dibanding KPL. Opsi D (encryption) tidak terkait throughput.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A data pipeline reads from DynamoDB using Scan operations for daily reporting. The scan consumes all provisioned RCUs and causes throttling for the production application that shares the table. How should the engineer configure the scan to minimize impact on production?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use a rate limiter to control scan throughput and set Limit parameter to read fewer items per request with a delay between pages</li>
+                <li><span class="option-label">B.</span> Use DynamoDB Export to S3 feature to export data without consuming table RCUs</li>
+                <li><span class="option-label">C.</span> Run the scan during off-peak hours only</li>
+                <li><span class="option-label">D.</span> Create a Global Secondary Index and scan the index instead</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">DynamoDB Export to S3 menggunakan PITR backup dan tidak mengonsumsi RCU tabel sama sekali. Ini memberikan zero impact pada production workload. Data diekspor ke S3 dalam format DynamoDB JSON atau ION dan bisa diquery dengan Athena. Opsi A (rate limiter) masih mengonsumsi RCU walaupun lebih terkontrol. Opsi C (off-peak) masih compete untuk RCU selama scan. Opsi D (GSI scan) tetap mengonsumsi RCU dari GSI yang bisa affect main table jika terjadi GSI backpressure.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">An application uses Amazon API Gateway backed by Lambda to serve data from DynamoDB. During a product launch, the API receives 50,000 requests per second, causing DynamoDB throttling. The data doesn't change frequently (updates every 5 minutes). Which solution MOST effectively reduces DynamoDB load?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Enable API Gateway caching with a TTL of 300 seconds to serve repeated requests from cache</li>
+                <li><span class="option-label">B.</span> Add DynamoDB Accelerator (DAX) as a read-through cache in front of DynamoDB</li>
+                <li><span class="option-label">C.</span> Increase DynamoDB provisioned RCUs to 100,000</li>
+                <li><span class="option-label">D.</span> Enable DynamoDB Auto Scaling with aggressive scaling policy</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">API Gateway caching menyajikan responses dari cache tanpa memanggil Lambda atau DynamoDB. Dengan data yang hanya berubah setiap 5 menit, TTL 300 detik sangat efektif mengurangi backend calls hingga ~99% selama cache hit rate tinggi. Opsi B (DAX) mengurangi DynamoDB load tapi Lambda masih dipanggil setiap request (biaya compute). Opsi C (100K RCU) sangat mahal. Opsi D (Auto Scaling) memiliki delay dan tetap costly untuk 50K rps sustained.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A data engineer is building an ingestion pipeline that calls an external API with a strict rate limit of 10 requests per second. The pipeline needs to process 100,000 records, each requiring one API call. Using AWS Step Functions, which pattern implements precise rate limiting?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use a Map state with MaxConcurrency set to 10, with each iteration including a Wait state of 1 second</li>
+                <li><span class="option-label">B.</span> Use a Choice state to check current time and skip if too many requests were sent</li>
+                <li><span class="option-label">C.</span> Process all 100,000 records in a single Lambda function with sleep intervals</li>
+                <li><span class="option-label">D.</span> Use an SQS FIFO queue with a message delay of 100ms between sends</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Step Functions Map state dengan MaxConcurrency=10 membatasi parallelism ke 10 iterations bersamaan. Dengan Wait state 1 detik di setiap iteration, ini menghasilkan ~10 requests/second yang sesuai rate limit. Ini scalable dan fault-tolerant. Opsi B (Choice + time check) tidak bisa mengontrol concurrency dengan presisi. Opsi C (single Lambda) timeout setelah 15 menit — 100K records × 0.1s = 2.7 jam. Opsi D (SQS delay) tidak bisa mengontrol exactly 10/second dari consumer side.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A Lambda function writes to DynamoDB and occasionally receives throttling errors. The function uses the AWS SDK with default retry configuration. The data engineer notices that retries are consuming Lambda execution time and causing timeouts. Which SDK configuration change addresses this?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure the SDK client with adaptive retry mode (RetryMode.ADAPTIVE) which includes token bucket rate limiting</li>
+                <li><span class="option-label">B.</span> Set max retries to 0 and handle failures with a dead-letter queue</li>
+                <li><span class="option-label">C.</span> Increase Lambda timeout to 15 minutes to accommodate retries</li>
+                <li><span class="option-label">D.</span> Disable SDK retries and implement custom retry logic with shorter delays</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Adaptive retry mode menggunakan token bucket algorithm untuk proaktif mengurangi request rate sebelum throttling terjadi, bukan hanya retry setelah failure. Ini mencegah thundering herd dan mengurangi total retry overhead. AWS SDK v2/v3 mendukung STANDARD, LEGACY, dan ADAPTIVE modes. Opsi B kehilangan data dan menambah complexity. Opsi C menambah biaya dan tidak menyelesaikan root cause. Opsi D custom retry mungkin tidak lebih baik dari built-in adaptive mode.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A company migrates data from PostgreSQL to DynamoDB using AWS DMS. The full load migration consistently throttles DynamoDB writes even though DynamoDB is set to On-Demand mode. What is the MOST likely cause and solution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> DynamoDB On-Demand has an initial throughput limit for new tables; pre-warm the table by gradually increasing load before the full migration, or contact AWS Support to increase initial limits</li>
+                <li><span class="option-label">B.</span> DMS is not compatible with DynamoDB On-Demand mode</li>
+                <li><span class="option-label">C.</span> The DMS replication instance is too small</li>
+                <li><span class="option-label">D.</span> DynamoDB On-Demand mode doesn't support batch writes from DMS</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">DynamoDB On-Demand memiliki initial throughput limit untuk tabel baru (dimulai dengan kapasitas terbatas dan scales berdasarkan traffic history). Jika full load dimulai langsung dengan throughput tinggi tanpa ramp-up, tabel belum punya history untuk scale. Solusinya adalah pre-warming (gradual increase) atau minta AWS Support untuk raise initial limits. Opsi B salah — DMS kompatibel dengan On-Demand. Opsi C (instance size) mempengaruhi DMS bukan DynamoDB throttling. Opsi D salah — On-Demand mendukung batch writes.</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>
