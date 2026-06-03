@@ -5,777 +5,431 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS Data Engineer Associate (DEA-C01) Practice Exam</title>
     <style>
-        /* === RESET & BASE === */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
-            --color-bg: #ffffff;
-            --color-surface: #f9fafb;
-            --color-border: #e5e7eb;
-            --color-text: #111827;
-            --color-text-secondary: #6b7280;
-            --color-text-tertiary: #9ca3af;
-            --color-accent: #2563eb;
-            --color-accent-hover: #1d4ed8;
-            --color-accent-subtle: #eff6ff;
-            --color-domain-1: #2563eb;
-            --color-domain-2: #059669;
-            --color-domain-3: #d97706;
-            --color-domain-4: #7c3aed;
-            --radius-sm: 6px;
-            --radius-md: 10px;
-            --radius-lg: 14px;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
-            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            --font-mono: 'SF Mono', 'Fira Code', monospace;
-            --transition: 150ms ease;
+            --bg: #ffffff;
+            --bg-surface: #f9fafb;
+            --bg-card: #ffffff;
+            --border: #e5e7eb;
+            --text: #111827;
+            --text-2: #6b7280;
+            --text-3: #9ca3af;
+            --accent: #2563eb;
+            --accent-subtle: #eff6ff;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --d1: #2563eb;
+            --d2: #059669;
+            --d3: #d97706;
+            --d4: #7c3aed;
         }
-
-        @media (prefers-color-scheme: dark) {
+        @media(prefers-color-scheme:dark){
             :root {
-                --color-bg: #0f1117;
-                --color-surface: #1a1d27;
-                --color-border: #2d3039;
-                --color-text: #f3f4f6;
-                --color-text-secondary: #9ca3af;
-                --color-text-tertiary: #6b7280;
-                --color-accent: #3b82f6;
-                --color-accent-hover: #60a5fa;
-                --color-accent-subtle: #1e293b;
-                --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
-                --shadow-md: 0 2px 8px rgba(0,0,0,0.3);
+                --bg: #0f1117;
+                --bg-surface: #1a1d27;
+                --bg-card: #1e2230;
+                --border: #2d3039;
+                --text: #f3f4f6;
+                --text-2: #9ca3af;
+                --text-3: #6b7280;
+                --accent: #3b82f6;
+                --accent-subtle: #1e293b;
+                --shadow: 0 1px 3px rgba(0,0,0,0.2);
+                --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
             }
         }
-
         html { scroll-behavior: smooth; }
-
         body {
-            font-family: var(--font-sans);
-            background: var(--color-bg);
-            color: var(--color-text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem 3rem; }
 
-        /* === LAYOUT === */
-        .page-container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 0 1.5rem 4rem;
-        }
-
-        /* === HEADER === */
-        .site-header {
-            padding: 2.5rem 0 1.5rem;
-            border-bottom: 1px solid var(--color-border);
+        /* Header */
+        .header {
+            padding: 2rem 0 1.25rem;
+            border-bottom: 1px solid var(--border);
             margin-bottom: 1.5rem;
         }
-
-        .site-header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.25rem;
+        .header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
+        .header-meta {
+            display: flex; gap: 0.75rem; margin-top: 0.4rem; flex-wrap: wrap;
+            font-size: 0.78rem; color: var(--text-3);
         }
+        .header-meta span { display: flex; align-items: center; gap: 0.25rem; }
 
-        .site-header .subtitle {
-            font-size: 0.875rem;
-            color: var(--color-text-secondary);
-            font-weight: 400;
+        /* Search */
+        .search-wrap { margin-bottom: 1.5rem; position: relative; }
+        .search-wrap svg {
+            position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%);
+            width: 16px; height: 16px; color: var(--text-3); pointer-events: none;
         }
-
-        .header-stats {
-            display: flex;
-            gap: 1.25rem;
-            margin-top: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .header-stats .stat {
-            font-size: 0.8rem;
-            color: var(--color-text-tertiary);
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        .header-stats .stat strong {
-            color: var(--color-text);
-            font-weight: 600;
-        }
-
-        /* === STICKY NAV === */
-        .sticky-nav {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: var(--color-bg);
-            border-bottom: 1px solid var(--color-border);
-            padding: 0.75rem 0;
-            margin: 0 -1.5rem;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
-        }
-
-        .nav-inner {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            max-width: 960px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.75rem;
-            font-size: 0.78rem;
-            font-weight: 500;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-sm);
-            background: var(--color-surface);
-            color: var(--color-text-secondary);
-            cursor: pointer;
-            text-decoration: none;
-            transition: all var(--transition);
-            white-space: nowrap;
-        }
-
-        .nav-btn:hover, .nav-btn:focus-visible {
-            border-color: var(--color-accent);
-            color: var(--color-accent);
-            background: var(--color-accent-subtle);
-        }
-
-        .nav-btn:focus-visible {
-            outline: 2px solid var(--color-accent);
-            outline-offset: 2px;
-        }
-
-        .nav-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .nav-dot-1 { background: var(--color-domain-1); }
-        .nav-dot-2 { background: var(--color-domain-2); }
-        .nav-dot-3 { background: var(--color-domain-3); }
-        .nav-dot-4 { background: var(--color-domain-4); }
-
-        /* === SEARCH === */
-        .search-wrapper {
-            margin-bottom: 1.75rem;
-        }
-
         .search-input {
-            width: 100%;
-            padding: 0.7rem 1rem 0.7rem 2.5rem;
-            font-size: 0.9rem;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-md);
-            background: var(--color-surface);
-            color: var(--color-text);
-            font-family: var(--font-sans);
-            transition: border-color var(--transition), box-shadow var(--transition);
+            width: 100%; padding: 0.65rem 1rem 0.65rem 2.5rem;
+            border: 1px solid var(--border); border-radius: var(--radius);
+            background: var(--bg-surface); color: var(--text);
+            font-size: 0.88rem; font-family: inherit;
+            transition: border-color 150ms, box-shadow 150ms;
         }
+        .search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .search-input::placeholder { color: var(--text-3); }
+        .search-status { font-size: 0.75rem; color: var(--text-3); margin-top: 0.35rem; display: none; }
+        .search-status.visible { display: block; }
 
-        .search-input::placeholder {
-            color: var(--color-text-tertiary);
+        /* Domain Cards Grid */
+        .domain-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem; margin-bottom: 2rem;
         }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--color-accent);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        .domain-card {
+            padding: 1.25rem; border-radius: var(--radius);
+            border: 2px solid var(--border); background: var(--bg-card);
+            cursor: pointer; transition: all 150ms; position: relative; overflow: hidden;
         }
-
-        .search-container {
-            position: relative;
+        .domain-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
         }
+        .domain-card.d1::before { background: var(--d1); }
+        .domain-card.d2::before { background: var(--d2); }
+        .domain-card.d3::before { background: var(--d3); }
+        .domain-card.d4::before { background: var(--d4); }
+        .domain-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+        .domain-card.active { border-color: var(--accent); background: var(--accent-subtle); }
+        .domain-card .d-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .domain-card .d-title { font-size: 0.88rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.4rem; }
+        .domain-card .d-meta { font-size: 0.72rem; color: var(--text-2); }
+        .domain-card .d-meta span { margin-right: 0.6rem; }
 
-        .search-icon {
-            position: absolute;
-            left: 0.85rem;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
-            color: var(--color-text-tertiary);
-            pointer-events: none;
+        /* Skill Grid Area */
+        .skill-area { min-height: 200px; }
+        .skill-area-empty { text-align: center; padding: 3rem; color: var(--text-3); font-size: 0.9rem; }
+        .task-section { margin-bottom: 1.5rem; }
+        .task-heading {
+            font-size: 0.78rem; font-weight: 600; color: var(--text-2);
+            text-transform: uppercase; letter-spacing: 0.03em;
+            padding-bottom: 0.5rem; margin-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border);
         }
-
-        .search-count {
-            font-size: 0.75rem;
-            color: var(--color-text-tertiary);
-            margin-top: 0.4rem;
-            display: none;
-        }
-
-        .search-count.visible {
-            display: block;
-        }
-
-        /* === DOMAIN === */
-        .domain-section {
-            margin-bottom: 1rem;
-        }
-
-        .domain-trigger {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 1.25rem;
-            background: var(--color-surface);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-lg);
-            cursor: pointer;
-            transition: all var(--transition);
-            text-align: left;
-            font-family: var(--font-sans);
-        }
-
-        .domain-trigger:hover {
-            box-shadow: var(--shadow-md);
-            border-color: var(--color-text-tertiary);
-        }
-
-        .domain-trigger:focus-visible {
-            outline: 2px solid var(--color-accent);
-            outline-offset: 2px;
-        }
-
-        .domain-indicator {
-            width: 6px;
-            height: 32px;
-            border-radius: 3px;
-            flex-shrink: 0;
-        }
-
-        .domain-1 .domain-indicator { background: var(--color-domain-1); }
-        .domain-2 .domain-indicator { background: var(--color-domain-2); }
-        .domain-3 .domain-indicator { background: var(--color-domain-3); }
-        .domain-4 .domain-indicator { background: var(--color-domain-4); }
-
-        .domain-title-group {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .domain-title {
-            font-size: 1rem;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-
-        .domain-pills {
-            display: flex;
+        .skill-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 0.5rem;
-            margin-top: 0.35rem;
-            flex-wrap: wrap;
         }
-
-        .pill {
-            font-size: 0.7rem;
-            padding: 0.15rem 0.5rem;
-            border-radius: 100px;
-            background: var(--color-bg);
-            border: 1px solid var(--color-border);
-            color: var(--color-text-secondary);
-            font-weight: 500;
-            white-space: nowrap;
+        .skill-card {
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 0.75rem 0.85rem; border-radius: 8px;
+            border: 1px solid var(--border); background: var(--bg-card);
+            text-decoration: none; color: var(--text);
+            transition: all 150ms; min-height: 72px;
         }
-
-        .domain-chevron {
-            width: 20px;
-            height: 20px;
-            color: var(--color-text-tertiary);
-            transition: transform 0.2s ease;
-            flex-shrink: 0;
+        .skill-card:hover {
+            border-color: var(--accent); background: var(--accent-subtle);
+            transform: translateY(-1px); box-shadow: var(--shadow);
         }
-
-        .domain-trigger[aria-expanded="true"] .domain-chevron {
-            transform: rotate(90deg);
+        .skill-card .s-id {
+            font-size: 0.68rem; font-weight: 600; color: var(--text-3);
+            font-family: 'SF Mono', 'Fira Code', monospace;
         }
-
-        .domain-content {
-            display: none;
-            padding: 0.5rem 0 0.5rem 1.5rem;
+        .skill-card .s-title { font-size: 0.8rem; font-weight: 500; line-height: 1.35; margin: 0.2rem 0; }
+        .skill-card .s-badge {
+            font-size: 0.65rem; color: var(--text-3);
+            display: flex; align-items: center; gap: 0.25rem; align-self: flex-end;
         }
+        .skill-card .s-badge svg { width: 10px; height: 10px; }
+        .skill-card.hidden { display: none; }
 
-        .domain-content.open {
-            display: block;
+        /* No results */
+        .no-results { text-align: center; padding: 3rem 1rem; color: var(--text-3); display: none; }
+        .no-results.visible { display: block; }
+
+        /* Footer */
+        .footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.75rem; color: var(--text-3); }
+        .footer p + p { margin-top: 0.25rem; }
+
+        /* Mobile */
+        @media(max-width:640px){
+            .container { padding: 0 1rem 2rem; }
+            .domain-grid { grid-template-columns: 1fr; }
+            .skill-grid { grid-template-columns: repeat(2, 1fr); }
+            .header h1 { font-size: 1.2rem; }
+            .domain-card { padding: 1rem; }
         }
-
-        /* === TASK === */
-        .task-group {
-            margin-bottom: 0.5rem;
-        }
-
-        .task-trigger {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 0.75rem;
-            background: transparent;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            text-align: left;
-            font-family: var(--font-sans);
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--color-text-secondary);
-            transition: all var(--transition);
-        }
-
-        .task-trigger:hover {
-            background: var(--color-surface);
-            color: var(--color-text);
-        }
-
-        .task-trigger:focus-visible {
-            outline: 2px solid var(--color-accent);
-            outline-offset: 2px;
-        }
-
-        .task-chevron {
-            width: 14px;
-            height: 14px;
-            color: var(--color-text-tertiary);
-            transition: transform 0.2s ease;
-            flex-shrink: 0;
-        }
-
-        .task-trigger[aria-expanded="true"] .task-chevron {
-            transform: rotate(90deg);
-        }
-
-        .task-content {
-            display: none;
-            padding: 0.25rem 0 0.75rem 1.75rem;
-        }
-
-        .task-content.open {
-            display: block;
-        }
-
-        /* === SKILL === */
-        .skill-list {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .skill-link {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.5rem 0.7rem;
-            text-decoration: none;
-            color: var(--color-text);
-            border-radius: var(--radius-sm);
-            transition: all var(--transition);
-            font-size: 0.84rem;
-            line-height: 1.4;
-        }
-
-        .skill-link:hover {
-            background: var(--color-accent-subtle);
-            color: var(--color-accent);
-        }
-
-        .skill-link:focus-visible {
-            outline: 2px solid var(--color-accent);
-            outline-offset: 1px;
-        }
-
-        .skill-id {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: var(--color-text-tertiary);
-            min-width: 38px;
-            flex-shrink: 0;
-        }
-
-        .skill-name {
-            flex: 1;
-            min-width: 0;
-        }
-
-        /* === SEARCH STATES === */
-        .domain-section.hidden,
-        .task-group.hidden,
-        .skill-link.hidden {
-            display: none;
-        }
-
-        .skill-link.search-match {
-            background: var(--color-accent-subtle);
-        }
-
-        /* === NO RESULTS === */
-        .no-results {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--color-text-tertiary);
-            font-size: 0.9rem;
-            display: none;
-        }
-
-        .no-results.visible {
-            display: block;
-        }
-
-        /* === FOOTER === */
-        .site-footer {
-            margin-top: 3rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--color-border);
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--color-text-tertiary);
-        }
-
-        /* === RESPONSIVE === */
-        @media (max-width: 640px) {
-            .page-container {
-                padding: 0 1rem 3rem;
-            }
-
-            .sticky-nav {
-                margin: 0 -1rem;
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-
-            .site-header h1 {
-                font-size: 1.25rem;
-            }
-
-            .domain-trigger {
-                padding: 0.85rem 1rem;
-            }
-
-            .domain-title {
-                font-size: 0.9rem;
-            }
-
-            .nav-btn {
-                font-size: 0.72rem;
-                padding: 0.35rem 0.6rem;
-            }
+        @media(max-width:400px){
+            .skill-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="page-container">
-        <!-- HEADER -->
-        <header class="site-header">
-            <h1>AWS Data Engineer Associate (DEA-C01)</h1>
-            <p class="subtitle">Practice Exam &amp; Certification Preparation</p>
-            <div class="header-stats">
-                <span class="stat"><strong>120</strong> Skills</span>
-                <span class="stat"><strong>1,200</strong> Questions</span>
-                <span class="stat"><strong>4</strong> Domains</span>
-            </div>
-        </header>
-
-        <!-- STICKY NAV -->
-        <nav class="sticky-nav" aria-label="Domain navigation">
-            <div class="nav-inner">
-                <a href="#domain-1" class="nav-btn"><span class="nav-dot nav-dot-1"></span>Domain 1</a>
-                <a href="#domain-2" class="nav-btn"><span class="nav-dot nav-dot-2"></span>Domain 2</a>
-                <a href="#domain-3" class="nav-btn"><span class="nav-dot nav-dot-3"></span>Domain 3</a>
-                <a href="#domain-4" class="nav-btn"><span class="nav-dot nav-dot-4"></span>Domain 4</a>
-            </div>
-        </nav>
-
-        <!-- SEARCH -->
-        <div class="search-wrapper">
-            <div class="search-container">
-                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
-                <input type="search" class="search-input" id="searchInput" placeholder="Search skills... (e.g. Glue, Athena, Kinesis, IAM)" aria-label="Search skills">
-            </div>
-            <div class="search-count" id="searchCount"></div>
+<div class="container">
+    <!-- Header -->
+    <header class="header">
+        <h1>AWS Data Engineer Associate (DEA-C01)</h1>
+        <div class="header-meta">
+            <span><strong>120</strong>&nbsp;Skills</span>
+            <span><strong>1,200</strong>&nbsp;Questions</span>
+            <span>65 questions</span>
+            <span>170 min</span>
+            <span>720/1000 pass</span>
         </div>
+    </header>
 
-        <!-- NO RESULTS -->
-        <div class="no-results" id="noResults">No skills found matching your search.</div>
-
-        <!-- DOMAIN 1 -->
-        <section class="domain-section domain-1" id="domain-1">
-            <button class="domain-trigger" aria-expanded="false" aria-controls="domain-1-content" onclick="toggleDomain(this)">
-                <div class="domain-indicator"></div>
-                <div class="domain-title-group">
-                    <div class="domain-title">Data Ingestion and Transformation</div>
-                    <div class="domain-pills">
-                        <span class="pill">34% Weight</span>
-                        <span class="pill">37 Skills</span>
-                        <span class="pill">370 Questions</span>
-                        <span class="pill">4 Tasks</span>
-                    </div>
-                </div>
-                <svg class="domain-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-            <div class="domain-content" id="domain-1-content">
-                <!-- Task 1.1 -->
-                <div class="task-group">
-                    <button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)">
-                        <svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                        Task 1.1: Perform data ingestion
-                    </button>
-                    <div class="task-content">
-                        <div class="skill-list">
-                            <a href="soal/skill_01_01_01.html" class="skill-link" data-skill="1.1.1 Read data from streaming sources Kinesis MSK DynamoDB Streams DMS Glue Redshift"><span class="skill-id">1.1.1</span><span class="skill-name">Read data from streaming sources</span></a>
-                            <a href="soal/skill_01_01_02.html" class="skill-link" data-skill="1.1.2 Read data from batch sources S3 Glue EMR DMS Redshift Lambda AppFlow"><span class="skill-id">1.1.2</span><span class="skill-name">Read data from batch sources</span></a>
-                            <a href="soal/skill_01_01_03.html" class="skill-link" data-skill="1.1.3 Implement appropriate configuration options for batch ingestion"><span class="skill-id">1.1.3</span><span class="skill-name">Configuration options for batch ingestion</span></a>
-                            <a href="soal/skill_01_01_04.html" class="skill-link" data-skill="1.1.4 Consume data APIs REST GraphQL API Gateway"><span class="skill-id">1.1.4</span><span class="skill-name">Consume data APIs</span></a>
-                            <a href="soal/skill_01_01_05.html" class="skill-link" data-skill="1.1.5 Set up schedulers EventBridge Apache Airflow MWAA time-based schedules jobs crawlers"><span class="skill-id">1.1.5</span><span class="skill-name">Set up schedulers</span></a>
-                            <a href="soal/skill_01_01_06.html" class="skill-link" data-skill="1.1.6 Set up event triggers S3 Event Notifications EventBridge"><span class="skill-id">1.1.6</span><span class="skill-name">Set up event triggers</span></a>
-                            <a href="soal/skill_01_01_07.html" class="skill-link" data-skill="1.1.7 Call a Lambda function from Kinesis"><span class="skill-id">1.1.7</span><span class="skill-name">Call Lambda from Kinesis</span></a>
-                            <a href="soal/skill_01_01_08.html" class="skill-link" data-skill="1.1.8 Create allowlists for IP addresses connections data sources VPC security groups"><span class="skill-id">1.1.8</span><span class="skill-name">Create IP allowlists</span></a>
-                            <a href="soal/skill_01_01_09.html" class="skill-link" data-skill="1.1.9 Implement throttling overcoming rate limits DynamoDB RDS Kinesis"><span class="skill-id">1.1.9</span><span class="skill-name">Throttling and rate limits</span></a>
-                            <a href="soal/skill_01_01_10.html" class="skill-link" data-skill="1.1.10 Manage fan-in fan-out streaming data distribution SNS SQS"><span class="skill-id">1.1.10</span><span class="skill-name">Fan-in and fan-out streaming</span></a>
-                            <a href="soal/skill_01_01_11.html" class="skill-link" data-skill="1.1.11 Describe replayability of data ingestion pipelines"><span class="skill-id">1.1.11</span><span class="skill-name">Replayability of pipelines</span></a>
-                            <a href="soal/skill_01_01_12.html" class="skill-link" data-skill="1.1.12 Define stateful and stateless data transactions"><span class="skill-id">1.1.12</span><span class="skill-name">Stateful and stateless transactions</span></a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Task 1.2 -->
-                <div class="task-group">
-                    <button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)">
-                        <svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                        Task 1.2: Transform and process data
-                    </button>
-                    <div class="task-content">
-                        <div class="skill-list">
-                            <a href="soal/skill_01_02_01.html" class="skill-link" data-skill="1.2.1 Optimize container usage performance EKS ECS Fargate"><span class="skill-id">1.2.1</span><span class="skill-name">Optimize container usage (EKS, ECS)</span></a>
-                            <a href="soal/skill_01_02_02.html" class="skill-link" data-skill="1.2.2 Connect to different data sources JDBC ODBC"><span class="skill-id">1.2.2</span><span class="skill-name">Connect to data sources (JDBC, ODBC)</span></a>
-                            <a href="soal/skill_01_02_03.html" class="skill-link" data-skill="1.2.3 Integrate data from multiple sources"><span class="skill-id">1.2.3</span><span class="skill-name">Integrate data from multiple sources</span></a>
-                            <a href="soal/skill_01_02_04.html" class="skill-link" data-skill="1.2.4 Optimize costs while processing data"><span class="skill-id">1.2.4</span><span class="skill-name">Optimize costs while processing</span></a>
-                            <a href="soal/skill_01_02_05.html" class="skill-link" data-skill="1.2.5 Implement data transformation services EMR Glue Lambda Redshift"><span class="skill-id">1.2.5</span><span class="skill-name">Implement transformation services</span></a>
-                            <a href="soal/skill_01_02_06.html" class="skill-link" data-skill="1.2.6 Transform data between formats CSV Parquet ORC Avro JSON"><span class="skill-id">1.2.6</span><span class="skill-name">Transform data between formats</span></a>
-                            <a href="soal/skill_01_02_07.html" class="skill-link" data-skill="1.2.7 Troubleshoot debug common transformation failures performance issues Spark"><span class="skill-id">1.2.7</span><span class="skill-name">Troubleshoot transformation failures</span></a>
-                            <a href="soal/skill_01_02_08.html" class="skill-link" data-skill="1.2.8 Create data APIs make data available other systems API Gateway Lambda"><span class="skill-id">1.2.8</span><span class="skill-name">Create data APIs</span></a>
-                            <a href="soal/skill_01_02_09.html" class="skill-link" data-skill="1.2.9 Define volume velocity variety data structured unstructured"><span class="skill-id">1.2.9</span><span class="skill-name">Volume, velocity, and variety</span></a>
-                            <a href="soal/skill_01_02_10.html" class="skill-link" data-skill="1.2.10 Integrate large language models LLMs data processing Bedrock"><span class="skill-id">1.2.10</span><span class="skill-name">Integrate LLMs for data processing</span></a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Task 1.3 -->
-                <div class="task-group">
-                    <button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)">
-                        <svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                        Task 1.3: Orchestrate data pipelines
-                    </button>
-                    <div class="task-content">
-                        <div class="skill-list">
-                            <a href="soal/skill_01_03_01.html" class="skill-link" data-skill="1.3.1 Use orchestration services build workflows ETL pipelines Lambda EventBridge MWAA Step Functions Glue workflows"><span class="skill-id">1.3.1</span><span class="skill-name">Orchestration services for ETL workflows</span></a>
-                            <a href="soal/skill_01_03_02.html" class="skill-link" data-skill="1.3.2 Build data pipelines performance availability scalability resiliency fault tolerance"><span class="skill-id">1.3.2</span><span class="skill-name">Performance, availability, resiliency</span></a>
-                            <a href="soal/skill_01_03_03.html" class="skill-link" data-skill="1.3.3 Implement maintain serverless workflows"><span class="skill-id">1.3.3</span><span class="skill-name">Serverless workflows</span></a>
-                            <a href="soal/skill_01_03_04.html" class="skill-link" data-skill="1.3.4 Use notification services send alerts SNS SQS"><span class="skill-id">1.3.4</span><span class="skill-name">Notification services for alerts</span></a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Task 1.4 -->
-                <div class="task-group">
-                    <button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)">
-                        <svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                        Task 1.4: Apply programming concepts
-                    </button>
-                    <div class="task-content">
-                        <div class="skill-list">
-                            <a href="soal/skill_01_04_01.html" class="skill-link" data-skill="1.4.1 Optimize code reduce runtime data ingestion transformation"><span class="skill-id">1.4.1</span><span class="skill-name">Optimize code to reduce runtime</span></a>
-                            <a href="soal/skill_01_04_02.html" class="skill-link" data-skill="1.4.2 Configure Lambda functions concurrency performance needs"><span class="skill-id">1.4.2</span><span class="skill-name">Lambda concurrency and performance</span></a>
-                            <a href="soal/skill_01_04_03.html" class="skill-link" data-skill="1.4.3 Use programming languages frameworks data engineering Python SQL Scala R Java Bash PowerShell"><span class="skill-id">1.4.3</span><span class="skill-name">Programming languages and frameworks</span></a>
-                            <a href="soal/skill_01_04_04.html" class="skill-link" data-skill="1.4.4 Use software engineering best practices version control testing logging monitoring"><span class="skill-id">1.4.4</span><span class="skill-name">Software engineering best practices</span></a>
-                            <a href="soal/skill_01_04_05.html" class="skill-link" data-skill="1.4.5 Use Infrastructure as Code IaC deploy data engineering solutions CloudFormation CDK Terraform"><span class="skill-id">1.4.5</span><span class="skill-name">Infrastructure as Code (IaC)</span></a>
-                            <a href="soal/skill_01_04_06.html" class="skill-link" data-skill="1.4.6 Use AWS SAM package deploy serverless data pipelines Lambda Step Functions DynamoDB"><span class="skill-id">1.4.6</span><span class="skill-name">AWS SAM for serverless pipelines</span></a>
-                            <a href="soal/skill_01_04_07.html" class="skill-link" data-skill="1.4.7 Use mount storage volumes Lambda functions EFS tmp ephemeral"><span class="skill-id">1.4.7</span><span class="skill-name">Storage volumes in Lambda</span></a>
-                            <a href="soal/skill_01_04_08.html" class="skill-link" data-skill="1.4.8 Use infrastructure code IaC repeatable resource deployment CloudFormation CDK"><span class="skill-id">1.4.8</span><span class="skill-name">IaC for repeatable deployment</span></a>
-                            <a href="soal/skill_01_04_09.html" class="skill-link" data-skill="1.4.9 Describe continuous integration continuous delivery CI/CD implementation testing deployment data pipelines"><span class="skill-id">1.4.9</span><span class="skill-name">CI/CD for data pipelines</span></a>
-                            <a href="soal/skill_01_04_10.html" class="skill-link" data-skill="1.4.10 Define distributed computing MapReduce Spark"><span class="skill-id">1.4.10</span><span class="skill-name">Distributed computing</span></a>
-                            <a href="soal/skill_01_04_11.html" class="skill-link" data-skill="1.4.11 Describe data structures algorithms graph tree hash"><span class="skill-id">1.4.11</span><span class="skill-name">Data structures and algorithms</span></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- DOMAIN 2 -->
-        <section class="domain-section domain-2" id="domain-2">
-            <button class="domain-trigger" aria-expanded="false" aria-controls="domain-2-content" onclick="toggleDomain(this)">
-                <div class="domain-indicator"></div>
-                <div class="domain-title-group">
-                    <div class="domain-title">Data Store Management</div>
-                    <div class="domain-pills">
-                        <span class="pill">26% Weight</span>
-                        <span class="pill">26 Skills</span>
-                        <span class="pill">260 Questions</span>
-                        <span class="pill">4 Tasks</span>
-                    </div>
-                </div>
-                <svg class="domain-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-            <div class="domain-content" id="domain-2-content">
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 2.1: Choose a data store</button><div class="task-content"><div class="skill-list"><a href="soal/skill_02_01_01.html" class="skill-link" data-skill="2.1.1 Implement storage services cost performance Redshift EMR Lake Formation RDS DynamoDB Kinesis MSK"><span class="skill-id">2.1.1</span><span class="skill-name">Storage for cost and performance</span></a><a href="soal/skill_02_01_02.html" class="skill-link" data-skill="2.1.2 Configure storage services access patterns Redshift EMR Lake Formation RDS DynamoDB"><span class="skill-id">2.1.2</span><span class="skill-name">Storage for access patterns</span></a><a href="soal/skill_02_01_03.html" class="skill-link" data-skill="2.1.3 Apply storage services use cases HNSW Aurora PostgreSQL MemoryDB"><span class="skill-id">2.1.3</span><span class="skill-name">Storage for appropriate use cases</span></a><a href="soal/skill_02_01_04.html" class="skill-link" data-skill="2.1.4 Integrate migration tools data processing Transfer Family DataSync"><span class="skill-id">2.1.4</span><span class="skill-name">Migration tools integration</span></a><a href="soal/skill_02_01_05.html" class="skill-link" data-skill="2.1.5 Implement data migration remote access Redshift federated queries materialized views Spectrum"><span class="skill-id">2.1.5</span><span class="skill-name">Data migration and remote access</span></a><a href="soal/skill_02_01_06.html" class="skill-link" data-skill="2.1.6 Manage locks prevent access data Redshift RDS concurrency"><span class="skill-id">2.1.6</span><span class="skill-name">Manage locks to prevent access</span></a><a href="soal/skill_02_01_07.html" class="skill-link" data-skill="2.1.7 Manage open table formats Apache Iceberg Delta Lake Hudi"><span class="skill-id">2.1.7</span><span class="skill-name">Open table formats (Iceberg)</span></a><a href="soal/skill_02_01_08.html" class="skill-link" data-skill="2.1.8 Describe vector index types HNSW IVF approximate nearest neighbor"><span class="skill-id">2.1.8</span><span class="skill-name">Vector index types (HNSW, IVF)</span></a></div></div></div>
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 2.2: Understand data cataloging systems</button><div class="task-content"><div class="skill-list"><a href="soal/skill_02_02_01.html" class="skill-link" data-skill="2.2.1 Use data catalogs consume data source Glue Data Catalog"><span class="skill-id">2.2.1</span><span class="skill-name">Use data catalogs to consume data</span></a><a href="soal/skill_02_02_02.html" class="skill-link" data-skill="2.2.2 Build reference technical data catalog Glue Data Catalog Apache Hive metastore"><span class="skill-id">2.2.2</span><span class="skill-name">Build technical data catalog</span></a><a href="soal/skill_02_02_03.html" class="skill-link" data-skill="2.2.3 Discover schemas use Glue crawlers populate data catalogs"><span class="skill-id">2.2.3</span><span class="skill-name">Glue crawlers for schema discovery</span></a><a href="soal/skill_02_02_04.html" class="skill-link" data-skill="2.2.4 Synchronize partitions data catalog MSCK REPAIR partition projection"><span class="skill-id">2.2.4</span><span class="skill-name">Synchronize partitions</span></a><a href="soal/skill_02_02_05.html" class="skill-link" data-skill="2.2.5 Create new source target connections cataloging Glue JDBC"><span class="skill-id">2.2.5</span><span class="skill-name">Source/target connections for cataloging</span></a><a href="soal/skill_02_02_06.html" class="skill-link" data-skill="2.2.6 Create manage business data catalogs SageMaker Catalog DataZone"><span class="skill-id">2.2.6</span><span class="skill-name">Business data catalogs</span></a></div></div></div>
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 2.3: Manage the lifecycle of data</button><div class="task-content"><div class="skill-list"><a href="soal/skill_02_03_01.html" class="skill-link" data-skill="2.3.1 Perform load unload operations S3 Redshift COPY UNLOAD"><span class="skill-id">2.3.1</span><span class="skill-name">Load/unload S3 and Redshift</span></a><a href="soal/skill_02_03_02.html" class="skill-link" data-skill="2.3.2 Manage S3 Lifecycle policies change storage tier Glacier Intelligent-Tiering"><span class="skill-id">2.3.2</span><span class="skill-name">S3 Lifecycle policies (storage tier)</span></a><a href="soal/skill_02_03_03.html" class="skill-link" data-skill="2.3.3 Expire data specific age S3 Lifecycle policies retention"><span class="skill-id">2.3.3</span><span class="skill-name">Expire data by age</span></a><a href="soal/skill_02_03_04.html" class="skill-link" data-skill="2.3.4 Manage S3 versioning DynamoDB TTL"><span class="skill-id">2.3.4</span><span class="skill-name">S3 versioning and DynamoDB TTL</span></a><a href="soal/skill_02_03_05.html" class="skill-link" data-skill="2.3.5 Delete data meet business legal requirements GDPR compliance"><span class="skill-id">2.3.5</span><span class="skill-name">Delete data for compliance</span></a><a href="soal/skill_02_03_06.html" class="skill-link" data-skill="2.3.6 Protect data resiliency availability backup replication DR"><span class="skill-id">2.3.6</span><span class="skill-name">Data resiliency and availability</span></a></div></div></div>
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 2.4: Design data models and schema evolution</button><div class="task-content"><div class="skill-list"><a href="soal/skill_02_04_01.html" class="skill-link" data-skill="2.4.1 Design schemas Redshift DynamoDB Lake Formation star snowflake"><span class="skill-id">2.4.1</span><span class="skill-name">Design schemas (Redshift, DynamoDB)</span></a><a href="soal/skill_02_04_02.html" class="skill-link" data-skill="2.4.2 Address changes characteristics data schema evolution"><span class="skill-id">2.4.2</span><span class="skill-name">Address data characteristic changes</span></a><a href="soal/skill_02_04_03.html" class="skill-link" data-skill="2.4.3 Perform schema conversion SCT DMS Schema Conversion"><span class="skill-id">2.4.3</span><span class="skill-name">Schema conversion (SCT, DMS)</span></a><a href="soal/skill_02_04_04.html" class="skill-link" data-skill="2.4.4 Establish data lineage SageMaker ML Lineage Tracking Catalog"><span class="skill-id">2.4.4</span><span class="skill-name">Establish data lineage</span></a><a href="soal/skill_02_04_05.html" class="skill-link" data-skill="2.4.5 Describe best practices indexing partitioning strategies compression optimization"><span class="skill-id">2.4.5</span><span class="skill-name">Indexing, partitioning, compression</span></a><a href="soal/skill_02_04_06.html" class="skill-link" data-skill="2.4.6 Describe vectorization concepts Bedrock knowledge base embeddings"><span class="skill-id">2.4.6</span><span class="skill-name">Vectorization concepts</span></a></div></div></div>
-            </div>
-        </section>
-
-        <!-- DOMAIN 3 -->
-        <section class="domain-section domain-3" id="domain-3">
-            <button class="domain-trigger" aria-expanded="false" aria-controls="domain-3-content" onclick="toggleDomain(this)">
-                <div class="domain-indicator"></div>
-                <div class="domain-title-group">
-                    <div class="domain-title">Data Operations and Support</div>
-                    <div class="domain-pills">
-                        <span class="pill">22% Weight</span>
-                        <span class="pill">28 Skills</span>
-                        <span class="pill">280 Questions</span>
-                        <span class="pill">4 Tasks</span>
-                    </div>
-                </div>
-                <svg class="domain-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-            <div class="domain-content" id="domain-3-content">
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 3.1: Automate data processing</button><div class="task-content"><div class="skill-list"><a href="soal/skill_03_01_01.html" class="skill-link" data-skill="3.1.1 Orchestrate data pipelines MWAA Step Functions Airflow"><span class="skill-id">3.1.1</span><span class="skill-name">Orchestrate data pipelines</span></a><a href="soal/skill_03_01_02.html" class="skill-link" data-skill="3.1.2 Troubleshoot Amazon managed workflows MWAA Airflow"><span class="skill-id">3.1.2</span><span class="skill-name">Troubleshoot managed workflows</span></a><a href="soal/skill_03_01_03.html" class="skill-link" data-skill="3.1.3 Call SDKs access Amazon features code boto3 Java SDK"><span class="skill-id">3.1.3</span><span class="skill-name">Call SDKs from code</span></a><a href="soal/skill_03_01_04.html" class="skill-link" data-skill="3.1.4 Use features AWS services process data EMR Redshift Glue"><span class="skill-id">3.1.4</span><span class="skill-name">AWS service features for processing</span></a><a href="soal/skill_03_01_05.html" class="skill-link" data-skill="3.1.5 Consume maintain data APIs versioning deprecation"><span class="skill-id">3.1.5</span><span class="skill-name">Consume and maintain data APIs</span></a><a href="soal/skill_03_01_06.html" class="skill-link" data-skill="3.1.6 Prepare data transformation Glue DataBrew SageMaker Unified Studio"><span class="skill-id">3.1.6</span><span class="skill-name">Prepare data for transformation</span></a><a href="soal/skill_03_01_07.html" class="skill-link" data-skill="3.1.7 Query data Amazon Athena serverless SQL"><span class="skill-id">3.1.7</span><span class="skill-name">Query data (Athena)</span></a><a href="soal/skill_03_01_08.html" class="skill-link" data-skill="3.1.8 Use AWS Lambda automate data processing event-driven"><span class="skill-id">3.1.8</span><span class="skill-name">Lambda for data automation</span></a><a href="soal/skill_03_01_09.html" class="skill-link" data-skill="3.1.9 Manage events schedulers EventBridge Scheduler"><span class="skill-id">3.1.9</span><span class="skill-name">Events and schedulers</span></a></div></div></div>
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 3.2: Analyze data by using AWS services</button><div class="task-content"><div class="skill-list"><a href="soal/skill_03_02_01.html" class="skill-link" data-skill="3.2.1 Visualize data DataBrew QuickSight dashboards"><span class="skill-id">3.2.1</span><span class="skill-name">Visualize data (QuickSight)</span></a><a href="soal/skill_03_02_02.html" class="skill-link" data-skill="3.2.2 Verify clean data Lambda Athena QuickSight Jupyter SageMaker Data Wrangler"><span class="skill-id">3.2.2</span><span class="skill-name">Verify and clean data</span></a><a href="soal/skill_03_02_03.html" class="skill-link" data-skill="3.2.3 Use SQL Redshift Athena query data create views materialized"><span class="skill-id">3.2.3</span><span class="skill-name">SQL in Redshift and Athena</span></a><a href="soal/skill_03_02_04.html" class="skill-link" data-skill="3.2.4 Use Athena notebooks Apache Spark explore data"><span class="skill-id">3.2.4</span><span class="skill-name">Athena Spark notebooks</span></a><a href="soal/skill_03_02_05.html" class="skill-link" data-skill="3.2.5 Describe tradeoffs provisioned services serverless services cost performance"><span class="skill-id">3.2.5</span><span class="skill-name">Provisioned vs serverless tradeoffs</span></a><a href="soal/skill_03_02_06.html" class="skill-link" data-skill="3.2.6 Define data aggregation rolling average grouping pivoting window functions"><span class="skill-id">3.2.6</span><span class="skill-name">Aggregation, rolling average, pivoting</span></a></div></div></div>
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 3.3: Maintain and monitor data pipelines</button><div class="task-content"><div class="skill-list"><a href="soal/skill_03_03_01.html" class="skill-link" data-skill="3.3.1 Extract logs audits CloudTrail CloudWatch"><span class="skill-id">3.3.1</span><span class="skill-name">Extract logs for audits</span></a><a href="soal/skill_03_03_02.html" class="skill-link" data-skill="3.3.2 Deploy logging monitoring solutions auditing traceability"><span class="skill-id">3.3.2</span><span class="skill-name">Logging and monitoring solutions</span></a><a href="soal/skill_03_03_03.html" class="skill-link" data-skill="3.3.3 Use notifications monitoring send alerts CloudWatch Alarms SNS"><span class="skill-id">3.3.3</span><span class="skill-name">Notifications for alerts</span></a><a href="soal/skill_03_03_04.html" class="skill-link" data-skill="3.3.4 Troubleshoot performance issues bottleneck metrics"><span class="skill-id">3.3.4</span><span class="skill-name">Troubleshoot performance issues</span></a><a href="soal/skill_03_03_05.html" class="skill-link" data-skill="3.3.5 Use AWS CloudTrail track API calls audit"><span class="skill-id">3.3.5</span><span class="skill-name">CloudTrail to track API calls</span></a><a href="soal/skill_03_03_06.html" class="skill-link" data-skill="3.3.6 Troubleshoot maintain pipelines Glue EMR failures"><span class="skill-id">3.3.6</span><span class="skill-name">Troubleshoot and maintain pipelines</span></a><a href="soal/skill_03_03_07.html" class="skill-link" data-skill="3.3.7 Use CloudWatch Logs log application data configuration automation"><span class="skill-id">3.3.7</span><span class="skill-name">CloudWatch Logs for applications</span></a><a href="soal/skill_03_03_08.html" class="skill-link" data-skill="3.3.8 Analyze logs AWS services Athena EMR OpenSearch CloudWatch Logs Insights"><span class="skill-id">3.3.8</span><span class="skill-name">Analyze logs with AWS services</span></a></div></div></div>
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 3.4: Ensure data quality</button><div class="task-content"><div class="skill-list"><a href="soal/skill_03_04_01.html" class="skill-link" data-skill="3.4.1 Run data quality checks processing empty fields validation"><span class="skill-id">3.4.1</span><span class="skill-name">Data quality checks during processing</span></a><a href="soal/skill_03_04_02.html" class="skill-link" data-skill="3.4.2 Define data quality rules DataBrew DQDL"><span class="skill-id">3.4.2</span><span class="skill-name">Define data quality rules</span></a><a href="soal/skill_03_04_03.html" class="skill-link" data-skill="3.4.3 Investigate data consistency DataBrew reconciliation"><span class="skill-id">3.4.3</span><span class="skill-name">Investigate data consistency</span></a><a href="soal/skill_03_04_04.html" class="skill-link" data-skill="3.4.4 Describe data sampling techniques statistical random stratified"><span class="skill-id">3.4.4</span><span class="skill-name">Data sampling techniques</span></a><a href="soal/skill_03_04_05.html" class="skill-link" data-skill="3.4.5 Implement data skew mechanisms salting repartition AQE"><span class="skill-id">3.4.5</span><span class="skill-name">Data skew mechanisms</span></a></div></div></div>
-            </div>
-        </section>
-
-        <!-- DOMAIN 4 -->
-        <section class="domain-section domain-4" id="domain-4">
-            <button class="domain-trigger" aria-expanded="false" aria-controls="domain-4-content" onclick="toggleDomain(this)">
-                <div class="domain-indicator"></div>
-                <div class="domain-title-group">
-                    <div class="domain-title">Data Security and Governance</div>
-                    <div class="domain-pills">
-                        <span class="pill">18% Weight</span>
-                        <span class="pill">29 Skills</span>
-                        <span class="pill">290 Questions</span>
-                        <span class="pill">5 Tasks</span>
-                    </div>
-                </div>
-                <svg class="domain-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-            <div class="domain-content" id="domain-4-content">
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 4.1: Apply authentication mechanisms</button><div class="task-content"><div class="skill-list"><a href="soal/skill_04_01_01.html" class="skill-link" data-skill="4.1.1 Update VPC security groups network"><span class="skill-id">4.1.1</span><span class="skill-name">Update VPC security groups</span></a><a href="soal/skill_04_01_02.html" class="skill-link" data-skill="4.1.2 Create update IAM groups roles endpoints services"><span class="skill-id">4.1.2</span><span class="skill-name">IAM groups, roles, endpoints</span></a><a href="soal/skill_04_01_03.html" class="skill-link" data-skill="4.1.3 Create rotate credentials password management Secrets Manager"><span class="skill-id">4.1.3</span><span class="skill-name">Credential rotation (Secrets Manager)</span></a><a href="soal/skill_04_01_04.html" class="skill-link" data-skill="4.1.4 Set up IAM roles access Lambda API Gateway CLI CloudFormation"><span class="skill-id">4.1.4</span><span class="skill-name">Set up IAM roles for access</span></a><a href="soal/skill_04_01_05.html" class="skill-link" data-skill="4.1.5 Apply IAM policies roles endpoints services S3 Access Points PrivateLink"><span class="skill-id">4.1.5</span><span class="skill-name">IAM policies (Access Points, PrivateLink)</span></a><a href="soal/skill_04_01_06.html" class="skill-link" data-skill="4.1.6 Describe differences managed services unmanaged services shared responsibility"><span class="skill-id">4.1.6</span><span class="skill-name">Managed vs unmanaged services</span></a><a href="soal/skill_04_01_07.html" class="skill-link" data-skill="4.1.7 Use domain domain units projects SageMaker Unified Studio DataZone"><span class="skill-id">4.1.7</span><span class="skill-name">SageMaker Unified Studio domains</span></a></div></div></div>
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 4.2: Apply authorization mechanisms</button><div class="task-content"><div class="skill-list"><a href="soal/skill_04_02_01.html" class="skill-link" data-skill="4.2.1 Create custom IAM policies managed policy least privilege"><span class="skill-id">4.2.1</span><span class="skill-name">Custom IAM policies</span></a><a href="soal/skill_04_02_02.html" class="skill-link" data-skill="4.2.2 Store application database credentials Secrets Manager Parameter Store"><span class="skill-id">4.2.2</span><span class="skill-name">Store credentials securely</span></a><a href="soal/skill_04_02_03.html" class="skill-link" data-skill="4.2.3 Provide database users groups roles access authority Redshift"><span class="skill-id">4.2.3</span><span class="skill-name">Database users, groups, roles</span></a><a href="soal/skill_04_02_04.html" class="skill-link" data-skill="4.2.4 Manage permissions Lake Formation Redshift EMR Athena S3"><span class="skill-id">4.2.4</span><span class="skill-name">Lake Formation permissions</span></a><a href="soal/skill_04_02_05.html" class="skill-link" data-skill="4.2.5 Apply authorization methods role-based tag-based attribute-based RBAC ABAC"><span class="skill-id">4.2.5</span><span class="skill-name">RBAC, TBAC, ABAC methods</span></a><a href="soal/skill_04_02_06.html" class="skill-link" data-skill="4.2.6 Construct custom policies principle least privilege"><span class="skill-id">4.2.6</span><span class="skill-name">Least privilege policies</span></a></div></div></div>
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 4.3: Ensure data encryption and masking</button><div class="task-content"><div class="skill-list"><a href="soal/skill_04_03_01.html" class="skill-link" data-skill="4.3.1 Apply data masking anonymization compliance PII tokenization"><span class="skill-id">4.3.1</span><span class="skill-name">Data masking and anonymization</span></a><a href="soal/skill_04_03_02.html" class="skill-link" data-skill="4.3.2 Use encryption keys encrypt decrypt data KMS SSE"><span class="skill-id">4.3.2</span><span class="skill-name">Encryption keys (KMS)</span></a><a href="soal/skill_04_03_03.html" class="skill-link" data-skill="4.3.3 Configure encryption across AWS account boundaries cross-account"><span class="skill-id">4.3.3</span><span class="skill-name">Cross-account encryption</span></a><a href="soal/skill_04_03_04.html" class="skill-link" data-skill="4.3.4 Enable encryption transit before transit TLS SSL HTTPS"><span class="skill-id">4.3.4</span><span class="skill-name">Encryption in transit</span></a></div></div></div>
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 4.4: Prepare logs for audit</button><div class="task-content"><div class="skill-list"><a href="soal/skill_04_04_01.html" class="skill-link" data-skill="4.4.1 Use CloudTrail track API calls audit trail"><span class="skill-id">4.4.1</span><span class="skill-name">CloudTrail for API tracking</span></a><a href="soal/skill_04_04_02.html" class="skill-link" data-skill="4.4.2 Use CloudWatch Logs store application logs retention"><span class="skill-id">4.4.2</span><span class="skill-name">CloudWatch Logs for audit</span></a><a href="soal/skill_04_04_03.html" class="skill-link" data-skill="4.4.3 Use CloudTrail Lake centralized logging queries SQL"><span class="skill-id">4.4.3</span><span class="skill-name">CloudTrail Lake queries</span></a><a href="soal/skill_04_04_04.html" class="skill-link" data-skill="4.4.4 Analyze logs AWS services Athena CloudWatch Logs Insights OpenSearch"><span class="skill-id">4.4.4</span><span class="skill-name">Log analysis with AWS services</span></a><a href="soal/skill_04_04_05.html" class="skill-link" data-skill="4.4.5 Integrate various AWS services perform logging EMR large volumes"><span class="skill-id">4.4.5</span><span class="skill-name">Integrate services for logging</span></a></div></div></div>
-                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 4.5: Understand data privacy and governance</button><div class="task-content"><div class="skill-list"><a href="soal/skill_04_05_01.html" class="skill-link" data-skill="4.5.1 Grant permissions data sharing Redshift datashare cross-account"><span class="skill-id">4.5.1</span><span class="skill-name">Permissions for data sharing</span></a><a href="soal/skill_04_05_02.html" class="skill-link" data-skill="4.5.2 Implement PII identification Amazon Macie Lake Formation"><span class="skill-id">4.5.2</span><span class="skill-name">PII identification (Macie)</span></a><a href="soal/skill_04_05_03.html" class="skill-link" data-skill="4.5.3 Implement data privacy strategies prevent backups replications disallowed Regions"><span class="skill-id">4.5.3</span><span class="skill-name">Prevent replication to disallowed regions</span></a><a href="soal/skill_04_05_04.html" class="skill-link" data-skill="4.5.4 Viewing configuration changes account AWS Config compliance"><span class="skill-id">4.5.4</span><span class="skill-name">Configuration changes (AWS Config)</span></a><a href="soal/skill_04_05_05.html" class="skill-link" data-skill="4.5.5 Maintain data sovereignty geographic jurisdictional boundaries"><span class="skill-id">4.5.5</span><span class="skill-name">Maintain data sovereignty</span></a><a href="soal/skill_04_05_06.html" class="skill-link" data-skill="4.5.6 Manage data access SageMaker Catalog projects DataZone"><span class="skill-id">4.5.6</span><span class="skill-name">SageMaker Catalog projects</span></a><a href="soal/skill_04_05_07.html" class="skill-link" data-skill="4.5.7 Describe governance data framework data sharing patterns mesh"><span class="skill-id">4.5.7</span><span class="skill-name">Governance framework and data sharing</span></a></div></div></div>
-            </div>
-        </section>
-
-        <!-- FOOTER -->
-        <footer class="site-footer">
-            <p>AWS Data Engineer Associate (DEA-C01) &mdash; 120 Skills &bull; 1,200 Questions</p>
-            <p style="margin-top:0.5rem;">Created by Lintang Gilang</p>
-        </footer>
+    <!-- Search -->
+    <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
+        <input type="search" class="search-input" id="search" placeholder="Search skills... (Glue, Athena, Kinesis, IAM, Redshift)" aria-label="Search skills">
+        <div class="search-status" id="searchStatus"></div>
     </div>
 
-    <script>
-        // === DOMAIN TOGGLE ===
-        function toggleDomain(btn) {
-            var expanded = btn.getAttribute('aria-expanded') === 'true';
-            btn.setAttribute('aria-expanded', !expanded);
-            var content = btn.nextElementSibling;
-            content.classList.toggle('open', !expanded);
-        }
+    <!-- Domain Cards -->
+    <div class="domain-grid">
+        <div class="domain-card d1 active" data-domain="1" onclick="selectDomain(1)">
+            <div class="d-icon">&#128260;</div>
+            <div class="d-title">Ingestion &amp; Transformation</div>
+            <div class="d-meta"><span>34%</span><span>37 Skills</span><span>370 Q</span></div>
+        </div>
+        <div class="domain-card d2" data-domain="2" onclick="selectDomain(2)">
+            <div class="d-icon">&#128451;</div>
+            <div class="d-title">Data Store Management</div>
+            <div class="d-meta"><span>26%</span><span>26 Skills</span><span>260 Q</span></div>
+        </div>
+        <div class="domain-card d3" data-domain="3" onclick="selectDomain(3)">
+            <div class="d-icon">&#9881;</div>
+            <div class="d-title">Operations &amp; Support</div>
+            <div class="d-meta"><span>22%</span><span>28 Skills</span><span>280 Q</span></div>
+        </div>
+        <div class="domain-card d4" data-domain="4" onclick="selectDomain(4)">
+            <div class="d-icon">&#128274;</div>
+            <div class="d-title">Security &amp; Governance</div>
+            <div class="d-meta"><span>18%</span><span>29 Skills</span><span>290 Q</span></div>
+        </div>
+    </div>
 
-        // === TASK TOGGLE ===
-        function toggleTask(btn) {
-            var expanded = btn.getAttribute('aria-expanded') === 'true';
-            btn.setAttribute('aria-expanded', !expanded);
-            var content = btn.nextElementSibling;
-            content.classList.toggle('open', !expanded);
-        }
+    <!-- Skill Grid Area -->
+    <div class="skill-area" id="skillArea"></div>
+    <div class="no-results" id="noResults">No skills found matching your search.</div>
 
-        // === SEARCH ===
-        var searchInput = document.getElementById('searchInput');
-        var searchCount = document.getElementById('searchCount');
-        var noResults = document.getElementById('noResults');
-        var allSkills = document.querySelectorAll('.skill-link');
-        var allTasks = document.querySelectorAll('.task-group');
-        var allDomains = document.querySelectorAll('.domain-section');
+    <!-- Footer -->
+    <footer class="footer">
+        <p>AWS Data Engineer Associate (DEA-C01) &mdash; Practice Exam</p>
+        <p>Created by Lintang Gilang</p>
+    </footer>
+</div>
 
-        searchInput.addEventListener('input', function() {
-            var query = this.value.trim().toLowerCase();
+<script>
+// Skill data
+var skills = [
+    // Domain 1 - Task 1.1
+    {d:1,t:"1.1",id:"1.1.1",name:"Read data from streaming sources",file:"skill_01_01_01.html",kw:"Kinesis MSK DynamoDB Streams DMS Glue Redshift streaming"},
+    {d:1,t:"1.1",id:"1.1.2",name:"Read data from batch sources",file:"skill_01_01_02.html",kw:"S3 Glue EMR DMS Redshift Lambda AppFlow batch"},
+    {d:1,t:"1.1",id:"1.1.3",name:"Configuration options for batch ingestion",file:"skill_01_01_03.html",kw:"batch ingestion configuration DPU workers"},
+    {d:1,t:"1.1",id:"1.1.4",name:"Consume data APIs",file:"skill_01_01_04.html",kw:"REST GraphQL API Gateway AppFlow"},
+    {d:1,t:"1.1",id:"1.1.5",name:"Set up schedulers",file:"skill_01_01_05.html",kw:"EventBridge Airflow MWAA schedules cron jobs crawlers"},
+    {d:1,t:"1.1",id:"1.1.6",name:"Set up event triggers",file:"skill_01_01_06.html",kw:"S3 Event Notifications EventBridge triggers"},
+    {d:1,t:"1.1",id:"1.1.7",name:"Call Lambda from Kinesis",file:"skill_01_01_07.html",kw:"Lambda Kinesis event source mapping"},
+    {d:1,t:"1.1",id:"1.1.8",name:"Create IP allowlists",file:"skill_01_01_08.html",kw:"IP allowlists VPC security groups network"},
+    {d:1,t:"1.1",id:"1.1.9",name:"Throttling and rate limits",file:"skill_01_01_09.html",kw:"throttling rate limits DynamoDB RDS Kinesis"},
+    {d:1,t:"1.1",id:"1.1.10",name:"Fan-in and fan-out streaming",file:"skill_01_01_10.html",kw:"fan-in fan-out streaming SNS SQS distribution"},
+    {d:1,t:"1.1",id:"1.1.11",name:"Replayability of pipelines",file:"skill_01_01_11.html",kw:"replayability replay idempotent"},
+    {d:1,t:"1.1",id:"1.1.12",name:"Stateful and stateless transactions",file:"skill_01_01_12.html",kw:"stateful stateless transactions Flink"},
+    // Domain 1 - Task 1.2
+    {d:1,t:"1.2",id:"1.2.1",name:"Optimize container usage (EKS, ECS)",file:"skill_01_02_01.html",kw:"EKS ECS Fargate container performance"},
+    {d:1,t:"1.2",id:"1.2.2",name:"Connect to data sources (JDBC, ODBC)",file:"skill_01_02_02.html",kw:"JDBC ODBC connections database"},
+    {d:1,t:"1.2",id:"1.2.3",name:"Integrate data from multiple sources",file:"skill_01_02_03.html",kw:"integrate multiple sources join"},
+    {d:1,t:"1.2",id:"1.2.4",name:"Optimize costs while processing",file:"skill_01_02_04.html",kw:"cost optimization Spot instances serverless"},
+    {d:1,t:"1.2",id:"1.2.5",name:"Implement transformation services",file:"skill_01_02_05.html",kw:"EMR Glue Lambda Redshift transformation"},
+    {d:1,t:"1.2",id:"1.2.6",name:"Transform data between formats",file:"skill_01_02_06.html",kw:"CSV Parquet ORC Avro JSON format conversion"},
+    {d:1,t:"1.2",id:"1.2.7",name:"Troubleshoot transformation failures",file:"skill_01_02_07.html",kw:"troubleshoot debug Spark OOM skew performance"},
+    {d:1,t:"1.2",id:"1.2.8",name:"Create data APIs",file:"skill_01_02_08.html",kw:"API Gateway Lambda data APIs REST"},
+    {d:1,t:"1.2",id:"1.2.9",name:"Volume, velocity, and variety",file:"skill_01_02_09.html",kw:"volume velocity variety structured unstructured 3V"},
+    {d:1,t:"1.2",id:"1.2.10",name:"Integrate LLMs for data processing",file:"skill_01_02_10.html",kw:"LLM Bedrock AI ML language models"},
+    // Domain 1 - Task 1.3
+    {d:1,t:"1.3",id:"1.3.1",name:"Orchestration services for ETL",file:"skill_01_03_01.html",kw:"Step Functions MWAA Airflow Glue workflows orchestration"},
+    {d:1,t:"1.3",id:"1.3.2",name:"Performance, availability, resiliency",file:"skill_01_03_02.html",kw:"performance availability scalability fault tolerance"},
+    {d:1,t:"1.3",id:"1.3.3",name:"Serverless workflows",file:"skill_01_03_03.html",kw:"serverless Lambda Step Functions"},
+    {d:1,t:"1.3",id:"1.3.4",name:"Notification services for alerts",file:"skill_01_03_04.html",kw:"SNS SQS notifications alerts monitoring"},
+    // Domain 1 - Task 1.4
+    {d:1,t:"1.4",id:"1.4.1",name:"Optimize code to reduce runtime",file:"skill_01_04_01.html",kw:"optimize code performance Spark broadcast"},
+    {d:1,t:"1.4",id:"1.4.2",name:"Lambda concurrency and performance",file:"skill_01_04_02.html",kw:"Lambda concurrency provisioned reserved memory"},
+    {d:1,t:"1.4",id:"1.4.3",name:"Programming languages and frameworks",file:"skill_01_04_03.html",kw:"Python SQL Scala Java Bash PySpark pandas"},
+    {d:1,t:"1.4",id:"1.4.4",name:"Software engineering best practices",file:"skill_01_04_04.html",kw:"version control testing logging monitoring CI/CD"},
+    {d:1,t:"1.4",id:"1.4.5",name:"Infrastructure as Code (IaC)",file:"skill_01_04_05.html",kw:"CloudFormation CDK Terraform IaC"},
+    {d:1,t:"1.4",id:"1.4.6",name:"AWS SAM for serverless pipelines",file:"skill_01_04_06.html",kw:"SAM serverless Lambda Step Functions deploy"},
+    {d:1,t:"1.4",id:"1.4.7",name:"Storage volumes in Lambda",file:"skill_01_04_07.html",kw:"EFS tmp ephemeral storage Lambda mount"},
+    {d:1,t:"1.4",id:"1.4.8",name:"IaC for repeatable deployment",file:"skill_01_04_08.html",kw:"CloudFormation CDK repeatable deployment stacks"},
+    {d:1,t:"1.4",id:"1.4.9",name:"CI/CD for data pipelines",file:"skill_01_04_09.html",kw:"CI/CD CodePipeline CodeBuild deployment testing"},
+    {d:1,t:"1.4",id:"1.4.10",name:"Distributed computing",file:"skill_01_04_10.html",kw:"MapReduce Spark distributed partitioning shuffle"},
+    {d:1,t:"1.4",id:"1.4.11",name:"Data structures and algorithms",file:"skill_01_04_11.html",kw:"graph tree hash data structures algorithms"},
+    // Domain 2 - Task 2.1
+    {d:2,t:"2.1",id:"2.1.1",name:"Storage for cost and performance",file:"skill_02_01_01.html",kw:"Redshift EMR Lake Formation RDS DynamoDB Kinesis MSK cost"},
+    {d:2,t:"2.1",id:"2.1.2",name:"Storage for access patterns",file:"skill_02_01_02.html",kw:"Redshift EMR RDS DynamoDB access patterns distribution"},
+    {d:2,t:"2.1",id:"2.1.3",name:"Storage for appropriate use cases",file:"skill_02_01_03.html",kw:"HNSW Aurora PostgreSQL MemoryDB vector"},
+    {d:2,t:"2.1",id:"2.1.4",name:"Migration tools integration",file:"skill_02_01_04.html",kw:"Transfer Family DataSync Snow migration"},
+    {d:2,t:"2.1",id:"2.1.5",name:"Data migration and remote access",file:"skill_02_01_05.html",kw:"Redshift federated queries materialized views Spectrum"},
+    {d:2,t:"2.1",id:"2.1.6",name:"Manage locks to prevent access",file:"skill_02_01_06.html",kw:"locks concurrency Redshift RDS deadlock"},
+    {d:2,t:"2.1",id:"2.1.7",name:"Open table formats (Iceberg)",file:"skill_02_01_07.html",kw:"Iceberg Delta Lake Hudi ACID time travel"},
+    {d:2,t:"2.1",id:"2.1.8",name:"Vector index types (HNSW, IVF)",file:"skill_02_01_08.html",kw:"HNSW IVF vector index similarity search"},
+    // Domain 2 - Task 2.2
+    {d:2,t:"2.2",id:"2.2.1",name:"Use data catalogs to consume data",file:"skill_02_02_01.html",kw:"Glue Data Catalog consume discovery"},
+    {d:2,t:"2.2",id:"2.2.2",name:"Build technical data catalog",file:"skill_02_02_02.html",kw:"Glue Data Catalog Hive metastore"},
+    {d:2,t:"2.2",id:"2.2.3",name:"Glue crawlers for schema discovery",file:"skill_02_02_03.html",kw:"Glue crawlers schema discovery classifiers"},
+    {d:2,t:"2.2",id:"2.2.4",name:"Synchronize partitions",file:"skill_02_02_04.html",kw:"partitions MSCK REPAIR partition projection sync"},
+    {d:2,t:"2.2",id:"2.2.5",name:"Source/target connections",file:"skill_02_02_05.html",kw:"Glue connections JDBC MongoDB Kafka VPC"},
+    {d:2,t:"2.2",id:"2.2.6",name:"Business data catalogs",file:"skill_02_02_06.html",kw:"SageMaker Catalog DataZone business governance"},
+    // Domain 2 - Task 2.3
+    {d:2,t:"2.3",id:"2.3.1",name:"Load/unload S3 and Redshift",file:"skill_02_03_01.html",kw:"COPY UNLOAD S3 Redshift load"},
+    {d:2,t:"2.3",id:"2.3.2",name:"S3 Lifecycle policies (storage tier)",file:"skill_02_03_02.html",kw:"S3 Lifecycle Glacier Intelligent-Tiering storage class"},
+    {d:2,t:"2.3",id:"2.3.3",name:"Expire data by age",file:"skill_02_03_03.html",kw:"expiration retention S3 Lifecycle delete"},
+    {d:2,t:"2.3",id:"2.3.4",name:"S3 versioning and DynamoDB TTL",file:"skill_02_03_04.html",kw:"S3 versioning DynamoDB TTL"},
+    {d:2,t:"2.3",id:"2.3.5",name:"Delete data for compliance",file:"skill_02_03_05.html",kw:"GDPR delete compliance legal Object Lock"},
+    {d:2,t:"2.3",id:"2.3.6",name:"Data resiliency and availability",file:"skill_02_03_06.html",kw:"backup replication DR cross-region resiliency"},
+    // Domain 2 - Task 2.4
+    {d:2,t:"2.4",id:"2.4.1",name:"Design schemas (Redshift, DynamoDB)",file:"skill_02_04_01.html",kw:"schema design Redshift DynamoDB star snowflake"},
+    {d:2,t:"2.4",id:"2.4.2",name:"Address data characteristic changes",file:"skill_02_04_02.html",kw:"schema evolution backward compatible"},
+    {d:2,t:"2.4",id:"2.4.3",name:"Schema conversion (SCT, DMS)",file:"skill_02_04_03.html",kw:"SCT DMS Schema Conversion migration"},
+    {d:2,t:"2.4",id:"2.4.4",name:"Establish data lineage",file:"skill_02_04_04.html",kw:"lineage SageMaker ML Lineage Tracking"},
+    {d:2,t:"2.4",id:"2.4.5",name:"Indexing, partitioning, compression",file:"skill_02_04_05.html",kw:"indexing partitioning compression sort keys optimization"},
+    {d:2,t:"2.4",id:"2.4.6",name:"Vectorization concepts",file:"skill_02_04_06.html",kw:"vectorization Bedrock embeddings knowledge base"},
+    // Domain 3 - Task 3.1
+    {d:3,t:"3.1",id:"3.1.1",name:"Orchestrate data pipelines",file:"skill_03_01_01.html",kw:"MWAA Step Functions orchestrate pipelines"},
+    {d:3,t:"3.1",id:"3.1.2",name:"Troubleshoot managed workflows",file:"skill_03_01_02.html",kw:"MWAA Airflow troubleshoot DAG"},
+    {d:3,t:"3.1",id:"3.1.3",name:"Call SDKs from code",file:"skill_03_01_03.html",kw:"boto3 SDK API programmatic"},
+    {d:3,t:"3.1",id:"3.1.4",name:"AWS service features for processing",file:"skill_03_01_04.html",kw:"EMR Redshift Glue features processing"},
+    {d:3,t:"3.1",id:"3.1.5",name:"Consume and maintain data APIs",file:"skill_03_01_05.html",kw:"API versioning deprecation maintenance"},
+    {d:3,t:"3.1",id:"3.1.6",name:"Prepare data for transformation",file:"skill_03_01_06.html",kw:"DataBrew SageMaker data preparation cleaning"},
+    {d:3,t:"3.1",id:"3.1.7",name:"Query data (Athena)",file:"skill_03_01_07.html",kw:"Athena SQL serverless query S3"},
+    {d:3,t:"3.1",id:"3.1.8",name:"Lambda for data automation",file:"skill_03_01_08.html",kw:"Lambda automation event-driven processing"},
+    {d:3,t:"3.1",id:"3.1.9",name:"Events and schedulers",file:"skill_03_01_09.html",kw:"EventBridge Scheduler events rules"},
+    // Domain 3 - Task 3.2
+    {d:3,t:"3.2",id:"3.2.1",name:"Visualize data (QuickSight)",file:"skill_03_02_01.html",kw:"QuickSight DataBrew visualization dashboard"},
+    {d:3,t:"3.2",id:"3.2.2",name:"Verify and clean data",file:"skill_03_02_02.html",kw:"verify clean Lambda Athena Data Wrangler quality"},
+    {d:3,t:"3.2",id:"3.2.3",name:"SQL in Redshift and Athena",file:"skill_03_02_03.html",kw:"SQL Redshift Athena views materialized"},
+    {d:3,t:"3.2",id:"3.2.4",name:"Athena Spark notebooks",file:"skill_03_02_04.html",kw:"Athena Spark notebooks PySpark explore"},
+    {d:3,t:"3.2",id:"3.2.5",name:"Provisioned vs serverless tradeoffs",file:"skill_03_02_05.html",kw:"provisioned serverless tradeoffs cost EMR Redshift"},
+    {d:3,t:"3.2",id:"3.2.6",name:"Aggregation, rolling average, pivoting",file:"skill_03_02_06.html",kw:"aggregation rolling average GROUP BY window PIVOT"},
+    // Domain 3 - Task 3.3
+    {d:3,t:"3.3",id:"3.3.1",name:"Extract logs for audits",file:"skill_03_03_01.html",kw:"logs audit CloudTrail extract"},
+    {d:3,t:"3.3",id:"3.3.2",name:"Logging and monitoring solutions",file:"skill_03_03_02.html",kw:"CloudWatch logging monitoring traceability"},
+    {d:3,t:"3.3",id:"3.3.3",name:"Notifications for alerts",file:"skill_03_03_03.html",kw:"CloudWatch Alarms SNS notifications alerts"},
+    {d:3,t:"3.3",id:"3.3.4",name:"Troubleshoot performance issues",file:"skill_03_03_04.html",kw:"performance troubleshoot bottleneck metrics"},
+    {d:3,t:"3.3",id:"3.3.5",name:"CloudTrail to track API calls",file:"skill_03_03_05.html",kw:"CloudTrail API calls audit trail"},
+    {d:3,t:"3.3",id:"3.3.6",name:"Troubleshoot and maintain pipelines",file:"skill_03_03_06.html",kw:"Glue EMR troubleshoot maintain failures"},
+    {d:3,t:"3.3",id:"3.3.7",name:"CloudWatch Logs for applications",file:"skill_03_03_07.html",kw:"CloudWatch Logs application configuration"},
+    {d:3,t:"3.3",id:"3.3.8",name:"Analyze logs with AWS services",file:"skill_03_03_08.html",kw:"Athena EMR OpenSearch CloudWatch Logs Insights analyze"},
+    // Domain 3 - Task 3.4
+    {d:3,t:"3.4",id:"3.4.1",name:"Data quality checks during processing",file:"skill_03_04_01.html",kw:"data quality checks validation empty fields"},
+    {d:3,t:"3.4",id:"3.4.2",name:"Define data quality rules",file:"skill_03_04_02.html",kw:"DataBrew DQDL quality rules"},
+    {d:3,t:"3.4",id:"3.4.3",name:"Investigate data consistency",file:"skill_03_04_03.html",kw:"consistency DataBrew reconciliation"},
+    {d:3,t:"3.4",id:"3.4.4",name:"Data sampling techniques",file:"skill_03_04_04.html",kw:"sampling random stratified reservoir"},
+    {d:3,t:"3.4",id:"3.4.5",name:"Data skew mechanisms",file:"skill_03_04_05.html",kw:"skew salting repartition AQE hot partition"},
+    // Domain 4 - Task 4.1
+    {d:4,t:"4.1",id:"4.1.1",name:"Update VPC security groups",file:"skill_04_01_01.html",kw:"VPC security groups network inbound outbound"},
+    {d:4,t:"4.1",id:"4.1.2",name:"IAM groups, roles, endpoints",file:"skill_04_01_02.html",kw:"IAM groups roles endpoints services VPC"},
+    {d:4,t:"4.1",id:"4.1.3",name:"Credential rotation (Secrets Manager)",file:"skill_04_01_03.html",kw:"Secrets Manager rotation credentials password"},
+    {d:4,t:"4.1",id:"4.1.4",name:"Set up IAM roles for access",file:"skill_04_01_04.html",kw:"IAM roles Lambda API Gateway CLI CloudFormation"},
+    {d:4,t:"4.1",id:"4.1.5",name:"IAM policies (Access Points, PrivateLink)",file:"skill_04_01_05.html",kw:"IAM policies S3 Access Points PrivateLink"},
+    {d:4,t:"4.1",id:"4.1.6",name:"Managed vs unmanaged services",file:"skill_04_01_06.html",kw:"managed unmanaged shared responsibility"},
+    {d:4,t:"4.1",id:"4.1.7",name:"SageMaker Unified Studio domains",file:"skill_04_01_07.html",kw:"SageMaker DataZone domains projects"},
+    // Domain 4 - Task 4.2
+    {d:4,t:"4.2",id:"4.2.1",name:"Custom IAM policies",file:"skill_04_02_01.html",kw:"custom IAM policies least privilege JSON"},
+    {d:4,t:"4.2",id:"4.2.2",name:"Store credentials securely",file:"skill_04_02_02.html",kw:"Secrets Manager Parameter Store credentials"},
+    {d:4,t:"4.2",id:"4.2.3",name:"Database users, groups, roles",file:"skill_04_02_03.html",kw:"database users groups roles Redshift GRANT"},
+    {d:4,t:"4.2",id:"4.2.4",name:"Lake Formation permissions",file:"skill_04_02_04.html",kw:"Lake Formation permissions LF-Tags column-level"},
+    {d:4,t:"4.2",id:"4.2.5",name:"RBAC, TBAC, ABAC methods",file:"skill_04_02_05.html",kw:"RBAC ABAC TBAC role tag attribute authorization"},
+    {d:4,t:"4.2",id:"4.2.6",name:"Least privilege policies",file:"skill_04_02_06.html",kw:"least privilege IAM Access Analyzer"},
+    // Domain 4 - Task 4.3
+    {d:4,t:"4.3",id:"4.3.1",name:"Data masking and anonymization",file:"skill_04_03_01.html",kw:"masking anonymization PII tokenization compliance"},
+    {d:4,t:"4.3",id:"4.3.2",name:"Encryption keys (KMS)",file:"skill_04_03_02.html",kw:"KMS encryption keys SSE envelope"},
+    {d:4,t:"4.3",id:"4.3.3",name:"Cross-account encryption",file:"skill_04_03_03.html",kw:"cross-account KMS encryption key policy"},
+    {d:4,t:"4.3",id:"4.3.4",name:"Encryption in transit",file:"skill_04_03_04.html",kw:"TLS SSL HTTPS encryption transit"},
+    // Domain 4 - Task 4.4
+    {d:4,t:"4.4",id:"4.4.1",name:"CloudTrail for API tracking",file:"skill_04_04_01.html",kw:"CloudTrail API tracking audit"},
+    {d:4,t:"4.4",id:"4.4.2",name:"CloudWatch Logs for audit",file:"skill_04_04_02.html",kw:"CloudWatch Logs audit retention"},
+    {d:4,t:"4.4",id:"4.4.3",name:"CloudTrail Lake queries",file:"skill_04_04_03.html",kw:"CloudTrail Lake SQL centralized logging"},
+    {d:4,t:"4.4",id:"4.4.4",name:"Log analysis with AWS services",file:"skill_04_04_04.html",kw:"Athena OpenSearch CloudWatch Logs Insights analysis"},
+    {d:4,t:"4.4",id:"4.4.5",name:"Integrate services for logging",file:"skill_04_04_05.html",kw:"EMR Firehose logging integration large volume"},
+    // Domain 4 - Task 4.5
+    {d:4,t:"4.5",id:"4.5.1",name:"Permissions for data sharing",file:"skill_04_05_01.html",kw:"Redshift data sharing cross-account permissions"},
+    {d:4,t:"4.5",id:"4.5.2",name:"PII identification (Macie)",file:"skill_04_05_02.html",kw:"Macie PII identification Lake Formation"},
+    {d:4,t:"4.5",id:"4.5.3",name:"Prevent replication to disallowed regions",file:"skill_04_05_03.html",kw:"SCP region restriction data residency sovereignty"},
+    {d:4,t:"4.5",id:"4.5.4",name:"Configuration changes (AWS Config)",file:"skill_04_05_04.html",kw:"AWS Config configuration changes compliance"},
+    {d:4,t:"4.5",id:"4.5.5",name:"Maintain data sovereignty",file:"skill_04_05_05.html",kw:"data sovereignty geographic jurisdictional GDPR"},
+    {d:4,t:"4.5",id:"4.5.6",name:"SageMaker Catalog projects",file:"skill_04_05_06.html",kw:"SageMaker Catalog DataZone projects access"},
+    {d:4,t:"4.5",id:"4.5.7",name:"Governance framework and data sharing",file:"skill_04_05_07.html",kw:"governance framework data mesh sharing patterns"}
+];
 
-            if (!query) {
-                // Reset: hide count, show all, collapse all
-                searchCount.classList.remove('visible');
-                noResults.classList.remove('visible');
-                allSkills.forEach(function(s) { s.classList.remove('hidden', 'search-match'); });
-                allTasks.forEach(function(t) { t.classList.remove('hidden'); });
-                allDomains.forEach(function(d) { d.classList.remove('hidden'); });
-                // Collapse everything
-                document.querySelectorAll('.domain-content').forEach(function(c) { c.classList.remove('open'); });
-                document.querySelectorAll('.task-content').forEach(function(c) { c.classList.remove('open'); });
-                document.querySelectorAll('.domain-trigger').forEach(function(b) { b.setAttribute('aria-expanded', 'false'); });
-                document.querySelectorAll('.task-trigger').forEach(function(b) { b.setAttribute('aria-expanded', 'false'); });
-                return;
-            }
+var taskNames = {
+    "1.1":"Perform data ingestion","1.2":"Transform and process data","1.3":"Orchestrate data pipelines","1.4":"Apply programming concepts",
+    "2.1":"Choose a data store","2.2":"Understand data cataloging systems","2.3":"Manage the lifecycle of data","2.4":"Design data models and schema evolution",
+    "3.1":"Automate data processing","3.2":"Analyze data by using AWS services","3.3":"Maintain and monitor data pipelines","3.4":"Ensure data quality",
+    "4.1":"Apply authentication mechanisms","4.2":"Apply authorization mechanisms","4.3":"Ensure data encryption and masking","4.4":"Prepare logs for audit","4.5":"Understand data privacy and governance"
+};
 
-            var matchCount = 0;
+var currentDomain = 1;
+var searchMode = false;
 
-            allSkills.forEach(function(skill) {
-                var text = skill.getAttribute('data-skill').toLowerCase();
-                var matches = text.indexOf(query) !== -1;
-                skill.classList.toggle('hidden', !matches);
-                skill.classList.toggle('search-match', matches);
-                if (matches) matchCount++;
-            });
+function selectDomain(d) {
+    if (searchMode) return;
+    currentDomain = d;
+    document.querySelectorAll('.domain-card').forEach(function(c){ c.classList.toggle('active', +c.dataset.domain === d); });
+    renderSkills(skills.filter(function(s){ return s.d === d; }));
+}
 
-            // Show/hide tasks based on visible skills
-            allTasks.forEach(function(task) {
-                var visibleSkills = task.querySelectorAll('.skill-link:not(.hidden)');
-                var hasVisible = visibleSkills.length > 0;
-                task.classList.toggle('hidden', !hasVisible);
-                if (hasVisible) {
-                    task.querySelector('.task-trigger').setAttribute('aria-expanded', 'true');
-                    task.querySelector('.task-content').classList.add('open');
-                }
-            });
+function renderSkills(list) {
+    var area = document.getElementById('skillArea');
+    var noRes = document.getElementById('noResults');
+    if (list.length === 0) { area.innerHTML = ''; noRes.classList.add('visible'); return; }
+    noRes.classList.remove('visible');
 
-            // Show/hide domains based on visible tasks
-            allDomains.forEach(function(domain) {
-                var visibleTasks = domain.querySelectorAll('.task-group:not(.hidden)');
-                var hasVisible = visibleTasks.length > 0;
-                domain.classList.toggle('hidden', !hasVisible);
-                if (hasVisible) {
-                    domain.querySelector('.domain-trigger').setAttribute('aria-expanded', 'true');
-                    domain.querySelector('.domain-content').classList.add('open');
-                }
-            });
+    // Group by task
+    var groups = {};
+    list.forEach(function(s){
+        if (!groups[s.t]) groups[s.t] = [];
+        groups[s.t].push(s);
+    });
 
-            // Update count
-            searchCount.textContent = matchCount + ' skill' + (matchCount !== 1 ? 's' : '') + ' found';
-            searchCount.classList.add('visible');
-            noResults.classList.toggle('visible', matchCount === 0);
+    var html = '';
+    Object.keys(groups).sort().forEach(function(t){
+        html += '<div class="task-section"><div class="task-heading">Task ' + t + ': ' + (taskNames[t]||'') + '</div><div class="skill-grid">';
+        groups[t].forEach(function(s){
+            html += '<a href="soal/' + s.file + '" class="skill-card"><span class="s-id">' + s.id + '</span><span class="s-title">' + s.name + '</span><span class="s-badge">10Q <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></a>';
         });
+        html += '</div></div>';
+    });
+    area.innerHTML = html;
+}
 
-        // === KEYBOARD: Escape clears search ===
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                this.value = '';
-                this.dispatchEvent(new Event('input'));
-                this.blur();
-            }
-        });
-    </script>
+// Search
+var searchInput = document.getElementById('search');
+var searchStatus = document.getElementById('searchStatus');
+
+searchInput.addEventListener('input', function(){
+    var q = this.value.trim().toLowerCase();
+    if (!q) {
+        searchMode = false;
+        searchStatus.classList.remove('visible');
+        document.getElementById('noResults').classList.remove('visible');
+        selectDomain(currentDomain);
+        return;
+    }
+    searchMode = true;
+    var matched = skills.filter(function(s){
+        return (s.id + ' ' + s.name + ' ' + s.kw).toLowerCase().indexOf(q) !== -1;
+    });
+    searchStatus.textContent = matched.length + ' skill' + (matched.length!==1?'s':'') + ' found';
+    searchStatus.classList.add('visible');
+    document.querySelectorAll('.domain-card').forEach(function(c){ c.classList.remove('active'); });
+    renderSkills(matched);
+});
+
+searchInput.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') { this.value = ''; this.dispatchEvent(new Event('input')); this.blur(); }
+});
+
+// Init
+selectDomain(1);
+</script>
 </body>
 </html>
