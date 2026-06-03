@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 3.4.1 - Run Data Quality Checks While Processing the Data</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 3: Data Operations and Support (22%) &mdash; Task 3.4: Ensure data quality</div>
+            <h1>Skill 3.4.1: Run Data Quality Checks While Processing the Data</h1>
+            <p class="description">Implementing inline data quality validation during ETL processing (checking for empty fields, type validation)</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A data engineer is building an AWS Glue ETL job that processes customer transaction data. The business requires that no records with null transaction amounts reach the target data warehouse, but the pipeline should continue processing valid records rather than failing entirely. Which approach BEST implements this inline quality check?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use the AWS Glue Data Quality EvaluateDataQuality transform within the ETL script with a ruleset containing "Completeness 'transaction_amount' = 1.0" and configure the transform to route failing rows to a separate quarantine DynamicFrame while passing valid rows downstream.</li>
+                <li><span class="option-label">B.</span> Add a Filter transform after reading the source to remove rows where transaction_amount is null, logging the count of removed rows to CloudWatch.</li>
+                <li><span class="option-label">C.</span> Run a separate Glue Data Quality evaluation job before the ETL job starts, and only trigger the ETL job if all quality rules pass.</li>
+                <li><span class="option-label">D.</span> Configure a Glue crawler with data quality rules that prevent null values from being cataloged.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">The EvaluateDataQuality transform in Glue supports inline quality evaluation during ETL processing. It can be configured with row-level outcomes that route failing rows to a quarantine path while allowing passing rows to continue processing. This implements a "dead letter" pattern for data quality without stopping the pipeline. Option B: A simple Filter removes bad rows but doesn't capture them for investigation or provide structured quality metrics; it's a basic approach without proper quality governance. Option C: Running quality checks separately (before ETL) means the actual data being processed might differ from what was checked, and it doesn't handle the quarantine pattern. Option D: Glue crawlers discover schemas; they don't enforce data quality rules or filter records.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A streaming data pipeline processes 10 million records per hour through AWS Glue Streaming ETL. The team needs to implement data quality checks that validate record schema conformity and business rules without introducing more than 5% additional processing latency. Which strategy is MOST appropriate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Implement lightweight validation logic directly in the Glue streaming script using DataFrame operations (isNull checks, type casting, range validations) that execute as part of the Spark micro-batch processing without separate I/O operations.</li>
+                <li><span class="option-label">B.</span> Use the EvaluateDataQuality transform with comprehensive DQDL rulesets on each micro-batch, running all available rule types including statistical distribution checks.</li>
+                <li><span class="option-label">C.</span> Send each record to a Lambda function for validation before writing to the destination, using Kinesis as the intermediate buffer.</li>
+                <li><span class="option-label">D.</span> Sample 10% of records from each micro-batch and run full quality validation only on the sample to reduce overhead.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">For streaming ETL with strict latency requirements, implementing validation as native DataFrame/DynamicFrame operations (null checks, type validations, range checks) adds minimal overhead because these operations are executed within the existing Spark DAG without additional shuffles or I/O. They leverage Spark's in-memory processing and don't require external service calls. Option B: EvaluateDataQuality with statistical rules (like distribution analysis) on every micro-batch adds significant computation overhead that could exceed the 5% latency budget. Option C: Lambda invocation per record introduces network latency, serialization overhead, and Lambda concurrency limits at 10M records/hour. Option D: Sampling misses quality issues in the unsampled 90%, which is unacceptable when the requirement is to ensure no bad records reach the destination.</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A financial services company runs a Glue ETL pipeline that processes trade data. Regulatory requirements mandate that every batch processed must have a documented quality assessment, and if critical quality rules fail (>0.1% of records have invalid trade amounts), the entire batch must be rejected and an alert sent. How should this quality gate be implemented?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use EvaluateDataQuality with a ruleset, configure the StopJobOnFailedRules action for critical rules, publish quality metrics to CloudWatch using the publishResults parameter, and create a CloudWatch alarm on the quality metric that triggers an SNS notification.</li>
+                <li><span class="option-label">B.</span> Write custom Python code to count invalid records, calculate the percentage, and call sys.exit(1) if the threshold is exceeded, then use Glue job failure notifications.</li>
+                <li><span class="option-label">C.</span> Run the ETL job first without quality checks, then validate the output data in the target table using a separate validation query, and delete the batch if it fails.</li>
+                <li><span class="option-label">D.</span> Configure Glue Data Quality recommendations to automatically detect anomalies and stop the job using machine learning-based thresholds.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">EvaluateDataQuality supports configurable actions on rule failure, including stopping the job (rejecting the batch). The publishResults parameter sends quality metrics to CloudWatch, providing the documented quality assessment required by regulations. Combined with CloudWatch Alarms and SNS, this creates a complete quality gate with alerting. Option B: Custom code works but lacks the structured quality reporting, metadata capture, and integration with Glue's quality framework needed for regulatory documentation. Option C: Processing first then validating violates the "check during processing" principle and risks downstream consumers seeing bad data before deletion. Option D: Glue Data Quality recommendations suggest rules based on data profiling but don't enforce hard regulatory thresholds; ML-based anomaly detection may not meet the precise 0.1% requirement.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A data engineer needs to implement data type validation in a Glue ETL job. The source data comes from JSON files where numeric fields are sometimes incorrectly formatted as strings (e.g., "123.45" instead of 123.45, or "N/A" for missing values). The pipeline must convert valid numeric strings to proper numeric types and quarantine records with non-convertible values. Which implementation is CORRECT?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use the Glue ResolveChoice transform with the "cast" option to attempt type conversion, then apply a filter on the resulting DynamicFrame to separate records where the cast produced null values (indicating failed conversion) into a quarantine path.</li>
+                <li><span class="option-label">B.</span> Apply a Glue Data Quality rule using "ColumnDataType 'amount' = 'DOUBLE'" which will automatically quarantine rows that don't match the expected type.</li>
+                <li><span class="option-label">C.</span> Use the Glue Relationalize transform to flatten the JSON and automatically convert all string numbers to their appropriate numeric types.</li>
+                <li><span class="option-label">D.</span> Write a custom mapping function using Map.apply() that uses try-except blocks to attempt float() conversion on each record, routing exceptions to a quarantine collection.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">For complex type validation with quarantine routing at the record level, a custom Map.apply() function provides the most precise control. The try-except pattern attempts conversion and catches failures per-record, allowing you to tag or route individual failing records. This handles edge cases like "N/A", empty strings, and malformed numbers that need record-level decisions. Option A: ResolveChoice with "cast" converts incompatible values to null, but doesn't distinguish between legitimately null source values and failed conversions—you lose the ability to differentiate original nulls from conversion failures. Option B: ColumnDataType in DQDL checks the column's declared type in the schema, not the actual parsability of string values. Option C: Relationalize flattens nested structures; it doesn't perform intelligent type conversion or quarantine non-convertible values.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A data pipeline processes data from 50 different source systems with varying quality levels. The team wants to publish quality metrics from their Glue ETL jobs to a centralized monitoring dashboard. Each job should report: number of records processed, number of records failing quality checks, percentage passing, and specific rule failure counts. What is the MOST scalable approach?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use EvaluateDataQuality with the additionalOptions parameter set to publish results to CloudWatch metrics with custom dimensions (job name, rule name, source system). Build a CloudWatch dashboard with widgets showing quality trends across all 50 sources.</li>
+                <li><span class="option-label">B.</span> Write quality results to a DynamoDB table from each job's custom code, then use QuickSight connected to DynamoDB for the dashboard.</li>
+                <li><span class="option-label">C.</span> Configure each Glue job to write quality metrics to a shared S3 location in JSON format, then use Athena to query the metrics and QuickSight for visualization.</li>
+                <li><span class="option-label">D.</span> Use Glue Data Quality's built-in quality dashboard in the Glue console to monitor all 50 jobs centrally.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">EvaluateDataQuality natively supports publishing quality evaluation results to CloudWatch metrics when configured with the appropriate output options. Using custom dimensions (job name, source system, rule name) enables slicing metrics across all 50 sources in a unified CloudWatch dashboard. This approach requires no custom code, scales automatically, and integrates with CloudWatch alarming for automated alerting. Option B: DynamoDB storage works but requires custom code in every job to write structured metrics, plus additional configuration for QuickSight connectivity. Option C: S3-based metrics require custom code, manual schema management, and introduce query latency for dashboard refresh. Option D: Glue's console-based quality view shows results per job but doesn't provide a consolidated dashboard view across 50 sources with custom visualizations and alerting.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A Glue ETL job processes daily sales data where each record must satisfy multiple business rules: quantity must be positive, unit_price must be between 0.01 and 99999.99, discount cannot exceed 50%, and the product of quantity × unit_price must match the total_amount field within a 0.01 tolerance. The team wants to identify which specific rule each failing record violates. How should this be implemented?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use EvaluateDataQuality with a DQDL ruleset containing row-level rules for each business condition, and configure the transform to output row-level results that tag each record with which specific rules it passed or failed.</li>
+                <li><span class="option-label">B.</span> Create separate Filter transforms for each rule in sequence, collecting rejected records at each stage into separate quarantine DataFrames named by the rule that rejected them.</li>
+                <li><span class="option-label">C.</span> Use a single complex SQL expression in a SparkSQL transform that evaluates all conditions simultaneously using CASE WHEN statements and outputs a failure_reason column.</li>
+                <li><span class="option-label">D.</span> Run EvaluateDataQuality four times (once per rule) with different rulesets to get per-rule failure information.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">EvaluateDataQuality supports row-level outcomes when configured with the appropriate output mode. Each record is tagged with the results of all evaluated rules, indicating which rules passed and which failed for that specific record. This provides the per-record, per-rule granularity needed without multiple evaluation passes. Option B: Sequential filters mean a record rejected by the first rule never gets evaluated by subsequent rules, losing information about additional violations. Option C: A single SQL CASE WHEN can work but doesn't integrate with Glue's quality framework for metric publishing, doesn't handle the cross-field calculation rule elegantly, and produces custom output rather than standardized quality results. Option D: Running quality evaluation four times quadruples processing time and requires deduplication logic to merge results.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A data lake pipeline ingests data from an upstream API that occasionally sends duplicate records (same primary key, same data). The pipeline must detect and remove duplicates during processing while maintaining exactly-once semantics in the target table. The target is an Apache Iceberg table on S3. Which inline deduplication approach is MOST reliable?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use the Glue ETL job to perform a MERGE INTO operation on the Iceberg table, matching on the primary key. Duplicates from the source are naturally handled because MERGE updates existing records rather than inserting duplicates.</li>
+                <li><span class="option-label">B.</span> Apply a dropDuplicates() transformation on the source DynamicFrame/DataFrame within the ETL job to remove duplicates within the batch, then append all records to the Iceberg table.</li>
+                <li><span class="option-label">C.</span> Configure the Iceberg table with a unique constraint on the primary key so duplicates are automatically rejected at write time.</li>
+                <li><span class="option-label">D.</span> Use a Glue Data Quality rule "IsUnique 'primary_key'" to fail the job if duplicates are detected, requiring manual intervention.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">MERGE INTO (upsert) on an Iceberg table provides exactly-once semantics by matching on the primary key: new records are inserted, and duplicates of existing records trigger an update (or are skipped with WHEN MATCHED THEN UPDATE). This handles both within-batch and cross-batch duplicates atomically. Option B: dropDuplicates() only removes duplicates within the current batch; if a duplicate arrives in a later batch that matches an existing record in the table, it will create a duplicate. Option C: Apache Iceberg does not support unique constraints; it's an open table format without database-style constraint enforcement. Option D: Failing the job on duplicates doesn't solve the problem—it prevents processing entirely and requires manual cleanup.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A data engineer needs to validate referential integrity during ETL processing. The pipeline processes order records that must reference valid customer_ids from a customer dimension table. Invalid references should be flagged but not blocked. The customer dimension has 10 million records and the daily order batch has 5 million records. Which approach handles this efficiently within the Glue job?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Perform a left anti-join between the order DynamicFrame and customer dimension DynamicFrame on customer_id. Records that match the anti-join (no corresponding customer) are flagged as referential integrity violations and routed to an exception report.</li>
+                <li><span class="option-label">B.</span> For each order record, execute a DynamoDB GetItem call to verify the customer_id exists in a DynamoDB table containing all valid customer IDs.</li>
+                <li><span class="option-label">C.</span> Use a Glue Data Quality rule "ReferentialIntegrity 'orders.customer_id' 'customers.customer_id' = 1.0" to check integrity automatically.</li>
+                <li><span class="option-label">D.</span> Load all valid customer_ids into a Python set during job initialization, then use a Map function to check each order's customer_id against the set.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">A left anti-join is the correct distributed approach for referential integrity validation at scale. Spark/Glue efficiently handles the join between 5M orders and 10M customers using distributed hash joins or sort-merge joins, identifying orders with no matching customer. The anti-join result contains only the violating records for flagging. Option B: Per-record DynamoDB lookups for 5 million records would be extremely slow, expensive (5M read capacity units), and create a bottleneck. Option C: While Glue Data Quality supports ReferentialIntegrity rules in DQDL, it evaluates at the dataset level and may not efficiently handle the specific flagging-without-blocking requirement with custom exception routing. Option D: Loading 10 million customer IDs into a Python set (~400 MB) may exceed driver memory limits and doesn't leverage distributed processing.</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A healthcare data pipeline processes patient records where data quality is critical. The team needs to implement a progressive quality gate system: Stage 1 checks schema conformity (must pass 100%), Stage 2 checks completeness of required fields (must pass 99%), and Stage 3 checks business rule validity (must pass 95%). If any stage fails its threshold, subsequent stages should not execute. How should this be architected?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use a single Glue job with three sequential EvaluateDataQuality transforms, each configured with its own ruleset and threshold. Configure the first two with StopJobOnFailedRules so failure at Stage 1 or 2 prevents execution of downstream stages.</li>
+                <li><span class="option-label">B.</span> Create three separate Glue jobs orchestrated by Step Functions, where each step checks the previous job's output quality metrics before launching the next stage.</li>
+                <li><span class="option-label">C.</span> Implement all quality rules in a single EvaluateDataQuality transform with combined thresholds averaging across all rule types.</li>
+                <li><span class="option-label">D.</span> Use Glue workflow triggers with conditional triggers that check CloudWatch metrics from the previous job before starting the next.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Sequential EvaluateDataQuality transforms within a single Glue job provide the progressive gate behavior. Each transform evaluates its ruleset and the StopJobOnFailedRules action halts execution if the threshold isn't met, preventing downstream stages from running. This keeps all logic in a single job for simplicity, shared DynamicFrame context, and no inter-job data transfer overhead. Option B: Three separate jobs add orchestration complexity, require data serialization/deserialization between jobs, and increase total execution time due to job startup overhead. Option C: Combining all rules with averaged thresholds loses the progressive gate behavior—a critical schema failure might be masked by high pass rates in other categories. Option D: Glue workflow conditional triggers can check job status but not granular quality metric thresholds without custom Lambda integration.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A data engineer discovers that a Glue ETL job's inline quality checks are adding 40% to the overall job execution time. The quality rules include statistical checks (standard deviation, mean comparison), freshness checks, and row count validation. The job processes 500 GB of data daily. Which optimization will MOST significantly reduce the quality check overhead while maintaining quality coverage?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Move the expensive statistical rules (standard deviation, distribution analysis) to a post-processing quality evaluation that runs on the output data, keeping only lightweight checks (null checks, type validation, row count) as inline during ETL processing.</li>
+                <li><span class="option-label">B.</span> Increase the number of DPUs allocated to the Glue job to parallelize the quality checks across more workers.</li>
+                <li><span class="option-label">C.</span> Disable all inline quality checks and run a comprehensive quality evaluation as a separate job after the ETL completes.</li>
+                <li><span class="option-label">D.</span> Cache the source DynamicFrame in memory before quality evaluation to avoid re-reading from S3.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Statistical checks (standard deviation, mean, distribution analysis) require full dataset scans and aggregation operations—they're computationally expensive. Lightweight checks (null validation, type checks) execute as simple per-row operations within the existing processing DAG with minimal overhead. Separating expensive checks to post-processing maintains quality coverage while reducing inline overhead to near-zero for simple validations. Option B: More DPUs help with data parallelism but statistical aggregations require shuffles regardless of parallelism level; the overhead ratio remains similar. Option C: Removing all inline checks means bad data reaches the target before being detected, violating the "check during processing" requirement. Option D: Caching 500 GB in memory would require enormous memory allocation and may cause OOM errors; the quality check overhead comes from computation, not I/O.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>
