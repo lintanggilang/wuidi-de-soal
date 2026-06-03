@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 3.1.2 - Troubleshoot Amazon Managed Workflows</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 3: Data Operations and Support (22%) &mdash; Task 3.1: Automate data processing by using AWS services</div>
+            <h1>Skill 3.1.2: Troubleshoot Amazon Managed Workflows</h1>
+            <p class="description">Debugging and resolving issues with Amazon MWAA (Apache Airflow) managed workflows</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A data engineer deployed a new DAG to their Amazon MWAA environment by uploading the Python file to the S3 DAGs folder. After 10 minutes, the DAG still does not appear in the Airflow UI. The engineer verified the file is in the correct S3 path. What is the MOST likely cause?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The MWAA environment needs to be restarted after adding new DAGs</li>
+                <li><span class="option-label">B.</span> The DAG file has a Python syntax error or an import error that prevents the scheduler from parsing it</li>
+                <li><span class="option-label">C.</span> The S3 bucket does not have versioning enabled, which is required for MWAA</li>
+                <li><span class="option-label">D.</span> The DAG file exceeds the maximum file size limit of 1 MB</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Ketika DAG tidak muncul di Airflow UI, penyebab paling umum adalah syntax error atau import error dalam file DAG. Airflow scheduler mem-parse semua DAG files secara periodik, dan jika ada error saat parsing, DAG tidak akan di-register. Error ini terlihat di scheduler logs di CloudWatch. Opsi A salah — MWAA tidak perlu restart, scheduler secara otomatis mendeteksi file baru di S3. Opsi C salah — S3 versioning diperlukan tapi ini akan menyebabkan error saat setup environment, bukan saat adding DAGs. Opsi D salah — tidak ada hard limit 1 MB untuk DAG files.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">An MWAA environment running Apache Airflow has tasks that intermittently fail with the error "Task received SIGTERM signal" even though the task logic executed correctly. The environment uses the mw1.small environment class with 5 workers. CloudWatch metrics show worker CPU usage frequently exceeds 90%. What is the MOST appropriate resolution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Increase the task timeout setting in the DAG configuration</li>
+                <li><span class="option-label">B.</span> Upgrade the MWAA environment class to mw1.medium or mw1.large to provide more resources per worker</li>
+                <li><span class="option-label">C.</span> Add more tasks per worker by increasing worker_concurrency in Airflow configuration overrides</li>
+                <li><span class="option-label">D.</span> Switch from CeleryExecutor to LocalExecutor to reduce overhead</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">SIGTERM signals ketika worker CPU secara konsisten tinggi (>90%) menunjukkan resource exhaustion — workers kehabisan resources dan Airflow/system mengirim SIGTERM untuk membunuh task processes yang melebihi limits. Upgrade environment class (mw1.small → mw1.medium/large) meningkatkan CPU dan memory per worker. Opsi A (increase timeout) tidak menyelesaikan resource exhaustion. Opsi C (increase concurrency) justru memperburuk masalah dengan menambah load pada workers yang sudah overloaded. Opsi D tidak berlaku — MWAA selalu menggunakan CeleryExecutor dan tidak bisa diubah ke LocalExecutor.</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A data engineer's MWAA DAG uses a custom Python library that is installed via requirements.txt. After updating requirements.txt with a new package version, the environment update fails and enters an "UPDATE_FAILED" state. The previous version was working correctly. What should the engineer do FIRST to diagnose the issue?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Delete and recreate the MWAA environment with the new requirements</li>
+                <li><span class="option-label">B.</span> Check the MWAA environment's CloudWatch Log group for the requirements installation logs to identify dependency conflicts</li>
+                <li><span class="option-label">C.</span> Revert to the previous requirements.txt version immediately without investigation</li>
+                <li><span class="option-label">D.</span> Open an AWS Support ticket as UPDATE_FAILED indicates an AWS service issue</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">MWAA menyimpan log instalasi requirements di CloudWatch Logs. Langkah pertama adalah memeriksa log tersebut untuk mengidentifikasi error spesifik — biasanya dependency conflicts, package incompatibilities, atau package yang tidak tersedia. Ini memberikan informasi untuk fix yang tepat. Opsi A (delete/recreate) sangat disruptive dan tidak diperlukan. Opsi C (revert tanpa diagnosa) tidak membantu memahami masalah untuk fix di masa depan. Opsi D salah — UPDATE_FAILED biasanya karena user's requirements/plugins, bukan AWS service issue.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A company's MWAA environment suddenly cannot access their Amazon RDS PostgreSQL database that is used as a data source in multiple DAGs. Tasks fail with connection timeout errors. The MWAA environment and RDS instance are in the same VPC but different subnets. The RDS instance is confirmed to be running and accessible from an EC2 instance in the same VPC. What should be checked FIRST?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The RDS instance's security group inbound rules to verify it allows traffic from the MWAA environment's security group</li>
+                <li><span class="option-label">B.</span> The MWAA execution role to verify it has permissions to access RDS</li>
+                <li><span class="option-label">C.</span> The RDS instance's parameter group to check max_connections setting</li>
+                <li><span class="option-label">D.</span> The MWAA Airflow connection configuration for correct hostname and port</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Connection timeout (bukan authentication failure atau connection refused) antara resources di VPC yang berbeda subnet paling sering disebabkan oleh security group rules. MWAA workers berjalan di VPC menggunakan security group tertentu, dan RDS security group harus explicitly allow inbound traffic dari MWAA security group pada port database (3306/5432). Opsi B (IAM role) — RDS PostgreSQL connection menggunakan username/password melalui network, bukan IAM roles (kecuali IAM auth di-enable). Opsi C (max_connections) akan menyebabkan "too many connections" error, bukan timeout. Opsi D (connection config) — jika sebelumnya berfungsi dan konfigurasi tidak berubah, ini bukan penyebab.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A data engineer observes that their MWAA environment's DAG processing time has significantly increased. Previously, DAGs were parsed in under 30 seconds, but now parsing takes over 5 minutes. The DAGs folder contains 150 DAG files. Several DAGs use top-level code that queries AWS services (S3, DynamoDB) during import. What is the MOST likely cause and solution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The scheduler needs more memory; upgrade to a larger environment class</li>
+                <li><span class="option-label">B.</span> Top-level code that makes API calls during DAG parsing is blocking the scheduler; move API calls inside task callables</li>
+                <li><span class="option-label">C.</span> 150 DAG files exceeds the MWAA maximum; consolidate DAGs into fewer files</li>
+                <li><span class="option-label">D.</span> The S3 bucket hosting DAGs has throttling; enable S3 Transfer Acceleration</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Airflow scheduler mem-parse setiap DAG file secara periodik (default setiap 30 detik). Kode di top-level (di luar task functions) dieksekusi setiap kali scheduler parse file. Jika top-level code membuat API calls ke S3/DynamoDB, ini menambah latency signifikan yang dimultiplikasi dengan jumlah DAG files (150 × API call latency). Solusinya adalah memindahkan semua API calls ke dalam task callables yang hanya dieksekusi saat task running. Opsi A (upgrade) bisa membantu sedikit tapi tidak menyelesaikan root cause. Opsi C salah — 150 DAGs masih dalam batas wajar. Opsi D (S3 throttling) tidak relevan dengan DAG parsing time.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">An MWAA environment becomes inaccessible — the Airflow webserver returns HTTP 503 errors and no one can access the UI. Scheduled DAGs are still running according to CloudWatch Logs from the scheduler. What should the data engineer investigate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The MWAA environment's network configuration — verify NAT Gateway or VPC endpoints are functioning for the webserver subnet</li>
+                <li><span class="option-label">B.</span> The scheduler is overloaded and needs more resources, causing the webserver to become unresponsive</li>
+                <li><span class="option-label">C.</span> All workers have failed and the webserver cannot display task status</li>
+                <li><span class="option-label">D.</span> The S3 DAGs bucket has been deleted, causing the webserver to fail</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">MWAA webserver memerlukan network connectivity yang proper. HTTP 503 menunjukkan webserver tidak bisa melayani requests, yang sering disebabkan oleh networking issues — NAT Gateway unhealthy, VPC endpoint misconfiguration, atau network ACL blocking traffic. Fakta bahwa scheduler masih berjalan (DAGs running) menunjukkan masalah spesifik pada webserver networking, bukan general environment failure. Opsi B salah — scheduler dan webserver adalah komponen terpisah; scheduler overload tidak menyebabkan webserver 503. Opsi C salah — worker failure tidak membuat webserver inaccessible. Opsi D salah — jika DAGs bucket dihapus, scheduler juga akan berhenti.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A data engineer's MWAA DAG includes a PythonOperator task that processes large CSV files (2 GB) downloaded from S3. The task consistently fails with "OSError: [Errno 28] No space left on device" after running for about 20 minutes. The worker's local storage is filling up. What is the MOST appropriate solution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Increase the worker count to distribute the load across more workers</li>
+                <li><span class="option-label">B.</span> Process the file in chunks using streaming reads instead of downloading the entire file to local disk, or use /tmp with cleanup logic</li>
+                <li><span class="option-label">C.</span> Upgrade to the largest MWAA environment class for more local storage</li>
+                <li><span class="option-label">D.</span> Mount an EFS volume to the MWAA workers for additional storage</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">MWAA workers memiliki limited local storage. Solusi terbaik adalah mengubah approach — gunakan streaming reads (misalnya boto3 S3 streaming atau pandas chunked reading) untuk memproses file tanpa menyimpan seluruhnya di disk lokal. Jika perlu temp storage, gunakan /tmp dengan explicit cleanup setelah selesai. Opsi A (more workers) tidak membantu jika setiap worker masih harus process file 2 GB secara lokal. Opsi C — environment class upgrade memberikan sedikit lebih banyak storage tapi mungkin masih tidak cukup untuk 2 GB files + intermediate data. Opsi D (EFS) — MWAA tidak mendukung mounting EFS ke workers secara native.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A data team notices that tasks in their MWAA DAG stay in "queued" state for extended periods (30+ minutes) before being picked up by workers. The environment has min_workers=2 and max_workers=10. During peak hours, there are 50 tasks waiting in the queue. What is the MOST likely cause?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The worker_concurrency setting is too low, limiting how many tasks each worker can execute simultaneously</li>
+                <li><span class="option-label">B.</span> The MWAA autoscaling is too slow to scale up workers, and current workers are at maximum capacity</li>
+                <li><span class="option-label">C.</span> The Celery broker (SQS) has a message delivery delay configured</li>
+                <li><span class="option-label">D.</span> The scheduler is processing DAGs too slowly to dispatch tasks to workers</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">MWAA auto-scaling memerlukan waktu untuk menambah workers (provisioning new containers). Jika ada burst 50 tasks tiba-tiba dengan hanya 2 min workers, scaling ke 10 workers membutuhkan waktu. Selama scaling period, tasks menunggu di queue. Solusinya adalah meningkatkan min_workers agar ada cukup workers ready untuk peak demand. Opsi A (worker_concurrency) — jika ini masalahnya, tasks akan stuck bukan karena kurang workers tapi karena limit per worker, tapi ini biasanya terlihat saat workers idle yang tidak sesuai scenario ini. Opsi C — MWAA manages Celery broker configuration, users tidak bisa set message delay. Opsi D — scheduler queuing dan task execution are separate; scheduler sudah queued tasks (mereka sudah di "queued" state).</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">After adding a custom Airflow plugin to the plugins.zip file in the MWAA S3 bucket, the environment update completes successfully but the plugin's custom operator is not available — DAGs importing it fail with "ModuleNotFoundError". What is the MOST likely issue?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The plugins.zip file was not uploaded to the correct S3 path specified in the MWAA environment configuration</li>
+                <li><span class="option-label">B.</span> The directory structure inside plugins.zip is incorrect — the plugin module must be at the root level of the zip or follow Airflow's expected plugin directory structure</li>
+                <li><span class="option-label">C.</span> Custom plugins are not supported in Amazon MWAA; only built-in Airflow operators are available</li>
+                <li><span class="option-label">D.</span> The MWAA execution role lacks S3 permissions to read the plugins.zip file</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">MWAA mengekstrak plugins.zip ke folder plugins/ Airflow. Jika directory structure di dalam zip salah (misalnya ada extra parent directory seperti plugins/my-plugin/ bukannya langsung file di root), module path tidak sesuai dan import gagal. Structure yang benar: zip root harus langsung berisi __init__.py dan module files yang bisa di-import. Opsi A — jika path salah, environment update seharusnya gagal atau warning muncul, bukan silent failure. Opsi C salah — MWAA fully mendukung custom plugins. Opsi D — jika permission issue, environment update akan gagal karena MWAA perlu membaca plugins.zip saat update.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A data engineering team's MWAA environment shows "Scheduler Heartbeat" failures in the CloudWatch metrics dashboard. DAGs are not being scheduled on time and some tasks are being marked as "zombie" tasks. The scheduler log group shows the scheduler process is being killed and restarted frequently. What is the root cause and resolution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The scheduler is running out of memory due to too many DAGs or complex DAG structures; reduce DAG count or simplify DAGs and consider upgrading environment class</li>
+                <li><span class="option-label">B.</span> The VPC's DNS resolution is failing, causing scheduler connectivity issues</li>
+                <li><span class="option-label">C.</span> The MWAA environment's IAM role has expired credentials</li>
+                <li><span class="option-label">D.</span> CloudWatch Logs subscription filters are blocking scheduler log delivery</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Scheduler heartbeat failures dan frequent process kills/restarts adalah classic symptoms of scheduler resource exhaustion (OOM — Out of Memory). Ketika scheduler kehabisan memory (karena parsing terlalu banyak DAGs, DAGs yang sangat complex, atau banyak running task instances), process di-kill oleh OS dan di-restart oleh supervisor. Zombie tasks terjadi karena scheduler tidak bisa send heartbeats saat dead. Solusi: kurangi jumlah/complexity DAGs, atau upgrade environment class untuk lebih banyak scheduler memory. Opsi B (DNS) akan menyebabkan connectivity errors, bukan OOM kills. Opsi C (IAM) — MWAA manages credential rotation otomatis. Opsi D (CloudWatch filters) tidak mempengaruhi scheduler operation.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>

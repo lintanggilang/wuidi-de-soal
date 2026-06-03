@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 2.4.5 - Best Practices for Indexing, Partitioning, Compression, and Data Optimization</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 2: Data Store Management (26%) &mdash; Task 2.4: Design data models and schema evolution</div>
+            <h1>Skill 2.4.5: Describe Best Practices for Indexing, Partitioning, Compression, and Data Optimization</h1>
+            <p class="description">Optimization techniques for query performance in data lakes and warehouses</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A data engineering team stores 5 TB of sales transaction data in Amazon S3 as Parquet files. Analysts primarily query this data using Amazon Athena with filters on transaction_date and region. Current queries scan the entire dataset and take over 10 minutes. The team needs to reduce query time and cost. Which S3 partitioning strategy provides the MOST effective optimization?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Partition by s3://bucket/sales/year={yyyy}/month={MM}/day={dd}/region={region}/</li>
+                <li><span class="option-label">B.</span> Partition by s3://bucket/sales/region={region}/year={yyyy}/</li>
+                <li><span class="option-label">C.</span> Partition by s3://bucket/sales/transaction_id={id}/</li>
+                <li><span class="option-label">D.</span> Store all data in a single prefix with Parquet row group filtering</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Partitioning berdasarkan year/month/day/region adalah strategi optimal karena sesuai dengan pola query yang menggunakan filter transaction_date dan region. Hierarki date-first memungkinkan partition pruning yang efektif karena date range queries sangat umum. Opsi B menempatkan region di level pertama, yang kurang optimal jika date queries lebih sering. Opsi C (partition by transaction_id) menghasilkan terlalu banyak partisi kecil (high cardinality) yang justru menurunkan performa. Opsi D tanpa partitioning akan selalu melakukan full scan.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A company uses Amazon Redshift to run analytical queries on a 2 TB fact table containing order data. Most queries filter by order_date and join with a dimension table on customer_id. The data engineer needs to configure sort keys for optimal performance. Which sort key configuration is MOST appropriate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Compound sort key with (order_date, customer_id)</li>
+                <li><span class="option-label">B.</span> Interleaved sort key with (order_date, customer_id)</li>
+                <li><span class="option-label">C.</span> Compound sort key with (customer_id) only</li>
+                <li><span class="option-label">D.</span> No sort key, rely on Redshift automatic optimization</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Compound sort key (order_date, customer_id) adalah pilihan terbaik karena order_date sebagai kolom pertama akan sangat efektif untuk zone map filtering pada range queries yang paling sering digunakan. customer_id sebagai kolom kedua membantu merge joins dengan dimension table. Opsi B (Interleaved) memberikan equal weight ke semua kolom, tapi memerlukan VACUUM REINDEX yang mahal dan kurang efisien ketika satu kolom (order_date) dominan di-filter. Opsi C mengabaikan order_date yang merupakan filter utama. Opsi D tidak optimal untuk workload yang diketahui pola query-nya.</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A data engineer is optimizing a DynamoDB table that stores IoT sensor readings. The table has a partition key of device_id and sort key of timestamp. Analysts frequently need to query readings by sensor_type across all devices for a specific time range. Current queries require full table scans. Which indexing strategy resolves this access pattern?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create a Global Secondary Index (GSI) with sensor_type as partition key and timestamp as sort key</li>
+                <li><span class="option-label">B.</span> Create a Local Secondary Index (LSI) with sensor_type as the sort key</li>
+                <li><span class="option-label">C.</span> Add a Global Secondary Index (GSI) with timestamp as partition key and sensor_type as sort key</li>
+                <li><span class="option-label">D.</span> Modify the base table's partition key to sensor_type</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">GSI dengan sensor_type sebagai partition key dan timestamp sebagai sort key memungkinkan query efisien berdasarkan sensor_type dengan time range filter tanpa scan seluruh tabel. GSI memberikan access pattern yang berbeda dari base table. Opsi B (LSI) tidak bisa digunakan karena LSI harus memiliki partition key yang sama dengan base table (device_id), sehingga tetap perlu query per device. Opsi C menggunakan timestamp sebagai partition key yang akan menghasilkan hot partitions. Opsi D mengubah base table akan merusak access pattern existing.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A data lake team is converting CSV files to Apache Parquet format for storage in S3. The dataset contains a mix of columns: 5 numeric columns frequently used for aggregations, 3 high-cardinality string columns, and 2 timestamp columns. They need to choose the optimal compression codec. Which codec selection strategy maximizes both compression ratio and query performance for this analytical workload?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Gzip compression for all columns to maximize compression ratio</li>
+                <li><span class="option-label">B.</span> Use Snappy compression for all columns to maximize decompression speed</li>
+                <li><span class="option-label">C.</span> Use ZSTD compression which provides a balance of high compression ratio and fast decompression suitable for analytical queries</li>
+                <li><span class="option-label">D.</span> Use LZO compression for all columns as it provides the fastest read performance</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">ZSTD (Zstandard) memberikan keseimbangan terbaik antara compression ratio yang tinggi (mendekati Gzip) dan kecepatan decompression yang cepat (mendekati Snappy). Untuk analytical workload dimana data dibaca berulang kali, ZSTD mengurangi storage cost sekaligus mempertahankan query performance. Opsi A (Gzip) memiliki compression ratio tertinggi tapi decompression yang lambat, meningkatkan query latency. Opsi B (Snappy) tercepat untuk decompress tapi compression ratio lebih rendah, meningkatkan scan volume dan cost. Opsi D (LZO) sudah less common dan tidak optimal dibandingkan ZSTD.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A data engineer notices that Amazon Athena queries against their Parquet-based data lake are slow despite using partitioning. Investigation reveals the data lake contains millions of small files (average 5 MB each) within each partition. What is the MOST effective approach to resolve this performance issue?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Increase the Athena DPU count to process more files in parallel</li>
+                <li><span class="option-label">B.</span> Compact small files into larger files targeting 128-512 MB per file using AWS Glue or an S3DistCp job</li>
+                <li><span class="option-label">C.</span> Switch from Parquet to CSV format which handles small files better</li>
+                <li><span class="option-label">D.</span> Add more partition levels to distribute files across more directories</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Small file problem adalah masalah umum di data lakes. Setiap file memerlukan overhead untuk opening, reading metadata, dan closing. Menggabungkan file kecil menjadi file 128-512 MB mengurangi jumlah file operations secara drastis dan memungkinkan parallel processing yang lebih efisien. Opsi A (lebih banyak DPU) meningkatkan biaya tanpa menyelesaikan root cause — overhead per-file tetap ada. Opsi C (CSV) justru lebih buruk karena kehilangan columnar benefits. Opsi D (lebih banyak partisi) akan memperburuk masalah dengan lebih banyak directory listings.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A Redshift data warehouse has a 500 GB table that was loaded using COPY commands over several months. The DBA notices that queries are getting progressively slower, and the SVV_TABLE_INFO view shows the table has a high percentage of unsorted rows and deleted rows (marked as tombstones). Which maintenance operations should be performed to restore optimal performance?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Run VACUUM FULL followed by ANALYZE on the table</li>
+                <li><span class="option-label">B.</span> Run ANALYZE only, as statistics are the main issue</li>
+                <li><span class="option-label">C.</span> Drop and recreate the table with a deep copy using CREATE TABLE AS SELECT</li>
+                <li><span class="option-label">D.</span> Resize the Redshift cluster to add more compute nodes</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">VACUUM FULL melakukan dua operasi penting: (1) menghapus deleted rows (reclaim space dari tombstones) dan (2) mengurutkan ulang rows berdasarkan sort key. ANALYZE kemudian memperbarui statistics yang digunakan query optimizer. Kedua operasi ini mengembalikan performa zone maps dan query planning. Opsi B (ANALYZE saja) tidak mengatasi unsorted rows dan tombstones. Opsi C (deep copy) bisa berhasil tapi lebih disruptive dan memerlukan downtime lebih lama. Opsi D (resize cluster) meningkatkan biaya tanpa menyelesaikan root cause data organization.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A geospatial analytics team queries a data lake containing location-based events. Their queries frequently filter on both latitude/longitude ranges AND timestamp ranges simultaneously. Standard Hive-style partitioning on date alone leaves too much data to scan. Which data organization technique is MOST suitable for optimizing these multi-dimensional range queries?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create separate partitions for latitude ranges and longitude ranges in addition to date</li>
+                <li><span class="option-label">B.</span> Apply Z-ordering (space-filling curve) on latitude, longitude, and timestamp columns to co-locate related data</li>
+                <li><span class="option-label">C.</span> Use Parquet row group filtering with min/max statistics on lat/long columns</li>
+                <li><span class="option-label">D.</span> Implement bucketing on a geohash column derived from latitude and longitude</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Z-ordering menggunakan space-filling curves untuk memetakan data multi-dimensi ke satu dimensi sambil mempertahankan locality. Ini memungkinkan data yang dekat dalam multiple dimensions (lat, long, timestamp) juga dekat secara fisik di storage, sehingga file pruning efektif untuk semua kombinasi filter. Opsi A (separate partitions) menyebabkan partition explosion karena kombinasi ranges yang banyak. Opsi C (row group min/max) membantu tapi tanpa Z-ordering, data mungkin tersebar acak sehingga min/max ranges overlap. Opsi D (geohash bucketing) hanya membantu spatial queries tapi tidak mengoptimalkan temporal dimension secara bersamaan.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A data engineer is configuring Parquet file writes for a data lake that will be queried by both Athena and Redshift Spectrum. The dataset has 200 columns but typical queries only access 5-10 columns at a time. The engineer needs to optimize row group size for this access pattern. Which row group configuration is MOST appropriate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Set row group size to 8 MB to minimize memory usage during reads</li>
+                <li><span class="option-label">B.</span> Set row group size to 128 MB (default) which provides optimal balance for columnar reads of wide tables</li>
+                <li><span class="option-label">C.</span> Set row group size to 1 GB to minimize the number of row groups per file</li>
+                <li><span class="option-label">D.</span> Set row group size to 32 KB to maximize predicate pushdown granularity</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Row group size 128 MB (default Parquet) memberikan keseimbangan optimal. Untuk wide tables (200 kolom) dimana hanya 5-10 kolom dibaca, row group yang cukup besar memastikan column chunks memiliki cukup data untuk sequential I/O yang efisien. Opsi A (8 MB) terlalu kecil — column chunks hanya ~40 KB per kolom, menghasilkan banyak random I/O. Opsi C (1 GB) terlalu besar, memerlukan memory berlebihan dan membuat predicate pushdown kurang granular. Opsi D (32 KB) sangat kecil, setiap column chunk hanya ~160 bytes yang tidak efisien untuk I/O.</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A data warehouse team uses Amazon Redshift and notices that certain queries that filter on a VARCHAR column containing product category names are performing full table scans instead of using zone maps for data skipping. The table uses a compound sort key on (product_category, transaction_date). What is the MOST likely cause and solution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Zone maps don't work with VARCHAR columns; switch to integer encoding for categories</li>
+                <li><span class="option-label">B.</span> The table has too many unsorted rows after recent loads; run VACUUM SORT to restore zone map effectiveness</li>
+                <li><span class="option-label">C.</span> The query is using LIKE patterns which cannot leverage zone maps; use equality predicates instead</li>
+                <li><span class="option-label">D.</span> Compound sort keys don't support zone maps; switch to interleaved sort key</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Ketika data baru di-load ke Redshift (via COPY atau INSERT), rows baru ditambahkan sebagai unsorted region. Zone maps pada unsorted region memiliki min/max ranges yang sangat wide, membuat data skipping tidak efektif. VACUUM SORT mengurutkan ulang data sehingga zone maps memiliki ranges yang tight dan bisa melakukan effective pruning. Opsi A salah — zone maps bekerja dengan VARCHAR. Opsi C salah — LIKE dengan prefix bisa leverage zone maps. Opsi D salah — compound sort keys bekerja sangat baik dengan zone maps, terutama untuk kolom pertama.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">An analytics team uses Amazon Athena to query a data lake stored in ORC format on S3. They want to enable predicate pushdown to minimize data scanned. The table contains a high-cardinality column (user_id) that is frequently used in WHERE clauses. Queries currently scan 100% of data despite having user_id filters. Which technique enables effective predicate pushdown for this column?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Enable Bloom filters on the user_id column during ORC file creation to enable predicate pushdown for equality filters</li>
+                <li><span class="option-label">B.</span> Partition the data by user_id to leverage partition pruning instead of predicate pushdown</li>
+                <li><span class="option-label">C.</span> Convert from ORC to Parquet format which has better predicate pushdown support</li>
+                <li><span class="option-label">D.</span> Increase the ORC stripe size to improve min/max index effectiveness</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Untuk high-cardinality columns, ORC min/max statistics (row index) tidak efektif karena setiap stripe likely memiliki wide range of user_ids. Bloom filters di ORC memberikan probabilistic test yang dapat menentukan apakah suatu stripe definitely doesn't contain a specific user_id, enabling effective data skipping untuk equality predicates. Opsi B (partition by user_id) akan menghasilkan jutaan partisi yang sangat buruk untuk performance (partition explosion). Opsi C salah — kedua format mendukung predicate pushdown, tapi ORC memiliki Bloom filter built-in. Opsi D (larger stripe size) justru memperburuk masalah karena ranges menjadi lebih wide.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>

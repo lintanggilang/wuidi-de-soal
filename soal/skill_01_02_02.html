@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 1.2.2 - Connect to Different Data Sources (JDBC, ODBC)</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 1: Data Ingestion and Transformation (34%) &mdash; Task 1.2: Transform and process data</div>
+            <h1>Skill 1.2.2: Connect to Different Data Sources (JDBC, ODBC)</h1>
+            <p class="description">Configuring JDBC/ODBC connections in AWS Glue, EMR, Redshift, and other services for data extraction and loading</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A data engineer is configuring an AWS Glue ETL job to read from an on-premises SQL Server database using JDBC. The database is accessible via AWS Site-to-Site VPN. The Glue connection test succeeds, but the ETL job fails with "Unable to connect" errors. What is the MOST likely cause?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The Glue connection's security group does not have a self-referencing inbound rule allowing all TCP traffic from itself</li>
+                <li><span class="option-label">B.</span> The JDBC URL format is incorrect</li>
+                <li><span class="option-label">C.</span> The SQL Server does not support JDBC connections</li>
+                <li><span class="option-label">D.</span> The Glue job timeout is too short</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">AWS Glue requires a self-referencing inbound rule on the connection's security group. This allows Glue workers (which share the same security group) to communicate with each other. Without this, the Glue job fails even if the connection test (which uses a single ENI) succeeds. Opsi B tidak cocok karena connection test sudah berhasil. Opsi C salah — SQL Server mendukung JDBC. Opsi D (timeout) menyebabkan error berbeda.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A data engineer needs to connect Amazon Redshift to an external PostgreSQL database for federated queries. The PostgreSQL database is in a different VPC. Which feature and configuration enables this cross-VPC connection?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create a Redshift external schema using CREATE EXTERNAL SCHEMA with JDBC connection string, with VPC peering between the Redshift VPC and the PostgreSQL VPC</li>
+                <li><span class="option-label">B.</span> Use Redshift Spectrum to query PostgreSQL directly</li>
+                <li><span class="option-label">C.</span> Create a Glue JDBC connection and use it from Redshift</li>
+                <li><span class="option-label">D.</span> Export PostgreSQL data to S3 and query with Redshift</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Redshift Federated Query mendukung koneksi langsung ke PostgreSQL (dan MySQL) via JDBC. CREATE EXTERNAL SCHEMA dengan CONNECTION mendefinisikan koneksi. VPC peering memungkinkan network connectivity antar VPCs. Opsi B (Spectrum) hanya untuk S3 data, bukan database. Opsi C (Glue connection) tidak bisa digunakan dari Redshift SQL secara langsung. Opsi D mengubah arsitektur dan menghilangkan real-time access.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">An AWS Glue ETL job connects to an Amazon RDS MySQL database via JDBC. The job runs for 4 hours and processes data from 20 tables in parallel. The RDS instance reaches its max_connections limit (150) and starts rejecting connections. Which Glue JDBC configuration prevents this?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Set the numPartitions parameter to a value lower than max_connections and use connection pooling in the JDBC URL</li>
+                <li><span class="option-label">B.</span> Increase the RDS instance class to get more max_connections</li>
+                <li><span class="option-label">C.</span> Process tables sequentially instead of in parallel</li>
+                <li><span class="option-label">D.</span> Use Glue job bookmarks to reduce the amount of data read</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">numPartitions (atau hashpartitions dalam Glue) menentukan jumlah concurrent connections yang Glue membuka ke database. Menetapkan ini di bawah max_connections (misalnya 50) mencegah connection exhaustion. Connection pooling di JDBC URL mengurangi connection churn. Opsi B (upgrade instance) mahal dan hanya sementara. Opsi C (sequential) sangat lambat. Opsi D (bookmarks) mengurangi data volume tapi tidak connection count per se.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A data engineer needs to extract data from an Oracle database using AWS Glue. The Oracle database uses a custom JDBC driver not included in the Glue environment. How should the engineer provide the custom JDBC driver to Glue?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Upload the JDBC driver JAR file to S3 and specify its path in the Glue connection's "JDBC driver - custom path" or in the job's extra jars parameter</li>
+                <li><span class="option-label">B.</span> Install the JDBC driver on the Glue worker nodes via SSH</li>
+                <li><span class="option-label">C.</span> Submit a support ticket to AWS to add the driver to the Glue environment</li>
+                <li><span class="option-label">D.</span> Use ODBC connection instead, which doesn't require a driver</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">AWS Glue mendukung custom JDBC drivers. Driver JAR di-upload ke S3 dan direferensikan di Glue connection (class name dan S3 path) atau via --extra-jars job parameter. Glue otomatis mendownload dan memuat driver saat job dimulai. Opsi B — Glue managed service tanpa SSH access ke workers. Opsi C bukan cara yang feasible. Opsi D — ODBC juga memerlukan driver dan Glue primarily menggunakan JDBC.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A data engineer configures an Amazon EMR Spark application to read from a MySQL database using JDBC. The table has 500 million rows. The read operation is slow because Spark uses a single partition. Which Spark JDBC options enable parallel reads?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Specify partitionColumn, lowerBound, upperBound, and numPartitions in the JDBC read options</li>
+                <li><span class="option-label">B.</span> Increase the Spark executor memory</li>
+                <li><span class="option-label">C.</span> Use spark.sql.shuffle.partitions configuration</li>
+                <li><span class="option-label">D.</span> Enable Spark Adaptive Query Execution (AQE)</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Spark JDBC parallel read membutuhkan: partitionColumn (numeric column untuk split), lowerBound/upperBound (range values), dan numPartitions (jumlah parallel connections). Spark membuat numPartitions queries dengan WHERE clauses yang membagi range. Opsi B (memory) tidak mengaktifkan parallelism. Opsi C (shuffle.partitions) untuk shuffle operations, bukan JDBC reads. Opsi D (AQE) mengoptimalkan shuffle tapi tidak affect JDBC source parallelism.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A company wants Amazon Athena to query data from an on-premises Teradata database without moving the data to AWS. Which Athena feature and connection method enables this?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Athena Federated Query with a custom data source connector (Lambda-based) that connects to Teradata via JDBC through a VPN connection</li>
+                <li><span class="option-label">B.</span> Use Athena directly with a JDBC connection string in the FROM clause</li>
+                <li><span class="option-label">C.</span> Create a Glue connection to Teradata and Athena will use it automatically</li>
+                <li><span class="option-label">D.</span> Use Redshift Spectrum to proxy the query to Teradata</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Athena Federated Query menggunakan Lambda-based data source connectors untuk query external data sources. Connector untuk Teradata tersedia (dari AWS atau custom) yang menggunakan JDBC internally. Lambda runs in VPC dengan VPN access ke on-premises. Opsi B — Athena tidak menerima JDBC connection strings langsung di queries. Opsi C — Athena tidak otomatis menggunakan Glue JDBC connections untuk query. Opsi D — Redshift Spectrum hanya untuk S3 data.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A data engineer is troubleshooting an AWS Glue JDBC connection to an Amazon Aurora PostgreSQL cluster. The connection test passes, but the ETL job intermittently fails with "Connection reset" errors after running for 30 minutes. What is the MOST likely cause?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The Aurora cluster's idle connection timeout is closing inactive JDBC connections; configure connection validation/keep-alive in the JDBC URL parameters</li>
+                <li><span class="option-label">B.</span> The Glue job has insufficient DPUs</li>
+                <li><span class="option-label">C.</span> The Aurora cluster needs to be rebooted</li>
+                <li><span class="option-label">D.</span> The JDBC driver version is incompatible with Aurora</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Aurora (PostgreSQL) memiliki idle_in_transaction_session_timeout dan tcp_keepalives_idle parameters yang menutup koneksi idle. Untuk job yang berjalan lama, beberapa koneksi bisa menjadi idle dan di-close. Solusinya adalah menambahkan parameter keepalive dan validasi koneksi di JDBC URL (misalnya tcpKeepAlive=true, connectTimeout, socketTimeout). Opsi B (DPUs) menyebabkan OOM bukan connection reset. Opsi C (reboot) bukan solusi berkelanjutan. Opsi D (driver) akan gagal dari awal bukan intermittent.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A data engineer needs to set up Amazon Redshift to connect to an external MySQL database for federated queries. The credentials for the MySQL database must be stored securely. Which approach correctly configures the credentials?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Store MySQL credentials in AWS Secrets Manager and reference the secret ARN in the CREATE EXTERNAL SCHEMA command using SECRET_ARN parameter</li>
+                <li><span class="option-label">B.</span> Hard-code the credentials directly in the CREATE EXTERNAL SCHEMA SQL statement</li>
+                <li><span class="option-label">C.</span> Store credentials in an S3 file and reference it in the schema definition</li>
+                <li><span class="option-label">D.</span> Use IAM authentication for the external MySQL database</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Redshift Federated Query mendukung AWS Secrets Manager untuk credential management. CREATE EXTERNAL SCHEMA ... FROM MYSQL/POSTGRES ... SECRET_ARN 'arn:aws:secretsmanager:...' mengambil credentials secara secure dari Secrets Manager. Opsi B (hardcoded) adalah security risk dan visible di system tables. Opsi C (S3 file) tidak supported oleh Redshift schema definition. Opsi D (IAM auth) mungkin tidak available pada semua external databases, terutama non-AWS MySQL.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A company uses Amazon EMR to run Hive queries that join data from an S3 data lake with reference data in an Amazon RDS SQL Server database. The Hive queries need JDBC connectivity to SQL Server. Which EMR component enables this?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure a Hive JDBC storage handler and create an external table pointing to the SQL Server database with the JDBC URL and credentials</li>
+                <li><span class="option-label">B.</span> Install SQL Server client tools on the EMR master node</li>
+                <li><span class="option-label">C.</span> Use EMR's built-in SQL Server connector in the cluster configuration</li>
+                <li><span class="option-label">D.</span> Export SQL Server data to S3 first, then join in Hive</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Hive mendukung JDBC storage handler (org.apache.hive.storage.jdbc.JdbcStorageHandler) yang memungkinkan membuat external table yang backed by JDBC source. CREATE EXTERNAL TABLE ... STORED BY 'org.apache.hive.storage.jdbc.JdbcStorageHandler' WITH SERDEPROPERTIES ("hive.sql.jdbc.url"=...). Opsi B (client tools) tidak mengintegrasikan dengan Hive query engine. Opsi C — tidak ada built-in SQL Server connector di EMR configuration. Opsi D mengubah arsitektur dan menghilangkan real-time reference data.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A data engineer needs to ensure secure JDBC connections between AWS Glue and an Amazon RDS database. The company security policy requires encryption in transit for all database connections. How should this be configured?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Enable SSL/TLS on the RDS instance and add SSL parameters to the JDBC connection URL (e.g., useSSL=true, requireSSL=true, and specify the RDS CA certificate)</li>
+                <li><span class="option-label">B.</span> Enable encryption at rest on the RDS instance</li>
+                <li><span class="option-label">C.</span> Use a VPC endpoint for RDS to encrypt traffic</li>
+                <li><span class="option-label">D.</span> Configure the Glue security group to only allow encrypted connections</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Encryption in transit untuk JDBC connections membutuhkan SSL/TLS. RDS mendukung SSL dan menyediakan CA certificates. JDBC URL dikonfigurasi dengan SSL parameters: useSSL=true, requireSSL=true untuk MySQL; ssl=true, sslmode=require untuk PostgreSQL. Glue menggunakan URL ini untuk encrypted connections. Opsi B (at rest) melindungi data di storage, bukan in transit. Opsi C (VPC endpoint) — RDS Interface Endpoints tidak otomatis encrypt JDBC traffic. Opsi D (security group) tidak bisa enforce encryption level.</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>

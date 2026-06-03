@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 2.4.1 - Design Schemas for Amazon Redshift, DynamoDB, and Lake Formation</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 2: Data Store Management (26%) &mdash; Task 2.4: Design data models and schema evolution</div>
+            <h1>Skill 2.4.1: Design Schemas for Amazon Redshift, DynamoDB, and Lake Formation</h1>
+            <p class="description">Schema design principles for different data store types: columnar, NoSQL, and data lake</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A data engineer is designing an Amazon Redshift schema for a sales analytics data warehouse. The primary query pattern involves filtering by date and joining the fact table with dimension tables. The fact table contains 5 billion rows with sales transactions spanning 3 years. Which distribution and sort key strategy provides OPTIMAL query performance?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> EVEN distribution on the fact table with an interleaved sort key on date and product_id</li>
+                <li><span class="option-label">B.</span> KEY distribution on the most frequently joined column (product_id) with a compound sort key starting with transaction_date</li>
+                <li><span class="option-label">C.</span> ALL distribution on the fact table with a compound sort key on transaction_date</li>
+                <li><span class="option-label">D.</span> KEY distribution on transaction_date with no sort key for maximum write performance</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">KEY distribution pada kolom yang paling sering di-join (seperti product_id) memastikan bahwa rows dengan value yang sama berada di node yang sama, menghindari data redistribution saat join. Compound sort key yang dimulai dengan transaction_date memungkinkan zone maps untuk melakukan block-level pruning pada filter tanggal, sangat efektif untuk range queries. Opsi A (EVEN + interleaved) — interleaved sort key memiliki overhead maintenance yang tinggi untuk tabel besar. Opsi C (ALL distribution) tidak mungkin untuk tabel 5 miliar rows — ALL hanya cocok untuk dimension tables kecil. Opsi D (distribute on date) akan menyebabkan data skew jika tanggal tidak merata.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A social media company is designing a DynamoDB table to store user posts. Access patterns include: (1) Get all posts by a user sorted by timestamp, (2) Get a specific post by user and post ID, (3) Get all posts with a specific hashtag sorted by engagement score. Which key design supports ALL three access patterns?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Partition key: user_id, Sort key: timestamp. GSI with partition key: hashtag, sort key: engagement_score</li>
+                <li><span class="option-label">B.</span> Partition key: post_id only. GSI with partition key: user_id, sort key: timestamp</li>
+                <li><span class="option-label">C.</span> Partition key: user_id, Sort key: post_id. GSI with partition key: hashtag, sort key: timestamp</li>
+                <li><span class="option-label">D.</span> Partition key: hashtag, Sort key: engagement_score. GSI with partition key: user_id, sort key: timestamp</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Pattern 1 (posts by user sorted by time): PK=user_id, SK=timestamp memungkinkan query dengan ScanIndexForward. Pattern 2 (specific post): bisa menggunakan PK=user_id dan filter pada post_id (atau encode post_id dalam sort key dengan composite key). Pattern 3 (hashtag + engagement): GSI dengan PK=hashtag, SK=engagement_score. Opsi B tidak mendukung pattern 1 efisien dari base table. Opsi C menggunakan post_id sebagai sort key yang tidak mendukung sorting by timestamp secara native. Opsi D menggunakan hashtag sebagai PK utama yang menyebabkan hot partition untuk hashtag populer.</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A data engineer is implementing a star schema in Amazon Redshift for a retail analytics platform. The dimension tables range from 1,000 rows (store dimension) to 5 million rows (customer dimension). The fact table has 10 billion rows. Which distribution strategy should be applied to the dimension tables?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> ALL distribution for all dimension tables regardless of size</li>
+                <li><span class="option-label">B.</span> ALL distribution for small dimensions (store: 1,000 rows) and KEY distribution for large dimensions (customer: 5M rows) on their primary key</li>
+                <li><span class="option-label">C.</span> EVEN distribution for all dimension tables</li>
+                <li><span class="option-label">D.</span> KEY distribution for all dimension tables on their primary key</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Strategi optimal: dimension kecil (< beberapa juta rows) gunakan ALL distribution sehingga seluruh tabel direplikasi di setiap node, menghindari redistribution saat join. Dimension besar (5M+ rows) gunakan KEY distribution pada kolom join ke fact table, karena ALL distribution untuk tabel besar membuang storage dan memperlambat write. Opsi A membuang storage untuk dimension 5M rows yang direplikasi di setiap node. Opsi C (EVEN) akan memerlukan data redistribution saat setiap join. Opsi D (KEY semua) tidak optimal untuk dimension kecil yang lebih baik direplikasi penuh.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A data engineer designs a DynamoDB single-table design for an e-commerce platform. The table stores Orders, Products, and Customers in one table using overloaded partition and sort keys (PK/SK). The engineer needs to model a one-to-many relationship where one customer has many orders. Which key pattern correctly implements this?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> PK: CUSTOMER#&lt;id&gt;, SK: CUSTOMER#&lt;id&gt; for customer record; PK: CUSTOMER#&lt;id&gt;, SK: ORDER#&lt;order_id&gt; for each order</li>
+                <li><span class="option-label">B.</span> PK: ORDER#&lt;order_id&gt;, SK: CUSTOMER#&lt;customer_id&gt; for linking orders to customers</li>
+                <li><span class="option-label">C.</span> PK: CUSTOMER#&lt;id&gt;, SK: METADATA for customer; separate PK: ORDER#&lt;order_id&gt;, SK: METADATA for each order with no partition key connection</li>
+                <li><span class="option-label">D.</span> Store a list of order IDs as a Set attribute within the customer item</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Dalam single-table design, one-to-many relationship dimodelkan dengan menempatkan parent dan children items di partition key yang sama. PK=CUSTOMER#123, SK=CUSTOMER#123 untuk record customer, dan PK=CUSTOMER#123, SK=ORDER#456 untuk setiap order. Ini memungkinkan satu Query operation untuk mendapatkan customer beserta semua order-nya. Opsi B memisahkan orders ke partition berbeda sehingga tidak bisa query customer + orders dalam satu operasi. Opsi C tidak memanfaatkan item collection. Opsi D melanggar best practice karena Set memiliki batas 400KB per item dan tidak scalable.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A data lake architect needs to design a partitioning strategy for a Lake Formation table that stores IoT sensor data. The table receives 100 million records daily and common queries filter by device_type (5 types), region (10 regions), and date. Current query patterns primarily filter by date range and region. Which partitioning strategy BEST optimizes query performance?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Partition by year/month/day/hour for maximum granularity</li>
+                <li><span class="option-label">B.</span> Partition by region and year/month/day (multi-level partitioning)</li>
+                <li><span class="option-label">C.</span> Partition by device_type, region, and year/month/day/hour</li>
+                <li><span class="option-label">D.</span> No partitioning — rely on columnar format (Parquet) with predicate pushdown</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Partitioning harus mengikuti query patterns utama. Karena queries terutama filter by date range dan region, partition by region/year/month/day memungkinkan Athena dan Redshift Spectrum melakukan partition pruning yang efektif. Opsi A (hanya date hourly) terlalu banyak partisi (365×24 = 8.760/tahun) dan tidak memanfaatkan region filter. Opsi C (3 level + hourly) menghasilkan partition explosion: 5×10×365×24 = 438.000 partisi/tahun yang terlalu banyak dan menyebabkan overhead metadata. Opsi D (no partition) memaksa full scan 100M records/hari yang sangat lambat untuk tabel besar.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A data engineer receives JSON data with nested and variable structures from multiple API sources. They need to store and query this data in Amazon Redshift. The JSON schema changes frequently with new fields added by upstream teams. Which Redshift data type is MOST appropriate for this use case?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> VARCHAR(MAX) to store raw JSON strings and parse with JSON_EXTRACT_PATH_TEXT at query time</li>
+                <li><span class="option-label">B.</span> SUPER data type with schemaless storage and PartiQL queries for navigation</li>
+                <li><span class="option-label">C.</span> Multiple VARCHAR columns with one column per known JSON field</li>
+                <li><span class="option-label">D.</span> VARBYTE type for binary JSON storage with UDF for parsing</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Redshift SUPER data type dirancang untuk semi-structured data (JSON, arrays, nested objects). SUPER menyimpan data dalam format binary yang efisien, mendukung schemaless ingestion (schema-on-read), dan bisa di-query menggunakan PartiQL atau dot notation. Ini ideal ketika schema sering berubah. Opsi A (VARCHAR + JSON functions) bekerja tapi less efficient — tidak ada columnar optimization dan parsing ulang setiap query. Opsi C (multiple columns) tidak flexible ketika fields berubah. Opsi D (VARBYTE) untuk binary data, bukan structured JSON navigation.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A data engineer is designing a Redshift schema for an advertising analytics platform. Queries frequently aggregate impression counts by campaign_id for specific date ranges. The table has 20 billion rows distributed across a 10-node cluster. Which sort key strategy minimizes I/O for these queries?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Interleaved sort key on (impression_date, campaign_id) for equal weight filtering</li>
+                <li><span class="option-label">B.</span> Compound sort key with impression_date as the leading column followed by campaign_id</li>
+                <li><span class="option-label">C.</span> Compound sort key with campaign_id as the leading column followed by impression_date</li>
+                <li><span class="option-label">D.</span> No sort key — use materialized views for pre-aggregation instead</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Compound sort key dengan impression_date sebagai leading column optimal ketika queries selalu filter by date range terlebih dahulu. Zone maps di Redshift menyimpan min/max values per block — leading sort column memungkinkan maximum block skipping. Date range filter mengeliminasi sebagian besar blocks, kemudian campaign_id filter diterapkan pada subset yang tersisa. Opsi A (interleaved) memiliki overhead VACUUM yang tinggi untuk tabel 20B rows dan tidak seefisien compound ketika ada satu dominant filter pattern. Opsi C menempatkan campaign_id pertama — kurang efisien karena range scan pada date lebih selective. Opsi D menghindari masalah tapi menambah storage cost.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A gaming company uses DynamoDB to track player inventory. Each player can have up to 500 items. The most common operations are: (1) Get all items for a player, (2) Get a specific item for a player, (3) Update quantity of a specific item. The data engineer wants to avoid hot partitions. Which table design is MOST appropriate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Partition key: player_id, Sort key: item_id. Store each inventory item as a separate DynamoDB item</li>
+                <li><span class="option-label">B.</span> Partition key: player_id only. Store entire inventory as a JSON Map attribute in a single item</li>
+                <li><span class="option-label">C.</span> Partition key: item_id, Sort key: player_id. Create GSI with player_id as partition key</li>
+                <li><span class="option-label">D.</span> Partition key: composite of player_id#shard_number with write sharding</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">PK=player_id, SK=item_id mendukung semua access patterns secara optimal: (1) Query PK=player_id mendapatkan semua items, (2) GetItem PK=player_id SK=item_id mendapatkan item spesifik, (3) UpdateItem PK=player_id SK=item_id memperbarui quantity. Dengan 500 items per player, item collection masih di bawah 10GB partition limit. Opsi B (single item JSON) memiliki batas 400KB per item dan setiap update memerlukan read-modify-write seluruh map. Opsi C (item_id sebagai PK) tidak efisien untuk "get all items by player". Opsi D (write sharding) tidak diperlukan — player_id sudah memberikan distribusi yang baik natural.</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A retail data warehouse team is debating between star schema and snowflake schema for their Redshift implementation. The warehouse serves both ad-hoc analyst queries and BI dashboard reports. The product dimension has sub-dimensions: category → subcategory → brand hierarchy. Which approach is RECOMMENDED for Amazon Redshift?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Snowflake schema to normalize product dimensions into separate tables for storage efficiency</li>
+                <li><span class="option-label">B.</span> Star schema with denormalized product dimension containing all hierarchy levels in one table</li>
+                <li><span class="option-label">C.</span> Third normal form (3NF) for all tables to maintain data integrity</li>
+                <li><span class="option-label">D.</span> Separate schemas for analysts (snowflake) and dashboards (star) with ETL between them</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Star schema dengan denormalized dimensions adalah best practice untuk Amazon Redshift. Redshift dioptimalkan untuk join patterns sederhana (fact-to-dimension) dan columnar storage membuat denormalization murah dari segi storage. Denormalized dimension mengurangi jumlah joins, meningkatkan query performance. Opsi A (snowflake) menambah joins yang mahal di Redshift — setiap join memerlukan data redistribution. Opsi C (3NF) sangat tidak cocok untuk analytics workload — terlalu banyak joins. Opsi D menambah kompleksitas maintenance tanpa benefit signifikan — satu star schema melayani keduanya dengan baik.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A data engineer is designing a data lake table in AWS Lake Formation for customer transaction data. The table will be queried by multiple teams using Athena, Redshift Spectrum, and EMR. The data arrives as JSON and needs to be stored optimally. Which combination of format and schema approach is MOST appropriate for the data lake?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Store as raw JSON with schema-on-read using Glue Crawlers to infer schema automatically</li>
+                <li><span class="option-label">B.</span> Convert to Apache Parquet with schema-on-write, register in Glue Data Catalog, and partition by date</li>
+                <li><span class="option-label">C.</span> Store as CSV with explicit headers and create Athena views for schema abstraction</li>
+                <li><span class="option-label">D.</span> Convert to Apache ORC and store without Glue Data Catalog registration</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Apache Parquet dengan schema-on-write adalah best practice untuk data lake analytics. Parquet menyediakan columnar storage yang efficient, compression yang baik, dan predicate pushdown. Registrasi di Glue Data Catalog memungkinkan discovery oleh semua query engines (Athena, Spectrum, EMR). Partitioning by date memungkinkan partition pruning. Opsi A (raw JSON) sangat tidak efisien untuk analytics — tidak columnar, tidak compressed optimal, dan schema inference bisa bermasalah. Opsi C (CSV) tidak mendukung complex types, tidak columnar, dan compression kurang baik. Opsi D (ORC tanpa catalog) tidak bisa di-discover oleh Lake Formation dan tools lainnya.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>

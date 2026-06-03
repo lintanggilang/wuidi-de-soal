@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 3.1.8 - Use AWS Lambda to Automate Data Processing</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 3: Data Operations and Support (22%) &mdash; Task 3.1: Automate data processing by using AWS services</div>
+            <h1>Skill 3.1.8: Use AWS Lambda to Automate Data Processing</h1>
+            <p class="description">Lambda functions for event-driven data processing automation</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A data engineer needs to process messages from an Amazon SQS queue using AWS Lambda. Each message contains a reference to a file in S3 that needs to be transformed. During peak hours, the queue depth reaches 100,000 messages. The Lambda function takes 30 seconds per message. The team wants to process the backlog as quickly as possible without exceeding 100 concurrent Lambda invocations. Which configuration achieves this?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure the SQS event source mapping with a batch size of 1 and set the Lambda function's reserved concurrency to 100</li>
+                <li><span class="option-label">B.</span> Configure the SQS event source mapping with a batch size of 10 and maximum concurrency of 100 on the event source mapping</li>
+                <li><span class="option-label">C.</span> Set the SQS visibility timeout to 30 seconds and use provisioned concurrency of 100</li>
+                <li><span class="option-label">D.</span> Configure the SQS queue with a redrive policy and set Lambda timeout to 5 minutes</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Event source mapping maximum concurrency (fitur yang lebih baru) langsung membatasi jumlah concurrent Lambda invocations yang dipicu oleh SQS, memberikan kontrol yang presisi. Batch size 10 memproses lebih banyak pesan per invocation, mempercepat processing. Opsi A (reserved concurrency) membatasi fungsi secara global tetapi bisa menyebabkan throttling dan message kembali ke queue jika exceeded. Opsi C (provisioned concurrency) mengurangi cold starts tetapi tidak membatasi total concurrent invocations — reserved concurrency yang membatasi. Opsi D (redrive policy + timeout) tidak mengontrol concurrency.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A data pipeline uses Lambda to process records from a Kinesis Data Stream. When the Lambda function encounters a malformed record, it throws an error causing the entire batch to be retried repeatedly, blocking subsequent records in the shard. Which Lambda event source mapping configuration BEST handles this poison pill scenario?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure bisect on function error, maximum retry attempts, and an on-failure destination (SQS dead-letter queue) on the event source mapping</li>
+                <li><span class="option-label">B.</span> Set the Kinesis stream retention period to 24 hours so failed records expire automatically</li>
+                <li><span class="option-label">C.</span> Add try/catch in the Lambda code to skip all errors silently</li>
+                <li><span class="option-label">D.</span> Configure the Lambda function's dead-letter queue (async invocation DLQ) for failed events</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Untuk Kinesis event source mappings, "bisect on function error" memecah batch menjadi dua jika terjadi error, secara progresif mengisolasi record yang bermasalah. "Maximum retry attempts" membatasi berapa kali record diretryi. "On-failure destination" mengirim failed record ke SQS DLQ setelah retry limit tercapai, memungkinkan processing melanjutkan ke record berikutnya. Opsi B (retention expiry) berarti menunggu 24 jam — unacceptable delay. Opsi C (skip errors) kehilangan visibility ke masalah data. Opsi D (async DLQ) tidak berlaku untuk stream-based invocations (Kinesis) yang synchronous — DLQ pada fungsi hanya untuk async invocations.</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">Multiple Lambda functions in a data pipeline share common dependencies: a custom data validation library (50 MB), pandas (80 MB), and database connection utilities. Each function is deployed independently. The team wants to reduce deployment package sizes and centralize dependency management. Which Lambda feature is MOST appropriate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create Lambda layers containing the shared libraries and attach them to each function, updating the layer version when dependencies change</li>
+                <li><span class="option-label">B.</span> Package all functions into a single monolithic deployment with all dependencies included</li>
+                <li><span class="option-label">C.</span> Use container images for Lambda with a shared base image containing all dependencies</li>
+                <li><span class="option-label">D.</span> Store dependencies in Amazon EFS and mount the filesystem in each Lambda function</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Lambda layers memungkinkan packaging shared dependencies secara terpisah dari function code. Layers dapat di-share antar multiple functions dan di-version independently. Ketika dependency diupdate, hanya layer version baru yang di-publish dan functions menggunakan versi baru. Ini mengurangi deployment package size (function code tanpa dependencies) dan centralize management. Opsi B (monolithic) menghilangkan keuntungan microservices dan memperbesar blast radius. Opsi C (container images) viable tetapi lebih overhead untuk sharing dependencies. Opsi D (EFS) menambah latency cold start karena mount operation dan biaya EFS yang lebih tinggi.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A data engineering team has a Lambda function that processes files uploaded to S3. The function is invoked asynchronously. When processing fails after all retries, the team needs to be notified and the failed event should be routed to a different Lambda function for error analysis. Which Lambda feature provides built-in support for this routing pattern?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure Lambda destinations with an on-failure destination pointing to the error analysis Lambda function</li>
+                <li><span class="option-label">B.</span> Configure a dead-letter queue (DLQ) on the Lambda function pointing to an SQS queue consumed by the error analysis function</li>
+                <li><span class="option-label">C.</span> Use CloudWatch Logs subscription filters to detect error patterns and trigger the analysis function</li>
+                <li><span class="option-label">D.</span> Wrap the function in a Step Functions state machine with a Catch block</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Lambda destinations (fitur async invocation) memungkinkan routing hasil invocation — baik success maupun failure — ke target destinations seperti Lambda function, SQS, SNS, atau EventBridge. On-failure destination langsung mengirim event payload beserta error details ke Lambda lain untuk analysis. Ini lebih rich dibanding DLQ karena menyertakan response payload dan metadata. Opsi B (DLQ) bisa bekerja tetapi hanya mengirim original event tanpa error context details dan memerlukan intermediate SQS queue. Opsi C (CloudWatch) kompleks dan memiliki delay. Opsi D (Step Functions) overhead yang berlebihan untuk use case ini.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A data engineer needs to optimize a Lambda function that processes data files. The function currently uses 128 MB memory and takes 45 seconds to complete. Increasing memory to 1024 MB reduces execution time to 8 seconds. The team wants to find the optimal memory configuration that minimizes cost while maintaining acceptable performance (under 15 seconds). Which approach provides the MOST data-driven recommendation?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use AWS Lambda Power Tuning tool to automatically test multiple memory configurations and visualize the cost-performance tradeoff curve</li>
+                <li><span class="option-label">B.</span> Manually test 3-4 memory configurations and calculate the cost for each</li>
+                <li><span class="option-label">C.</span> Always use the maximum memory (10,240 MB) since more memory means more CPU and faster execution</li>
+                <li><span class="option-label">D.</span> Use AWS Compute Optimizer recommendations for the Lambda function</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">AWS Lambda Power Tuning adalah open-source tool (Step Functions-based) yang secara otomatis menjalankan fungsi dengan berbagai memory configurations, mengukur execution time dan cost untuk masing-masing, dan menghasilkan visualization curve yang menunjukkan sweet spot optimal. Ini data-driven dan comprehensive. Opsi B (manual testing) viable tetapi tidak se-comprehensive dan lebih time-consuming. Opsi C (max memory) mengabaikan cost optimization — setelah titik tertentu, more memory tidak mengurangi time secara proporsional. Opsi D (Compute Optimizer) memberikan rekomendasi tetapi kurang detail dibanding Power Tuning's multi-point analysis.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A real-time data processing pipeline uses Lambda to consume from DynamoDB Streams. The function processes change events and updates a search index. During a bulk data migration, thousands of items are updated simultaneously, causing Lambda throttling. The team needs to ensure no events are lost and the search index eventually becomes consistent. Which configuration handles this burst scenario?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure the DynamoDB Streams event source mapping with parallelization factor up to 10 and increase the function's reserved concurrency to handle the expected burst</li>
+                <li><span class="option-label">B.</span> Replace DynamoDB Streams with Kinesis Data Streams for higher throughput capacity</li>
+                <li><span class="option-label">C.</span> Add an SQS queue between DynamoDB Streams and Lambda to buffer the events</li>
+                <li><span class="option-label">D.</span> Reduce the batch window to 0 seconds to process events as quickly as possible</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Parallelization factor (1-10) memungkinkan multiple Lambda invocations per shard, meningkatkan throughput processing tanpa menambah shard. DynamoDB Streams mempertahankan records selama 24 jam, jadi data tidak hilang selama throttle — hanya processing tertunda. Increasing reserved concurrency memastikan fungsi memiliki kapasitas untuk burst. Opsi B (Kinesis) memerlukan redesign arsitektur yang signifikan. Opsi C (SQS buffer) tidak bisa disisipkan antara DynamoDB Streams dan Lambda — streams langsung trigger Lambda. Opsi D (batch window 0) justru meningkatkan invocations per record, memperburuk throttling.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A data processing Lambda function needs to handle files up to 5 GB in size from S3. The function performs data validation and transformation. The standard Lambda ephemeral storage (512 MB default) is insufficient for processing these files. Which approach enables processing large files in Lambda?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure Lambda ephemeral storage up to 10 GB (/tmp) and use streaming read/write with S3 to process the file in chunks without loading the entire file into memory</li>
+                <li><span class="option-label">B.</span> Mount an Amazon EFS filesystem to the Lambda function and use it as temporary storage for file processing</li>
+                <li><span class="option-label">C.</span> Split the file into smaller chunks using S3 Select before invoking the Lambda function</li>
+                <li><span class="option-label">D.</span> Increase Lambda memory to 10 GB to hold the entire file in memory during processing</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Lambda supports ephemeral storage (/tmp) up to 10,240 MB (10 GB), cukup untuk file 5 GB. Streaming processing (membaca dan menulis file dalam chunks) menghindari kebutuhan memuat seluruh file ke memory sekaligus, memungkinkan processing file besar dengan memory yang lebih kecil. Opsi B (EFS) viable tetapi menambah cold start latency (VPC + mount), biaya lebih tinggi, dan overhead konfigurasi. Opsi C (S3 Select) hanya mendukung subset format (CSV, JSON, Parquet) dan query sederhana, bukan transformasi kompleks. Opsi D (10 GB memory) wasteful dan mahal — memory lebih mahal dari ephemeral storage.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A company has an event-driven data pipeline where files uploaded to S3 trigger Lambda functions for processing. The pipeline consists of 5 sequential steps: validation, enrichment, transformation, quality check, and loading. Each step has different error handling requirements and some steps can run in parallel. Which architecture provides the BEST orchestration for this multi-step Lambda pipeline?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use AWS Step Functions to orchestrate the Lambda functions with parallel states, error handling (Retry/Catch), and conditional branching for each step</li>
+                <li><span class="option-label">B.</span> Chain Lambda functions using S3 event notifications — each step writes output to a different S3 prefix that triggers the next step</li>
+                <li><span class="option-label">C.</span> Use a single Lambda function that calls the other functions synchronously using the invoke API</li>
+                <li><span class="option-label">D.</span> Use SNS topics between each step with Lambda subscriptions</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">AWS Step Functions menyediakan orchestration visual dengan: parallel states untuk steps yang bisa run concurrently, Retry policies per step (configurable intervals, max attempts, backoff rate), Catch blocks untuk error handling spesifik per step, dan conditional branching (Choice state). Ini memberikan full control dan visibility atas multi-step pipeline. Opsi B (S3 event chaining) sulit di-debug, tidak memiliki built-in retry, dan tidak mendukung conditional logic. Opsi C (synchronous invoke) menghadapi Lambda timeout limit dan single point of failure. Opsi D (SNS) bersifat fire-and-forget tanpa orchestration state atau error handling.</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A data engineering team has a Lambda function triggered by S3 PUT events that processes incoming data files. They notice that when multiple small files are uploaded simultaneously (e.g., 1000 files in 1 second), the Lambda function hits the account's concurrent execution limit, causing some invocations to be throttled and events to be lost. Which solution prevents event loss while managing concurrency?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Route S3 events to an SQS queue, then configure Lambda to poll the queue with a maximum concurrency setting on the event source mapping</li>
+                <li><span class="option-label">B.</span> Increase the AWS account Lambda concurrent execution limit and add reserved concurrency to the function</li>
+                <li><span class="option-label">C.</span> Configure S3 Event Notifications with a filter to only process files matching specific prefixes</li>
+                <li><span class="option-label">D.</span> Enable Lambda provisioned concurrency to pre-warm 1000 execution environments</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Menempatkan SQS queue antara S3 events dan Lambda memberikan buffering — events tidak hilang karena persisted di queue. Lambda SQS event source mapping dengan maximum concurrency setting mengontrol berapa banyak concurrent invocations, mencegah throttling. SQS messages di-retry secara otomatis jika processing gagal. Opsi B (increase limit) mungkin tidak cukup untuk extreme bursts dan meningkatkan biaya. Opsi C (prefix filter) mengurangi events tetapi tidak menyelesaikan concurrency issue untuk files yang match filter. Opsi D (provisioned concurrency) mengurangi cold starts tetapi tidak mencegah throttling jika invocations melebihi reserved concurrency.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A data platform exposes a simple HTTP endpoint that returns processed analytics results. The endpoint needs to: accept GET requests with query parameters, return JSON responses, require no authentication (public data), and handle up to 1000 requests per second. The team wants the simplest possible deployment without API Gateway. Which Lambda feature meets this requirement?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure a Lambda function URL with auth type NONE and set reserved concurrency to handle the expected load</li>
+                <li><span class="option-label">B.</span> Deploy the Lambda function behind an Application Load Balancer with a target group</li>
+                <li><span class="option-label">C.</span> Use Lambda@Edge associated with a CloudFront distribution</li>
+                <li><span class="option-label">D.</span> Create an API Gateway HTTP API with no authorizer configured</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Lambda function URLs menyediakan dedicated HTTPS endpoint langsung untuk Lambda function tanpa memerlukan API Gateway atau load balancer. Dengan auth type NONE, endpoint menjadi public. Function URLs mendukung request/response streaming, built-in HTTPS, dan CORS configuration. Ini adalah solusi paling sederhana untuk simple HTTP endpoints. Opsi B (ALB) memerlukan provisioning dan biaya load balancer. Opsi C (Lambda@Edge) untuk content customization di edge, bukan general-purpose API. Opsi D (API Gateway) bekerja tetapi requirement spesifik menyebutkan "tanpa API Gateway" — dan function URL lebih sederhana untuk use case ini.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>

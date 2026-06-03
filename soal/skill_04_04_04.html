@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 4.4.4 - Analyze Logs by Using AWS Services</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 4: Data Security and Governance (18%) &mdash; Task 4.4: Prepare logs for audit</div>
+            <h1>Skill 4.4.4: Analyze Logs by Using AWS Services</h1>
+            <p class="description">Athena, CloudWatch Logs Insights, Amazon OpenSearch Service for log analysis</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A data engineering team stores CloudTrail logs in S3 partitioned by year/month/day. They need to query these logs to investigate a security incident that occurred on a specific date. The CloudTrail log bucket contains 5 years of data totaling 50 TB. The team wants to minimize query costs. Which Athena configuration provides the MOST cost-effective querying?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create an Athena table with Hive-style partitioning matching the S3 path structure and use WHERE clauses on partition columns</li>
+                <li><span class="option-label">B.</span> Create an Athena table without partitions and use the built-in CloudTrail SerDe to filter by eventTime</li>
+                <li><span class="option-label">C.</span> Use Athena partition projection with date-type partition keys matching the S3 path pattern to avoid partition metadata management</li>
+                <li><span class="option-label">D.</span> Create a CTAS (Create Table As Select) query to copy the relevant day's data to a new table in Parquet format, then query that table</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Partition projection menghilangkan kebutuhan untuk menjalankan MSCK REPAIR TABLE atau menambah partisi secara manual, yang sangat penting untuk data yang terus bertambah setiap hari. Dengan date-type projection matching path pattern (s3://bucket/AWSLogs/account/CloudTrail/region/yyyy/mm/dd/), Athena secara otomatis menghitung partisi tanpa metadata calls ke Glue catalog. Query dengan WHERE date = '2024-03-15' hanya scan data hari itu (~27 GB vs 50 TB), sangat mengurangi biaya. Opsi A berfungsi tapi memerlukan maintenance partisi manual. Opsi B tanpa partisi akan scan seluruh 50 TB (sangat mahal). Opsi D (CTAS) memerlukan scan full data terlebih dahulu dan menambah biaya storage.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A DevOps engineer needs to quickly identify the top 10 Lambda functions generating the most errors in the past hour across all production Lambda log groups. The log groups follow the naming pattern /aws/lambda/prod-*. The engineer needs results within seconds. Which tool and approach is MOST appropriate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Amazon Athena to query exported Lambda logs in S3 with a GROUP BY function name</li>
+                <li><span class="option-label">B.</span> Use CloudWatch Logs Insights to query multiple log groups simultaneously with a stats command grouping by function name</li>
+                <li><span class="option-label">C.</span> Use Amazon OpenSearch Service with a pre-built Kibana dashboard showing Lambda error rates</li>
+                <li><span class="option-label">D.</span> Use CloudWatch Metrics to view the Errors metric filtered by FunctionName dimension</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">CloudWatch Logs Insights dapat query hingga 50 log groups secara bersamaan dan memberikan hasil dalam hitungan detik untuk data recent. Query: `filter @message like /ERROR/ | stats count(*) as errorCount by @logGroup | sort errorCount desc | limit 10` akan memberikan top 10 functions dengan error terbanyak. Mendukung wildcard pattern untuk log group selection. Opsi A (Athena) memerlukan export ke S3 terlebih dahulu dan tidak memberikan hasil real-time. Opsi C (OpenSearch) memerlukan setup dan ingestion pipeline yang sudah berjalan — bukan solusi "quick". Opsi D (CloudWatch Metrics) menunjukkan error count per function tapi tidak memberikan ranking top-N dalam satu query dan memerlukan navigasi manual.</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A company needs to build a real-time security dashboard that displays: login failures, API throttling events, and unauthorized access attempts with sub-second search latency. The dashboard must support full-text search across all log fields and provide alerting capabilities. Data volume is 2 TB per day. Which AWS service is BEST suited for this use case?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Amazon Athena with scheduled queries feeding a QuickSight dashboard</li>
+                <li><span class="option-label">B.</span> CloudWatch Logs Insights with CloudWatch Dashboards and CloudWatch Alarms</li>
+                <li><span class="option-label">C.</span> Amazon OpenSearch Service with OpenSearch Dashboards and alerting plugin</li>
+                <li><span class="option-label">D.</span> Amazon Redshift Serverless with materialized views refreshed every minute</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Amazon OpenSearch Service memenuhi semua requirements: sub-second search latency melalui inverted indexing, full-text search across all fields, real-time dashboards via OpenSearch Dashboards (Kibana successor), dan built-in alerting plugin untuk notifications. Dengan 2 TB/day, OpenSearch dapat menangani volume ini dengan cluster yang appropriately sized. Opsi A (Athena + QuickSight) bersifat batch dan tidak memberikan sub-second latency untuk interactive search. Opsi B (CloudWatch Logs Insights) memiliki query latency beberapa detik dan tidak mendukung full-text search dengan sub-second response pada 2 TB daily data. Opsi D (Redshift) tidak dioptimasi untuk full-text search dan materialized view refresh setiap menit bukan real-time.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A data engineer writes the following CloudWatch Logs Insights query to analyze API Gateway access logs but gets no results despite logs being present in the log group. What is the MOST likely issue?<br><br><code>fields @timestamp, @message | filter status >= 500 | stats count(*) by bin(5m)</code></div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The bin() function requires a time field parameter — it should be bin(@timestamp, 5m)</li>
+                <li><span class="option-label">B.</span> The field "status" needs to be parsed from the log message first using the parse command since API Gateway logs store it as part of a JSON or text string</li>
+                <li><span class="option-label">C.</span> CloudWatch Logs Insights does not support the >= comparison operator for string fields</li>
+                <li><span class="option-label">D.</span> The stats command cannot be used after a filter command — the order must be reversed</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">API Gateway access logs, jika dalam format custom atau CLF, menyimpan status code sebagai bagian dari pesan log. CloudWatch Logs Insights memerlukan `parse` command untuk mengekstrak fields dari log messages yang tidak dalam format JSON yang otomatis di-discover. Contoh: `parse @message "* * * *" as ip, method, path, status | filter status >= 500`. Untuk JSON logs, fields otomatis tersedia tapi harus direferensikan dengan prefix yang benar. Opsi A salah — `bin(5m)` adalah syntax valid yang menggunakan @timestamp secara implisit. Opsi C salah — >= operator bekerja setelah field di-parse dengan benar. Opsi D salah — filter sebelum stats adalah urutan yang benar dan valid.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A company has the following log analysis requirements: (1) VPC Flow Logs — 500 GB/day, queried weekly for compliance reports, (2) Application logs — 50 GB/day, queried interactively multiple times daily, (3) CloudTrail logs — 10 GB/day, queried occasionally during investigations. Which combination of tools provides the MOST cost-effective solution while meeting latency requirements?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Amazon OpenSearch Service for all three log types with index lifecycle management for cost optimization</li>
+                <li><span class="option-label">B.</span> VPC Flow Logs → Athena (S3 with Parquet), Application logs → CloudWatch Logs Insights, CloudTrail → CloudTrail Lake</li>
+                <li><span class="option-label">C.</span> VPC Flow Logs → Athena (S3 with partitioned Parquet), Application logs → OpenSearch Service, CloudTrail → Athena with partition projection</li>
+                <li><span class="option-label">D.</span> Use CloudWatch Logs Insights for all three log types since they all originate from AWS services</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Solusi optimal memilih tool berdasarkan volume, frekuensi query, dan latency requirement: (1) VPC Flow Logs 500 GB/day yang di-query weekly cocok untuk Athena + S3 Parquet — biaya storage rendah dan bayar per query, partisi mengurangi scan. (2) Application logs 50 GB/day dengan interactive queries multiple times/day cocok untuk OpenSearch yang memberikan sub-second latency dan rich dashboards. (3) CloudTrail 10 GB/day yang jarang di-query cocok untuk Athena — biaya sangat rendah karena jarang query. Opsi A (OpenSearch untuk semua) sangat mahal untuk 500 GB/day VPC logs yang jarang diquery. Opsi B bisa bekerja tapi CloudWatch Logs Insights kurang ideal untuk 50 GB/day interactive analysis dan CloudTrail Lake mahal untuk occasional queries. Opsi D — CloudWatch Logs Insights memiliki biaya ingestion tinggi untuk 500 GB/day.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A data engineer needs to create an Athena table for structured query of CloudTrail logs stored in S3. The logs are in JSON format with nested fields like userIdentity, requestParameters, and responseElements. Which table creation approach provides the BEST query performance and cost efficiency?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use CREATE TABLE with the CloudTrail SerDe (com.amazon.emr.hive.serde.CloudTrailSerde) and define the full nested schema including partition columns for date</li>
+                <li><span class="option-label">B.</span> Use CREATE TABLE with OpenX JSON SerDe (org.openx.data.jsonserde.JsonSerDe) and define all fields as STRING type for simplicity</li>
+                <li><span class="option-label">C.</span> Use CREATE TABLE with the CloudTrail SerDe, define struct types for nested fields, add partition projection for date-based partitions</li>
+                <li><span class="option-label">D.</span> Use CTAS to convert all CloudTrail JSON to Parquet format with columnar storage, then query the Parquet table</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Menggunakan CloudTrail SerDe yang didesain khusus untuk format CloudTrail JSON, mendefinisikan struct types untuk nested fields (userIdentity STRUCT<type:string, principalId:string, arn:string,...>), dan partition projection untuk tanggal memberikan kombinasi terbaik. Struct types memungkinkan dot notation queries (userIdentity.arn) dan partition projection mengeliminasi overhead metadata management. Opsi A tanpa partition projection memerlukan manual partition management. Opsi B (semua STRING) kehilangan kemampuan query nested fields secara langsung — harus menggunakan JSON functions yang lebih lambat. Opsi D (CTAS ke Parquet) memberikan performance terbaik per-query tapi memerlukan proses konversi ongoing dan double storage costs.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A company uses Amazon OpenSearch Service for log analytics. Their OpenSearch cluster stores 30 days of hot data (5 TB) for dashboards and alerting. After 30 days, data should still be searchable but with relaxed latency requirements (up to 10 seconds). After 90 days, data should be archived for compliance only. Which index lifecycle configuration is MOST cost-effective?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Hot tier (0-30 days) → Delete after 30 days and export to S3 for Athena queries</li>
+                <li><span class="option-label">B.</span> Hot tier (0-30 days) → UltraWarm tier (30-90 days) → Cold storage (90+ days)</li>
+                <li><span class="option-label">C.</span> Hot tier (0-30 days) → Warm tier (30-90 days) → Delete after 90 days with snapshots to S3</li>
+                <li><span class="option-label">D.</span> Single hot tier for all data with force merge of older indices to reduce shard count</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">OpenSearch Service menyediakan tiga tiers: Hot (instance store/EBS, fastest), UltraWarm (S3-backed, cost-effective untuk data yang jarang diakses tapi masih searchable), dan Cold storage (paling murah, data harus di-attach kembali ke warm sebelum bisa di-search). Konfigurasi B memenuhi semua requirements: hot untuk dashboards real-time (0-30d), UltraWarm untuk searchable dengan latency lebih tinggi (30-90d), cold untuk compliance archival (90d+). Opsi A kehilangan kemampuan search di OpenSearch setelah 30 hari. Opsi C menghapus data setelah 90 hari padahal compliance masih memerlukan retention. Opsi D sangat mahal karena hot tier untuk semua data.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A data platform team wants to identify the top contributors to high API error rates using CloudWatch. They need to see which specific API endpoints, client IPs, and user agents contribute most to 5xx errors, updated in real-time. Which CloudWatch feature is specifically designed for this type of top-N analysis?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> CloudWatch Metrics with high-resolution custom metrics and dimension filtering</li>
+                <li><span class="option-label">B.</span> CloudWatch Contributor Insights with rules matching error status codes and grouping by endpoint, IP, and user agent</li>
+                <li><span class="option-label">C.</span> CloudWatch Logs Insights with stats command and sort by count descending</li>
+                <li><span class="option-label">D.</span> CloudWatch Anomaly Detection to identify unusual patterns in error rates per dimension</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">CloudWatch Contributor Insights dirancang khusus untuk top-N analysis secara real-time. Rules dapat dikonfigurasi untuk memfilter log events (misalnya status >= 500) dan mengelompokkan berdasarkan field keys (endpoint, sourceIP, userAgent). Dashboard secara otomatis menampilkan top contributors yang berubah secara real-time. Opsi A (custom metrics) memerlukan pre-aggregation dan tidak memberikan dynamic top-N ranking. Opsi C (Logs Insights) bukan real-time — setiap query adalah point-in-time dan harus dijalankan ulang secara manual. Opsi D (Anomaly Detection) mendeteksi deviasi dari baseline tapi tidak dirancang untuk ranking top contributors.</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A company spends $15,000/month on log analytics across multiple tools. Their current setup uses OpenSearch Service for all log types (application, infrastructure, security) with 10 TB of active data. Most queries target the last 24 hours of security logs (500 GB). Infrastructure logs (7 TB) are queried only monthly for capacity planning. Which optimization reduces costs the MOST while maintaining functionality?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Migrate all logs from OpenSearch to CloudWatch Logs Insights to eliminate cluster management costs</li>
+                <li><span class="option-label">B.</span> Keep security and application logs in OpenSearch (3 TB), move infrastructure logs to S3 and query with Athena monthly</li>
+                <li><span class="option-label">C.</span> Reduce OpenSearch instance sizes and enable UltraWarm for all data older than 1 hour</li>
+                <li><span class="option-label">D.</span> Replace OpenSearch entirely with Amazon Managed Grafana querying CloudWatch metrics</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Infrastructure logs (7 TB) yang hanya di-query monthly merupakan 70% dari active data tapi jarang diakses. Memindahkannya ke S3 (biaya ~$0.023/GB/month) dan query dengan Athena ($5/TB scanned) monthly jauh lebih murah dari menyimpan di OpenSearch hot nodes. Mengecilkan OpenSearch cluster dari 10 TB ke 3 TB memberikan penghematan signifikan pada instance costs. Opsi A (CloudWatch Logs Insights) akan sangat mahal untuk 10 TB data ingestion. Opsi C (UltraWarm setelah 1 jam) terlalu agresif dan membuat interactive queries lambat untuk security investigation. Opsi D (Grafana + CloudWatch Metrics) kehilangan kemampuan full log analysis — metrics bukan pengganti log search.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A data engineer needs to create a CloudWatch Logs Insights query that calculates the p99 latency for each API endpoint from application logs. The logs are in JSON format with fields: endpoint, method, latency_ms, status_code, and timestamp. Which query correctly produces the p99 latency per endpoint sorted by highest latency first?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> fields endpoint, latency_ms | stats percentile(latency_ms, 99) as p99 by endpoint | sort p99 desc</li>
+                <li><span class="option-label">B.</span> fields endpoint, latency_ms | stats pct(latency_ms, 99) as p99 by endpoint | sort p99 desc</li>
+                <li><span class="option-label">C.</span> filter ispresent(latency_ms) | stats avg(latency_ms) as p99 by endpoint | sort p99 desc</li>
+                <li><span class="option-label">D.</span> fields endpoint, latency_ms | stats p99(latency_ms) as p99_latency by endpoint | sort p99_latency desc</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Dalam CloudWatch Logs Insights, fungsi `percentile(field, percent)` menghitung persentil yang ditentukan. Syntax `stats percentile(latency_ms, 99) as p99 by endpoint` mengelompokkan berdasarkan endpoint dan menghitung p99 latency. `sort p99 desc` mengurutkan dari tertinggi. Opsi B menggunakan `pct()` yang bukan fungsi valid di CloudWatch Logs Insights — fungsi yang benar adalah `percentile()`. Opsi C menggunakan `avg()` yang menghitung rata-rata, bukan persentil ke-99. Opsi D menggunakan `p99()` yang bukan syntax function yang valid — harus menggunakan percentile(field, 99).</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>

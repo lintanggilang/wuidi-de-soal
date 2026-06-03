@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 4.4.5 - Integrate Various AWS Services to Perform Logging</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 4: Data Security and Governance (18%) &mdash; Task 4.4: Prepare logs for audit</div>
+            <h1>Skill 4.4.5: Integrate Various AWS Services to Perform Logging</h1>
+            <p class="description">Amazon EMR and other services for large-scale log data processing and analysis</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A large e-commerce company generates 5 TB of log data daily from multiple sources: CloudTrail (management and data events), VPC Flow Logs, application logs from ECS containers, and WAF logs. They need to aggregate all logs into a central data lake for unified security analysis and compliance reporting. The solution must handle the high volume with minimal data loss. Which architecture is MOST appropriate for log ingestion at this scale?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Each log source → CloudWatch Logs → Subscription filters → Amazon Data Firehose → S3 data lake</li>
+                <li><span class="option-label">B.</span> Each log source → Amazon Data Firehose (direct PUT or service integrations) → S3 data lake with dynamic partitioning</li>
+                <li><span class="option-label">C.</span> Each log source → Amazon Kinesis Data Streams → AWS Lambda consumers → S3 data lake</li>
+                <li><span class="option-label">D.</span> Each log source → S3 direct delivery → AWS Glue ETL jobs (scheduled hourly) → S3 data lake (curated)</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Amazon Data Firehose (sebelumnya Kinesis Data Firehose) adalah solusi paling tepat untuk high-volume log ingestion ke S3. Firehose mendukung direct integration dari banyak AWS services (VPC Flow Logs, WAF, CloudTrail), auto-scaling tanpa management, built-in buffering untuk batch writes yang efisien ke S3, dynamic partitioning untuk organisasi data, dan format conversion (JSON ke Parquet). Opsi A menambahkan hop melalui CloudWatch Logs yang menambah biaya ingestion dan latency — tidak perlu untuk route ke S3. Opsi C (Lambda consumers) memiliki concurrency limits dan timeout yang membuatnya tidak ideal untuk 5 TB/day. Opsi D (hourly Glue jobs) memiliki gap 1 jam dan Glue tidak ideal untuk continuous ingestion.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A financial services company needs to process 10 TB of historical CloudTrail logs stored in S3 to identify potential compliance violations. The processing involves parsing JSON, joining with an IAM policy database, applying complex business rules, and generating summary reports. The job should complete within 4 hours. Which AWS service is BEST suited for this batch processing task?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> AWS Glue ETL with Spark jobs using DynamicFrames</li>
+                <li><span class="option-label">B.</span> Amazon EMR with Spark configured with memory-optimized instances for the 10 TB dataset</li>
+                <li><span class="option-label">C.</span> Amazon Athena CTAS queries to transform and filter the logs</li>
+                <li><span class="option-label">D.</span> AWS Lambda with S3 batch operations processing each log file independently</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Amazon EMR dengan Spark memberikan kontrol penuh atas cluster sizing, memory configuration, dan processing optimization yang diperlukan untuk 10 TB data dengan complex joins dan business rules dalam batas waktu 4 jam. Memory-optimized instances (r5/r6g) optimal untuk large-scale data joining. EMR juga mendukung custom libraries untuk business rules. Opsi A (Glue) memiliki auto-scaling tapi less control over cluster configuration dan bisa kurang predictable untuk strict 4-hour SLA pada 10 TB. Opsi C (Athena CTAS) tidak mendukung complex business rules, custom UDFs terbatas, dan memiliki query timeout limits. Opsi D (Lambda) tidak bisa melakukan joins cross-file dan memiliki 15-minute timeout per invocation.</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A company needs to combine CloudTrail logs, VPC Flow Logs, and DNS query logs for security correlation analysis. Each log source has a different schema and timestamp format. The combined dataset must be queryable with a unified schema in their data lake. Which approach provides the MOST maintainable solution for log format standardization?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Amazon Data Firehose with Lambda transformation functions to normalize each log source to a common schema before delivery to S3</li>
+                <li><span class="option-label">B.</span> Store raw logs in S3 and create Athena views that normalize schemas using CASE statements and type casting</li>
+                <li><span class="option-label">C.</span> Use AWS Glue ETL crawlers to auto-detect schemas and create a unified Glue Data Catalog with consistent column naming</li>
+                <li><span class="option-label">D.</span> Define an OCSF (Open Cybersecurity Schema Framework) schema in AWS Glue, use Glue ETL jobs to transform each source to OCSF format, store in S3 as Parquet</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">OCSF (Open Cybersecurity Schema Framework) adalah standar industri untuk normalisasi security log data. Menggunakan AWS Glue ETL untuk mentransformasi setiap sumber ke format OCSF memberikan: (1) schema yang konsisten dan well-documented, (2) Parquet format untuk query efficiency, (3) maintainability karena OCSF adalah standard yang evolving dengan community support. AWS Security Lake juga menggunakan OCSF. Opsi A (Firehose Lambda) berfungsi tapi custom schema tanpa standard bisa menjadi maintenance burden. Opsi B (Athena views) tidak mentransformasi data fisik dan views bisa menjadi complex dan lambat. Opsi C (crawlers) mendeteksi schema tapi tidak menormalkan — setiap sumber tetap memiliki schema berbeda.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A multinational company has 200 AWS accounts across 4 regions. They need a log aggregation architecture that: (1) collects all logs centrally, (2) allows each business unit to query only their own logs, (3) provides a unified view for the security team, and (4) minimizes cross-region data transfer costs. Which architecture is MOST appropriate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Send all logs to a central S3 bucket in one region, use Lake Formation for fine-grained access control per business unit, and accept cross-region transfer costs</li>
+                <li><span class="option-label">B.</span> Store logs in regional S3 buckets, replicate to a central bucket for security team, use S3 Access Points and IAM policies per business unit</li>
+                <li><span class="option-label">C.</span> Use AWS Security Lake to automatically collect and centralize security logs with subscriber-based access per business unit</li>
+                <li><span class="option-label">D.</span> Deploy OpenSearch clusters in each region with cross-cluster search for the security team and index-level access control per business unit</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">AWS Security Lake secara otomatis mengumpulkan log dari berbagai AWS sources (CloudTrail, VPC Flow Logs, Route 53, Security Hub findings, dll), menormalisasi ke OCSF schema, dan menyimpan di S3. Security Lake mendukung rollup regions untuk mengurangi cross-region transfer, subscriber-based access control yang memungkinkan business units hanya melihat data mereka, dan delegated administrator untuk security team. Opsi A (central bucket satu region) maximizes cross-region transfer costs. Opsi B (regional + replication) menggandakan storage dan memerlukan custom access management. Opsi D (OpenSearch per region) sangat mahal untuk 200 accounts dan memerlukan cluster management yang signifikan.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A data engineer needs to build a real-time log processing pipeline that: detects security threats within 30 seconds of log generation, enriches events with threat intelligence data, and stores processed events for historical analysis. The pipeline processes 100,000 events per second from multiple log sources. Which architecture provides the LOWEST detection latency?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Log sources → Amazon Data Firehose → S3 → Lambda (triggered by S3) → threat detection → DynamoDB</li>
+                <li><span class="option-label">B.</span> Log sources → Amazon Kinesis Data Streams → Amazon Managed Service for Apache Flink → threat detection with enrichment → Firehose → S3 + OpenSearch</li>
+                <li><span class="option-label">C.</span> Log sources → CloudWatch Logs → Metric Filters → CloudWatch Alarms → SNS → Lambda → threat detection</li>
+                <li><span class="option-label">D.</span> Log sources → Amazon MSK → Spark Streaming on EMR → threat detection → Redshift for storage</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Kinesis Data Streams → Managed Flink memberikan latency terendah untuk real-time processing: Kinesis memberikan sub-second delivery, dan Flink memproses events secara streaming dengan stateful enrichment (lookup ke threat intelligence database menggunakan async I/O). Output ke Firehose → S3 untuk historical analysis dan OpenSearch untuk real-time dashboards. Opsi A (Firehose → S3 → Lambda) memiliki buffering delay Firehose (minimum 60 seconds) yang melebihi requirement 30 detik. Opsi C (CloudWatch metric filters) hanya detect berdasarkan pattern count, bukan enrichment-based threat detection, dan alarm evaluation adds latency. Opsi D (EMR Spark Streaming) memiliki micro-batch latency lebih tinggi dari Flink dan EMR cluster startup time menjadi masalah.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A company stores 2 PB of historical log data in S3 across multiple years. They need to generate a one-time compliance report that requires scanning all data to find specific patterns of unauthorized access. The report must be delivered within 48 hours. Cost optimization is critical as this is a one-time job. Which approach is MOST cost-effective?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Amazon EMR with Spot instances running Spark to process all 2 PB of data</li>
+                <li><span class="option-label">B.</span> Use Amazon Athena to query the data directly in S3 using partition pruning where possible</li>
+                <li><span class="option-label">C.</span> Launch a large Amazon Redshift Serverless endpoint and use COPY to load all data for analysis</li>
+                <li><span class="option-label">D.</span> Use AWS Glue with auto-scaling workers to process the data in parallel</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Untuk one-time processing 2 PB data, EMR dengan Spot instances memberikan biaya terendah. Spot instances bisa 60-90% lebih murah dari On-Demand. EMR Spark memberikan full kontrol over cluster sizing dan processing parallelism untuk memenuhi 48-hour deadline. Untuk one-time jobs, Spot interruption bisa ditangani dengan checkpointing. Opsi B (Athena) charges $5/TB scanned = $10,000 untuk 2 PB, tanpa Spot pricing benefit, dan memiliki concurrent query limits. Opsi C (Redshift) memerlukan loading 2 PB yang sendiri memakan waktu signifikan dan sangat mahal untuk one-time use. Opsi D (Glue) memiliki per-DPU-hour pricing yang biasanya lebih mahal dari EMR Spot untuk workloads berskala besar.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A company's compliance team requires a monthly report showing: total API calls per service, unique IAM principals accessing production resources, any access from non-approved IP ranges, and data access patterns on S3 sensitive buckets. The data sources include CloudTrail logs, VPC Flow Logs, and S3 access logs. Which approach provides the MOST automated and repeatable reporting solution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use AWS Glue ETL jobs scheduled monthly to process all log sources, generate summary tables in a Glue Data Catalog, and visualize with Amazon QuickSight</li>
+                <li><span class="option-label">B.</span> Create Athena saved queries for each report metric and manually run them monthly</li>
+                <li><span class="option-label">C.</span> Use CloudWatch Logs Insights with saved queries and export results to S3 monthly</li>
+                <li><span class="option-label">D.</span> Build a custom dashboard in Amazon Managed Grafana querying CloudWatch metrics</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Glue ETL jobs yang dijadwalkan bulanan memberikan solusi paling otomatis dan repeatable: scheduled triggers memastikan jobs berjalan tanpa intervensi manual, jobs dapat memproses multiple log sources (CloudTrail + VPC Flow Logs + S3 access logs), menghasilkan summary tables yang terstruktur di Data Catalog, dan QuickSight dashboards otomatis refresh dari summary tables. Opsi B (manual Athena queries) tidak otomatis — memerlukan human intervention setiap bulan. Opsi C (CloudWatch Logs Insights) memiliki batas query scope dan tidak bisa join antar log sources yang berbeda. Opsi D (Grafana + CloudWatch Metrics) hanya menampilkan metrics, bukan detailed log analysis yang diperlukan untuk unique principals dan IP range checking.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A data platform team manages a log storage system on S3 that grows 500 GB daily. After 30 days, logs are rarely accessed but must be retained for 7 years. After 1 year, logs are never accessed unless for legal hold. The team wants to minimize storage costs without losing data accessibility when needed. Which S3 storage tiering strategy is MOST cost-effective?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> S3 Standard (0-30 days) → S3 Standard-IA (30-365 days) → S3 Glacier Deep Archive (365+ days)</li>
+                <li><span class="option-label">B.</span> S3 Standard (0-30 days) → S3 Glacier Instant Retrieval (30-365 days) → S3 Glacier Deep Archive (365+ days)</li>
+                <li><span class="option-label">C.</span> S3 Intelligent-Tiering for all data with Archive Access and Deep Archive Access tiers enabled</li>
+                <li><span class="option-label">D.</span> S3 Standard (0-30 days) → S3 One Zone-IA (30-365 days) → S3 Glacier Flexible Retrieval (365+ days)</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">S3 Glacier Instant Retrieval optimal untuk data yang diakses jarang (sekali per kuartal) tapi memerlukan millisecond retrieval ketika diakses — cocok untuk 30-365 hari di mana akses jarang tapi harus segera available. Deep Archive (365+ hari) memberikan biaya terendah ($0.00099/GB/month) untuk data yang hampir tidak pernah diakses kecuali legal hold (retrieval dalam 12 jam masih acceptable). Opsi A (Standard-IA) lebih mahal dari Glacier Instant Retrieval untuk akses yang sangat jarang. Opsi C (Intelligent-Tiering) menambah monitoring fee per object yang signifikan untuk 500 GB/day × 7 years = jutaan objects. Opsi D (One Zone-IA) tidak memiliki multi-AZ durability yang kurang tepat untuk compliance logs.</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A company uses Amazon Data Firehose to deliver VPC Flow Logs to S3 for analysis. They notice that Athena queries on the delivered data are slow and expensive because the files are small (5 MB each) and in JSON format. Which Firehose configuration changes will MOST improve Athena query performance?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Increase the Firehose buffer size to 128 MB and buffer interval to 900 seconds to create larger files</li>
+                <li><span class="option-label">B.</span> Enable Firehose data format conversion to Apache Parquet with Snappy compression, and increase buffer size to 128 MB</li>
+                <li><span class="option-label">C.</span> Add a Lambda transformation function to compress JSON files with GZIP before delivery</li>
+                <li><span class="option-label">D.</span> Enable Firehose dynamic partitioning to organize files by source IP and destination IP</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Konversi ke Parquet memberikan improvement terbesar untuk Athena: columnar format memungkinkan Athena hanya membaca kolom yang diperlukan (mengurangi data scanned signifikan), Snappy compression mengurangi ukuran file lebih lanjut, dan buffer 128 MB menghasilkan file berukuran optimal untuk Athena (ideal 128 MB-512 MB). Kombinasi Parquet + larger files bisa mengurangi query cost dan waktu hingga 90%. Opsi A (larger buffer only) masih JSON row-format yang memaksa full file scan. Opsi C (GZIP JSON) mengurangi storage tapi Athena masih harus decompress dan scan seluruh file karena row-format. Opsi D (dynamic partitioning) membantu filter tapi tanpa columnar format, improvement terbatas.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A security operations center (SOC) needs to correlate events across CloudTrail, GuardDuty findings, VPC Flow Logs, and custom application security logs in near real-time. When a high-severity correlation is detected (e.g., GuardDuty finding + unusual VPC traffic from same IP within 5 minutes), an alert must be triggered. Which architecture provides the MOST effective real-time correlation?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> All sources → S3 data lake → Athena scheduled queries every 5 minutes → SNS for alerting</li>
+                <li><span class="option-label">B.</span> All sources → Amazon Kinesis Data Streams → Amazon Managed Service for Apache Flink with windowed joins → SNS/Lambda for alerting</li>
+                <li><span class="option-label">C.</span> All sources → Amazon EventBridge → EventBridge rules with pattern matching → Lambda for correlation → SNS</li>
+                <li><span class="option-label">D.</span> All sources → CloudWatch Logs → CloudWatch Contributor Insights → CloudWatch Alarms → SNS</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Apache Flink (via Managed Service) adalah satu-satunya opsi yang mendukung windowed joins — kemampuan untuk menggabungkan events dari multiple streams dalam time window tertentu (5 menit). Flink memproses events secara stateful, menyimpan state per IP address, dan mendeteksi ketika GuardDuty finding dan unusual VPC traffic dari IP yang sama terjadi dalam window 5 menit. Ini memberikan true real-time correlation. Opsi A (scheduled Athena) memiliki latency 5+ menit dan bukan streaming. Opsi C (EventBridge) hanya melakukan single-event pattern matching — tidak mendukung temporal correlation antar events berbeda. Opsi D (Contributor Insights) melakukan top-N analysis, bukan multi-source temporal correlation.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>
