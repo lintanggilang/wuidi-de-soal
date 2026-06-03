@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 1.4.8 - Use Infrastructure as Code (IaC) for Repeatable Resource Deployment</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 1: Data Ingestion and Transformation (34%) &mdash; Task 1.4: Apply programming concepts</div>
+            <h1>Skill 1.4.8: Use Infrastructure as Code (IaC) for Repeatable Resource Deployment</h1>
+            <p class="description">AWS CloudFormation and AWS CDK for consistent, repeatable data infrastructure deployment</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A data engineering team updates a CloudFormation stack that manages their Redshift cluster. The update changes the ClusterType from single-node to multi-node and modifies the NodeType. During the update, CloudFormation shows the resource will be "replaced" rather than "modified in-place." What should the team understand about this behavior and how should they proceed safely?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use a CloudFormation change set to preview the replacement behavior before execution. If Redshift requires replacement, ensure a snapshot exists, add a DeletionPolicy: Snapshot to the resource, and verify that dependent resources (security groups, IAM roles) will correctly reference the new cluster after replacement</li>
+                <li><span class="option-label">B.</span> Proceed with the update immediately since CloudFormation always handles replacements gracefully without data loss</li>
+                <li><span class="option-label">C.</span> Cancel the update and manually resize the cluster through the console instead</li>
+                <li><span class="option-label">D.</span> Delete the stack and recreate it with the new configuration to avoid replacement complexity</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Change sets preview exactly what CloudFormation will do — Add, Modify, Replace, or Delete each resource. For stateful resources like Redshift, "Replace" means the old cluster is deleted and a new one created. DeletionPolicy: Snapshot ensures a snapshot is taken before the old cluster is destroyed, enabling recovery. Verifying dependent resources prevents broken references after the new cluster gets a different endpoint. Opsi B — replacement of data stores CAN cause data loss if DeletionPolicy isn't configured properly. Opsi C — manual changes create drift between template and reality. Opsi D — deleting the entire stack destroys all resources unnecessarily and causes extended downtime.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A data platform uses CDK to define infrastructure. The CDK app contains a stack with an S3 bucket (data lake), Glue database, crawlers, and jobs. The engineer runs cdk synth followed by cdk deploy. During deployment, a Glue job fails to create because the IAM role referenced doesn't exist yet. What CDK concept resolves this dependency issue?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> CDK automatically resolves dependencies when you pass construct references between resources (e.g., pass role object to the Glue job's role property). CDK generates the correct DependsOn in the synthesized CloudFormation template. If manual ordering is needed, use addDependency() method to explicitly declare dependencies</li>
+                <li><span class="option-label">B.</span> Deploy resources in separate stacks in the correct order manually</li>
+                <li><span class="option-label">C.</span> Add sleep() calls between resource definitions in the CDK code</li>
+                <li><span class="option-label">D.</span> Run cdk deploy multiple times until all resources eventually exist</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">CDK uses construct references to automatically infer deployment order. When you write: glue_job = GlueJob(role=my_iam_role), CDK recognizes that the Glue job depends on the IAM role and generates the DependsOn clause in CloudFormation. This ensures resources are created in the correct order. For cases where implicit dependencies aren't detected, addDependency() explicitly states "create resource A before resource B." Opsi B — separating into stacks adds unnecessary complexity; within a single stack, CDK handles ordering. Opsi C — CDK code defines infrastructure declaratively; sleep() in CDK code would execute during synthesis, not deployment. Opsi D — repeated deployments are unreliable and don't solve the underlying dependency problem.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A company has two CloudFormation stacks: a "Data Lake" stack containing S3 buckets and Glue databases, and a "Pipeline" stack containing Glue jobs that need to reference the S3 bucket ARN and Glue database name from the Data Lake stack. The Pipeline stack is deployed after the Data Lake stack. What is the CORRECT way to share these values between stacks?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> In the Data Lake stack, define Outputs with Export names for the S3 bucket ARN and Glue database name. In the Pipeline stack, use Fn::ImportValue with the export names to reference these cross-stack values. CloudFormation validates that exported values exist before the importing stack deploys</li>
+                <li><span class="option-label">B.</span> Hardcode the S3 bucket ARN and database name in the Pipeline stack template</li>
+                <li><span class="option-label">C.</span> Use SSM Parameter Store to manually copy values between stacks after each deployment</li>
+                <li><span class="option-label">D.</span> Pass values as Parameters every time the Pipeline stack is deployed</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">CloudFormation cross-stack references (Outputs with Export + Fn::ImportValue) provide a managed way to share values between stacks. CloudFormation prevents the exporting stack from being deleted or modified in a way that would break importing stacks. This creates a dependency graph between stacks. The Pipeline stack automatically receives the correct S3 ARN and database name without hardcoding. Opsi B — hardcoded values break when resources are recreated with new ARNs/names. Opsi C — manual copying is error-prone and adds operational overhead. Opsi D — passing parameters manually requires the operator to know current values and is error-prone during frequent deployments.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A data engineer needs to create an AWS Glue Data Catalog database and register an initial set of tables as part of their CloudFormation deployment. However, CloudFormation doesn't natively support running Glue Crawler during stack creation (crawlers are long-running operations). The engineer needs tables registered immediately upon deployment. Which approach enables this within CloudFormation?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use a CloudFormation Custom Resource backed by a Lambda function. The Lambda function is invoked during stack creation, runs the Glue Crawler or directly creates catalog tables via the Glue API (create_table), and reports success/failure back to CloudFormation via the response URL</li>
+                <li><span class="option-label">B.</span> Define the Glue Crawler as a standard CloudFormation resource and set a DependsOn to wait for it to complete its crawl</li>
+                <li><span class="option-label">C.</span> Run the crawler manually after the stack deploys and hope tables exist before downstream resources need them</li>
+                <li><span class="option-label">D.</span> Define all table schemas statically in the template using AWS::Glue::Table resources without ever running a crawler</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Custom Resources execute arbitrary logic during CloudFormation lifecycle events (Create, Update, Delete). A Lambda-backed custom resource can start a Glue Crawler, poll for completion, then create tables directly if needed. The cfn-response mechanism tells CloudFormation whether the operation succeeded, maintaining the stack's create/rollback semantics. This extends CloudFormation's capabilities beyond its native resource types. Opsi B — CloudFormation creates the crawler resource but doesn't RUN it; DependsOn only ensures the crawler is created, not that it has completed a crawl. Opsi C — manual intervention breaks automation and may cause race conditions with dependent resources. Opsi D — while valid for known schemas, this doesn't work when table schemas must be discovered from data at deployment time.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A team deploys their data pipeline infrastructure using CDK. After running cdk deploy, the deployment fails midway through creating 10 resources (5 were created successfully, 5 failed). The team needs to understand the rollback behavior. What happens to the successfully created resources when a CDK/CloudFormation deployment fails?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> By default, CloudFormation performs automatic rollback — it deletes the 5 successfully created resources and returns the stack to its previous state (or DELETE_COMPLETE for new stacks). This ensures atomic deployments: either all resources are created or none are. The --no-rollback flag can be used during development to preserve created resources for debugging</li>
+                <li><span class="option-label">B.</span> CloudFormation keeps the 5 successfully created resources and marks the stack as partially complete</li>
+                <li><span class="option-label">C.</span> CloudFormation pauses and waits for manual intervention to decide what to do with existing resources</li>
+                <li><span class="option-label">D.</span> CDK automatically retries the failed resources three times before giving up</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">CloudFormation's default behavior is all-or-nothing (atomic) deployment. If any resource fails to create, CloudFormation rolls back by deleting all resources created during that operation, returning to the previous known-good state. The stack enters ROLLBACK_COMPLETE or UPDATE_ROLLBACK_COMPLETE status. For new stacks, all resources are removed. The --no-rollback or DisableRollback option preserves resources for debugging but should only be used in development. Opsi B — partial deployment contradicts CloudFormation's atomic design principle. Opsi C — CloudFormation doesn't pause for manual decisions during creation; it's automatic. Opsi D — CDK doesn't add retry logic; it relies on CloudFormation's native behavior.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A data engineering team manages a large CloudFormation template (3000+ lines) that defines their entire data platform: VPC, S3 buckets, Glue jobs, EMR cluster, Redshift, and Lambda functions. The template is difficult to maintain and deployments take 45 minutes. Template changes have a large blast radius. Which architectural pattern BEST improves maintainability?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Decompose into nested stacks using AWS::CloudFormation::Stack resources: a networking stack (VPC), a storage stack (S3, Glue catalog), a compute stack (EMR, Redshift), and a pipeline stack (Glue jobs, Lambda). The parent stack orchestrates nested stacks, passing parameters between them for resource references</li>
+                <li><span class="option-label">B.</span> Keep the single template but add more comments for readability</li>
+                <li><span class="option-label">C.</span> Split into completely independent stacks with no shared resources or references</li>
+                <li><span class="option-label">D.</span> Convert the template to CDK but keep all resources in a single CDK stack</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Nested stacks decompose a monolithic template into focused, maintainable modules while maintaining a single deployment unit. Each nested stack handles one concern (networking, storage, compute). The parent stack passes outputs from one nested stack as parameters to another, maintaining resource references. Updates to one nested stack don't affect others unless their outputs change. This reduces blast radius while preserving cross-resource references. Opsi B — comments don't reduce deployment time or blast radius. Opsi C — completely independent stacks with no references make it impossible to share VPC, security groups, or IAM roles between resources that need them. Opsi D — CDK in a single stack still has the same blast radius and long deployment time; the monolith issue persists.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A company wants to deploy the same data pipeline infrastructure to both us-east-1 (primary) and eu-west-1 (DR). Some resources like S3 bucket names must be globally unique, and certain services (like Redshift Serverless) have different feature availability across regions. The team uses a single CloudFormation template. How should the template handle region-specific differences?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use CloudFormation Conditions combined with AWS::Region pseudo-parameter to conditionally include or exclude resources per region. Use Mappings to define region-specific values (AMI IDs, instance types). For globally unique names, incorporate AWS::Region in resource names via Fn::Sub (e.g., ${AWS::AccountId}-${AWS::Region}-data-lake)</li>
+                <li><span class="option-label">B.</span> Create two separate templates with hardcoded region-specific values</li>
+                <li><span class="option-label">C.</span> Deploy the template without changes and manually fix region-specific failures afterward</li>
+                <li><span class="option-label">D.</span> Use only services available in all regions and avoid region-specific features</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Conditions (e.g., IsPrimary: !Equals [!Ref "AWS::Region", "us-east-1"]) enable/disable resources per region. Mappings provide lookup tables for region-specific values without parameters. Pseudo-parameters like AWS::Region and AWS::AccountId enable unique naming without hardcoding. This single template adapts to any region at deploy time. Fn::Sub makes string interpolation readable: "arn:aws:s3:::${AWS::AccountId}-${AWS::Region}-datalake". Opsi B — duplicate templates diverge and double maintenance effort. Opsi C — manual fixes break IaC principles and aren't repeatable. Opsi D — unnecessarily limiting functionality reduces the solution's capabilities.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A data engineer runs cdk deploy and the deployment succeeds. Two days later, another team member makes changes to the same CDK app and runs cdk deploy. The deploy fails because the synthesized CloudFormation template conflicts with manual changes someone made to the deployed resources via the console. How should the team prevent this situation?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Enable CloudFormation drift detection on the stack and run it before each deployment. Implement an AWS Config rule that detects changes not originating from CloudFormation. Use IAM policies that restrict console-level modifications to production resources (only allowing changes through the CI/CD pipeline with CloudFormation)</li>
+                <li><span class="option-label">B.</span> Always run cdk destroy and cdk deploy instead of updating the existing stack</li>
+                <li><span class="option-label">C.</span> Accept that drift will happen and manually fix conflicts as they arise</li>
+                <li><span class="option-label">D.</span> Add a README telling team members not to make console changes</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Multi-layered prevention works best: drift detection identifies existing drift before it causes deployment failures. AWS Config rules provide real-time alerting when manual changes occur. Restrictive IAM policies are the strongest control — if users can't modify resources via console, drift can't occur. Service Control Policies (SCPs) can enforce this at the organization level. Together, these ensure IaC remains the single source of truth. Opsi B — destroying and recreating causes data loss for stateful resources and extended downtime. Opsi C — accepting drift normalizes bad practices and makes deployments increasingly unreliable. Opsi D — documentation without enforcement doesn't prevent human error.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A team needs to deploy a complex data pipeline with an EMR cluster that takes 15 minutes to provision. CloudFormation's default creation timeout causes the stack to fail before EMR finishes provisioning. The team also needs CloudFormation to verify that the EMR cluster is healthy (not just created) before proceeding to deploy dependent Glue jobs. Which mechanism addresses both concerns?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use CreationPolicy with a cfn-signal from a bootstrap action on the EMR master node. The bootstrap action signals CloudFormation after the cluster passes health checks. Set a Timeout in the CreationPolicy to accommodate the 15-minute startup. CloudFormation waits for the signal before marking the resource as complete and proceeding to dependent resources</li>
+                <li><span class="option-label">B.</span> Add a WaitCondition after the EMR resource with a fixed 20-minute timeout</li>
+                <li><span class="option-label">C.</span> Set a DependsOn attribute on the Glue jobs pointing to the EMR resource</li>
+                <li><span class="option-label">D.</span> Increase the stack-level timeout to 60 minutes and hope EMR finishes in time</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">CreationPolicy with cfn-signal provides application-level readiness verification. The EMR bootstrap action runs after the cluster starts, performs health checks (e.g., verifying YARN is accepting jobs), then sends a success signal via cfn-signal. CloudFormation won't mark the EMR resource as CREATE_COMPLETE until the signal arrives or timeout occurs. This guarantees dependent resources (Glue jobs) are only created after EMR is truly ready, not just provisioned. Opsi B — WaitCondition with fixed timeout is a blunt instrument that always waits the full duration regardless of when EMR becomes ready. Opsi C — DependsOn only ensures CloudFormation creates EMR before Glue jobs, but "created" doesn't mean "healthy and ready." Opsi D — there is no stack-level timeout setting; CloudFormation waits indefinitely for resources by default.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A data engineer uses the CDK to deploy a Glue ETL pipeline. After initial deployment, the engineer modifies the Glue job script path in the CDK code. Running cdk diff shows the change will update the Glue job in-place. However, the engineer is concerned about the impact on currently running jobs. How does CloudFormation handle updates to running Glue jobs, and what precaution should be taken?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Run cdk diff to verify the change is an in-place update (not replacement). CloudFormation updates the Glue job configuration, but currently running executions continue with the old script until they complete. New executions use the updated script. As a precaution, implement the update during a maintenance window when no jobs are running, or use Glue job versioning with bookmarks to ensure data consistency</li>
+                <li><span class="option-label">B.</span> CloudFormation immediately terminates all running Glue jobs to apply the update</li>
+                <li><span class="option-label">C.</span> The update fails if any Glue job execution is currently running</li>
+                <li><span class="option-label">D.</span> CDK automatically creates a new Glue job with a different name and deletes the old one</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">cdk diff (equivalent to a change set preview) shows exactly what will happen — update, replace, or delete. For Glue jobs, script path changes are in-place updates: CloudFormation modifies the job definition without affecting running executions. Running jobs continue with their original configuration. New runs pick up the updated script. Best practice is to deploy during maintenance windows to avoid version confusion, and use job bookmarks to track processing state across script changes. Opsi B — CloudFormation doesn't terminate running Glue job executions; it only updates the job definition. Opsi C — Glue job definition updates succeed regardless of running executions. Opsi D — script path changes don't trigger replacement; CDK/CloudFormation updates the existing job resource.</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>
