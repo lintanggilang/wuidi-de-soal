@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 4.4.2 - Use Amazon CloudWatch Logs to Store Application Logs</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 4: Data Security and Governance (18%) &mdash; Task 4.4: Prepare logs for audit</div>
+            <h1>Skill 4.4.2: Use Amazon CloudWatch Logs to Store Application Logs</h1>
+            <p class="description">Centralized log storage and management with CloudWatch Logs for audit compliance</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A company runs an AWS Glue-based ETL pipeline that processes data from multiple sources. The compliance team requires that all ETL job logs be retained for exactly 5 years and must be encrypted at rest with a customer-managed KMS key. The data engineering team wants to organize logs by environment (production, staging, development). Which CloudWatch Logs configuration meets ALL these requirements?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create log groups named /aws/glue/{environment}/{job-name}, set retention to 1827 days, and associate a customer-managed KMS key with each log group</li>
+                <li><span class="option-label">B.</span> Use a single log group /aws/glue/all-jobs with log streams per environment, set retention to Never Expire, and enable default SSE-S3 encryption</li>
+                <li><span class="option-label">C.</span> Create log groups per job with AWS-managed KMS encryption, set retention to 5 years, and use log group tags for environment identification</li>
+                <li><span class="option-label">D.</span> Create log groups per environment, set no retention policy, export to S3 with KMS encryption, and delete log groups after export</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Naming convention /aws/glue/{environment}/{job-name} memberikan organisasi hierarkis yang jelas. Retention 1827 hari (≈5 tahun) memenuhi compliance requirement secara tepat. CloudWatch Logs mendukung asosiasi customer-managed KMS key per log group menggunakan API associate-kms-key. Opsi B menggunakan satu log group yang sulit dikelola dan SSE-S3 bukan customer-managed KMS. Opsi C menyebut AWS-managed KMS yang tidak memenuhi syarat customer-managed key. Opsi D menghapus log groups setelah export yang berisiko kehilangan data jika export gagal dan tidak memungkinkan query real-time.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A data platform team needs to export CloudWatch Logs to Amazon S3 for long-term archival and compliance. The logs must be exported daily and stored in a specific S3 bucket with a structured prefix. The solution must be automated and require minimal operational overhead. Which approach is MOST appropriate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use CloudWatch Logs CreateExportTask API called by a daily EventBridge scheduled rule triggering a Lambda function</li>
+                <li><span class="option-label">B.</span> Create a CloudWatch Logs subscription filter that streams all logs to Amazon Data Firehose, which delivers to S3</li>
+                <li><span class="option-label">C.</span> Use AWS DataSync to synchronize CloudWatch Logs storage to S3 on a daily schedule</li>
+                <li><span class="option-label">D.</span> Configure CloudWatch Logs automatic export feature in the log group settings to export to S3 daily</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Subscription filter ke Firehose memberikan near real-time streaming ke S3 dengan prefiks terstruktur secara otomatis, minimal operational overhead, dan tidak memerlukan scheduled jobs. Firehose mendukung dynamic partitioning berdasarkan waktu. Opsi A (CreateExportTask) berfungsi tapi memiliki keterbatasan: hanya satu export task per log group pada satu waktu, memerlukan maintenance Lambda, dan ada delay. Opsi C (DataSync) tidak mendukung CloudWatch Logs sebagai source. Opsi D tidak ada fitur automatic export bawaan di CloudWatch Logs — export harus dilakukan secara manual atau via API.</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A multinational company has AWS accounts in multiple regions. The security team requires that application logs from all regions be accessible from a central account for audit purposes. Individual account teams should still be able to read their own logs but cannot modify the cross-account sharing configuration. Which solution provides centralized log access with these constraints?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use CloudWatch Logs cross-account subscription filters in each source account to stream logs to the central account's log groups</li>
+                <li><span class="option-label">B.</span> Create a CloudWatch Logs resource policy in the central account that grants PutLogEvents from source accounts, and configure source accounts to send logs directly</li>
+                <li><span class="option-label">C.</span> Use CloudWatch cross-account observability with a monitoring account as sink and source accounts as links, managed via AWS Organizations</li>
+                <li><span class="option-label">D.</span> Export logs from each account to a shared S3 bucket using cross-account bucket policies</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">CloudWatch cross-account observability memungkinkan monitoring account (sink) untuk melihat logs dari source accounts (links) tanpa menyalin data. Ketika dikelola via Organizations, konfigurasi diterapkan secara terpusat dan member accounts tidak bisa memodifikasi sharing configuration. Source accounts tetap memiliki akses baca ke logs mereka sendiri. Opsi A memerlukan konfigurasi subscription filter di setiap source account yang bisa diubah admin lokal. Opsi B memerlukan konfigurasi di source accounts dan tidak mencegah modifikasi oleh admin lokal. Opsi D (S3 export) tidak real-time dan tidak memberikan kemampuan query langsung dari CloudWatch console.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A data engineer needs to implement real-time alerting on error patterns in application logs stored in CloudWatch Logs. When specific error patterns are detected (such as "DataCorruptionException"), the events must be forwarded to a dedicated Kinesis Data Stream for downstream processing by a fraud detection system. Which CloudWatch Logs feature should be used?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> CloudWatch Logs metric filters with CloudWatch Alarms forwarding to Kinesis</li>
+                <li><span class="option-label">B.</span> CloudWatch Logs subscription filters with Kinesis Data Streams as the destination</li>
+                <li><span class="option-label">C.</span> CloudWatch Logs Insights scheduled queries with results exported to Kinesis</li>
+                <li><span class="option-label">D.</span> CloudWatch Anomaly Detection on log metrics with SNS notification to trigger Kinesis ingestion</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Subscription filters memungkinkan streaming real-time log events yang cocok dengan pola filter tertentu (seperti "DataCorruptionException") langsung ke Kinesis Data Streams. Ini memberikan full log event data ke downstream system. Opsi A (metric filters + alarms) hanya menghasilkan numeric metrics dan alarm notifications — tidak meneruskan actual log event content ke Kinesis. Opsi C (Logs Insights scheduled queries) bersifat batch dan memiliki delay, bukan real-time. Opsi D (Anomaly Detection) mendeteksi deviasi dari baseline metrics, bukan pattern matching pada log content, dan tidak meneruskan log events.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A company has a data pipeline generating 500 GB of logs daily. The logs are currently stored in CloudWatch Logs with Standard log class. Only 10% of these logs are queried regularly — the rest are kept purely for compliance retention. The team wants to reduce costs significantly without losing any data. Which approach provides the MOST cost-effective solution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Move all log groups to Infrequent Access log class to reduce storage and ingestion costs</li>
+                <li><span class="option-label">B.</span> Separate logs into two log groups — frequently queried logs in Standard class and compliance-only logs in Infrequent Access class</li>
+                <li><span class="option-label">C.</span> Export all logs to S3 using Firehose and delete from CloudWatch Logs after 1 day</li>
+                <li><span class="option-label">D.</span> Compress logs before sending to CloudWatch Logs to reduce storage volume</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Memisahkan logs berdasarkan pola akses ke dua log classes adalah pendekatan paling cost-effective. Infrequent Access class memiliki biaya ingestion lebih rendah (~50% lebih murah) tapi tidak mendukung semua fitur (misalnya subscription filters, Live Tail dibatasi). Logs yang sering di-query tetap di Standard class untuk fungsionalitas penuh. Opsi A menempatkan semua di Infrequent Access, yang membatasi kemampuan query untuk 10% logs yang sering diakses. Opsi C (export ke S3) menambah kompleksitas dan menghilangkan kemampuan CloudWatch Logs Insights query. Opsi D salah karena CloudWatch Logs sudah melakukan kompresi internal — pengguna tidak bisa mengirim data pre-compressed.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A security team needs to ensure that no one in the organization can delete specific CloudWatch Logs log groups that contain audit trail data, even if they have administrator permissions in their respective accounts. Which mechanism provides the STRONGEST protection against log group deletion?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Apply a CloudWatch Logs resource policy that denies logs:DeleteLogGroup action for all principals</li>
+                <li><span class="option-label">B.</span> Use an AWS Organizations Service Control Policy (SCP) that denies logs:DeleteLogGroup for the audit log groups</li>
+                <li><span class="option-label">C.</span> Configure IAM policies in each account that deny logs:DeleteLogGroup for all users and roles</li>
+                <li><span class="option-label">D.</span> Enable CloudWatch Logs data protection to prevent deletion of log groups with sensitive data</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Service Control Policies (SCPs) memberikan perlindungan terkuat karena diterapkan di level Organizations dan tidak bisa di-override oleh administrator di member accounts, termasuk yang memiliki AdministratorAccess policy. SCP bisa menggunakan kondisi pada resource ARN untuk menargetkan log groups spesifik. Opsi A (resource policy) bisa dimodifikasi oleh siapapun dengan permission logs:PutResourcePolicy. Opsi C (IAM policies) bisa diubah oleh administrator dalam akun tersebut. Opsi D (data protection) berfungsi untuk masking sensitive data dalam logs, bukan untuk mencegah deletion log groups.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A data engineer is configuring CloudWatch Logs for an Amazon EMR cluster that runs Spark jobs processing sensitive healthcare data. The logs must be encrypted with a specific KMS key, and only the data engineering team and the compliance team should have access to decrypt and read the logs. How should the KMS key policy be configured?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Grant kms:Encrypt to the CloudWatch Logs service principal (logs.amazonaws.com) and kms:Decrypt to the data engineering and compliance team IAM roles</li>
+                <li><span class="option-label">B.</span> Grant full KMS permissions to CloudWatch Logs service and use log group-level IAM policies for access control</li>
+                <li><span class="option-label">C.</span> Grant kms:Encrypt and kms:Decrypt to CloudWatch Logs service principal, and use KMS key grants for the data engineering and compliance team roles</li>
+                <li><span class="option-label">D.</span> Grant kms:GenerateDataKey and kms:Decrypt to the CloudWatch Logs service principal, and kms:Decrypt to the authorized IAM roles</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">CloudWatch Logs menggunakan envelope encryption. Service principal memerlukan kms:GenerateDataKey* untuk membuat data encryption key saat menulis logs, dan kms:Decrypt untuk membaca kembali (untuk fitur seperti filter patterns). IAM roles yang perlu membaca logs memerlukan kms:Decrypt untuk mendekripsi log data. Opsi A salah karena CloudWatch Logs memerlukan GenerateDataKey, bukan Encrypt langsung. Opsi B terlalu permissive dan tidak membatasi decrypt access. Opsi C memberikan Encrypt yang tidak diperlukan — CloudWatch Logs menggunakan GenerateDataKey untuk envelope encryption, bukan Encrypt.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A company operates a multi-tenant SaaS application where each tenant's data processing logs must be isolated. Tenants should only see logs related to their own data processing. The platform team needs a view of all logs. Currently, all logs go to a single log group with tenant_id in the log message. Which redesign provides the BEST log isolation?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create separate log groups per tenant (/app/tenant/{tenant_id}) and use IAM policies with conditions on the log group ARN to restrict tenant access</li>
+                <li><span class="option-label">B.</span> Keep a single log group and use CloudWatch Logs Insights queries filtered by tenant_id for each tenant's access</li>
+                <li><span class="option-label">C.</span> Create separate log streams per tenant within one log group and use stream-level IAM permissions</li>
+                <li><span class="option-label">D.</span> Use subscription filters per tenant to copy relevant logs to tenant-specific log groups</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Log groups terpisah per tenant memungkinkan IAM policies yang membatasi akses berdasarkan log group ARN (arn:aws:logs:region:account:log-group:/app/tenant/{tenant_id}:*). Ini memberikan isolasi yang kuat dan auditable. Platform team bisa memiliki akses ke semua log groups. Opsi B tidak memberikan isolasi nyata — tenant dengan permission FilterLogEvents bisa melihat semua logs di log group. Opsi C salah karena IAM permissions CloudWatch Logs tidak mendukung granularitas level log stream — permissions berlaku di level log group. Opsi D menambah kompleksitas dan biaya (double ingestion) dan subscription filters memiliki limit per log group.</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A data engineering team discovers that their CloudWatch Logs ingestion costs have doubled in the past month. After investigation, they find that verbose DEBUG-level logs from development Lambda functions are being sent to CloudWatch. The team wants to retain ERROR and WARN logs but discard DEBUG logs before they reach CloudWatch Logs. Which approach MOST effectively reduces ingestion costs?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure CloudWatch Logs metric filters to count only ERROR and WARN events, ignoring DEBUG</li>
+                <li><span class="option-label">B.</span> Set the Lambda function's log level configuration to WARN to prevent DEBUG logs from being emitted to CloudWatch</li>
+                <li><span class="option-label">C.</span> Create a subscription filter that only forwards ERROR and WARN logs to a separate log group</li>
+                <li><span class="option-label">D.</span> Set the log group retention to 1 day to minimize storage costs for DEBUG logs</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">AWS Lambda Advanced Logging Controls memungkinkan pengaturan log level di level fungsi (DEBUG, INFO, WARN, ERROR). Mengatur ke WARN akan mencegah DEBUG dan INFO logs dikirim ke CloudWatch Logs sama sekali, mengurangi ingestion costs langsung di source. Opsi A (metric filters) tetap mengingestion semua logs — metric filters hanya memproses data yang sudah di-ingest. Opsi C (subscription filter) juga tidak mengurangi ingestion karena logs sudah masuk ke log group pertama sebelum difilter. Opsi D (retention 1 hari) mengurangi storage costs tapi tidak ingestion costs — biaya terbesar biasanya ada di ingestion.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A compliance auditor requires that the company prove no log data was modified or deleted from CloudWatch Logs during a specific investigation period. The logs are stored in CloudWatch Logs and also exported to S3. Which combination of controls provides the STRONGEST evidence of log immutability for the auditor?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Show CloudWatch Logs retention policy is set to Never Expire and present CloudTrail logs showing no DeleteLogGroup or DeleteLogStream API calls during the period</li>
+                <li><span class="option-label">B.</span> Present the S3 exported logs with S3 Object Lock (Compliance mode) enabled and provide CloudTrail evidence that no PutLogEvents overwrote existing data</li>
+                <li><span class="option-label">C.</span> Demonstrate that IAM policies prevent all users from calling DeleteLogGroup and show CloudWatch Logs are encrypted with KMS</li>
+                <li><span class="option-label">D.</span> Show S3 versioning on the export bucket and present CloudWatch Logs subscription filter configuration proving all events are copied in real-time</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">S3 Object Lock Compliance mode memberikan immutability yang dapat dibuktikan secara teknis — tidak ada user, termasuk root, yang bisa menghapus atau memodifikasi objek selama retention period. Dikombinasikan dengan CloudTrail evidence yang menunjukkan tidak ada PutLogEvents yang overwrote data, ini memberikan bukti terkuat. Opsi A (retention Never Expire) tidak mencegah manual deletion oleh administrator, hanya mencegah auto-deletion. Opsi C (IAM policies) bisa diubah kapan saja dan tidak memberikan bukti retroaktif. Opsi D (S3 versioning) mempertahankan versi tapi tidak mencegah deletion — delete markers bisa ditambahkan.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>

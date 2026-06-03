@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 4.5.1 - Grant Permissions for Data Sharing</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 4: Data Security and Governance (18%) &mdash; Task 4.5: Understand data privacy and governance</div>
+            <h1>Skill 4.5.1: Grant Permissions for Data Sharing</h1>
+            <p class="description">Amazon Redshift data sharing and cross-account data access permissions</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A retail analytics company runs a central Amazon Redshift cluster (producer) that contains sales data. Three business units in different AWS accounts need to query specific subsets of this data without copying it. Each business unit should only see data from their own region (NA, EU, APAC). The producer cluster uses RA3 nodes. Which approach provides the MOST secure data sharing with granular access control?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create one datashare containing all tables, authorize all three consumer accounts, and rely on row-level security (RLS) policies in the consumer clusters</li>
+                <li><span class="option-label">B.</span> Create three separate datashares, each containing views filtered by region, and authorize each consumer account to only their respective datashare</li>
+                <li><span class="option-label">C.</span> Use Redshift Spectrum with a shared Glue Data Catalog and Lake Formation permissions per account</li>
+                <li><span class="option-label">D.</span> Create nightly UNLOAD jobs from the producer to S3 buckets partitioned by region, with cross-account S3 access for each business unit</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Membuat datashares terpisah per region dengan views yang sudah difilter (WHERE region = 'NA') memberikan granular access control di level producer. Consumer hanya bisa melihat data yang ada di datashare mereka — tidak ada cara untuk bypass filter karena view definition ada di producer cluster. Setiap datashare di-authorize hanya ke satu consumer account. Opsi A memberikan akses ke semua data terlebih dahulu lalu bergantung pada RLS di consumer — ini kurang secure karena consumer admin bisa memodifikasi RLS. Opsi C (Spectrum + Lake Formation) tidak menggunakan Redshift data sharing dan memerlukan data di S3. Opsi D (UNLOAD) membuat copy data yang menambah storage cost dan latency.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A data engineer needs to set up cross-account Redshift data sharing between a producer cluster in Account A and a consumer cluster in Account B. Both accounts are in the same AWS Organization. What is the correct sequence of steps to establish the data sharing?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Producer: CREATE DATASHARE → ADD objects → GRANT USAGE to consumer namespace | Consumer: CREATE DATABASE FROM DATASHARE → GRANT access to users</li>
+                <li><span class="option-label">B.</span> Producer: CREATE DATASHARE → ADD objects → ALTER DATASHARE SET ACCOUNT = consumer_account | Consumer: ACCEPT DATASHARE → CREATE EXTERNAL SCHEMA</li>
+                <li><span class="option-label">C.</span> Producer: CREATE DATASHARE → ADD objects → AUTHORIZE datashare to consumer account | Consumer: ASSOCIATE datashare with consumer namespace → CREATE DATABASE FROM DATASHARE → GRANT to users</li>
+                <li><span class="option-label">D.</span> Account A admin: Share via AWS RAM | Account B: Accept RAM share → Producer: ADD objects | Consumer: CREATE DATABASE FROM DATASHARE</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Untuk cross-account data sharing, langkah-langkahnya adalah: (1) Producer membuat datashare dan menambahkan objects (schemas, tables, views), (2) Producer melakukan AUTHORIZE untuk memberikan akses ke consumer AWS account, (3) Di consumer side, admin melakukan ASSOCIATE datashare dengan consumer cluster namespace, (4) Consumer membuat database dari datashare, (5) Consumer grants access ke users/groups. Opsi A melewatkan langkah AUTHORIZE dan ASSOCIATE yang diperlukan untuk cross-account (GRANT USAGE hanya untuk same-account/namespace). Opsi B menggunakan ALTER DATASHARE SET ACCOUNT yang bukan syntax valid. Opsi D — AWS RAM tidak digunakan untuk Redshift data sharing (RAM digunakan untuk Lake Formation).</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A healthcare data platform uses AWS Lake Formation to manage a data lake containing patient records across multiple S3 buckets. A research team in a different AWS account needs read access to de-identified patient data tables in the Glue Data Catalog, but must NOT have access to any PII columns. Which Lake Formation feature enables this cross-account sharing with column-level restrictions?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create a Lake Formation cross-account grant with column-level permissions that include only non-PII columns, then share using AWS RAM</li>
+                <li><span class="option-label">B.</span> Create an IAM role in the source account with column-level Glue permissions and allow the research account to assume it</li>
+                <li><span class="option-label">C.</span> Create a Glue Data Catalog resource policy that restricts GetTable to exclude PII column metadata</li>
+                <li><span class="option-label">D.</span> Use S3 Access Points with specific prefix restrictions to limit access to non-PII data files</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Lake Formation mendukung cross-account grants dengan column-level permissions. Administrator bisa GRANT SELECT pada kolom tertentu (excluding PII columns) ke external AWS account. AWS RAM (Resource Access Manager) digunakan untuk berbagi Lake Formation resources (databases, tables) cross-account. Setelah di-share, account penerima bisa melihat dan query hanya kolom yang di-grant. Opsi B (IAM cross-account role) tidak mendukung column-level permissions untuk Glue/Lake Formation secara native. Opsi C (Glue resource policy) tidak mendukung column-level restrictions — policies berlaku di level table atau database. Opsi D (S3 Access Points) bekerja di file level, bukan column level — semua kolom ada dalam file yang sama.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A company has a multi-tenant data platform where each tenant's data is stored in separate S3 prefixes under a shared bucket. Multiple analytics applications need to access tenant-specific data. The platform team wants to simplify access management without creating separate IAM policies for each tenant-application combination. Which S3 feature provides the MOST scalable solution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create S3 Access Points per tenant, each with an access point policy restricting access to the tenant's prefix, and grant applications access to specific access points</li>
+                <li><span class="option-label">B.</span> Use S3 bucket policies with conditions on s3:prefix matching the tenant ID extracted from the caller's IAM tags</li>
+                <li><span class="option-label">C.</span> Create separate S3 buckets per tenant and use cross-account access roles for each application</li>
+                <li><span class="option-label">D.</span> Use S3 Object Lambda Access Points to filter responses based on the requesting application's identity</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">S3 Access Points memberikan cara paling scalable untuk mengelola multi-tenant access. Setiap access point memiliki DNS name sendiri dan policy yang independen, membatasi akses ke prefix tertentu (misalnya s3://bucket/tenant-123/*). Applications diberikan akses ke access point spesifik melalui IAM. Ini menghindari bucket policy yang makin kompleks (limit 20 KB). Opsi B (bucket policy with tags) bisa bekerja tapi bucket policy memiliki size limit dan menjadi sulit dikelola dengan banyak tenants. Opsi C (separate buckets) tidak scalable — managing ratusan buckets menambah overhead. Opsi D (Object Lambda) digunakan untuk transforming data on retrieval, bukan access control — overkill dan menambah latency.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A data engineer configures a Redshift datashare that includes a schema with 20 tables. After the consumer creates a database from the datashare, they report that they can see all 20 tables. However, the producer team only wants to expose 5 specific tables and 2 views to this consumer. How should the producer modify the datashare configuration?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Remove the entire schema from the datashare and add only the 5 tables and 2 views individually using ALTER DATASHARE ADD TABLE and ADD VIEW</li>
+                <li><span class="option-label">B.</span> Keep the schema in the datashare but use REVOKE SELECT on the 15 tables that should be hidden from the consumer</li>
+                <li><span class="option-label">C.</span> Create a new schema containing only the 5 tables and 2 views, then replace the schema reference in the datashare</li>
+                <li><span class="option-label">D.</span> Add column-level permissions to the datashare to restrict which columns the consumer can see in the 15 hidden tables</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Ketika schema ditambahkan ke datashare, SEMUA objek dalam schema tersebut (tables, views, UDFs) menjadi accessible oleh consumer. Untuk membatasi ke objek tertentu, langkah yang benar adalah: (1) ALTER DATASHARE REMOVE SCHEMA untuk menghapus schema-level sharing, (2) ALTER DATASHARE ADD SCHEMA (hanya untuk namespace reference), (3) ALTER DATASHARE ADD TABLE untuk setiap tabel spesifik dan ADD VIEW untuk views spesifik. Opsi B (REVOKE) tidak bekerja karena datashare access bukan berbasis GRANT/REVOKE tradisional — jika schema di-share, semua objects accessible. Opsi C (schema baru) memerlukan data movement atau view creation yang menambah maintenance. Opsi D — datashares tidak mendukung column-level restrictions secara langsung.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A company's data governance team needs to monitor who is consuming shared data from their Redshift producer cluster. They want to track: which consumer accounts query the shared data, query frequency, data volumes scanned, and which specific tables are accessed. Which approach provides the MOST comprehensive monitoring of data sharing usage?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Enable CloudTrail data events for Redshift and filter for cross-account query operations</li>
+                <li><span class="option-label">B.</span> Query the system view SVV_DATASHARE_CONSUMERS and SVL_DATASHARE_USAGE_PRODUCER on the producer cluster for detailed consumer activity</li>
+                <li><span class="option-label">C.</span> Use Amazon CloudWatch metrics for Redshift data sharing and create dashboards per consumer</li>
+                <li><span class="option-label">D.</span> Request consumers to share their STL_QUERY logs with the producer team</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Redshift menyediakan system views khusus untuk monitoring data sharing: SVV_DATASHARE_CONSUMERS menampilkan informasi consumer yang authorized, dan system views seperti SVL_DATASHARE_USAGE_PRODUCER (serta tabel SVL dan SYS terkait) memberikan detail tentang query activity dari consumers termasuk tabel yang diakses, volume data, dan frekuensi. Producer memiliki visibility penuh tanpa memerlukan kerjasama dari consumer. Opsi A (CloudTrail) mencatat API calls tapi tidak query-level detail seperti tabel yang diakses dalam datashare. Opsi C (CloudWatch) menyediakan aggregate metrics tapi kurang granular dibanding system views. Opsi D memerlukan kerjasama consumer dan tidak practical.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A producer team discovers that a consumer account that previously had datashare access has been compromised. The team needs to immediately revoke all data sharing access from this consumer account. The datashare is currently being actively queried by the compromised consumer. What is the FASTEST way to cut off access?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Drop the datashare entirely using DROP DATASHARE and recreate it without the compromised consumer</li>
+                <li><span class="option-label">B.</span> Use ALTER DATASHARE REMOVE all objects from the datashare so consumers see empty results</li>
+                <li><span class="option-label">C.</span> Use REVOKE USAGE ON DATASHARE from the compromised consumer's namespace and ALTER DATASHARE SET AUTHORIZATION to deny the account</li>
+                <li><span class="option-label">D.</span> Remove the consumer account's authorization using ALTER DATASHARE REMOVE ACCOUNT for cross-account, which immediately prevents the consumer from querying shared data</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Untuk cross-account datashares, menggunakan ALTER DATASHARE datashare_name SET ACCOUNT 'consumer_account' REMOVE (atau syntax REVOKE authorization) segera mencabut akses consumer account. Query yang sedang berjalan akan gagal dan tidak ada query baru yang bisa dijalankan. Ini adalah cara tercepat tanpa mempengaruhi consumer lain yang mungkin menggunakan datashare yang sama. Opsi A (DROP DATASHARE) mempengaruhi SEMUA consumers, bukan hanya yang compromised. Opsi B (REMOVE objects) juga mempengaruhi semua consumers. Opsi C syntax-nya tidak tepat — REVOKE USAGE berlaku untuk same-cluster namespaces, dan SET AUTHORIZATION bukan untuk denying account access.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A data platform team needs to share a curated dataset from their Redshift cluster with a team that does NOT have a Redshift cluster. The consuming team uses Amazon Athena and AWS Glue for their analytics. The shared data must always reflect the latest state of the producer's data without manual refresh. Which solution enables data sharing with this non-Redshift consumer?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Redshift data sharing with a Redshift Serverless endpoint in the consumer account as the consumer</li>
+                <li><span class="option-label">B.</span> Create a scheduled UNLOAD job from Redshift to S3 and register the data in the consumer's Glue Data Catalog</li>
+                <li><span class="option-label">C.</span> Use AWS Data Exchange to publish the Redshift data as a product that the consumer subscribes to</li>
+                <li><span class="option-label">D.</span> Use Redshift federated query to create a link between the producer's Redshift and the consumer's Athena</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Redshift Serverless bisa bertindak sebagai consumer untuk datashares tanpa memerlukan provisioned cluster yang berjalan terus-menerus. Consumer team bisa membuat Redshift Serverless endpoint, create database dari datashare, dan data selalu mencerminkan state terbaru dari producer (live, bukan copy). Meskipun consuming team primarily uses Athena, Serverless endpoint bisa digunakan when they need the shared data. Opsi B (scheduled UNLOAD) membuat copy yang stale dan memerlukan maintenance. Opsi C (Data Exchange) menambah kompleksitas dan lebih cocok untuk public/commercial data sharing. Opsi D (federated query) — Athena tidak bisa menjadi target federated query dari Redshift; federated query membuat Redshift query external sources, bukan sebaliknya.</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A company uses Lake Formation to manage permissions on their data lake. They need to share a database containing 50 tables with an external AWS account. Out of these 50 tables, 30 should have full column access and 20 should have restricted column access (excluding PII columns). The external account's analysts should be able to query using Athena. What is the MOST efficient way to configure this sharing?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Grant SELECT on all 50 tables to the external account via Lake Formation, then create column-exclude filters for the 20 restricted tables using Lake Formation data filters</li>
+                <li><span class="option-label">B.</span> Create two Lake Formation databases — one with 30 full-access tables and one with views on 20 restricted tables — and share both via RAM</li>
+                <li><span class="option-label">C.</span> Use Lake Formation tag-based access control (LF-TBAC) to tag columns as PII/non-PII and grant the external account access based on non-PII tag</li>
+                <li><span class="option-label">D.</span> Grant table-level access for all 50 tables via RAM and use IAM policies in the consumer account to restrict column access</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Lake Formation Tag-Based Access Control (LF-TBAC) adalah solusi paling efficient dan scalable. Dengan menandai kolom PII dengan tag (classification=pii) dan kolom non-PII dengan (classification=non-pii), administrator cukup membuat satu grant: external account mendapat SELECT pada resource yang tagged classification=non-pii. Ini secara otomatis mengecualikan semua kolom PII di semua 50 tabel tanpa perlu per-table configuration. Opsi A (data filters per table) berfungsi tapi memerlukan 20 filter terpisah — kurang efisien. Opsi B memerlukan restructuring databases yang menambah maintenance. Opsi D — IAM di consumer account tidak bisa membatasi column access untuk Lake Formation/Athena queries.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A Redshift data sharing producer notices performance degradation on their cluster during peak hours when multiple consumers run heavy analytical queries on shared data. The producer's own workloads are being impacted. What is the MOST effective way to isolate producer workloads from consumer query impact?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Redshift Workload Management (WLM) to allocate a dedicated queue with limited concurrency for datashare consumer queries</li>
+                <li><span class="option-label">B.</span> Consumer queries on datashares are processed on the consumer's cluster resources, not the producer's — investigate other causes of performance degradation</li>
+                <li><span class="option-label">C.</span> Set query timeout limits on the datashare to restrict how long consumer queries can run on the producer</li>
+                <li><span class="option-label">D.</span> Migrate from live datashares to scheduled data replication so consumers query their own copy</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Ini adalah pertanyaan yang menguji pemahaman arsitektur Redshift data sharing. Dalam Redshift data sharing, consumer queries dijalankan menggunakan compute resources MILIK CONSUMER, bukan producer. Producer hanya berbagi akses ke data storage (pada RA3 managed storage) — compute processing sepenuhnya pada consumer cluster/serverless. Oleh karena itu, consumer queries TIDAK mempengaruhi producer performance. Jika producer mengalami degradation, penyebabnya bukan dari data sharing consumers. Opsi A (WLM) tidak applicable karena consumer queries tidak masuk ke producer's WLM queues. Opsi C (timeout pada datashare) bukan fitur yang ada. Opsi D (replication) tidak perlu karena masalahnya bukan pada data sharing.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>
