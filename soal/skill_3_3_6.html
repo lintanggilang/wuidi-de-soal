@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 3.3.6 - Troubleshoot and Maintain Pipelines</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 3: Data Operations and Support (22%) &mdash; Task 3.3: Maintain and monitor data pipelines</div>
+            <h1>Skill 3.3.6: Troubleshoot and Maintain Pipelines</h1>
+            <p class="description">AWS Glue, Amazon EMR &mdash; ongoing maintenance and troubleshooting of production data pipelines</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A production AWS Glue ETL job that has been running successfully for 6 months suddenly fails with the error: "AnalysisException: cannot resolve 'customer_status' given input columns." The source data is an S3-based data lake with JSON files produced by an upstream microservice. What is the MOST likely cause and how should the data engineer investigate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The upstream microservice deployed a schema change that removed or renamed the 'customer_status' field. Investigate by comparing recent source file schemas with the Glue Data Catalog table definition and checking the upstream service's deployment history.</li>
+                <li><span class="option-label">B.</span> The Glue job's DPU allocation is insufficient, causing memory errors that manifest as schema resolution failures.</li>
+                <li><span class="option-label">C.</span> The S3 bucket policy was modified, preventing the Glue job from reading certain files that contain the customer_status field.</li>
+                <li><span class="option-label">D.</span> The Glue Data Catalog table was accidentally deleted and recreated without the customer_status column.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">An AnalysisException for column resolution strongly indicates a schema drift issue — the upstream data no longer contains the expected column. This is the most common cause of sudden column-not-found errors in production pipelines: an upstream team deploys changes without coordinating with downstream consumers. Investigation should compare actual file schemas (using Glue crawler or manual inspection) with the expected schema. Option B: DPU exhaustion causes OutOfMemoryError or task failures, not schema resolution errors. Option C: Permission issues would cause AccessDenied errors, not column resolution errors. Option D: While possible, this would also affect the Glue crawler and would be evident in the catalog's modification history.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">An EMR cluster running a daily Spark batch job fails during the bootstrap action phase with the error: "Bootstrap action returned a non-zero return code." The bootstrap script installs Python packages from PyPI. The same cluster configuration worked yesterday. What is the MOST likely cause and resolution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> A Python package dependency has a new version with breaking changes or an incompatible sub-dependency. Pin package versions in the bootstrap script's requirements file and host packages in a private S3-based PyPI mirror.</li>
+                <li><span class="option-label">B.</span> The EMR cluster's IAM role lost permissions to access the bootstrap script stored in S3.</li>
+                <li><span class="option-label">C.</span> The EMR AMI was automatically updated overnight, changing the base Python version.</li>
+                <li><span class="option-label">D.</span> The cluster's VPC security group was modified, blocking outbound internet access needed for pip install.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Bootstrap scripts that install packages from PyPI without pinned versions are vulnerable to upstream package releases that introduce breaking changes or incompatible dependency versions. Since it worked yesterday, a new package release is the most likely cause. Pinning versions (package==x.y.z) and hosting in a private repository eliminates external dependency risks. Option B: IAM permission changes would produce a different error about accessing the bootstrap script, not a non-zero return code from script execution. Option C: EMR AMIs don't auto-update on running clusters; you specify the release label at launch. Option D: Network issues would produce timeout errors in the bootstrap logs, not a non-zero return code from package installation specifically.</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A data engineer manages a Glue crawler that runs daily to update the Data Catalog. Recently, the crawler has been failing with: "Service Exception: Crawler already running." The crawler is scheduled at 6 AM but the previous day's run is sometimes still active. What is the BEST solution to prevent this issue while ensuring the catalog stays up to date?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Increase the crawler's timeout setting and configure the crawler to run on a longer schedule (e.g., every 2 hours instead of daily) to ensure completion before the next run.</li>
+                <li><span class="option-label">B.</span> Use a Step Functions workflow that checks the crawler state before starting it. If running, wait with an exponential backoff loop until the previous run completes, then start the new run.</li>
+                <li><span class="option-label">C.</span> Configure two crawlers pointing to the same source: one scheduled for 6 AM and a backup scheduled for 9 AM in case the first fails.</li>
+                <li><span class="option-label">D.</span> Disable the schedule and trigger the crawler from the Glue job's post-processing step only after data is written.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">A Step Functions workflow provides robust orchestration: it can check the crawler state (GetCrawler API), wait if running, and retry with backoff. This ensures the new crawl starts only when the previous one completes, preventing the "already running" error while guaranteeing catalog updates. Option A: Running more frequently doesn't solve the overlap problem and may increase costs. Option C: Two crawlers on the same source would have the same overlap problem and could cause catalog update conflicts. Option D: While event-driven triggering is good practice, it doesn't address the concurrent run issue if data writes overlap with ongoing crawls.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">An EMR cluster running a long-running Spark Streaming job has been experiencing increasing task failures over the past week. YARN logs show that task attempts are failing with "Container killed by YARN for exceeding memory limits." The Spark UI shows that executor memory usage grows steadily over time. What is the MOST likely issue and resolution?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> A memory leak in the application code is causing unbounded state growth. Review the streaming application for proper state cleanup, implement state TTL for stateful operations, and add periodic checkpointing with state pruning.</li>
+                <li><span class="option-label">B.</span> The executor memory configuration is too low for the workload. Increase spark.executor.memory to accommodate the growing data volume.</li>
+                <li><span class="option-label">C.</span> The YARN configuration yarn.nodemanager.resource.memory-mb is set too low, limiting container sizes.</li>
+                <li><span class="option-label">D.</span> The EMR cluster is running out of disk space for shuffle files, causing memory to be used as a fallback.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Steadily growing memory usage in a streaming application is the hallmark of a memory leak or unbounded state accumulation. In Spark Streaming/Structured Streaming, stateful operations (aggregations, joins with watermarks) can accumulate state indefinitely if TTL or watermarks aren't properly configured. The solution is to implement state cleanup mechanisms. Option B: Simply increasing memory postpones the problem; if there's a leak, it will eventually exceed any allocation. Option C: Increasing YARN limits also postpones the issue without addressing the root cause. Option D: Disk space issues would manifest as "No space left on device" errors, not memory limit violations.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A data engineer maintains a Glue ETL job that processes data from 50 S3 partitions daily. The job uses Glue bookmarks to track processed data. After a source data reprocessing event (historical partitions were updated with corrected data), the Glue job is not picking up the corrected files because bookmarks mark those partitions as already processed. How should the engineer handle this situation?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Reset the Glue job bookmark for the specific job run to force reprocessing of all data, then let bookmarks resume tracking from the new state.</li>
+                <li><span class="option-label">B.</span> Disable bookmarks permanently and implement custom logic to track processed files using a DynamoDB table.</li>
+                <li><span class="option-label">C.</span> Delete the source S3 data and re-upload it with new filenames so bookmarks treat it as new data.</li>
+                <li><span class="option-label">D.</span> Create a new Glue job with a different name to process the corrected partitions, since bookmarks are per-job.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Glue job bookmarks can be reset using the ResetJobBookmark API or from the console. This clears the bookmark state, causing the next run to reprocess all data as if running for the first time. After the full reprocessing run completes, the bookmark is re-established at the new state and subsequent runs resume incremental processing. Option B: Disabling bookmarks permanently is excessive for a one-time reprocessing need and adds ongoing maintenance overhead. Option C: Renaming files is operationally risky and doesn't address the fundamental issue. Option D: Creating a duplicate job adds unnecessary complexity; bookmark reset solves this directly.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">An EMR cluster experiences a step failure with the error: "Step failed with bad application state: KILLED." The YARN ResourceManager UI shows the application was killed due to exceeding the maximum number of application attempts. The Spark application logs show multiple executor failures on specific nodes. What should the data engineer investigate FIRST?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Check the YARN node health on the failing nodes. Investigate node-level issues such as disk space exhaustion, unhealthy disks, or memory pressure that would cause executor failures on specific nodes rather than random distribution.</li>
+                <li><span class="option-label">B.</span> Increase the spark.yarn.maxAppAttempts configuration to allow more retries before the application is killed.</li>
+                <li><span class="option-label">C.</span> Check if the Spark application's JAR file is corrupted on S3 by comparing checksums.</li>
+                <li><span class="option-label">D.</span> Increase the EMR cluster size to provide more resources for the failing executors.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">When executor failures are concentrated on specific nodes (rather than random), it strongly suggests node-level issues: disk space exhaustion (/mnt or /tmp full), unhealthy local disks (HDFS or YARN marks disks as bad), or hardware issues. YARN marks nodes as unhealthy when local disk usage exceeds thresholds. Investigating node health is the correct first step before tuning configurations. Option B: Increasing max attempts masks the root cause and delays the eventual failure. Option C: Corrupted JARs would cause class loading errors uniformly across all nodes, not node-specific failures. Option D: Adding capacity doesn't fix underlying node health issues.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A production Glue ETL job that writes to Amazon Redshift via JDBC starts failing with the error: "Connection reset by peer" after running for 45 minutes. The job successfully processes data but fails during the write phase. The Redshift cluster appears healthy and accessible from the console. What is the MOST likely cause?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> A network device (NAT Gateway, Network Load Balancer, or firewall) between Glue and Redshift is terminating idle TCP connections due to timeout. Configure the Glue JDBC connection with keepalive parameters and reduce the connection idle timeout.</li>
+                <li><span class="option-label">B.</span> The Redshift cluster's WLM queue has a statement timeout that kills long-running queries after 45 minutes.</li>
+                <li><span class="option-label">C.</span> The Glue job's execution role has been rotated and the new credentials expire after 45 minutes.</li>
+                <li><span class="option-label">D.</span> The Redshift cluster is running out of disk space during the COPY operation, causing connection termination.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">"Connection reset by peer" after a specific duration (45 minutes) is a classic symptom of network timeout issues. NAT Gateways have a 350-second idle timeout, and if the JDBC connection has idle periods during large batch writes, the connection is silently dropped. Adding TCP keepalive parameters (tcpKeepAlive=true) in the JDBC URL prevents this. Option B: WLM statement timeouts would produce a Redshift-specific error message ("statement timeout"), not a TCP connection reset. Option C: Glue job role credentials are managed internally and refresh transparently; they don't cause connection resets. Option D: Disk space issues would produce a Redshift error about disk full, not a TCP connection reset.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A data engineer needs to implement automatic retry logic for a Glue ETL job that occasionally fails due to transient S3 throttling errors (503 SlowDown). The job runs as part of a scheduled Glue workflow. What is the MOST appropriate retry strategy?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure the Glue job's MaxRetries parameter to 2 within the Glue workflow trigger configuration. This provides built-in retry with Glue handling the re-execution automatically.</li>
+                <li><span class="option-label">B.</span> Implement try-catch blocks in the Glue script's Python code to catch S3 throttling errors and retry individual S3 API calls with exponential backoff.</li>
+                <li><span class="option-label">C.</span> Configure S3 Event Notifications to detect 503 errors and trigger a Lambda function to restart the Glue job.</li>
+                <li><span class="option-label">D.</span> Use Amazon EventBridge to detect Glue job FAILED state changes and trigger job restart via Lambda with a 5-minute delay.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Glue jobs support a MaxRetries parameter (0-10) that automatically retries the entire job upon failure. Within a Glue workflow, this is configured in the trigger settings. This is the simplest and most appropriate approach for transient failures because Glue handles the retry lifecycle, including waiting between attempts. Option B: While application-level retries are good for individual API calls, S3 throttling that fails the entire job suggests widespread throttling that requires job-level retry rather than call-level retry. Option C: S3 Event Notifications don't capture 503 error responses. Option D: EventBridge-based restart works but adds unnecessary complexity when Glue's built-in retry mechanism handles this natively.</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">An EMR cluster running a Hive-based ETL pipeline shows degrading performance over the past month. Investigation reveals that the metastore (RDS MySQL) query response times have increased from 50ms to 2 seconds. The metastore database has grown to contain 500,000 partitions across 200 tables. What maintenance action is MOST likely to resolve the performance degradation?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Clean up stale partitions and run ANALYZE TABLE to update partition statistics. Consider partitioning the metastore's PARTITIONS table or upgrading the RDS instance class.</li>
+                <li><span class="option-label">B.</span> Restart the EMR cluster to refresh the Hive metastore cache and clear connection pools.</li>
+                <li><span class="option-label">C.</span> Increase the Hive metastore connection pool size to handle more concurrent queries.</li>
+                <li><span class="option-label">D.</span> Switch from MySQL to Amazon Aurora for the Hive metastore to get better performance automatically.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">A Hive metastore with 500,000 partitions experiencing growing query latency is a classic database maintenance issue. Stale partitions from deleted/archived data still occupy metastore space, and outdated statistics cause suboptimal query plans. Cleaning up unnecessary partitions, updating statistics, and potentially scaling the RDS instance directly addresses the root cause. Option B: Restarting the cluster refreshes caches temporarily but doesn't fix the underlying metastore database growth. Option C: Connection pool size isn't the issue; the individual queries themselves are slow due to table scan operations on large partition tables. Option D: Migrating to Aurora may help but doesn't address the data volume issue; the same partition bloat would eventually cause problems on Aurora too.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A data engineering team manages 30 AWS Glue jobs that share common library dependencies packaged as a .whl file stored in S3. After updating the shared library to fix a bug, some jobs start failing with import errors while others work correctly. All jobs reference the same S3 path for the library. What is the MOST likely explanation?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Some Glue jobs are using cached versions of the library from previous runs. Glue workers may cache Python packages between job runs on warm pools. Updating the library filename with a version suffix (e.g., library-v2.0.whl) forces all jobs to download the new version.</li>
+                <li><span class="option-label">B.</span> The S3 upload of the new .whl file hasn't propagated to all S3 availability zones yet due to eventual consistency.</li>
+                <li><span class="option-label">C.</span> Some Glue jobs are running Glue version 2.0 while others run 3.0, causing Python compatibility differences with the new library.</li>
+                <li><span class="option-label">D.</span> The IAM roles for the failing jobs have lost read access to the S3 path where the library is stored.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">AWS Glue uses warm pools to speed up job startup. Workers in warm pools may have previously downloaded libraries cached locally. When the same S3 path is used for an updated library, some workers use the cached old version while others (cold-started) download the new one. The solution is to change the filename/path with versioning so all workers are forced to download the new file. Option B: S3 provides strong read-after-write consistency since December 2020; eventual consistency is no longer an issue for overwrites. Option C: While Glue version differences exist, import errors from a shared library update suggest a caching/version problem rather than Python version incompatibility. Option D: Permission issues would affect all runs of those jobs consistently, not intermittently.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>
