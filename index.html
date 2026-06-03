@@ -3,551 +3,777 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS Data Engineer - Associate (DEA-C01) Practice Exam</title>
+    <title>AWS Data Engineer Associate (DEA-C01) Practice Exam</title>
     <style>
+        /* === RESET & BASE === */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
         :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --accent-light: #dbeafe;
-            --border: #e2e8f0;
-            --success: #16a34a;
-            --warning: #d97706;
-            --purple: #7c3aed;
-            --teal: #0d9488;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --color-bg: #ffffff;
+            --color-surface: #f9fafb;
+            --color-border: #e5e7eb;
+            --color-text: #111827;
+            --color-text-secondary: #6b7280;
+            --color-text-tertiary: #9ca3af;
+            --color-accent: #2563eb;
+            --color-accent-hover: #1d4ed8;
+            --color-accent-subtle: #eff6ff;
+            --color-domain-1: #2563eb;
+            --color-domain-2: #059669;
+            --color-domain-3: #d97706;
+            --color-domain-4: #7c3aed;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            --font-mono: 'SF Mono', 'Fira Code', monospace;
+            --transition: 150ms ease;
         }
+
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-primary: #0f172a;
-                --bg-secondary: #1e293b;
-                --bg-card: #1e293b;
-                --text-primary: #f1f5f9;
-                --text-secondary: #94a3b8;
-                --accent: #3b82f6;
-                --accent-hover: #60a5fa;
-                --accent-light: #1e3a5f;
-                --border: #334155;
-                --success: #4ade80;
-                --warning: #fbbf24;
-                --purple: #a78bfa;
-                --teal: #2dd4bf;
-                --shadow: 0 1px 3px rgba(0,0,0,0.3);
-                --shadow-lg: 0 10px 15px rgba(0,0,0,0.3);
+                --color-bg: #0f1117;
+                --color-surface: #1a1d27;
+                --color-border: #2d3039;
+                --color-text: #f3f4f6;
+                --color-text-secondary: #9ca3af;
+                --color-text-tertiary: #6b7280;
+                --color-accent: #3b82f6;
+                --color-accent-hover: #60a5fa;
+                --color-accent-subtle: #1e293b;
+                --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+                --shadow-md: 0 2px 8px rgba(0,0,0,0.3);
             }
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: var(--font-sans);
+            background: var(--color-bg);
+            color: var(--color-text);
             line-height: 1.6;
-            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
-        .container {
-            max-width: 1100px;
+
+        /* === LAYOUT === */
+        .page-container {
+            max-width: 960px;
             margin: 0 auto;
-            padding: 2rem 1.5rem;
+            padding: 0 1.5rem 4rem;
         }
-        .hero {
-            text-align: center;
-            padding: 3rem 2rem;
-            background: linear-gradient(135deg, var(--accent), var(--purple));
-            border-radius: 20px;
-            margin-bottom: 2.5rem;
-            color: white;
-            box-shadow: var(--shadow-lg);
-        }
-        .hero h1 {
-            font-size: 2.2rem;
-            margin-bottom: 0.75rem;
-            font-weight: 800;
-        }
-        .hero .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
+
+        /* === HEADER === */
+        .site-header {
+            padding: 2.5rem 0 1.5rem;
+            border-bottom: 1px solid var(--color-border);
             margin-bottom: 1.5rem;
         }
-        .hero .stats {
+
+        .site-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .site-header .subtitle {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            font-weight: 400;
+        }
+
+        .header-stats {
             display: flex;
-            justify-content: center;
-            gap: 2rem;
+            gap: 1.25rem;
+            margin-top: 0.75rem;
             flex-wrap: wrap;
         }
-        .hero .stat-item {
-            text-align: center;
-        }
-        .hero .stat-number {
-            font-size: 2rem;
-            font-weight: 800;
-            display: block;
-        }
-        .hero .stat-label {
-            font-size: 0.85rem;
-            opacity: 0.85;
-        }
-        .domain-section {
-            margin-bottom: 2.5rem;
-        }
-        .domain-header {
+
+        .header-stats .stat {
+            font-size: 0.8rem;
+            color: var(--color-text-tertiary);
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1.25rem 1.5rem;
-            background: var(--bg-card);
-            border-radius: 14px;
-            margin-bottom: 1rem;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s;
+            gap: 0.35rem;
         }
-        .domain-header:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-1px);
+
+        .header-stats .stat strong {
+            color: var(--color-text);
+            font-weight: 600;
         }
-        .domain-badge {
+
+        /* === STICKY NAV === */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--color-bg);
+            border-bottom: 1px solid var(--color-border);
+            padding: 0.75rem 0;
+            margin: 0 -1.5rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        .nav-inner {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            max-width: 960px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: white;
+            gap: 0.4rem;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: var(--color-surface);
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover, .nav-btn:focus-visible {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+            background: var(--color-accent-subtle);
+        }
+
+        .nav-btn:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
             flex-shrink: 0;
         }
-        .domain-1 .domain-badge { background: var(--accent); }
-        .domain-2 .domain-badge { background: var(--success); }
-        .domain-3 .domain-badge { background: var(--warning); }
-        .domain-4 .domain-badge { background: var(--purple); }
-        .domain-info {
-            flex: 1;
+
+        .nav-dot-1 { background: var(--color-domain-1); }
+        .nav-dot-2 { background: var(--color-domain-2); }
+        .nav-dot-3 { background: var(--color-domain-3); }
+        .nav-dot-4 { background: var(--color-domain-4); }
+
+        /* === SEARCH === */
+        .search-wrapper {
+            margin-bottom: 1.75rem;
         }
-        .domain-info h2 {
-            font-size: 1.2rem;
-            margin-bottom: 0.2rem;
+
+        .search-input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            font-size: 0.9rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-family: var(--font-sans);
+            transition: border-color var(--transition), box-shadow var(--transition);
         }
-        .domain-info .domain-meta {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+
+        .search-input::placeholder {
+            color: var(--color-text-tertiary);
         }
-        .domain-toggle {
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            transition: transform 0.3s;
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
-        .domain-header.collapsed .domain-toggle {
-            transform: rotate(-90deg);
+
+        .search-container {
+            position: relative;
         }
-        .task-group {
-            margin-left: 1rem;
-            margin-bottom: 1.25rem;
+
+        .search-icon {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: var(--color-text-tertiary);
+            pointer-events: none;
         }
-        .task-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0.5rem;
-            border-left: 3px solid var(--accent);
-            background: var(--bg-secondary);
-            border-radius: 0 8px 8px 0;
+
+        .search-count {
+            font-size: 0.75rem;
+            color: var(--color-text-tertiary);
+            margin-top: 0.4rem;
+            display: none;
         }
-        .domain-1 .task-title { border-left-color: var(--accent); }
-        .domain-2 .task-title { border-left-color: var(--success); }
-        .domain-3 .task-title { border-left-color: var(--warning); }
-        .domain-4 .task-title { border-left-color: var(--purple); }
-        .skill-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 0.6rem;
+
+        .search-count.visible {
+            display: block;
+        }
+
+        /* === DOMAIN === */
+        .domain-section {
             margin-bottom: 1rem;
         }
-        .skill-link {
+
+        .domain-trigger {
+            width: 100%;
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all 0.2s;
-            font-size: 0.88rem;
+            padding: 1rem 1.25rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition);
+            text-align: left;
+            font-family: var(--font-sans);
         }
-        .skill-link:hover {
-            border-color: var(--accent);
-            background: var(--accent-light);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow);
+
+        .domain-trigger:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-text-tertiary);
         }
-        .skill-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 52px;
-            height: 28px;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 0.75rem;
-            color: white;
+
+        .domain-trigger:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        .domain-indicator {
+            width: 6px;
+            height: 32px;
+            border-radius: 3px;
             flex-shrink: 0;
         }
-        .domain-1 .skill-number { background: var(--accent); }
-        .domain-2 .skill-number { background: var(--success); }
-        .domain-3 .skill-number { background: var(--warning); }
-        .domain-4 .skill-number { background: var(--purple); }
-        .skill-text {
+
+        .domain-1 .domain-indicator { background: var(--color-domain-1); }
+        .domain-2 .domain-indicator { background: var(--color-domain-2); }
+        .domain-3 .domain-indicator { background: var(--color-domain-3); }
+        .domain-4 .domain-indicator { background: var(--color-domain-4); }
+
+        .domain-title-group {
             flex: 1;
+            min-width: 0;
+        }
+
+        .domain-title {
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .domain-pills {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.35rem;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 100px;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .domain-chevron {
+            width: 20px;
+            height: 20px;
+            color: var(--color-text-tertiary);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .domain-trigger[aria-expanded="true"] .domain-chevron {
+            transform: rotate(90deg);
+        }
+
+        .domain-content {
+            display: none;
+            padding: 0.5rem 0 0.5rem 1.5rem;
+        }
+
+        .domain-content.open {
+            display: block;
+        }
+
+        /* === TASK === */
+        .task-group {
+            margin-bottom: 0.5rem;
+        }
+
+        .task-trigger {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0.75rem;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: left;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            transition: all var(--transition);
+        }
+
+        .task-trigger:hover {
+            background: var(--color-surface);
+            color: var(--color-text);
+        }
+
+        .task-trigger:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        .task-chevron {
+            width: 14px;
+            height: 14px;
+            color: var(--color-text-tertiary);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .task-trigger[aria-expanded="true"] .task-chevron {
+            transform: rotate(90deg);
+        }
+
+        .task-content {
+            display: none;
+            padding: 0.25rem 0 0.75rem 1.75rem;
+        }
+
+        .task-content.open {
+            display: block;
+        }
+
+        /* === SKILL === */
+        .skill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .skill-link {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0.7rem;
+            text-decoration: none;
+            color: var(--color-text);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+            font-size: 0.84rem;
             line-height: 1.4;
         }
-        .skill-questions {
+
+        .skill-link:hover {
+            background: var(--color-accent-subtle);
+            color: var(--color-accent);
+        }
+
+        .skill-link:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 1px;
+        }
+
+        .skill-id {
+            font-family: var(--font-mono);
             font-size: 0.7rem;
-            color: var(--text-secondary);
-            background: var(--bg-primary);
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
+            font-weight: 500;
+            color: var(--color-text-tertiary);
+            min-width: 38px;
             flex-shrink: 0;
         }
-        .domain-content {
-            overflow: hidden;
-            transition: max-height 0.4s ease;
+
+        .skill-name {
+            flex: 1;
+            min-width: 0;
         }
-        .domain-content.collapsed {
-            max-height: 0 !important;
+
+        /* === SEARCH STATES === */
+        .domain-section.hidden,
+        .task-group.hidden,
+        .skill-link.hidden {
+            display: none;
         }
-        .footer {
+
+        .skill-link.search-match {
+            background: var(--color-accent-subtle);
+        }
+
+        /* === NO RESULTS === */
+        .no-results {
             text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            border-top: 1px solid var(--border);
-            margin-top: 2rem;
+            padding: 3rem 1rem;
+            color: var(--color-text-tertiary);
+            font-size: 0.9rem;
+            display: none;
         }
+
+        .no-results.visible {
+            display: block;
+        }
+
+        /* === FOOTER === */
+        .site-footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--color-text-tertiary);
+        }
+
+        /* === RESPONSIVE === */
         @media (max-width: 640px) {
-            .container { padding: 1rem; }
-            .hero { padding: 2rem 1.25rem; }
-            .hero h1 { font-size: 1.6rem; }
-            .hero .stats { gap: 1.25rem; }
-            .skill-grid { grid-template-columns: 1fr; }
-            .domain-header { padding: 1rem; }
-            .task-group { margin-left: 0.5rem; }
+            .page-container {
+                padding: 0 1rem 3rem;
+            }
+
+            .sticky-nav {
+                margin: 0 -1rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .site-header h1 {
+                font-size: 1.25rem;
+            }
+
+            .domain-trigger {
+                padding: 0.85rem 1rem;
+            }
+
+            .domain-title {
+                font-size: 0.9rem;
+            }
+
+            .nav-btn {
+                font-size: 0.72rem;
+                padding: 0.35rem 0.6rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="hero">
-            <h1>AWS Data Engineer &mdash; Associate (DEA-C01)</h1>
+    <div class="page-container">
+        <!-- HEADER -->
+        <header class="site-header">
+            <h1>AWS Data Engineer Associate (DEA-C01)</h1>
             <p class="subtitle">Practice Exam &amp; Certification Preparation</p>
-            <div class="stats">
-                <div class="stat-item">
-                    <span class="stat-number">120</span>
-                    <span class="stat-label">Skills</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">1,200</span>
-                    <span class="stat-label">Questions</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">4</span>
-                    <span class="stat-label">Domains</span>
-                </div>
+            <div class="header-stats">
+                <span class="stat"><strong>120</strong> Skills</span>
+                <span class="stat"><strong>1,200</strong> Questions</span>
+                <span class="stat"><strong>4</strong> Domains</span>
             </div>
+        </header>
+
+        <!-- STICKY NAV -->
+        <nav class="sticky-nav" aria-label="Domain navigation">
+            <div class="nav-inner">
+                <a href="#domain-1" class="nav-btn"><span class="nav-dot nav-dot-1"></span>Domain 1</a>
+                <a href="#domain-2" class="nav-btn"><span class="nav-dot nav-dot-2"></span>Domain 2</a>
+                <a href="#domain-3" class="nav-btn"><span class="nav-dot nav-dot-3"></span>Domain 3</a>
+                <a href="#domain-4" class="nav-btn"><span class="nav-dot nav-dot-4"></span>Domain 4</a>
+            </div>
+        </nav>
+
+        <!-- SEARCH -->
+        <div class="search-wrapper">
+            <div class="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
+                <input type="search" class="search-input" id="searchInput" placeholder="Search skills... (e.g. Glue, Athena, Kinesis, IAM)" aria-label="Search skills">
+            </div>
+            <div class="search-count" id="searchCount"></div>
         </div>
 
-        <!-- Domain 1 -->
-        <div class="domain-section domain-1">
-            <div class="domain-header" onclick="toggleDomain(this)">
-                <div class="domain-badge">1</div>
-                <div class="domain-info">
-                    <h2>Data Ingestion and Transformation</h2>
-                    <div class="domain-meta">34% of exam &bull; 4 Tasks &bull; 37 Skills &bull; 370 Questions</div>
-                </div>
-                <div class="domain-toggle">&#9662;</div>
-            </div>
-            <div class="domain-content">
-                <div class="task-group">
-                    <div class="task-title">Task 1.1: Perform data ingestion</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_01_01_01.html" class="skill-link"><span class="skill-number">1.1.1</span><span class="skill-text">Read data from streaming sources</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_02.html" class="skill-link"><span class="skill-number">1.1.2</span><span class="skill-text">Read data from batch sources</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_03.html" class="skill-link"><span class="skill-number">1.1.3</span><span class="skill-text">Configuration options for batch ingestion</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_04.html" class="skill-link"><span class="skill-number">1.1.4</span><span class="skill-text">Consume data APIs</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_05.html" class="skill-link"><span class="skill-number">1.1.5</span><span class="skill-text">Set up schedulers</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_06.html" class="skill-link"><span class="skill-number">1.1.6</span><span class="skill-text">Set up event triggers</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_07.html" class="skill-link"><span class="skill-number">1.1.7</span><span class="skill-text">Call Lambda from Kinesis</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_08.html" class="skill-link"><span class="skill-number">1.1.8</span><span class="skill-text">Create IP allowlists</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_09.html" class="skill-link"><span class="skill-number">1.1.9</span><span class="skill-text">Throttling and rate limits</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_10.html" class="skill-link"><span class="skill-number">1.1.10</span><span class="skill-text">Fan-in and fan-out streaming</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_11.html" class="skill-link"><span class="skill-number">1.1.11</span><span class="skill-text">Replayability of pipelines</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_01_12.html" class="skill-link"><span class="skill-number">1.1.12</span><span class="skill-text">Stateful and stateless transactions</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 1.2: Transform and process data</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_01_02_01.html" class="skill-link"><span class="skill-number">1.2.1</span><span class="skill-text">Optimize container usage (EKS, ECS)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_02_02.html" class="skill-link"><span class="skill-number">1.2.2</span><span class="skill-text">Connect to data sources (JDBC, ODBC)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_02_03.html" class="skill-link"><span class="skill-number">1.2.3</span><span class="skill-text">Integrate data from multiple sources</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_02_04.html" class="skill-link"><span class="skill-number">1.2.4</span><span class="skill-text">Optimize costs while processing</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_02_05.html" class="skill-link"><span class="skill-number">1.2.5</span><span class="skill-text">Implement transformation services</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_02_06.html" class="skill-link"><span class="skill-number">1.2.6</span><span class="skill-text">Transform data between formats</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_02_07.html" class="skill-link"><span class="skill-number">1.2.7</span><span class="skill-text">Troubleshoot transformation failures</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_02_08.html" class="skill-link"><span class="skill-number">1.2.8</span><span class="skill-text">Create data APIs</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_02_09.html" class="skill-link"><span class="skill-number">1.2.9</span><span class="skill-text">Volume, velocity, and variety</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_02_10.html" class="skill-link"><span class="skill-number">1.2.10</span><span class="skill-text">Integrate LLMs for data processing</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 1.3: Orchestrate data pipelines</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_01_03_01.html" class="skill-link"><span class="skill-number">1.3.1</span><span class="skill-text">Orchestration services for ETL workflows</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_03_02.html" class="skill-link"><span class="skill-number">1.3.2</span><span class="skill-text">Performance, availability, resiliency</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_03_03.html" class="skill-link"><span class="skill-number">1.3.3</span><span class="skill-text">Serverless workflows</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_03_04.html" class="skill-link"><span class="skill-number">1.3.4</span><span class="skill-text">Notification services for alerts</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 1.4: Apply programming concepts</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_01_04_01.html" class="skill-link"><span class="skill-number">1.4.1</span><span class="skill-text">Optimize code to reduce runtime</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_04_02.html" class="skill-link"><span class="skill-number">1.4.2</span><span class="skill-text">Lambda concurrency and performance</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_04_03.html" class="skill-link"><span class="skill-number">1.4.3</span><span class="skill-text">Programming languages and frameworks</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_04_04.html" class="skill-link"><span class="skill-number">1.4.4</span><span class="skill-text">Software engineering best practices</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_04_05.html" class="skill-link"><span class="skill-number">1.4.5</span><span class="skill-text">Infrastructure as Code (IaC)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_04_06.html" class="skill-link"><span class="skill-number">1.4.6</span><span class="skill-text">AWS SAM for serverless pipelines</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_04_07.html" class="skill-link"><span class="skill-number">1.4.7</span><span class="skill-text">Storage volumes in Lambda</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_04_08.html" class="skill-link"><span class="skill-number">1.4.8</span><span class="skill-text">IaC for repeatable deployment</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_04_09.html" class="skill-link"><span class="skill-number">1.4.9</span><span class="skill-text">CI/CD for data pipelines</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_04_10.html" class="skill-link"><span class="skill-number">1.4.10</span><span class="skill-text">Distributed computing</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_01_04_11.html" class="skill-link"><span class="skill-number">1.4.11</span><span class="skill-text">Data structures and algorithms</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- NO RESULTS -->
+        <div class="no-results" id="noResults">No skills found matching your search.</div>
 
-        <!-- Domain 2 -->
-        <div class="domain-section domain-2">
-            <div class="domain-header" onclick="toggleDomain(this)">
-                <div class="domain-badge">2</div>
-                <div class="domain-info">
-                    <h2>Data Store Management</h2>
-                    <div class="domain-meta">26% of exam &bull; 4 Tasks &bull; 26 Skills &bull; 260 Questions</div>
+        <!-- DOMAIN 1 -->
+        <section class="domain-section domain-1" id="domain-1">
+            <button class="domain-trigger" aria-expanded="false" aria-controls="domain-1-content" onclick="toggleDomain(this)">
+                <div class="domain-indicator"></div>
+                <div class="domain-title-group">
+                    <div class="domain-title">Data Ingestion and Transformation</div>
+                    <div class="domain-pills">
+                        <span class="pill">34% Weight</span>
+                        <span class="pill">37 Skills</span>
+                        <span class="pill">370 Questions</span>
+                        <span class="pill">4 Tasks</span>
+                    </div>
                 </div>
-                <div class="domain-toggle">&#9662;</div>
+                <svg class="domain-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+            <div class="domain-content" id="domain-1-content">
+                <!-- Task 1.1 -->
+                <div class="task-group">
+                    <button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)">
+                        <svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                        Task 1.1: Perform data ingestion
+                    </button>
+                    <div class="task-content">
+                        <div class="skill-list">
+                            <a href="soal/skill_01_01_01.html" class="skill-link" data-skill="1.1.1 Read data from streaming sources Kinesis MSK DynamoDB Streams DMS Glue Redshift"><span class="skill-id">1.1.1</span><span class="skill-name">Read data from streaming sources</span></a>
+                            <a href="soal/skill_01_01_02.html" class="skill-link" data-skill="1.1.2 Read data from batch sources S3 Glue EMR DMS Redshift Lambda AppFlow"><span class="skill-id">1.1.2</span><span class="skill-name">Read data from batch sources</span></a>
+                            <a href="soal/skill_01_01_03.html" class="skill-link" data-skill="1.1.3 Implement appropriate configuration options for batch ingestion"><span class="skill-id">1.1.3</span><span class="skill-name">Configuration options for batch ingestion</span></a>
+                            <a href="soal/skill_01_01_04.html" class="skill-link" data-skill="1.1.4 Consume data APIs REST GraphQL API Gateway"><span class="skill-id">1.1.4</span><span class="skill-name">Consume data APIs</span></a>
+                            <a href="soal/skill_01_01_05.html" class="skill-link" data-skill="1.1.5 Set up schedulers EventBridge Apache Airflow MWAA time-based schedules jobs crawlers"><span class="skill-id">1.1.5</span><span class="skill-name">Set up schedulers</span></a>
+                            <a href="soal/skill_01_01_06.html" class="skill-link" data-skill="1.1.6 Set up event triggers S3 Event Notifications EventBridge"><span class="skill-id">1.1.6</span><span class="skill-name">Set up event triggers</span></a>
+                            <a href="soal/skill_01_01_07.html" class="skill-link" data-skill="1.1.7 Call a Lambda function from Kinesis"><span class="skill-id">1.1.7</span><span class="skill-name">Call Lambda from Kinesis</span></a>
+                            <a href="soal/skill_01_01_08.html" class="skill-link" data-skill="1.1.8 Create allowlists for IP addresses connections data sources VPC security groups"><span class="skill-id">1.1.8</span><span class="skill-name">Create IP allowlists</span></a>
+                            <a href="soal/skill_01_01_09.html" class="skill-link" data-skill="1.1.9 Implement throttling overcoming rate limits DynamoDB RDS Kinesis"><span class="skill-id">1.1.9</span><span class="skill-name">Throttling and rate limits</span></a>
+                            <a href="soal/skill_01_01_10.html" class="skill-link" data-skill="1.1.10 Manage fan-in fan-out streaming data distribution SNS SQS"><span class="skill-id">1.1.10</span><span class="skill-name">Fan-in and fan-out streaming</span></a>
+                            <a href="soal/skill_01_01_11.html" class="skill-link" data-skill="1.1.11 Describe replayability of data ingestion pipelines"><span class="skill-id">1.1.11</span><span class="skill-name">Replayability of pipelines</span></a>
+                            <a href="soal/skill_01_01_12.html" class="skill-link" data-skill="1.1.12 Define stateful and stateless data transactions"><span class="skill-id">1.1.12</span><span class="skill-name">Stateful and stateless transactions</span></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Task 1.2 -->
+                <div class="task-group">
+                    <button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)">
+                        <svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                        Task 1.2: Transform and process data
+                    </button>
+                    <div class="task-content">
+                        <div class="skill-list">
+                            <a href="soal/skill_01_02_01.html" class="skill-link" data-skill="1.2.1 Optimize container usage performance EKS ECS Fargate"><span class="skill-id">1.2.1</span><span class="skill-name">Optimize container usage (EKS, ECS)</span></a>
+                            <a href="soal/skill_01_02_02.html" class="skill-link" data-skill="1.2.2 Connect to different data sources JDBC ODBC"><span class="skill-id">1.2.2</span><span class="skill-name">Connect to data sources (JDBC, ODBC)</span></a>
+                            <a href="soal/skill_01_02_03.html" class="skill-link" data-skill="1.2.3 Integrate data from multiple sources"><span class="skill-id">1.2.3</span><span class="skill-name">Integrate data from multiple sources</span></a>
+                            <a href="soal/skill_01_02_04.html" class="skill-link" data-skill="1.2.4 Optimize costs while processing data"><span class="skill-id">1.2.4</span><span class="skill-name">Optimize costs while processing</span></a>
+                            <a href="soal/skill_01_02_05.html" class="skill-link" data-skill="1.2.5 Implement data transformation services EMR Glue Lambda Redshift"><span class="skill-id">1.2.5</span><span class="skill-name">Implement transformation services</span></a>
+                            <a href="soal/skill_01_02_06.html" class="skill-link" data-skill="1.2.6 Transform data between formats CSV Parquet ORC Avro JSON"><span class="skill-id">1.2.6</span><span class="skill-name">Transform data between formats</span></a>
+                            <a href="soal/skill_01_02_07.html" class="skill-link" data-skill="1.2.7 Troubleshoot debug common transformation failures performance issues Spark"><span class="skill-id">1.2.7</span><span class="skill-name">Troubleshoot transformation failures</span></a>
+                            <a href="soal/skill_01_02_08.html" class="skill-link" data-skill="1.2.8 Create data APIs make data available other systems API Gateway Lambda"><span class="skill-id">1.2.8</span><span class="skill-name">Create data APIs</span></a>
+                            <a href="soal/skill_01_02_09.html" class="skill-link" data-skill="1.2.9 Define volume velocity variety data structured unstructured"><span class="skill-id">1.2.9</span><span class="skill-name">Volume, velocity, and variety</span></a>
+                            <a href="soal/skill_01_02_10.html" class="skill-link" data-skill="1.2.10 Integrate large language models LLMs data processing Bedrock"><span class="skill-id">1.2.10</span><span class="skill-name">Integrate LLMs for data processing</span></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Task 1.3 -->
+                <div class="task-group">
+                    <button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)">
+                        <svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                        Task 1.3: Orchestrate data pipelines
+                    </button>
+                    <div class="task-content">
+                        <div class="skill-list">
+                            <a href="soal/skill_01_03_01.html" class="skill-link" data-skill="1.3.1 Use orchestration services build workflows ETL pipelines Lambda EventBridge MWAA Step Functions Glue workflows"><span class="skill-id">1.3.1</span><span class="skill-name">Orchestration services for ETL workflows</span></a>
+                            <a href="soal/skill_01_03_02.html" class="skill-link" data-skill="1.3.2 Build data pipelines performance availability scalability resiliency fault tolerance"><span class="skill-id">1.3.2</span><span class="skill-name">Performance, availability, resiliency</span></a>
+                            <a href="soal/skill_01_03_03.html" class="skill-link" data-skill="1.3.3 Implement maintain serverless workflows"><span class="skill-id">1.3.3</span><span class="skill-name">Serverless workflows</span></a>
+                            <a href="soal/skill_01_03_04.html" class="skill-link" data-skill="1.3.4 Use notification services send alerts SNS SQS"><span class="skill-id">1.3.4</span><span class="skill-name">Notification services for alerts</span></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Task 1.4 -->
+                <div class="task-group">
+                    <button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)">
+                        <svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                        Task 1.4: Apply programming concepts
+                    </button>
+                    <div class="task-content">
+                        <div class="skill-list">
+                            <a href="soal/skill_01_04_01.html" class="skill-link" data-skill="1.4.1 Optimize code reduce runtime data ingestion transformation"><span class="skill-id">1.4.1</span><span class="skill-name">Optimize code to reduce runtime</span></a>
+                            <a href="soal/skill_01_04_02.html" class="skill-link" data-skill="1.4.2 Configure Lambda functions concurrency performance needs"><span class="skill-id">1.4.2</span><span class="skill-name">Lambda concurrency and performance</span></a>
+                            <a href="soal/skill_01_04_03.html" class="skill-link" data-skill="1.4.3 Use programming languages frameworks data engineering Python SQL Scala R Java Bash PowerShell"><span class="skill-id">1.4.3</span><span class="skill-name">Programming languages and frameworks</span></a>
+                            <a href="soal/skill_01_04_04.html" class="skill-link" data-skill="1.4.4 Use software engineering best practices version control testing logging monitoring"><span class="skill-id">1.4.4</span><span class="skill-name">Software engineering best practices</span></a>
+                            <a href="soal/skill_01_04_05.html" class="skill-link" data-skill="1.4.5 Use Infrastructure as Code IaC deploy data engineering solutions CloudFormation CDK Terraform"><span class="skill-id">1.4.5</span><span class="skill-name">Infrastructure as Code (IaC)</span></a>
+                            <a href="soal/skill_01_04_06.html" class="skill-link" data-skill="1.4.6 Use AWS SAM package deploy serverless data pipelines Lambda Step Functions DynamoDB"><span class="skill-id">1.4.6</span><span class="skill-name">AWS SAM for serverless pipelines</span></a>
+                            <a href="soal/skill_01_04_07.html" class="skill-link" data-skill="1.4.7 Use mount storage volumes Lambda functions EFS tmp ephemeral"><span class="skill-id">1.4.7</span><span class="skill-name">Storage volumes in Lambda</span></a>
+                            <a href="soal/skill_01_04_08.html" class="skill-link" data-skill="1.4.8 Use infrastructure code IaC repeatable resource deployment CloudFormation CDK"><span class="skill-id">1.4.8</span><span class="skill-name">IaC for repeatable deployment</span></a>
+                            <a href="soal/skill_01_04_09.html" class="skill-link" data-skill="1.4.9 Describe continuous integration continuous delivery CI/CD implementation testing deployment data pipelines"><span class="skill-id">1.4.9</span><span class="skill-name">CI/CD for data pipelines</span></a>
+                            <a href="soal/skill_01_04_10.html" class="skill-link" data-skill="1.4.10 Define distributed computing MapReduce Spark"><span class="skill-id">1.4.10</span><span class="skill-name">Distributed computing</span></a>
+                            <a href="soal/skill_01_04_11.html" class="skill-link" data-skill="1.4.11 Describe data structures algorithms graph tree hash"><span class="skill-id">1.4.11</span><span class="skill-name">Data structures and algorithms</span></a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="domain-content">
-                <div class="task-group">
-                    <div class="task-title">Task 2.1: Choose a data store</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_02_01_01.html" class="skill-link"><span class="skill-number">2.1.1</span><span class="skill-text">Storage for cost and performance</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_01_02.html" class="skill-link"><span class="skill-number">2.1.2</span><span class="skill-text">Storage for access patterns</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_01_03.html" class="skill-link"><span class="skill-number">2.1.3</span><span class="skill-text">Storage for appropriate use cases</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_01_04.html" class="skill-link"><span class="skill-number">2.1.4</span><span class="skill-text">Migration tools integration</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_01_05.html" class="skill-link"><span class="skill-number">2.1.5</span><span class="skill-text">Data migration and remote access</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_01_06.html" class="skill-link"><span class="skill-number">2.1.6</span><span class="skill-text">Manage locks to prevent access</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_01_07.html" class="skill-link"><span class="skill-number">2.1.7</span><span class="skill-text">Open table formats (Iceberg)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_01_08.html" class="skill-link"><span class="skill-number">2.1.8</span><span class="skill-text">Vector index types (HNSW, IVF)</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 2.2: Understand data cataloging systems</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_02_02_01.html" class="skill-link"><span class="skill-number">2.2.1</span><span class="skill-text">Use data catalogs to consume data</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_02_02.html" class="skill-link"><span class="skill-number">2.2.2</span><span class="skill-text">Build technical data catalog</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_02_03.html" class="skill-link"><span class="skill-number">2.2.3</span><span class="skill-text">Glue crawlers for schema discovery</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_02_04.html" class="skill-link"><span class="skill-number">2.2.4</span><span class="skill-text">Synchronize partitions</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_02_05.html" class="skill-link"><span class="skill-number">2.2.5</span><span class="skill-text">Source/target connections for cataloging</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_02_06.html" class="skill-link"><span class="skill-number">2.2.6</span><span class="skill-text">Business data catalogs</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 2.3: Manage the lifecycle of data</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_02_03_01.html" class="skill-link"><span class="skill-number">2.3.1</span><span class="skill-text">Load/unload S3 and Redshift</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_03_02.html" class="skill-link"><span class="skill-number">2.3.2</span><span class="skill-text">S3 Lifecycle policies (storage tier)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_03_03.html" class="skill-link"><span class="skill-number">2.3.3</span><span class="skill-text">Expire data by age</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_03_04.html" class="skill-link"><span class="skill-number">2.3.4</span><span class="skill-text">S3 versioning and DynamoDB TTL</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_03_05.html" class="skill-link"><span class="skill-number">2.3.5</span><span class="skill-text">Delete data for compliance</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_03_06.html" class="skill-link"><span class="skill-number">2.3.6</span><span class="skill-text">Data resiliency and availability</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 2.4: Design data models and schema evolution</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_02_04_01.html" class="skill-link"><span class="skill-number">2.4.1</span><span class="skill-text">Design schemas (Redshift, DynamoDB)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_04_02.html" class="skill-link"><span class="skill-number">2.4.2</span><span class="skill-text">Address data characteristic changes</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_04_03.html" class="skill-link"><span class="skill-number">2.4.3</span><span class="skill-text">Schema conversion (SCT, DMS)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_04_04.html" class="skill-link"><span class="skill-number">2.4.4</span><span class="skill-text">Establish data lineage</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_04_05.html" class="skill-link"><span class="skill-number">2.4.5</span><span class="skill-text">Indexing, partitioning, compression</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_02_04_06.html" class="skill-link"><span class="skill-number">2.4.6</span><span class="skill-text">Vectorization concepts</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </section>
 
-        <!-- Domain 3 -->
-        <div class="domain-section domain-3">
-            <div class="domain-header" onclick="toggleDomain(this)">
-                <div class="domain-badge">3</div>
-                <div class="domain-info">
-                    <h2>Data Operations and Support</h2>
-                    <div class="domain-meta">22% of exam &bull; 4 Tasks &bull; 28 Skills &bull; 280 Questions</div>
+        <!-- DOMAIN 2 -->
+        <section class="domain-section domain-2" id="domain-2">
+            <button class="domain-trigger" aria-expanded="false" aria-controls="domain-2-content" onclick="toggleDomain(this)">
+                <div class="domain-indicator"></div>
+                <div class="domain-title-group">
+                    <div class="domain-title">Data Store Management</div>
+                    <div class="domain-pills">
+                        <span class="pill">26% Weight</span>
+                        <span class="pill">26 Skills</span>
+                        <span class="pill">260 Questions</span>
+                        <span class="pill">4 Tasks</span>
+                    </div>
                 </div>
-                <div class="domain-toggle">&#9662;</div>
+                <svg class="domain-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+            <div class="domain-content" id="domain-2-content">
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 2.1: Choose a data store</button><div class="task-content"><div class="skill-list"><a href="soal/skill_02_01_01.html" class="skill-link" data-skill="2.1.1 Implement storage services cost performance Redshift EMR Lake Formation RDS DynamoDB Kinesis MSK"><span class="skill-id">2.1.1</span><span class="skill-name">Storage for cost and performance</span></a><a href="soal/skill_02_01_02.html" class="skill-link" data-skill="2.1.2 Configure storage services access patterns Redshift EMR Lake Formation RDS DynamoDB"><span class="skill-id">2.1.2</span><span class="skill-name">Storage for access patterns</span></a><a href="soal/skill_02_01_03.html" class="skill-link" data-skill="2.1.3 Apply storage services use cases HNSW Aurora PostgreSQL MemoryDB"><span class="skill-id">2.1.3</span><span class="skill-name">Storage for appropriate use cases</span></a><a href="soal/skill_02_01_04.html" class="skill-link" data-skill="2.1.4 Integrate migration tools data processing Transfer Family DataSync"><span class="skill-id">2.1.4</span><span class="skill-name">Migration tools integration</span></a><a href="soal/skill_02_01_05.html" class="skill-link" data-skill="2.1.5 Implement data migration remote access Redshift federated queries materialized views Spectrum"><span class="skill-id">2.1.5</span><span class="skill-name">Data migration and remote access</span></a><a href="soal/skill_02_01_06.html" class="skill-link" data-skill="2.1.6 Manage locks prevent access data Redshift RDS concurrency"><span class="skill-id">2.1.6</span><span class="skill-name">Manage locks to prevent access</span></a><a href="soal/skill_02_01_07.html" class="skill-link" data-skill="2.1.7 Manage open table formats Apache Iceberg Delta Lake Hudi"><span class="skill-id">2.1.7</span><span class="skill-name">Open table formats (Iceberg)</span></a><a href="soal/skill_02_01_08.html" class="skill-link" data-skill="2.1.8 Describe vector index types HNSW IVF approximate nearest neighbor"><span class="skill-id">2.1.8</span><span class="skill-name">Vector index types (HNSW, IVF)</span></a></div></div></div>
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 2.2: Understand data cataloging systems</button><div class="task-content"><div class="skill-list"><a href="soal/skill_02_02_01.html" class="skill-link" data-skill="2.2.1 Use data catalogs consume data source Glue Data Catalog"><span class="skill-id">2.2.1</span><span class="skill-name">Use data catalogs to consume data</span></a><a href="soal/skill_02_02_02.html" class="skill-link" data-skill="2.2.2 Build reference technical data catalog Glue Data Catalog Apache Hive metastore"><span class="skill-id">2.2.2</span><span class="skill-name">Build technical data catalog</span></a><a href="soal/skill_02_02_03.html" class="skill-link" data-skill="2.2.3 Discover schemas use Glue crawlers populate data catalogs"><span class="skill-id">2.2.3</span><span class="skill-name">Glue crawlers for schema discovery</span></a><a href="soal/skill_02_02_04.html" class="skill-link" data-skill="2.2.4 Synchronize partitions data catalog MSCK REPAIR partition projection"><span class="skill-id">2.2.4</span><span class="skill-name">Synchronize partitions</span></a><a href="soal/skill_02_02_05.html" class="skill-link" data-skill="2.2.5 Create new source target connections cataloging Glue JDBC"><span class="skill-id">2.2.5</span><span class="skill-name">Source/target connections for cataloging</span></a><a href="soal/skill_02_02_06.html" class="skill-link" data-skill="2.2.6 Create manage business data catalogs SageMaker Catalog DataZone"><span class="skill-id">2.2.6</span><span class="skill-name">Business data catalogs</span></a></div></div></div>
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 2.3: Manage the lifecycle of data</button><div class="task-content"><div class="skill-list"><a href="soal/skill_02_03_01.html" class="skill-link" data-skill="2.3.1 Perform load unload operations S3 Redshift COPY UNLOAD"><span class="skill-id">2.3.1</span><span class="skill-name">Load/unload S3 and Redshift</span></a><a href="soal/skill_02_03_02.html" class="skill-link" data-skill="2.3.2 Manage S3 Lifecycle policies change storage tier Glacier Intelligent-Tiering"><span class="skill-id">2.3.2</span><span class="skill-name">S3 Lifecycle policies (storage tier)</span></a><a href="soal/skill_02_03_03.html" class="skill-link" data-skill="2.3.3 Expire data specific age S3 Lifecycle policies retention"><span class="skill-id">2.3.3</span><span class="skill-name">Expire data by age</span></a><a href="soal/skill_02_03_04.html" class="skill-link" data-skill="2.3.4 Manage S3 versioning DynamoDB TTL"><span class="skill-id">2.3.4</span><span class="skill-name">S3 versioning and DynamoDB TTL</span></a><a href="soal/skill_02_03_05.html" class="skill-link" data-skill="2.3.5 Delete data meet business legal requirements GDPR compliance"><span class="skill-id">2.3.5</span><span class="skill-name">Delete data for compliance</span></a><a href="soal/skill_02_03_06.html" class="skill-link" data-skill="2.3.6 Protect data resiliency availability backup replication DR"><span class="skill-id">2.3.6</span><span class="skill-name">Data resiliency and availability</span></a></div></div></div>
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 2.4: Design data models and schema evolution</button><div class="task-content"><div class="skill-list"><a href="soal/skill_02_04_01.html" class="skill-link" data-skill="2.4.1 Design schemas Redshift DynamoDB Lake Formation star snowflake"><span class="skill-id">2.4.1</span><span class="skill-name">Design schemas (Redshift, DynamoDB)</span></a><a href="soal/skill_02_04_02.html" class="skill-link" data-skill="2.4.2 Address changes characteristics data schema evolution"><span class="skill-id">2.4.2</span><span class="skill-name">Address data characteristic changes</span></a><a href="soal/skill_02_04_03.html" class="skill-link" data-skill="2.4.3 Perform schema conversion SCT DMS Schema Conversion"><span class="skill-id">2.4.3</span><span class="skill-name">Schema conversion (SCT, DMS)</span></a><a href="soal/skill_02_04_04.html" class="skill-link" data-skill="2.4.4 Establish data lineage SageMaker ML Lineage Tracking Catalog"><span class="skill-id">2.4.4</span><span class="skill-name">Establish data lineage</span></a><a href="soal/skill_02_04_05.html" class="skill-link" data-skill="2.4.5 Describe best practices indexing partitioning strategies compression optimization"><span class="skill-id">2.4.5</span><span class="skill-name">Indexing, partitioning, compression</span></a><a href="soal/skill_02_04_06.html" class="skill-link" data-skill="2.4.6 Describe vectorization concepts Bedrock knowledge base embeddings"><span class="skill-id">2.4.6</span><span class="skill-name">Vectorization concepts</span></a></div></div></div>
             </div>
-            <div class="domain-content">
-                <div class="task-group">
-                    <div class="task-title">Task 3.1: Automate data processing by using AWS services</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_03_01_01.html" class="skill-link"><span class="skill-number">3.1.1</span><span class="skill-text">Orchestrate data pipelines</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_01_02.html" class="skill-link"><span class="skill-number">3.1.2</span><span class="skill-text">Troubleshoot managed workflows</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_01_03.html" class="skill-link"><span class="skill-number">3.1.3</span><span class="skill-text">Call SDKs from code</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_01_04.html" class="skill-link"><span class="skill-number">3.1.4</span><span class="skill-text">AWS service features for processing</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_01_05.html" class="skill-link"><span class="skill-number">3.1.5</span><span class="skill-text">Consume and maintain data APIs</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_01_06.html" class="skill-link"><span class="skill-number">3.1.6</span><span class="skill-text">Prepare data for transformation</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_01_07.html" class="skill-link"><span class="skill-number">3.1.7</span><span class="skill-text">Query data (Athena)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_01_08.html" class="skill-link"><span class="skill-number">3.1.8</span><span class="skill-text">Lambda for data automation</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_01_09.html" class="skill-link"><span class="skill-number">3.1.9</span><span class="skill-text">Events and schedulers</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 3.2: Analyze data by using AWS services</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_03_02_01.html" class="skill-link"><span class="skill-number">3.2.1</span><span class="skill-text">Visualize data (QuickSight)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_02_02.html" class="skill-link"><span class="skill-number">3.2.2</span><span class="skill-text">Verify and clean data</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_02_03.html" class="skill-link"><span class="skill-number">3.2.3</span><span class="skill-text">SQL in Redshift and Athena</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_02_04.html" class="skill-link"><span class="skill-number">3.2.4</span><span class="skill-text">Athena Spark notebooks</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_02_05.html" class="skill-link"><span class="skill-number">3.2.5</span><span class="skill-text">Provisioned vs serverless tradeoffs</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_02_06.html" class="skill-link"><span class="skill-number">3.2.6</span><span class="skill-text">Aggregation, rolling average, pivoting</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 3.3: Maintain and monitor data pipelines</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_03_03_01.html" class="skill-link"><span class="skill-number">3.3.1</span><span class="skill-text">Extract logs for audits</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_03_02.html" class="skill-link"><span class="skill-number">3.3.2</span><span class="skill-text">Logging and monitoring solutions</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_03_03.html" class="skill-link"><span class="skill-number">3.3.3</span><span class="skill-text">Notifications for alerts</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_03_04.html" class="skill-link"><span class="skill-number">3.3.4</span><span class="skill-text">Troubleshoot performance issues</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_03_05.html" class="skill-link"><span class="skill-number">3.3.5</span><span class="skill-text">CloudTrail to track API calls</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_03_06.html" class="skill-link"><span class="skill-number">3.3.6</span><span class="skill-text">Troubleshoot and maintain pipelines</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_03_07.html" class="skill-link"><span class="skill-number">3.3.7</span><span class="skill-text">CloudWatch Logs for applications</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_03_08.html" class="skill-link"><span class="skill-number">3.3.8</span><span class="skill-text">Analyze logs with AWS services</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 3.4: Ensure data quality</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_03_04_01.html" class="skill-link"><span class="skill-number">3.4.1</span><span class="skill-text">Data quality checks during processing</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_04_02.html" class="skill-link"><span class="skill-number">3.4.2</span><span class="skill-text">Define data quality rules</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_04_03.html" class="skill-link"><span class="skill-number">3.4.3</span><span class="skill-text">Investigate data consistency</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_04_04.html" class="skill-link"><span class="skill-number">3.4.4</span><span class="skill-text">Data sampling techniques</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_03_04_05.html" class="skill-link"><span class="skill-number">3.4.5</span><span class="skill-text">Data skew mechanisms</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </section>
 
-        <!-- Domain 4 -->
-        <div class="domain-section domain-4">
-            <div class="domain-header" onclick="toggleDomain(this)">
-                <div class="domain-badge">4</div>
-                <div class="domain-info">
-                    <h2>Data Security and Governance</h2>
-                    <div class="domain-meta">18% of exam &bull; 5 Tasks &bull; 29 Skills &bull; 290 Questions</div>
+        <!-- DOMAIN 3 -->
+        <section class="domain-section domain-3" id="domain-3">
+            <button class="domain-trigger" aria-expanded="false" aria-controls="domain-3-content" onclick="toggleDomain(this)">
+                <div class="domain-indicator"></div>
+                <div class="domain-title-group">
+                    <div class="domain-title">Data Operations and Support</div>
+                    <div class="domain-pills">
+                        <span class="pill">22% Weight</span>
+                        <span class="pill">28 Skills</span>
+                        <span class="pill">280 Questions</span>
+                        <span class="pill">4 Tasks</span>
+                    </div>
                 </div>
-                <div class="domain-toggle">&#9662;</div>
+                <svg class="domain-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+            <div class="domain-content" id="domain-3-content">
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 3.1: Automate data processing</button><div class="task-content"><div class="skill-list"><a href="soal/skill_03_01_01.html" class="skill-link" data-skill="3.1.1 Orchestrate data pipelines MWAA Step Functions Airflow"><span class="skill-id">3.1.1</span><span class="skill-name">Orchestrate data pipelines</span></a><a href="soal/skill_03_01_02.html" class="skill-link" data-skill="3.1.2 Troubleshoot Amazon managed workflows MWAA Airflow"><span class="skill-id">3.1.2</span><span class="skill-name">Troubleshoot managed workflows</span></a><a href="soal/skill_03_01_03.html" class="skill-link" data-skill="3.1.3 Call SDKs access Amazon features code boto3 Java SDK"><span class="skill-id">3.1.3</span><span class="skill-name">Call SDKs from code</span></a><a href="soal/skill_03_01_04.html" class="skill-link" data-skill="3.1.4 Use features AWS services process data EMR Redshift Glue"><span class="skill-id">3.1.4</span><span class="skill-name">AWS service features for processing</span></a><a href="soal/skill_03_01_05.html" class="skill-link" data-skill="3.1.5 Consume maintain data APIs versioning deprecation"><span class="skill-id">3.1.5</span><span class="skill-name">Consume and maintain data APIs</span></a><a href="soal/skill_03_01_06.html" class="skill-link" data-skill="3.1.6 Prepare data transformation Glue DataBrew SageMaker Unified Studio"><span class="skill-id">3.1.6</span><span class="skill-name">Prepare data for transformation</span></a><a href="soal/skill_03_01_07.html" class="skill-link" data-skill="3.1.7 Query data Amazon Athena serverless SQL"><span class="skill-id">3.1.7</span><span class="skill-name">Query data (Athena)</span></a><a href="soal/skill_03_01_08.html" class="skill-link" data-skill="3.1.8 Use AWS Lambda automate data processing event-driven"><span class="skill-id">3.1.8</span><span class="skill-name">Lambda for data automation</span></a><a href="soal/skill_03_01_09.html" class="skill-link" data-skill="3.1.9 Manage events schedulers EventBridge Scheduler"><span class="skill-id">3.1.9</span><span class="skill-name">Events and schedulers</span></a></div></div></div>
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 3.2: Analyze data by using AWS services</button><div class="task-content"><div class="skill-list"><a href="soal/skill_03_02_01.html" class="skill-link" data-skill="3.2.1 Visualize data DataBrew QuickSight dashboards"><span class="skill-id">3.2.1</span><span class="skill-name">Visualize data (QuickSight)</span></a><a href="soal/skill_03_02_02.html" class="skill-link" data-skill="3.2.2 Verify clean data Lambda Athena QuickSight Jupyter SageMaker Data Wrangler"><span class="skill-id">3.2.2</span><span class="skill-name">Verify and clean data</span></a><a href="soal/skill_03_02_03.html" class="skill-link" data-skill="3.2.3 Use SQL Redshift Athena query data create views materialized"><span class="skill-id">3.2.3</span><span class="skill-name">SQL in Redshift and Athena</span></a><a href="soal/skill_03_02_04.html" class="skill-link" data-skill="3.2.4 Use Athena notebooks Apache Spark explore data"><span class="skill-id">3.2.4</span><span class="skill-name">Athena Spark notebooks</span></a><a href="soal/skill_03_02_05.html" class="skill-link" data-skill="3.2.5 Describe tradeoffs provisioned services serverless services cost performance"><span class="skill-id">3.2.5</span><span class="skill-name">Provisioned vs serverless tradeoffs</span></a><a href="soal/skill_03_02_06.html" class="skill-link" data-skill="3.2.6 Define data aggregation rolling average grouping pivoting window functions"><span class="skill-id">3.2.6</span><span class="skill-name">Aggregation, rolling average, pivoting</span></a></div></div></div>
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 3.3: Maintain and monitor data pipelines</button><div class="task-content"><div class="skill-list"><a href="soal/skill_03_03_01.html" class="skill-link" data-skill="3.3.1 Extract logs audits CloudTrail CloudWatch"><span class="skill-id">3.3.1</span><span class="skill-name">Extract logs for audits</span></a><a href="soal/skill_03_03_02.html" class="skill-link" data-skill="3.3.2 Deploy logging monitoring solutions auditing traceability"><span class="skill-id">3.3.2</span><span class="skill-name">Logging and monitoring solutions</span></a><a href="soal/skill_03_03_03.html" class="skill-link" data-skill="3.3.3 Use notifications monitoring send alerts CloudWatch Alarms SNS"><span class="skill-id">3.3.3</span><span class="skill-name">Notifications for alerts</span></a><a href="soal/skill_03_03_04.html" class="skill-link" data-skill="3.3.4 Troubleshoot performance issues bottleneck metrics"><span class="skill-id">3.3.4</span><span class="skill-name">Troubleshoot performance issues</span></a><a href="soal/skill_03_03_05.html" class="skill-link" data-skill="3.3.5 Use AWS CloudTrail track API calls audit"><span class="skill-id">3.3.5</span><span class="skill-name">CloudTrail to track API calls</span></a><a href="soal/skill_03_03_06.html" class="skill-link" data-skill="3.3.6 Troubleshoot maintain pipelines Glue EMR failures"><span class="skill-id">3.3.6</span><span class="skill-name">Troubleshoot and maintain pipelines</span></a><a href="soal/skill_03_03_07.html" class="skill-link" data-skill="3.3.7 Use CloudWatch Logs log application data configuration automation"><span class="skill-id">3.3.7</span><span class="skill-name">CloudWatch Logs for applications</span></a><a href="soal/skill_03_03_08.html" class="skill-link" data-skill="3.3.8 Analyze logs AWS services Athena EMR OpenSearch CloudWatch Logs Insights"><span class="skill-id">3.3.8</span><span class="skill-name">Analyze logs with AWS services</span></a></div></div></div>
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 3.4: Ensure data quality</button><div class="task-content"><div class="skill-list"><a href="soal/skill_03_04_01.html" class="skill-link" data-skill="3.4.1 Run data quality checks processing empty fields validation"><span class="skill-id">3.4.1</span><span class="skill-name">Data quality checks during processing</span></a><a href="soal/skill_03_04_02.html" class="skill-link" data-skill="3.4.2 Define data quality rules DataBrew DQDL"><span class="skill-id">3.4.2</span><span class="skill-name">Define data quality rules</span></a><a href="soal/skill_03_04_03.html" class="skill-link" data-skill="3.4.3 Investigate data consistency DataBrew reconciliation"><span class="skill-id">3.4.3</span><span class="skill-name">Investigate data consistency</span></a><a href="soal/skill_03_04_04.html" class="skill-link" data-skill="3.4.4 Describe data sampling techniques statistical random stratified"><span class="skill-id">3.4.4</span><span class="skill-name">Data sampling techniques</span></a><a href="soal/skill_03_04_05.html" class="skill-link" data-skill="3.4.5 Implement data skew mechanisms salting repartition AQE"><span class="skill-id">3.4.5</span><span class="skill-name">Data skew mechanisms</span></a></div></div></div>
             </div>
-            <div class="domain-content">
-                <div class="task-group">
-                    <div class="task-title">Task 4.1: Apply authentication mechanisms</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_04_01_01.html" class="skill-link"><span class="skill-number">4.1.1</span><span class="skill-text">Update VPC security groups</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_01_02.html" class="skill-link"><span class="skill-number">4.1.2</span><span class="skill-text">IAM groups, roles, endpoints</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_01_03.html" class="skill-link"><span class="skill-number">4.1.3</span><span class="skill-text">Credential rotation (Secrets Manager)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_01_04.html" class="skill-link"><span class="skill-number">4.1.4</span><span class="skill-text">Set up IAM roles for access</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_01_05.html" class="skill-link"><span class="skill-number">4.1.5</span><span class="skill-text">IAM policies (Access Points, PrivateLink)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_01_06.html" class="skill-link"><span class="skill-number">4.1.6</span><span class="skill-text">Managed vs unmanaged services</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_01_07.html" class="skill-link"><span class="skill-number">4.1.7</span><span class="skill-text">SageMaker Unified Studio domains</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 4.2: Apply authorization mechanisms</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_04_02_01.html" class="skill-link"><span class="skill-number">4.2.1</span><span class="skill-text">Custom IAM policies</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_02_02.html" class="skill-link"><span class="skill-number">4.2.2</span><span class="skill-text">Store credentials securely</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_02_03.html" class="skill-link"><span class="skill-number">4.2.3</span><span class="skill-text">Database users, groups, roles</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_02_04.html" class="skill-link"><span class="skill-number">4.2.4</span><span class="skill-text">Lake Formation permissions</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_02_05.html" class="skill-link"><span class="skill-number">4.2.5</span><span class="skill-text">RBAC, TBAC, ABAC methods</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_02_06.html" class="skill-link"><span class="skill-number">4.2.6</span><span class="skill-text">Least privilege policies</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 4.3: Ensure data encryption and masking</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_04_03_01.html" class="skill-link"><span class="skill-number">4.3.1</span><span class="skill-text">Data masking and anonymization</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_03_02.html" class="skill-link"><span class="skill-number">4.3.2</span><span class="skill-text">Encryption keys (KMS)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_03_03.html" class="skill-link"><span class="skill-number">4.3.3</span><span class="skill-text">Cross-account encryption</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_03_04.html" class="skill-link"><span class="skill-number">4.3.4</span><span class="skill-text">Encryption in transit</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 4.4: Prepare logs for audit</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_04_04_01.html" class="skill-link"><span class="skill-number">4.4.1</span><span class="skill-text">CloudTrail for API tracking</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_04_02.html" class="skill-link"><span class="skill-number">4.4.2</span><span class="skill-text">CloudWatch Logs for audit</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_04_03.html" class="skill-link"><span class="skill-number">4.4.3</span><span class="skill-text">CloudTrail Lake queries</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_04_04.html" class="skill-link"><span class="skill-number">4.4.4</span><span class="skill-text">Log analysis with AWS services</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_04_05.html" class="skill-link"><span class="skill-number">4.4.5</span><span class="skill-text">Integrate services for logging</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-                <div class="task-group">
-                    <div class="task-title">Task 4.5: Understand data privacy and governance</div>
-                    <div class="skill-grid">
-                        <a href="soal/skill_04_05_01.html" class="skill-link"><span class="skill-number">4.5.1</span><span class="skill-text">Permissions for data sharing</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_05_02.html" class="skill-link"><span class="skill-number">4.5.2</span><span class="skill-text">PII identification (Macie)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_05_03.html" class="skill-link"><span class="skill-number">4.5.3</span><span class="skill-text">Prevent replication to disallowed regions</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_05_04.html" class="skill-link"><span class="skill-number">4.5.4</span><span class="skill-text">Configuration changes (AWS Config)</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_05_05.html" class="skill-link"><span class="skill-number">4.5.5</span><span class="skill-text">Maintain data sovereignty</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_05_06.html" class="skill-link"><span class="skill-number">4.5.6</span><span class="skill-text">SageMaker Catalog projects</span><span class="skill-questions">10 Q</span></a>
-                        <a href="soal/skill_04_05_07.html" class="skill-link"><span class="skill-number">4.5.7</span><span class="skill-text">Governance framework and data sharing</span><span class="skill-questions">10 Q</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </section>
 
-        <div class="footer">
-            <p>AWS Data Engineer &mdash; Associate (DEA-C01) Practice Exam</p>
-            <p>120 Skills &bull; 1,200 Questions &bull; Based on Official Exam Guide</p>
-        </div>
+        <!-- DOMAIN 4 -->
+        <section class="domain-section domain-4" id="domain-4">
+            <button class="domain-trigger" aria-expanded="false" aria-controls="domain-4-content" onclick="toggleDomain(this)">
+                <div class="domain-indicator"></div>
+                <div class="domain-title-group">
+                    <div class="domain-title">Data Security and Governance</div>
+                    <div class="domain-pills">
+                        <span class="pill">18% Weight</span>
+                        <span class="pill">29 Skills</span>
+                        <span class="pill">290 Questions</span>
+                        <span class="pill">5 Tasks</span>
+                    </div>
+                </div>
+                <svg class="domain-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+            <div class="domain-content" id="domain-4-content">
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 4.1: Apply authentication mechanisms</button><div class="task-content"><div class="skill-list"><a href="soal/skill_04_01_01.html" class="skill-link" data-skill="4.1.1 Update VPC security groups network"><span class="skill-id">4.1.1</span><span class="skill-name">Update VPC security groups</span></a><a href="soal/skill_04_01_02.html" class="skill-link" data-skill="4.1.2 Create update IAM groups roles endpoints services"><span class="skill-id">4.1.2</span><span class="skill-name">IAM groups, roles, endpoints</span></a><a href="soal/skill_04_01_03.html" class="skill-link" data-skill="4.1.3 Create rotate credentials password management Secrets Manager"><span class="skill-id">4.1.3</span><span class="skill-name">Credential rotation (Secrets Manager)</span></a><a href="soal/skill_04_01_04.html" class="skill-link" data-skill="4.1.4 Set up IAM roles access Lambda API Gateway CLI CloudFormation"><span class="skill-id">4.1.4</span><span class="skill-name">Set up IAM roles for access</span></a><a href="soal/skill_04_01_05.html" class="skill-link" data-skill="4.1.5 Apply IAM policies roles endpoints services S3 Access Points PrivateLink"><span class="skill-id">4.1.5</span><span class="skill-name">IAM policies (Access Points, PrivateLink)</span></a><a href="soal/skill_04_01_06.html" class="skill-link" data-skill="4.1.6 Describe differences managed services unmanaged services shared responsibility"><span class="skill-id">4.1.6</span><span class="skill-name">Managed vs unmanaged services</span></a><a href="soal/skill_04_01_07.html" class="skill-link" data-skill="4.1.7 Use domain domain units projects SageMaker Unified Studio DataZone"><span class="skill-id">4.1.7</span><span class="skill-name">SageMaker Unified Studio domains</span></a></div></div></div>
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 4.2: Apply authorization mechanisms</button><div class="task-content"><div class="skill-list"><a href="soal/skill_04_02_01.html" class="skill-link" data-skill="4.2.1 Create custom IAM policies managed policy least privilege"><span class="skill-id">4.2.1</span><span class="skill-name">Custom IAM policies</span></a><a href="soal/skill_04_02_02.html" class="skill-link" data-skill="4.2.2 Store application database credentials Secrets Manager Parameter Store"><span class="skill-id">4.2.2</span><span class="skill-name">Store credentials securely</span></a><a href="soal/skill_04_02_03.html" class="skill-link" data-skill="4.2.3 Provide database users groups roles access authority Redshift"><span class="skill-id">4.2.3</span><span class="skill-name">Database users, groups, roles</span></a><a href="soal/skill_04_02_04.html" class="skill-link" data-skill="4.2.4 Manage permissions Lake Formation Redshift EMR Athena S3"><span class="skill-id">4.2.4</span><span class="skill-name">Lake Formation permissions</span></a><a href="soal/skill_04_02_05.html" class="skill-link" data-skill="4.2.5 Apply authorization methods role-based tag-based attribute-based RBAC ABAC"><span class="skill-id">4.2.5</span><span class="skill-name">RBAC, TBAC, ABAC methods</span></a><a href="soal/skill_04_02_06.html" class="skill-link" data-skill="4.2.6 Construct custom policies principle least privilege"><span class="skill-id">4.2.6</span><span class="skill-name">Least privilege policies</span></a></div></div></div>
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 4.3: Ensure data encryption and masking</button><div class="task-content"><div class="skill-list"><a href="soal/skill_04_03_01.html" class="skill-link" data-skill="4.3.1 Apply data masking anonymization compliance PII tokenization"><span class="skill-id">4.3.1</span><span class="skill-name">Data masking and anonymization</span></a><a href="soal/skill_04_03_02.html" class="skill-link" data-skill="4.3.2 Use encryption keys encrypt decrypt data KMS SSE"><span class="skill-id">4.3.2</span><span class="skill-name">Encryption keys (KMS)</span></a><a href="soal/skill_04_03_03.html" class="skill-link" data-skill="4.3.3 Configure encryption across AWS account boundaries cross-account"><span class="skill-id">4.3.3</span><span class="skill-name">Cross-account encryption</span></a><a href="soal/skill_04_03_04.html" class="skill-link" data-skill="4.3.4 Enable encryption transit before transit TLS SSL HTTPS"><span class="skill-id">4.3.4</span><span class="skill-name">Encryption in transit</span></a></div></div></div>
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 4.4: Prepare logs for audit</button><div class="task-content"><div class="skill-list"><a href="soal/skill_04_04_01.html" class="skill-link" data-skill="4.4.1 Use CloudTrail track API calls audit trail"><span class="skill-id">4.4.1</span><span class="skill-name">CloudTrail for API tracking</span></a><a href="soal/skill_04_04_02.html" class="skill-link" data-skill="4.4.2 Use CloudWatch Logs store application logs retention"><span class="skill-id">4.4.2</span><span class="skill-name">CloudWatch Logs for audit</span></a><a href="soal/skill_04_04_03.html" class="skill-link" data-skill="4.4.3 Use CloudTrail Lake centralized logging queries SQL"><span class="skill-id">4.4.3</span><span class="skill-name">CloudTrail Lake queries</span></a><a href="soal/skill_04_04_04.html" class="skill-link" data-skill="4.4.4 Analyze logs AWS services Athena CloudWatch Logs Insights OpenSearch"><span class="skill-id">4.4.4</span><span class="skill-name">Log analysis with AWS services</span></a><a href="soal/skill_04_04_05.html" class="skill-link" data-skill="4.4.5 Integrate various AWS services perform logging EMR large volumes"><span class="skill-id">4.4.5</span><span class="skill-name">Integrate services for logging</span></a></div></div></div>
+                <div class="task-group"><button class="task-trigger" aria-expanded="false" onclick="toggleTask(this)"><svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Task 4.5: Understand data privacy and governance</button><div class="task-content"><div class="skill-list"><a href="soal/skill_04_05_01.html" class="skill-link" data-skill="4.5.1 Grant permissions data sharing Redshift datashare cross-account"><span class="skill-id">4.5.1</span><span class="skill-name">Permissions for data sharing</span></a><a href="soal/skill_04_05_02.html" class="skill-link" data-skill="4.5.2 Implement PII identification Amazon Macie Lake Formation"><span class="skill-id">4.5.2</span><span class="skill-name">PII identification (Macie)</span></a><a href="soal/skill_04_05_03.html" class="skill-link" data-skill="4.5.3 Implement data privacy strategies prevent backups replications disallowed Regions"><span class="skill-id">4.5.3</span><span class="skill-name">Prevent replication to disallowed regions</span></a><a href="soal/skill_04_05_04.html" class="skill-link" data-skill="4.5.4 Viewing configuration changes account AWS Config compliance"><span class="skill-id">4.5.4</span><span class="skill-name">Configuration changes (AWS Config)</span></a><a href="soal/skill_04_05_05.html" class="skill-link" data-skill="4.5.5 Maintain data sovereignty geographic jurisdictional boundaries"><span class="skill-id">4.5.5</span><span class="skill-name">Maintain data sovereignty</span></a><a href="soal/skill_04_05_06.html" class="skill-link" data-skill="4.5.6 Manage data access SageMaker Catalog projects DataZone"><span class="skill-id">4.5.6</span><span class="skill-name">SageMaker Catalog projects</span></a><a href="soal/skill_04_05_07.html" class="skill-link" data-skill="4.5.7 Describe governance data framework data sharing patterns mesh"><span class="skill-id">4.5.7</span><span class="skill-name">Governance framework and data sharing</span></a></div></div></div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <p>AWS Data Engineer Associate (DEA-C01) &mdash; 120 Skills &bull; 1,200 Questions</p>
+        </footer>
     </div>
 
     <script>
-        function toggleDomain(header) {
-            const content = header.nextElementSibling;
-            header.classList.toggle('collapsed');
-            if (content.classList.contains('collapsed')) {
-                content.classList.remove('collapsed');
-                content.style.maxHeight = content.scrollHeight + 'px';
-            } else {
-                content.style.maxHeight = content.scrollHeight + 'px';
-                requestAnimationFrame(() => {
-                    content.classList.add('collapsed');
-                });
-            }
+        // === DOMAIN TOGGLE ===
+        function toggleDomain(btn) {
+            var expanded = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', !expanded);
+            var content = btn.nextElementSibling;
+            content.classList.toggle('open', !expanded);
         }
-        // Initialize all domains as expanded
-        document.querySelectorAll('.domain-content').forEach(el => {
-            el.style.maxHeight = el.scrollHeight + 'px';
+
+        // === TASK TOGGLE ===
+        function toggleTask(btn) {
+            var expanded = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', !expanded);
+            var content = btn.nextElementSibling;
+            content.classList.toggle('open', !expanded);
+        }
+
+        // === SEARCH ===
+        var searchInput = document.getElementById('searchInput');
+        var searchCount = document.getElementById('searchCount');
+        var noResults = document.getElementById('noResults');
+        var allSkills = document.querySelectorAll('.skill-link');
+        var allTasks = document.querySelectorAll('.task-group');
+        var allDomains = document.querySelectorAll('.domain-section');
+
+        searchInput.addEventListener('input', function() {
+            var query = this.value.trim().toLowerCase();
+
+            if (!query) {
+                // Reset: hide count, show all, collapse all
+                searchCount.classList.remove('visible');
+                noResults.classList.remove('visible');
+                allSkills.forEach(function(s) { s.classList.remove('hidden', 'search-match'); });
+                allTasks.forEach(function(t) { t.classList.remove('hidden'); });
+                allDomains.forEach(function(d) { d.classList.remove('hidden'); });
+                // Collapse everything
+                document.querySelectorAll('.domain-content').forEach(function(c) { c.classList.remove('open'); });
+                document.querySelectorAll('.task-content').forEach(function(c) { c.classList.remove('open'); });
+                document.querySelectorAll('.domain-trigger').forEach(function(b) { b.setAttribute('aria-expanded', 'false'); });
+                document.querySelectorAll('.task-trigger').forEach(function(b) { b.setAttribute('aria-expanded', 'false'); });
+                return;
+            }
+
+            var matchCount = 0;
+
+            allSkills.forEach(function(skill) {
+                var text = skill.getAttribute('data-skill').toLowerCase();
+                var matches = text.indexOf(query) !== -1;
+                skill.classList.toggle('hidden', !matches);
+                skill.classList.toggle('search-match', matches);
+                if (matches) matchCount++;
+            });
+
+            // Show/hide tasks based on visible skills
+            allTasks.forEach(function(task) {
+                var visibleSkills = task.querySelectorAll('.skill-link:not(.hidden)');
+                var hasVisible = visibleSkills.length > 0;
+                task.classList.toggle('hidden', !hasVisible);
+                if (hasVisible) {
+                    task.querySelector('.task-trigger').setAttribute('aria-expanded', 'true');
+                    task.querySelector('.task-content').classList.add('open');
+                }
+            });
+
+            // Show/hide domains based on visible tasks
+            allDomains.forEach(function(domain) {
+                var visibleTasks = domain.querySelectorAll('.task-group:not(.hidden)');
+                var hasVisible = visibleTasks.length > 0;
+                domain.classList.toggle('hidden', !hasVisible);
+                if (hasVisible) {
+                    domain.querySelector('.domain-trigger').setAttribute('aria-expanded', 'true');
+                    domain.querySelector('.domain-content').classList.add('open');
+                }
+            });
+
+            // Update count
+            searchCount.textContent = matchCount + ' skill' + (matchCount !== 1 ? 's' : '') + ' found';
+            searchCount.classList.add('visible');
+            noResults.classList.toggle('visible', matchCount === 0);
+        });
+
+        // === KEYBOARD: Escape clears search ===
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                this.dispatchEvent(new Event('input'));
+                this.blur();
+            }
         });
     </script>
 </body>
