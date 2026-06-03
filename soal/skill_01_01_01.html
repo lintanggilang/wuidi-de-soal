@@ -143,7 +143,7 @@
             border-radius: 8px;
             border: 1px solid var(--border);
             background: var(--bg-primary);
-            cursor: default;
+            
             transition: background 0.2s;
         }
         .options li:hover {
@@ -193,6 +193,8 @@
             .header h1 { font-size: 1.4rem; }
             .question-card { padding: 1.25rem; }
         }
+    .options li{cursor:pointer;transition:all .2s}.options li.correct{background:#dbeafe;border-color:#2563eb;color:#1e40af;font-weight:500}.options li.wrong{background:#fee2e2;border-color:#dc2626;color:#991b1b}.answered .options li{cursor:default}.answered .options li:hover{background:inherit}
+@media(prefers-color-scheme:dark){.options li.correct{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd}.options li.wrong{background:#450a0a;border-color:#ef4444;color:#fca5a5}}
     </style>
 </head>
 <body>
@@ -381,11 +383,38 @@
     </div>
 
     <script>
-        function toggleAnswer(btn) {
-            const section = btn.nextElementSibling;
-            section.classList.toggle('visible');
-            btn.textContent = section.classList.contains('visible') ? 'Sembunyikan Jawaban' : 'Tampilkan Jawaban';
-        }
+        (function(){
+            document.querySelectorAll('.question-card').forEach(function(card){
+                var correctEl = card.querySelector('.correct-answer');
+                if(!correctEl) return;
+                var correctLetter = correctEl.textContent.trim().slice(-1);
+                var options = card.querySelectorAll('.options li');
+                options.forEach(function(li){
+                    li.style.cursor = 'pointer';
+                    li.addEventListener('click', function(){
+                        if(card.classList.contains('answered')) return;
+                        card.classList.add('answered');
+                        var myLetter = li.querySelector('.option-label').textContent.trim().charAt(0);
+                        if(myLetter === correctLetter){
+                            li.classList.add('correct');
+                        } else {
+                            li.classList.add('wrong');
+                            options.forEach(function(o){
+                                if(o.querySelector('.option-label').textContent.trim().charAt(0) === correctLetter){
+                                    o.classList.add('correct');
+                                }
+                            });
+                        }
+                        options.forEach(function(o){ o.style.cursor = 'default'; });
+                        var ans = card.querySelector('.answer-section');
+                        if(ans) ans.classList.add('visible');
+                        var btn = card.querySelector('.answer-toggle');
+                        if(btn) btn.style.display = 'none';
+                    });
+                });
+            });
+        })();
+        function toggleAnswer(btn){var s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
     </script>
 </body>
 </html>
