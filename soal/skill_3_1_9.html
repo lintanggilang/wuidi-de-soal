@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 3.1.9 - Manage Events and Schedulers</title>
+    <style>
+        :root{--bg-primary:#f8fafc;--bg-secondary:#ffffff;--bg-card:#ffffff;--text-primary:#1e293b;--text-secondary:#475569;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}@media(prefers-color-scheme:dark){:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}.header{text-align:center;margin-bottom:2.5rem;padding:2rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}.header h1{font-size:1.8rem;margin-bottom:.5rem;color:var(--accent)}.header .domain{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem}.header .description{font-size:1rem;color:var(--text-secondary)}.nav-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg-card);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border)}.nav-tabs a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border);transition:all .2s}.nav-tabs a:hover,.nav-tabs a.active{background:var(--accent);color:white;border-color:var(--accent)}.question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s}.question-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}.question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:1rem}.question-text{font-size:1.05rem;font-weight:500;margin-bottom:1.25rem;color:var(--text-primary)}.options{list-style:none;margin-bottom:1.5rem}.options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary)}.option-label{font-weight:600;color:var(--accent);margin-right:.5rem}.answer-toggle{background:var(--accent);color:white;border:none;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;transition:background .2s}.answer-toggle:hover{background:var(--accent-hover)}.answer-section{display:none;margin-top:1rem;padding:1.25rem;background:var(--bg-primary);border-radius:8px;border-left:4px solid var(--success)}.answer-section.visible{display:block}.correct-answer{font-weight:700;color:var(--success);margin-bottom:.5rem}.explanation{color:var(--text-secondary);font-size:.95rem}@media(max-width:640px){.container{padding:1rem}.header h1{font-size:1.4rem}.question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="domain">Domain 3: Data Operations and Support (22%) &mdash; Task 3.1: Automate data processing by using AWS services</div>
+            <h1>Skill 3.1.9: Manage Events and Schedulers</h1>
+            <p class="description">Amazon EventBridge for event routing and scheduling in data pipelines</p>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#q1" class="active">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a>
+            <a href="#q6">6</a><a href="#q7">7</a><a href="#q8">8</a><a href="#q9">9</a><a href="#q10">10</a>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div>
+            <div class="question-text">A data engineer needs to trigger a data processing pipeline every weekday at 2:00 AM UTC, but also needs to trigger the same pipeline on-demand when a specific S3 object is uploaded. The pipeline is implemented as a Step Functions state machine. Which EventBridge configuration supports BOTH trigger patterns with MINIMAL components?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create two EventBridge rules on the default event bus — one schedule rule (cron expression for weekdays at 2 AM) and one event pattern rule matching S3 PutObject — both targeting the same Step Functions state machine</li>
+                <li><span class="option-label">B.</span> Use EventBridge Scheduler for the cron job and a separate S3 Event Notification directly triggering Step Functions</li>
+                <li><span class="option-label">C.</span> Create a single EventBridge rule with a complex pattern matching both schedule and S3 events</li>
+                <li><span class="option-label">D.</span> Use CloudWatch Events for the schedule and EventBridge for the S3 event pattern</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">EventBridge mendukung dua jenis rules pada satu event bus: schedule rules (cron/rate expressions) dan event pattern rules. Kedua rules dapat mengarah ke target yang sama (Step Functions). Ini adalah pendekatan paling sederhana dengan satu service managing kedua triggers. Opsi B menggunakan dua service berbeda (EventBridge Scheduler + S3 notifications) yang menambah complexity. Opsi C salah — satu rule tidak bisa matching baik schedule maupun event pattern sekaligus. Opsi D (CloudWatch Events + EventBridge) redundant karena CloudWatch Events sekarang merupakan bagian dari EventBridge.</div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div>
+            <div class="question-text">A company needs to schedule a one-time data migration job to run at a specific date and time (December 31, 2024 at 23:59 UTC). After execution, the schedule should be automatically cleaned up. They also need timezone-aware scheduling for recurring reports that run at 9 AM in each regional office's local time. Which AWS service handles BOTH requirements?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Amazon EventBridge Scheduler — supporting one-time schedules with auto-delete after completion and timezone-aware recurring schedules</li>
+                <li><span class="option-label">B.</span> EventBridge rules with rate expressions for recurring schedules and a Lambda function to create/delete one-time rules</li>
+                <li><span class="option-label">C.</span> AWS Systems Manager Maintenance Windows for one-time tasks and EventBridge rules for recurring schedules</li>
+                <li><span class="option-label">D.</span> Amazon MWAA (Airflow) DAGs with timezone-aware schedule intervals</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Amazon EventBridge Scheduler (bukan EventBridge rules) dirancang khusus untuk scheduling use cases. Fiturnya termasuk: one-time schedules (at expressions) dengan FlexibleTimeWindow, auto-delete setelah execution, timezone-aware cron expressions (IANA timezone support), dan built-in retry policies. Opsi B (EventBridge rules) tidak mendukung one-time schedule dengan auto-cleanup natively — memerlukan custom cleanup logic. Opsi C (Maintenance Windows) untuk patching/maintenance, bukan data pipeline scheduling. Opsi D (MWAA) berlebihan overhead untuk simple scheduling needs.</div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div>
+            <div class="question-text">A data platform team needs to route AWS Glue job state change events (SUCCEEDED, FAILED, TIMEOUT) to different targets: successful completions trigger a downstream pipeline, failures send notifications to the ops team, and timeouts restart the job with increased resources. Which EventBridge configuration implements this routing logic?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create three separate EventBridge rules with event patterns matching specific "detail.state" values (SUCCEEDED, FAILED, TIMEOUT) on the Glue Job State Change event, each with its own target</li>
+                <li><span class="option-label">B.</span> Create one rule matching all Glue job state changes and use input transformers to route to different targets</li>
+                <li><span class="option-label">C.</span> Use a single Lambda function as the target that reads the state and routes accordingly</li>
+                <li><span class="option-label">D.</span> Configure Glue job notifications directly to SNS, SQS, and Step Functions for each state</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">EventBridge event patterns mendukung matching pada nested fields dalam event detail. Tiga rules terpisah, masing-masing matching pada "detail.state" yang spesifik, memungkinkan routing langsung ke target yang berbeda tanpa intermediate processing. Ini menggunakan EventBridge's native content-based routing. Opsi B salah — input transformers mengubah event format tetapi satu rule hanya bisa memiliki satu set targets, bukan routing conditional. Opsi C (Lambda router) bekerja tetapi menambah latency, cost, dan maintenance dibandingkan native EventBridge routing. Opsi D salah — Glue tidak mendukung direct notification configuration ke multiple services per state.</div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div>
+            <div class="question-text">A multi-account organization has a centralized data lake account. Data engineering teams in 5 different AWS accounts need to send events when their ETL jobs complete, so the central account can trigger consolidation pipelines. Which EventBridge architecture enables this cross-account event routing?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create a custom event bus in the central account with a resource-based policy allowing PutEvents from the 5 source accounts, and configure rules in source accounts to forward events to the central event bus</li>
+                <li><span class="option-label">B.</span> Use the default event bus in each account with cross-account rules that directly invoke targets in the central account</li>
+                <li><span class="option-label">C.</span> Set up AWS Organizations EventBridge integration to automatically share all events across member accounts</li>
+                <li><span class="option-label">D.</span> Deploy identical EventBridge rules in all accounts and use SNS cross-account subscriptions for event delivery</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Cross-account event routing di EventBridge dilakukan dengan: (1) membuat custom event bus di central account dengan resource-based policy yang mengizinkan PutEvents dari source accounts, (2) membuat rules di source accounts yang mengirim events ke central account's event bus sebagai target. Rules di central account kemudian memproses incoming events. Opsi B salah — default event bus tidak bisa menjadi target cross-account rule langsung. Opsi C salah — tidak ada auto-sharing di Organizations level untuk semua events. Opsi D (SNS) menambah component yang tidak perlu karena EventBridge sudah mendukung cross-account natively.</div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div>
+            <div class="question-text">A data engineer needs to build a point-to-point integration that reads records from a DynamoDB Stream, filters them based on item attributes, enriches the payload with additional metadata, and delivers them to a Kinesis Data Stream. The solution should not require custom Lambda code for simple transformations. Which EventBridge feature provides this capability?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Amazon EventBridge Pipes — connecting DynamoDB Stream as source, with filtering and enrichment stages, to Kinesis Data Stream as target</li>
+                <li><span class="option-label">B.</span> EventBridge rules with input transformers to modify the event payload before delivery</li>
+                <li><span class="option-label">C.</span> EventBridge event bus with multiple rules for filtering and a Lambda enrichment function</li>
+                <li><span class="option-label">D.</span> EventBridge Scheduler with a recurring poll of DynamoDB Stream</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Amazon EventBridge Pipes dirancang untuk point-to-point integrations dengan pipeline stages: Source (DynamoDB Streams, SQS, Kinesis, etc.) → Filter (event pattern matching) → Enrichment (optional Lambda, Step Functions, API Gateway, or API Destination) → Target (Kinesis, Lambda, Step Functions, etc.). Ini menyediakan filtering tanpa Lambda code dan optional enrichment. Opsi B (input transformers) hanya mengubah format, bukan enrich dari external source. Opsi C memerlukan Lambda code untuk enrichment yang bertentangan dengan requirement. Opsi D (Scheduler) untuk time-based triggers, bukan stream processing.</div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div>
+            <div class="question-text">A data pipeline uses EventBridge to trigger Lambda functions for processing. Occasionally, the target Lambda function is throttled or temporarily unavailable, causing event delivery to fail. The team needs to ensure no events are permanently lost and failed events can be investigated later. Which EventBridge mechanism handles this?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure a dead-letter queue (SQS) on the EventBridge rule and set retry policy with maximum age and retry attempts</li>
+                <li><span class="option-label">B.</span> Enable EventBridge event replay to automatically redeliver failed events</li>
+                <li><span class="option-label">C.</span> Configure Lambda's async invocation DLQ to capture events that EventBridge couldn't deliver</li>
+                <li><span class="option-label">D.</span> Use CloudWatch Logs to record all failed delivery attempts and manually reprocess them</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">EventBridge rules mendukung dead-letter queue (SQS) configuration dimana events yang gagal dikirim setelah retry attempts dikirim ke DLQ untuk investigation. Retry policy mengonfigurasi: maximum event age (berapa lama EventBridge retry sebelum menyerah) dan maximum retry attempts. Ini memastikan tidak ada event yang hilang secara permanen. Opsi B (event replay) untuk memutar ulang archived events, bukan untuk handling delivery failures. Opsi C (Lambda async DLQ) hanya bekerja jika event berhasil sampai ke Lambda — jika EventBridge gagal deliver, Lambda DLQ tidak membantu. Opsi D (CloudWatch Logs) tidak menyimpan event payload untuk reprocessing.</div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div>
+            <div class="question-text">A data engineering team deployed a change to their ETL pipeline that introduced a bug, causing incorrect data to be written for the past 3 hours. They need to reprocess all events that occurred during that time window from the original source events. The events were routed through EventBridge. Which feature enables reprocessing of historical events?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use EventBridge archive and replay — replay archived events from the specific time window to a new rule that triggers the corrected pipeline</li>
+                <li><span class="option-label">B.</span> Query CloudTrail logs for the events that were published and manually re-invoke the pipeline for each</li>
+                <li><span class="option-label">C.</span> Enable EventBridge event bus logging and extract events from CloudWatch Logs for reprocessing</li>
+                <li><span class="option-label">D.</span> Configure the event source to resend all events from the past 3 hours</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">EventBridge Archive menyimpan events yang match an archive rule, dan Replay memungkinkan re-delivery events dari archive untuk time window tertentu ke event bus. Events yang di-replay memiliki "replay-name" header sehingga rules dapat membedakan replay events dari live events. Ini built-in untuk exactly this use case — reprocessing historical events. Opsi B (CloudTrail) mencatat API calls, bukan event payloads. Opsi C (CloudWatch Logs) tidak menyimpan structured events untuk replay. Opsi D (resend from source) mungkin tidak feasible — source system mungkin tidak mendukung historical resending.</div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div>
+            <div class="question-text">A company has a data pipeline where an S3 upload event needs to trigger different processing based on the file type: CSV files go to a Glue job, Parquet files go to an Athena query, and JSON files go to a Lambda function. All events come through the default EventBridge event bus. Which approach provides the MOST maintainable routing implementation?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create three EventBridge rules with event patterns that match on the S3 object key suffix (.csv, .parquet, .json), each routing to its respective target</li>
+                <li><span class="option-label">B.</span> Create one rule that sends all S3 events to a Lambda router function that inspects the file extension and invokes the appropriate service</li>
+                <li><span class="option-label">C.</span> Configure three separate S3 event notifications with prefix/suffix filters, each pointing to the respective service</li>
+                <li><span class="option-label">D.</span> Use a Step Functions state machine with a Choice state that routes based on file extension</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">EventBridge event patterns mendukung content-based routing dengan matching pada S3 event detail fields termasuk object key. Tiga rules terpisah memberikan clear separation of concerns, mudah di-maintain (add/remove rules independently), dan leverages EventBridge's native routing capability tanpa custom code. Opsi B (Lambda router) menambah latency, cost, dan maintenance burden. Opsi C (S3 event notifications) bisa bekerja tetapi memiliki limit per bucket dan kurang flexible dibanding EventBridge patterns. Opsi D (Step Functions) overhead untuk simple routing — Step Functions lebih cocok untuk complex orchestration.</div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div>
+            <div class="question-text">A data engineer is designing an event-driven architecture where application events from multiple microservices need to be processed by the data platform. The team wants to isolate data platform events from application events, apply different retention policies, and allow only authorized services to publish to the data platform's event bus. Which EventBridge architecture meets these requirements?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create a custom event bus for the data platform with a resource-based policy restricting PutEvents to authorized service roles, and configure archive with appropriate retention on the custom bus</li>
+                <li><span class="option-label">B.</span> Use the default event bus with IAM policies to restrict which services can publish specific event types</li>
+                <li><span class="option-label">C.</span> Create an SNS topic for inter-service communication and subscribe EventBridge as a target</li>
+                <li><span class="option-label">D.</span> Use EventBridge Pipes from each microservice directly to the data platform's processing targets</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Custom event bus menyediakan: (1) isolasi dari default bus events — hanya events yang explicitly dikirim ke custom bus yang ada di sana, (2) resource-based policy yang mengontrol siapa yang boleh PutEvents, (3) independent archive configuration dengan retention policy terpisah. Ini memenuhi semua tiga requirements: isolation, access control, dan retention. Opsi B (default bus + IAM) mencampur semua events di satu bus tanpa isolation yang bersih. Opsi C (SNS) menambah component dan tidak menyediakan archive/retention natively. Opsi D (Pipes) untuk point-to-point, bukan many-to-many event distribution.</div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div>
+            <div class="question-text">A data platform runs daily ETL jobs triggered by EventBridge Scheduler. The team notices that some jobs occasionally fail to start at the scheduled time due to transient service issues. They need a scheduling solution that: retries if the target is temporarily unavailable, allows a flexible time window for execution, and provides visibility into schedule execution history. Which EventBridge Scheduler configuration addresses all requirements?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure EventBridge Scheduler with a retry policy (MaximumRetryAttempts and MaximumEventAgeInSeconds), FlexibleTimeWindow for execution jitter, and use CloudWatch metrics (InvocationAttemptCount, TargetErrorCount) for monitoring</li>
+                <li><span class="option-label">B.</span> Use EventBridge rules with cron expressions and configure dead-letter queues for failed invocations</li>
+                <li><span class="option-label">C.</span> Implement a Lambda function that polls for missed schedule executions and retriggers them</li>
+                <li><span class="option-label">D.</span> Use AWS Step Functions with a Wait state and built-in retry logic to manage scheduling</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">EventBridge Scheduler memiliki built-in features untuk semua requirements: (1) Retry Policy dengan configurable MaximumRetryAttempts dan MaximumEventAgeInSeconds untuk automatic retries pada transient failures, (2) FlexibleTimeWindow yang mendistribusikan invocations dalam time window untuk mengurangi thundering herd dan accommodate jitter, (3) CloudWatch metrics (InvocationAttemptCount, TargetErrorCount, InvocationDroppedCount) memberikan visibility ke execution history. Opsi B (EventBridge rules) memiliki retry tapi tidak FlexibleTimeWindow. Opsi C (Lambda polling) custom dan unreliable. Opsi D (Step Functions Wait) bukan scheduling service.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    function toggleAnswer(btn){const s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>
