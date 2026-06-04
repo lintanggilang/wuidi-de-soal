@@ -101,41 +101,25 @@
         <div class="search-status" id="searchStatus"></div>
     </div>
 
-    <!-- DOMAIN GRID (always visible) -->
+    <!-- DOMAIN GRID -->
     <div class="section" id="domainSection">
         <div class="section-label">Domains</div>
-        <div class="domain-grid" id="domainGrid">
-            <div class="domain-card d1 active" data-domain="1" onclick="clickDomain(1)">
-                <div class="d-icon">&#128260;</div>
-                <div class="d-title">Ingestion &amp; Transformation</div>
-                <div class="d-meta">34% &bull; 37 Skills</div>
-            </div>
-            <div class="domain-card d2" data-domain="2" onclick="clickDomain(2)">
-                <div class="d-icon">&#128451;</div>
-                <div class="d-title">Data Store Management</div>
-                <div class="d-meta">26% &bull; 26 Skills</div>
-            </div>
-            <div class="domain-card d3" data-domain="3" onclick="clickDomain(3)">
-                <div class="d-icon">&#9881;&#65039;</div>
-                <div class="d-title">Operations &amp; Support</div>
-                <div class="d-meta">22% &bull; 28 Skills</div>
-            </div>
-            <div class="domain-card d4" data-domain="4" onclick="clickDomain(4)">
-                <div class="d-icon">&#128274;</div>
-                <div class="d-title">Security &amp; Governance</div>
-                <div class="d-meta">18% &bull; 29 Skills</div>
-            </div>
+        <div class="domain-grid">
+            <div class="domain-card d1 active" data-domain="1" onclick="clickDomain(1)"><div class="d-icon">&#128260;</div><div class="d-title">Ingestion &amp; Transformation</div><div class="d-meta">34% &bull; 37 Skills</div></div>
+            <div class="domain-card d2" data-domain="2" onclick="clickDomain(2)"><div class="d-icon">&#128451;</div><div class="d-title">Data Store Management</div><div class="d-meta">26% &bull; 26 Skills</div></div>
+            <div class="domain-card d3" data-domain="3" onclick="clickDomain(3)"><div class="d-icon">&#9881;&#65039;</div><div class="d-title">Operations &amp; Support</div><div class="d-meta">22% &bull; 28 Skills</div></div>
+            <div class="domain-card d4" data-domain="4" onclick="clickDomain(4)"><div class="d-icon">&#128274;</div><div class="d-title">Security &amp; Governance</div><div class="d-meta">18% &bull; 29 Skills</div></div>
         </div>
     </div>
 
-    <!-- TASK GRID (below domain) -->
+    <!-- TASK GRID -->
     <div class="section" id="taskSection">
-        <div class="section-label" id="taskLabel">Tasks &mdash; Domain 1</div>
+        <div class="section-label" id="taskLabel">Tasks</div>
         <div class="task-grid" id="taskGrid"></div>
     </div>
 
-    <!-- SKILL GRID (below task) -->
-    <div class="section hidden" id="skillSection">
+    <!-- SKILL GRID (always visible) -->
+    <div class="section" id="skillSection">
         <div class="section-label" id="skillLabel">Skills</div>
         <div class="skill-grid" id="skillGrid"></div>
     </div>
@@ -280,13 +264,22 @@ var skills=[
 var taskNames={"1.1":"Perform data ingestion","1.2":"Transform and process data","1.3":"Orchestrate data pipelines","1.4":"Apply programming concepts","2.1":"Choose a data store","2.2":"Understand data cataloging systems","2.3":"Manage the lifecycle of data","2.4":"Design data models and schema evolution","3.1":"Automate data processing","3.2":"Analyze data by using AWS services","3.3":"Maintain and monitor data pipelines","3.4":"Ensure data quality","4.1":"Apply authentication mechanisms","4.2":"Apply authorization mechanisms","4.3":"Ensure data encryption and masking","4.4":"Prepare logs for audit","4.5":"Understand data privacy and governance"};
 var domainNames={1:"Ingestion & Transformation",2:"Data Store Management",3:"Operations & Support",4:"Security & Governance"};
 
-var activeDomain=1, activeTask=null;
+var activeDomain=1,activeTask=null;
+
+// Get first task of a domain
+function getFirstTask(d){
+    var t=null;
+    for(var i=0;i<skills.length;i++){if(skills[i].d===d){t=skills[i].t;break;}}
+    return t;
+}
 
 function clickDomain(d){
-    activeDomain=d; activeTask=null;
+    activeDomain=d;
+    // Auto-select first task (x.1)
+    activeTask=getFirstTask(d);
     document.querySelectorAll('.domain-card').forEach(function(c){c.classList.toggle('active',+c.dataset.domain===d);});
     renderTasks();
-    document.getElementById('skillSection').classList.add('hidden');
+    renderSkills();
 }
 
 function clickTask(t){
@@ -300,11 +293,11 @@ function renderTasks(){
     skills.forEach(function(s){if(s.d===activeDomain)tasks[s.t]=(tasks[s.t]||0)+1;});
     var html='';
     Object.keys(tasks).sort().forEach(function(t){
-        html+='<div class="task-card" data-task="'+t+'" onclick="clickTask(\''+t+'\')"><div class="t-id">Task '+t+'</div><div class="t-title">'+(taskNames[t]||'')+'</div><div class="t-meta">'+tasks[t]+' Skills &bull; '+(tasks[t]*10)+' Q</div></div>';
+        var isActive=(t===activeTask)?' active':'';
+        html+='<div class="task-card'+isActive+'" data-task="'+t+'" onclick="clickTask(\''+t+'\')"><div class="t-id">Task '+t+'</div><div class="t-title">'+(taskNames[t]||'')+'</div><div class="t-meta">'+tasks[t]+' Skills &bull; '+(tasks[t]*10)+' Q</div></div>';
     });
     document.getElementById('taskGrid').innerHTML=html;
     document.getElementById('taskLabel').innerHTML='Tasks &mdash; '+domainNames[activeDomain];
-    document.getElementById('taskSection').classList.remove('hidden');
 }
 
 function renderSkills(){
@@ -315,8 +308,6 @@ function renderSkills(){
     });
     document.getElementById('skillGrid').innerHTML=html;
     document.getElementById('skillLabel').innerHTML='Skills &mdash; Task '+activeTask+': '+(taskNames[activeTask]||'');
-    document.getElementById('skillSection').classList.remove('hidden');
-    document.getElementById('skillSection').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 // Search
@@ -329,7 +320,10 @@ searchInput.addEventListener('input',function(){
     var taskSec=document.getElementById('taskSection');
     var skillSec=document.getElementById('skillSection');
     var noRes=document.getElementById('noResults');
-    if(!q){searchSec.classList.add('hidden');domSec.classList.remove('hidden');taskSec.classList.remove('hidden');if(activeTask)skillSec.classList.remove('hidden');noRes.classList.remove('visible');searchStatus.classList.remove('visible');return;}
+    if(!q){
+        searchSec.classList.add('hidden');domSec.classList.remove('hidden');taskSec.classList.remove('hidden');skillSec.classList.remove('hidden');
+        noRes.classList.remove('visible');searchStatus.classList.remove('visible');return;
+    }
     domSec.classList.add('hidden');taskSec.classList.add('hidden');skillSec.classList.add('hidden');
     var matched=skills.filter(function(s){return(s.id+' '+s.name+' '+s.kw).toLowerCase().indexOf(q)!==-1;});
     searchStatus.textContent=matched.length+' skill'+(matched.length!==1?'s':'')+' found';
@@ -339,8 +333,10 @@ searchInput.addEventListener('input',function(){
 });
 searchInput.addEventListener('keydown',function(e){if(e.key==='Escape'){this.value='';this.dispatchEvent(new Event('input'));this.blur();}});
 
-// Init
+// Init: Domain 1 selected, Task 1.1 selected, skills visible
+activeTask=getFirstTask(1);
 renderTasks();
+renderSkills();
 </script>
 </body>
 </html>
