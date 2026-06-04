@@ -184,11 +184,9 @@
                 <div class="explanation">Using the RDS DNS endpoint (not IP) combined with proper multi-AZ subnet/security group configuration resolves failover issues: (1) RDS endpoints are DNS names that always resolve to the current primary — after failover, DNS is updated within ~30 seconds; (2) if the JDBC URL already uses the DNS name (which is likely), the actual issue is networking: the Glue connection's subnet or security group only allows connectivity to one AZ; (3) after failover, the primary moves to the standby AZ — if the Glue connection's subnet can only route to the original AZ, connections fail; (4) the fix is ensuring the connection's security group allows outbound to the RDS security group (which is AZ-agnostic) and that the subnet's route table covers both AZs' private address ranges (which VPC subnets in the same VPC do automatically for private traffic). Option B — Route 53 health checks can't modify Glue connection properties; also, using DNS endpoints eliminates the need for IP-based management. Option C — NLB in front of RDS is unnecessary complexity — RDS already provides DNS-based failover. NLB adds cost, latency, and another failure point. Option D — Read Replicas are for read scaling, not HA failover. They don't maintain "consistent IPs" — promotion also changes endpoints. Multi-AZ is the correct HA mechanism.</div>
             </div>
         </div>
-
-    
-        <div style="text-align:center;padding:2rem 1rem;margin-top:2rem;border-top:1px solid var(--border);color:var(--text-secondary);font-size:0.8rem;">Created by Lintang Gilang and Kiro Agent at 04 June 2026</div>
     
         <a href="../index.html" style="display:inline-flex;align-items:center;gap:0.4rem;margin-top:2rem;margin-bottom:1rem;padding:0.5rem 1rem;font-size:0.85rem;font-weight:500;color:var(--text-secondary);text-decoration:none;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);transition:all 0.2s;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back to Home</a>
+        <div style="text-align:center;padding:2rem 1rem;margin-top:2rem;border-top:1px solid var(--border);color:var(--text-secondary);font-size:0.8rem;">Created by Lintang Gilang and Kiro Agent at 04 June 2026</div>
     </div>
 
 <script>
