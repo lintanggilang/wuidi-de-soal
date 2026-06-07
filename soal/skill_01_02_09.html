@@ -195,35 +195,25 @@
     </div>
     <script>
         var totalQ=10,answeredQ=0,correctQ=0;
-        function updateScore(){var pct=answeredQ>0?Math.round((correctQ/answeredQ)*100):0;document.getElementById("scoreText").textContent=pct+"%";document.getElementById("scoreDetail").textContent="("+correctQ+"/"+answeredQ+" correct)";document.getElementById("progressFill").style.width=(answeredQ/totalQ*100)+"%";}
+        function updateScore(){var pct=answeredQ>0?Math.round((correctQ/answeredQ)*100):0;document.getElementById('scoreText').textContent=pct+'%';document.getElementById('scoreDetail').textContent='('+correctQ+'/'+answeredQ+' correct)';document.getElementById('progressFill').style.width=(answeredQ/totalQ*100)+'%';}
         (function(){
             document.querySelectorAll('.question-card').forEach(function(card){
-                var correctEl = card.querySelector('.correct-answer');
-                if(!correctEl) return;
-                var correctLetter = correctEl.textContent.trim().slice(-1);
-                var options = card.querySelectorAll('.options li');
+                var correctEl=card.querySelector('.correct-answer');
+                if(!correctEl)return;
+                var correctLetter=correctEl.textContent.trim().slice(-1);
+                var options=card.querySelectorAll('.options li');
                 options.forEach(function(li){
-                    li.style.cursor = 'pointer';
-                    li.addEventListener('click', function(){
-                        if(card.classList.contains('answered')) return;
+                    li.style.cursor='pointer';
+                    li.addEventListener('click',function(){
+                        if(card.classList.contains('answered'))return;
                         card.classList.add('answered');
                         answeredQ++;
-                        var myLetter = li.querySelector('.option-label').textContent.trim().charAt(0);
-                        if(myLetter === correctLetter){
-                            li.classList.add('correct');
-                        } else {
-                            li.classList.add('wrong');
-                            options.forEach(function(o){
-                                if(o.querySelector('.option-label').textContent.trim().charAt(0) === correctLetter){
-                                    o.classList.add('correct');
-                                }
-                            });
-                        }
-                        options.forEach(function(o){ o.style.cursor = 'default'; });
-                        var ans = card.querySelector('.answer-section');
-                        if(ans) ans.classList.add('visible');
-                        var btn = card.querySelector('.answer-toggle');
-                        if(btn) btn.style.display = 'none';
+                        var myLetter=li.querySelector('.option-label').textContent.trim().charAt(0);
+                        if(myLetter===correctLetter){li.classList.add('correct');correctQ++;}
+                        else{li.classList.add('wrong');options.forEach(function(o){if(o.querySelector('.option-label').textContent.trim().charAt(0)===correctLetter)o.classList.add('correct');});}
+                        options.forEach(function(o){o.style.cursor='default';});
+                        var ans=card.querySelector('.answer-section');if(ans)ans.classList.add('visible');
+                        var btn=card.querySelector('.answer-toggle');if(btn)btn.style.display='none';
                         updateScore();
                     });
                 });

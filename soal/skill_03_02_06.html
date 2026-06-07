@@ -203,38 +203,27 @@
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2rem;margin-bottom:1rem;gap:1rem;flex-wrap:wrap;"><a href="../index.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;font-size:0.85rem;font-weight:500;color:var(--text-secondary);text-decoration:none;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);transition:all 0.2s;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back to Home</a><a href="skill_03_03_01.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;font-size:0.85rem;font-weight:500;color:#ffffff;text-decoration:none;border:1px solid var(--accent);border-radius:8px;background:var(--accent);transition:all 0.2s;">Next <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a></div>
         <div style="text-align:center;padding:2rem 1rem;margin-top:2rem;border-top:1px solid var(--border);color:var(--text-secondary);font-size:0.8rem;">Created by Lintang Gilang and Kiro Agent at 04 June 2026</div>
     </div>
-
     <script>
         var totalQ=10,answeredQ=0,correctQ=0;
-        function updateScore(){var pct=answeredQ>0?Math.round((correctQ/answeredQ)*100):0;document.getElementById("scoreText").textContent=pct+"%";document.getElementById("scoreDetail").textContent="("+correctQ+"/"+answeredQ+" correct)";document.getElementById("progressFill").style.width=(answeredQ/totalQ*100)+"%";}
+        function updateScore(){var pct=answeredQ>0?Math.round((correctQ/answeredQ)*100):0;document.getElementById('scoreText').textContent=pct+'%';document.getElementById('scoreDetail').textContent='('+correctQ+'/'+answeredQ+' correct)';document.getElementById('progressFill').style.width=(answeredQ/totalQ*100)+'%';}
         (function(){
             document.querySelectorAll('.question-card').forEach(function(card){
-                var correctEl = card.querySelector('.correct-answer');
-                if(!correctEl) return;
-                var correctLetter = correctEl.textContent.trim().slice(-1);
-                var options = card.querySelectorAll('.options li');
+                var correctEl=card.querySelector('.correct-answer');
+                if(!correctEl)return;
+                var correctLetter=correctEl.textContent.trim().slice(-1);
+                var options=card.querySelectorAll('.options li');
                 options.forEach(function(li){
-                    li.style.cursor = 'pointer';
-                    li.addEventListener('click', function(){
-                        if(card.classList.contains('answered')) return;
+                    li.style.cursor='pointer';
+                    li.addEventListener('click',function(){
+                        if(card.classList.contains('answered'))return;
                         card.classList.add('answered');
                         answeredQ++;
-                        var myLetter = li.querySelector('.option-label').textContent.trim().charAt(0);
-                        if(myLetter === correctLetter){
-                            li.classList.add('correct');
-                        } else {
-                            li.classList.add('wrong');
-                            options.forEach(function(o){
-                                if(o.querySelector('.option-label').textContent.trim().charAt(0) === correctLetter){
-                                    o.classList.add('correct');
-                                }
-                            });
-                        }
-                        options.forEach(function(o){ o.style.cursor = 'default'; });
-                        var ans = card.querySelector('.answer-section');
-                        if(ans) ans.classList.add('visible');
-                        var btn = card.querySelector('.answer-toggle');
-                        if(btn) btn.style.display = 'none';
+                        var myLetter=li.querySelector('.option-label').textContent.trim().charAt(0);
+                        if(myLetter===correctLetter){li.classList.add('correct');correctQ++;}
+                        else{li.classList.add('wrong');options.forEach(function(o){if(o.querySelector('.option-label').textContent.trim().charAt(0)===correctLetter)o.classList.add('correct');});}
+                        options.forEach(function(o){o.style.cursor='default';});
+                        var ans=card.querySelector('.answer-section');if(ans)ans.classList.add('visible');
+                        var btn=card.querySelector('.answer-toggle');if(btn)btn.style.display='none';
                         updateScore();
                     });
                 });
