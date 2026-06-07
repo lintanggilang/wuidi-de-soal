@@ -39,8 +39,21 @@
         .search-status { font-size: 0.75rem; color: var(--text-3); margin-top: 0.35rem; display: none; }
         .search-status.visible { display: block; }
 
-        .section { margin-bottom: 1.75rem; }
+        .section { margin-bottom: 1.75rem; padding: 1.25rem; border-radius: var(--radius); }
         .section-label { font-size: 0.72rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem; }
+        #domainSection { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #bfdbfe; }
+        #taskSection { background: linear-gradient(135deg, #f8fafc, #f1f5f9); border: 1px solid var(--border); }
+        #skillSection { background: transparent; }
+        #domainSection.domain-2-active { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-color: #a7f3d0; }
+        #domainSection.domain-3-active { background: linear-gradient(135deg, #fffbeb, #fef3c7); border-color: #fde68a; }
+        #domainSection.domain-4-active { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border-color: #ddd6fe; }
+        @media(prefers-color-scheme:dark){
+            #domainSection { background: linear-gradient(135deg, #1e293b, #1e3a5f); border-color: #334155; }
+            #domainSection.domain-2-active { background: linear-gradient(135deg, #1e293b, #064e3b); border-color: #334155; }
+            #domainSection.domain-3-active { background: linear-gradient(135deg, #1e293b, #451a03); border-color: #334155; }
+            #domainSection.domain-4-active { background: linear-gradient(135deg, #1e293b, #2e1065); border-color: #334155; }
+            #taskSection { background: linear-gradient(135deg, #1a1d27, #1e2230); border-color: #2d3039; }
+        }
 
         .domain-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; }
         .domain-card { padding: 1rem; border-radius: var(--radius); border: 2px solid var(--border); background: var(--bg-card); cursor: pointer; transition: all 150ms; position: relative; overflow: hidden; text-align: center; }
@@ -279,6 +292,12 @@ function clickDomain(d){
     // Auto-select first task (x.1)
     activeTask=getFirstTask(d);
     document.querySelectorAll('.domain-card').forEach(function(c){c.classList.toggle('active',+c.dataset.domain===d);});
+    // Update domain section background color
+    var ds=document.getElementById('domainSection');
+    ds.className='section';
+    if(d===2)ds.classList.add('domain-2-active');
+    else if(d===3)ds.classList.add('domain-3-active');
+    else if(d===4)ds.classList.add('domain-4-active');
     renderTasks();
     renderSkills();
 }
