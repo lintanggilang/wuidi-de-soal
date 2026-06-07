@@ -196,9 +196,14 @@
         }
     .options li{cursor:pointer;transition:all .2s}.options li.correct{background:#dbeafe;border-color:#2563eb;color:#1e40af;font-weight:500}.options li.wrong{background:#fee2e2;border-color:#dc2626;color:#991b1b}.answered .options li{cursor:default}.answered .options li:hover{background:inherit}
 @media(prefers-color-scheme:dark){.options li.correct{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd}.options li.wrong{background:#450a0a;border-color:#ef4444;color:#fca5a5}}
+    .score-bar{position:sticky;top:0;z-index:100;background:var(--bg-card);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;box-shadow:var(--shadow)}.score-bar .score-text{font-size:.85rem;font-weight:600;color:var(--text-primary)}.score-bar .score-detail{font-size:.75rem;color:var(--text-secondary)}.score-bar .progress-wrap{flex:1;max-width:300px;height:8px;background:var(--border);border-radius:4px;overflow:hidden}.score-bar .progress-fill{height:100%;background:var(--success);border-radius:4px;transition:width .3s ease}@media(max-width:640px){.score-bar{flex-wrap:wrap;padding:.5rem 1rem}}
     </style>
 </head>
 <body>
+    <div class="score-bar">
+        <div><span class="score-text" id="scoreText">0%</span> <span class="score-detail" id="scoreDetail">(0/0 correct)</span></div>
+        <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
     <div class="container">
         <a href="../index.html" style="display:inline-flex;align-items:center;gap:0.4rem;margin-bottom:1.25rem;padding:0.5rem 1rem;font-size:0.85rem;font-weight:500;color:var(--text-secondary);text-decoration:none;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);transition:all 0.2s;" onmouseover="this.style.color=this.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()" onmouseout="this.style.color=getComputedStyle(document.documentElement).getPropertyValue("--text-secondary").trim();this.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue("--border").trim()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back to Home</a>
         <div class="header">
@@ -387,6 +392,8 @@
     </div>
 
     <script>
+        var totalQ=10,answeredQ=0,correctQ=0;
+        function updateScore(){var pct=answeredQ>0?Math.round((correctQ/answeredQ)*100):0;document.getElementById("scoreText").textContent=pct+"%";document.getElementById("scoreDetail").textContent="("+correctQ+"/"+answeredQ+" correct)";document.getElementById("progressFill").style.width=(answeredQ/totalQ*100)+"%";}
         (function(){
             document.querySelectorAll('.question-card').forEach(function(card){
                 var correctEl = card.querySelector('.correct-answer');
@@ -398,6 +405,7 @@
                     li.addEventListener('click', function(){
                         if(card.classList.contains('answered')) return;
                         card.classList.add('answered');
+                        answeredQ++;
                         var myLetter = li.querySelector('.option-label').textContent.trim().charAt(0);
                         if(myLetter === correctLetter){
                             li.classList.add('correct');
@@ -414,6 +422,7 @@
                         if(ans) ans.classList.add('visible');
                         var btn = card.querySelector('.answer-toggle');
                         if(btn) btn.style.display = 'none';
+                        updateScore();
                     });
                 });
             });
