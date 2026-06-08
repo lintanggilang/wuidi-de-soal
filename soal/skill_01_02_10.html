@@ -37,7 +37,7 @@
                 <li><span class="option-label">A.</span> Use Amazon Bedrock Batch Inference with a prompt template for structured extraction, processing all descriptions in a batch job at reduced cost</li>
                 <li><span class="option-label">B.</span> Call Bedrock InvokeModel API synchronously for each of the 1 million records via Lambda</li>
                 <li><span class="option-label">C.</span> Fine-tune a custom model on SageMaker for extraction</li>
-                <li><span class="option-label">D.</span> Use regex patterns to extract the structured fields</li>
+                <li><span class="option-label">D.</span> Use regex patterns to extract the structured fields with a prompt template for structured extraction for structured extraction</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Amazon Bedrock with a lightweight model (e.g., Claude Haiku) for classification and sentiment in a single prompt, calling InvokeModel with batched tickets via Glue ETL</li>
                 <li><span class="option-label">B.</span> Use the largest available model (Claude Opus) for each individual ticket</li>
-                <li><span class="option-label">C.</span> Build a custom BERT model on SageMaker for classification</li>
+                <li><span class="option-label">C.</span> Build a custom BERT model on SageMaker for classification and sentiment without Bedrock</li>
                 <li><span class="option-label">D.</span> Use Amazon Comprehend for both classification and sentiment without Bedrock</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Amazon Bedrock's Titan Embeddings model with Batch Inference API to generate embeddings for all 5 million descriptions, then bulk load into Aurora</li>
                 <li><span class="option-label">B.</span> Use a real-time Bedrock InvokeModel call per description from a Lambda function</li>
-                <li><span class="option-label">C.</span> Deploy a custom embedding model on SageMaker with batch transform</li>
+                <li><span class="option-label">C.</span> Deploy a custom embedding model on SageMaker with batch transform for all 5 million descriptions</li>
                 <li><span class="option-label">D.</span> Use Amazon Comprehend to generate word embeddings</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -83,7 +83,7 @@
             <div class="question-text">A data pipeline needs to summarize 100,000 medical research papers (each 10-20 pages) stored in S3. The summaries will be stored in a Redshift table for analyst consumption. Each paper exceeds the context window of the LLM. How should the data engineer handle this?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a chunking strategy: split each paper into overlapping chunks that fit the context window, summarize each chunk, then use a final LLM call to create an overall summary from chunk summaries (map-reduce pattern)</li>
-                <li><span class="option-label">B.</span> Truncate each paper to fit within the context window</li>
+                <li><span class="option-label">B.</span> Truncate each paper to fit within the context window configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Use only the first page of each paper for summarization</li>
                 <li><span class="option-label">D.</span> Store papers without summarization since they're too long</li>
             </ul>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Use an SQS queue for records pending enrichment, Lambda consumers calling Bedrock with exponential backoff on throttling, and a dead-letter queue for persistent failures</li>
                 <li><span class="option-label">B.</span> Call Bedrock synchronously from a Glue job without rate limiting</li>
                 <li><span class="option-label">C.</span> Process all records in a single Lambda invocation</li>
-                <li><span class="option-label">D.</span> Skip records that receive throttling errors</li>
+                <li><span class="option-label">D.</span> Skip records that receive throttling errors with exponential backoff on throttling and a dead-letter queue for persistent failures</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -116,7 +116,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a structured output prompt with explicit JSON schema instructions, include few-shot examples in the prompt, and validate the LLM output against the expected schema before database insertion</li>
                 <li><span class="option-label">B.</span> Trust the LLM output without validation since models are deterministic</li>
-                <li><span class="option-label">C.</span> Use the LLM output directly as database input without parsing</li>
+                <li><span class="option-label">C.</span> Use the LLM output directly as database input without parsing with explicit JSON schema instructions</li>
                 <li><span class="option-label">D.</span> Fine-tune the model on a small set of address examples</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -131,7 +131,7 @@
             <div class="question-text">A data engineer integrates Amazon Bedrock into a Glue ETL job to classify documents. The Glue job processes 50,000 documents. Each Bedrock API call takes 2-3 seconds. Running sequentially would take 28+ hours. How should the engineer parallelize the LLM calls within the Glue job?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Spark's mapPartitions with concurrent API calls within each partition using Python's concurrent.futures, respecting Bedrock's rate limits with a semaphore</li>
-                <li><span class="option-label">B.</span> Increase the number of Glue DPUs to 1000</li>
+                <li><span class="option-label">B.</span> Increase the number of Glue DPUs to 1000 with concurrent API calls within each partition using Python's concurrent</li>
                 <li><span class="option-label">C.</span> Use Spark's map function which automatically parallelizes API calls</li>
                 <li><span class="option-label">D.</span> Process all documents in the driver node sequentially</li>
             </ul>
@@ -149,7 +149,7 @@
                 <li><span class="option-label">A.</span> Enable Amazon Bedrock Guardrails with PII detection filters that automatically redact sensitive information before it reaches the model</li>
                 <li><span class="option-label">B.</span> Trust that Bedrock doesn't store or learn from customer data</li>
                 <li><span class="option-label">C.</span> Use regex to remove all numbers from the text before sending</li>
-                <li><span class="option-label">D.</span> Encrypt the text before sending to the LLM</li>
+                <li><span class="option-label">D.</span> Encrypt the text before sending to the LLM with PII detection filters that automatically redact sensitive information before it reaches the model</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Include the relevant table schemas and sample data in the system prompt (in-context learning), using the Glue Data Catalog metadata to dynamically construct the prompt</li>
                 <li><span class="option-label">B.</span> Fine-tune the LLM on the company's entire database</li>
-                <li><span class="option-label">C.</span> Give the LLM direct access to query the database</li>
+                <li><span class="option-label">C.</span> Give the LLM direct access to query the database configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Train a custom model from scratch on SQL queries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -179,7 +179,7 @@
             <div class="question-text">A data pipeline uses Amazon Bedrock to enrich records. The LLM occasionally returns hallucinated (incorrect) data that doesn't match reality. For a data pipeline where accuracy is critical, what is the BEST strategy to mitigate hallucinations?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a validation layer: cross-reference LLM outputs against known-good data sources, use confidence thresholds, and flag uncertain outputs for human review rather than auto-inserting</li>
-                <li><span class="option-label">B.</span> Use a more expensive model which never hallucinates</li>
+                <li><span class="option-label">B.</span> Use a more expensive model which never hallucinates for human review rather than auto-inserting</li>
                 <li><span class="option-label">C.</span> Set temperature to 0 which eliminates all hallucinations</li>
                 <li><span class="option-label">D.</span> Run the same prompt twice and only accept if both outputs match</li>
             </ul>
