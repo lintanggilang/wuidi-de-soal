@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> Create a single IAM policy with wildcard (*) access to all S3 paths and share it across teams</li>
                 <li><span class="option-label">B.</span> Implement Attribute-Based Access Control (ABAC) using AWS tags — tag IAM roles with "department" and "team" attributes, then create a single IAM policy with conditions that reference aws:PrincipalTag keys to dynamically scope S3 and Glue access based on the principal's tags</li>
                 <li><span class="option-label">C.</span> Create 50 separate IAM policies, one for each team, with hardcoded resource ARNs</li>
-                <li><span class="option-label">D.</span> Use AWS Organizations to create separate accounts for each team</li>
+                <li><span class="option-label">D.</span> Use AWS Organizations to create separate accounts for each team with "department"</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -55,7 +55,7 @@
                 <li><span class="option-label">A.</span> Create individual Lake Formation GRANT statements for each table-to-user combination</li>
                 <li><span class="option-label">B.</span> Use Lake Formation Tag-Based Access Control (LF-Tags) — define LF-Tag keys like "sensitivity" (values: phi, de-identified, public) and assign them to tables; then GRANT permissions based on tag expressions, matching user roles to the sensitivity levels they are authorized to access</li>
                 <li><span class="option-label">C.</span> Move all PHI data to a separate AWS account and use account-level isolation only</li>
-                <li><span class="option-label">D.</span> Use S3 bucket policies with IP-based restrictions for each sensitivity level</li>
+                <li><span class="option-label">D.</span> Use S3 bucket policies with IP-based restrictions for each sensitivity level configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -71,7 +71,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> ABAC because it always provides better security than RBAC regardless of the scenario</li>
                 <li><span class="option-label">B.</span> RBAC (Role-Based Access Control) using IAM groups/roles — because with stable, well-defined job functions, creating specific roles (e.g., "finance-prod-analyst", "marketing-dev-engineer") provides clear permission boundaries, simpler auditing, and easier comprehension for compliance teams. RBAC is preferred when the number of distinct access patterns is manageable and changes are infrequent</li>
-                <li><span class="option-label">C.</span> Use both ABAC and RBAC on every resource simultaneously to maximize security</li>
+                <li><span class="option-label">C.</span> Use both ABAC and RBAC on every resource simultaneously to maximize security with stable and easier comprehension for compliance teams</li>
                 <li><span class="option-label">D.</span> Neither — use only S3 bucket policies without any IAM-based access control</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -88,7 +88,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Continue maintaining individual policies and hire more IAM administrators</li>
                 <li><span class="option-label">B.</span> Implement ABAC with multiple tag dimensions — tag both resources (content-type, region, sensitivity) and principals (team, location, clearance-level), then create parameterized policies using tag conditions. Combine with Lake Formation LF-Tags for data catalog governance. This reduces 2,000+ policies to a small set of attribute-based policies that automatically apply as new engineers and data assets are onboarded</li>
-                <li><span class="option-label">C.</span> Create one IAM role per country with full access to that country's data</li>
+                <li><span class="option-label">C.</span> Create one IAM role per country with full access to that country's data for data catalog governance</li>
                 <li><span class="option-label">D.</span> Disable IAM and rely solely on network-level security (VPC, Security Groups) for access control</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -106,7 +106,7 @@
                 <li><span class="option-label">A.</span> Create individual Redshift users for each person and grant table-level permissions directly to each user</li>
                 <li><span class="option-label">B.</span> Use Redshift role-based access control (RBAC) — create Redshift database roles (e.g., "finance_reader", "marketing_admin"), GRANT schema/table permissions to roles, then GRANT roles to users or groups. Users inherit permissions from their assigned roles, and role membership can be managed centrally without modifying individual grants</li>
                 <li><span class="option-label">C.</span> Use only Redshift schemas as the access control boundary and give all users access to their department's schema</li>
-                <li><span class="option-label">D.</span> Create separate Redshift clusters for each department</li>
+                <li><span class="option-label">D.</span> Create separate Redshift clusters for each department with fully managed infrastructure and automatic scaling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -123,7 +123,7 @@
                 <li><span class="option-label">A.</span> Update each engineer's IAM policy monthly through a manual change request process</li>
                 <li><span class="option-label">B.</span> Use ABAC with session tags — when engineers assume their IAM role via SSO/federation, pass session tags (e.g., "project=alpha") from the identity provider. IAM policies use aws:PrincipalTag/project condition to scope S3 access to s3://data-lake/${aws:PrincipalTag/project}/. When project assignment changes in the IdP, access automatically changes at next session without any IAM policy modification</li>
                 <li><span class="option-label">C.</span> Create a Lambda function that rewrites IAM policies nightly based on a project assignment database</li>
-                <li><span class="option-label">D.</span> Give all engineers access to all project prefixes and rely on naming conventions for separation</li>
+                <li><span class="option-label">D.</span> Give all engineers access to all project prefixes and rely on naming conventions for separation with session tags — when engineers assume their IAM role via SSO/federation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -140,7 +140,7 @@
                 <li><span class="option-label">A.</span> Use only IAM policies for everything — they can handle all authorization scenarios</li>
                 <li><span class="option-label">B.</span> Layer multiple authorization methods: (1) AWS Organizations SCPs for organization-wide guardrails (prevent actions across all accounts), (2) ABAC with IAM tag-based policies for department-level S3/Glue access, (3) Lake Formation LF-Tags for fine-grained table/column/row access control, (4) Redshift native RBAC for database-level query permissions. Each layer addresses a specific authorization concern at its optimal level</li>
                 <li><span class="option-label">C.</span> Use only Lake Formation for all authorization since it covers all AWS services</li>
-                <li><span class="option-label">D.</span> Implement a custom authorization microservice that intercepts all AWS API calls</li>
+                <li><span class="option-label">D.</span> Implement a custom authorization microservice that intercepts all AWS API calls with IAM tag-based policies for department-level S3/Glue access</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A data platform team is designing authorization for a multi-tenant data pipeline. Each tenant's data is stored in S3 with the prefix s3://pipeline-data/{tenant-id}/. Pipeline Glue jobs process data for multiple tenants but should only access the specific tenant's data during each job run. How should they implement tenant-scoped authorization for Glue jobs?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create a separate Glue job and IAM role for each tenant</li>
+                <li><span class="option-label">A.</span> Create a separate Glue job and IAM role for each tenant with variable substitution — the Glue job's IAM role policy uses a condition that restricts S3 access</li>
                 <li><span class="option-label">B.</span> Use a single Glue job with a single IAM role that has s3:* access to all tenant prefixes</li>
                 <li><span class="option-label">C.</span> Pass tenant-id as a job parameter and use IAM policy conditions with variable substitution — the Glue job's IAM role policy uses a condition that restricts S3 access to the prefix matching the job's tag or a session policy that scopes down permissions to only the current tenant's data for that execution</li>
                 <li><span class="option-label">D.</span> Encrypt each tenant's data with a different KMS key and only grant decrypt permissions at runtime</li>
@@ -171,7 +171,7 @@
             <div class="question-number">9</div>
             <div class="question-text">A data governance team notices that their ABAC implementation using IAM tags is not working for certain resources. Engineers tagged with "department=finance" cannot access Glue databases that are also tagged with "department=finance". The IAM policy uses aws:ResourceTag/department condition. What is the MOST likely issue?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> ABAC does not work with AWS Glue resources</li>
+                <li><span class="option-label">A.</span> ABAC does not work with AWS Glue resources and actions support aws:ResourceTag conditions in IAM policies for tag-based access</li>
                 <li><span class="option-label">B.</span> The Glue API actions being used do not support resource-level tag-based conditions — not all AWS services and actions support aws:ResourceTag conditions in IAM policies. Some Glue actions (like glue:GetDatabase) may not pass resource tags in the authorization context, requiring alternative approaches like resource-based naming conventions or Lake Formation for tag-based access</li>
                 <li><span class="option-label">C.</span> Tags on IAM roles are not visible to the IAM policy evaluation engine</li>
                 <li><span class="option-label">D.</span> ABAC only works with S3, not with any other AWS services</li>
@@ -191,7 +191,7 @@
                 <li><span class="option-label">A.</span> Switch to ABAC immediately — RBAC is never suitable for any organization</li>
                 <li><span class="option-label">B.</span> Keep RBAC forever — it can handle any scale with enough roles</li>
                 <li><span class="option-label">C.</span> Plan a gradual transition: keep RBAC for stable, well-defined roles (e.g., "admin", "read-only") but introduce ABAC for the rapidly growing dimensions — use tags for project membership, team assignment, and environment access. The trigger to add ABAC is when the number of IAM policies exceeds manageable limits (typically 50-100+), when new team onboarding requires policy creation, or when access patterns become too dynamic for static role definitions</li>
-                <li><span class="option-label">D.</span> Abandon IAM-based controls entirely and use only network-level security</li>
+                <li><span class="option-label">D.</span> Abandon IAM-based controls entirely and use only network-level security and environment access for stable</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
