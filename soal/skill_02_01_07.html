@@ -35,7 +35,7 @@
             <div class="question-text">A data engineering team manages a large customer data lake on Amazon S3. They receive daily GDPR deletion requests requiring them to remove specific customer records from Parquet files. Currently, the process involves reading entire Parquet files, filtering out deleted records, and rewriting the files — taking 6 hours for a 20 TB dataset. They need row-level delete capability without full file rewrites. Which open table format feature BEST addresses this requirement?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement Apache Iceberg tables with position delete files. Iceberg supports row-level deletes by writing small delete files that reference the positions of deleted rows within data files — reads merge data files with delete files to exclude deleted rows without rewriting the original Parquet files. Periodic compaction merges delete files into data files during maintenance windows</li>
-                <li><span class="option-label">B.</span> Use S3 Object Lock with governance mode to mark specific records as deleted without modifying the underlying files</li>
+                <li><span class="option-label">B.</span> Use S3 Object Lock with governance mode to mark specific records as deleted without modifying the underlying files configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Implement a soft-delete pattern with a deleted_flag column and rewrite only the metadata files in the Parquet footer</li>
                 <li><span class="option-label">D.</span> Use AWS Lake Formation row-level security to filter out deleted records at query time without modifying any files</li>
             </ul>
@@ -53,7 +53,7 @@
                 <li><span class="option-label">A.</span> Use Iceberg's time travel feature by querying with a specific snapshot ID or timestamp — Iceberg maintains a history of table snapshots, each representing the complete state of the table at a point in time. Query engines can read any historical snapshot, returning the exact dataset as it existed at that moment, including rows that were later updated or deleted</li>
                 <li><span class="option-label">B.</span> Enable S3 versioning on the data lake bucket and use version IDs to access historical file versions from 30 days ago</li>
                 <li><span class="option-label">C.</span> Configure AWS Backup to take daily snapshots of the Glue Data Catalog and restore the catalog state from 30 days ago</li>
-                <li><span class="option-label">D.</span> Use Athena's CTAS to create daily backup tables and query the backup table from 30 days ago</li>
+                <li><span class="option-label">D.</span> Use Athena's CTAS to create daily backup tables and query the backup table from 30 days ago with a specific snapshot ID or timestamp — Iceberg maintains a history of table snapshots</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -67,7 +67,7 @@
             <div class="question-text">A retail company partitions their Iceberg sales table by region and date (year/month/day). After a business reorganization, they need to change the partition scheme from (region, year, month, day) to (country, year, month) to align with the new organizational structure. The table contains 50 TB of historical data. In a traditional Hive-style data lake, this would require rewriting all 50 TB of data. How does Iceberg handle this partition evolution?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Iceberg supports partition evolution without rewriting existing data. The partition spec change is a metadata-only operation — existing data files retain their original physical partitioning while new data written after the change uses the new partition scheme. Iceberg's metadata tracks which partition spec applies to which data files, and the query engine uses both specs correctly during query planning</li>
-                <li><span class="option-label">B.</span> Iceberg requires running ALTER TABLE ... SET PARTITION which triggers an automatic background rewrite of all existing data files into the new partition layout</li>
+                <li><span class="option-label">B.</span> Iceberg requires running ALTER TABLE ... SET PARTITION which triggers an automatic background rewrite of all existing data files into the new partition layout with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">C.</span> Iceberg creates virtual partitions by maintaining a mapping layer that translates queries against the new scheme into scans of the old physical layout, requiring no metadata or data changes</li>
                 <li><span class="option-label">D.</span> Iceberg allows partition evolution only by adding new partition columns — removing or changing existing partition columns requires a full table rewrite using CTAS</li>
             </ul>
@@ -84,7 +84,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Run Iceberg compaction (rewrite_data_files) to merge the many small files into fewer, larger optimally-sized files (128-512 MB each). This reduces the number of files from 200,000 to approximately 2,000-5,000 while maintaining the same data content, dramatically reducing S3 metadata operations and improving query scan parallelism</li>
                 <li><span class="option-label">B.</span> Increase the Athena DPU count to process more small files in parallel during each query scan</li>
-                <li><span class="option-label">C.</span> Run expire_snapshots to remove old snapshot metadata that references historical file states</li>
+                <li><span class="option-label">C.</span> Run expire_snapshots to remove old snapshot metadata that references historical file states and improving query scan parallelism</li>
                 <li><span class="option-label">D.</span> Enable S3 Transfer Acceleration to reduce latency for individual GET requests on the many small files</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Use Iceberg's MERGE INTO statement which performs matched/not-matched logic in a single atomic operation — WHEN MATCHED AND change_type='delete' THEN DELETE, WHEN MATCHED AND change_type='update' THEN UPDATE, WHEN NOT MATCHED THEN INSERT. This handles all CDC change types in one pass with snapshot isolation guaranteeing consistent reads during the merge</li>
                 <li><span class="option-label">B.</span> Process each change type separately: first DELETE matching records, then INSERT all new/updated records — using three separate Iceberg operations within a transaction</li>
                 <li><span class="option-label">C.</span> Overwrite the entire partition containing changed records using INSERT OVERWRITE with the merged dataset for each affected partition</li>
-                <li><span class="option-label">D.</span> Append all CDC records as new rows with a version timestamp and use a view with ROW_NUMBER() to surface only the latest version at query time</li>
+                <li><span class="option-label">D.</span> Append all CDC records as new rows with a version timestamp and use a view with ROW_NUMBER() to surface only the latest version at query time configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Apache Iceberg has the deepest native AWS service integration — it's the default table format for Athena v3, natively supported in Glue 4.0+, integrated with Redshift Spectrum, and uses the Glue Data Catalog as its metadata store. Unlike Delta Lake (which requires Databricks runtime for full features) or Hudi (which has complex configuration for upserts), Iceberg provides a vendor-neutral spec with first-class AWS support across all analytics services</li>
                 <li><span class="option-label">B.</span> Delta Lake is the recommended choice because it offers the fastest write performance for streaming workloads with its transaction log design and auto-optimization features</li>
                 <li><span class="option-label">C.</span> Apache Hudi is the best choice because it provides built-in CDC ingestion support and incremental processing capabilities that Iceberg lacks</li>
-                <li><span class="option-label">D.</span> All three formats are equally supported on AWS with identical feature parity, so the choice should be based solely on the team's existing expertise</li>
+                <li><span class="option-label">D.</span> All three formats are equally supported on AWS with identical feature parity, so the choice should be based solely on the team's existing expertise and uses the Glue Data Catalog as its metadata store for Athena v3</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -131,7 +131,7 @@
             <div class="question-text">A data lake team uses Apache Iceberg tables with hidden partitioning. Their events table contains a timestamp column (event_time) and they configure the partition spec as days(event_time). Users query with WHERE event_time BETWEEN '2024-03-01' AND '2024-03-15'. In a traditional Hive-partitioned table, users would need to include a separate partition column (event_date) in their WHERE clause. What advantage does Iceberg's hidden partitioning provide in this scenario?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Hidden partitioning automatically derives partition values from the source column using the specified transform (days()) — users write natural filter predicates on the actual timestamp column without knowing the partition scheme. Iceberg's query planning translates the timestamp filter into partition pruning internally, eliminating the common user error of forgetting to include partition columns in WHERE clauses that causes full table scans in Hive</li>
-                <li><span class="option-label">B.</span> Hidden partitioning encrypts partition paths in S3 so users cannot browse the physical file structure directly</li>
+                <li><span class="option-label">B.</span> Hidden partitioning encrypts partition paths in S3 so users cannot browse the physical file structure directly with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">C.</span> Hidden partitioning stores partition metadata in a separate encrypted catalog that requires IAM permissions to access</li>
                 <li><span class="option-label">D.</span> Hidden partitioning uses adaptive query execution to dynamically determine the optimal partition layout at query time based on the data distribution</li>
             </ul>
@@ -147,7 +147,7 @@
             <div class="question-text">A data engineering team manages an Iceberg table that receives concurrent writes from two Glue jobs running simultaneously — one appending hourly sales data and another updating product prices. Both jobs occasionally fail with "CommitFailedException: Conflict detected" errors. The team needs to understand Iceberg's concurrency control model and configure appropriate conflict resolution. What causes these conflicts and how should they be resolved?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Iceberg uses optimistic concurrency control with snapshot isolation. Conflicts occur when two concurrent writers modify overlapping data (same partitions/files). The resolution is to enable automatic retry on CommitFailedException — the failed writer re-reads the current table state, validates its changes don't conflict with the committed write, and re-attempts the commit. For truly non-overlapping operations (appends to different partitions vs. updates to existing rows), Iceberg can validate there's no actual conflict and commit successfully on retry</li>
-                <li><span class="option-label">B.</span> The conflicts occur because Iceberg uses pessimistic locking and both jobs attempt to acquire the same table-level write lock simultaneously</li>
+                <li><span class="option-label">B.</span> The conflicts occur because Iceberg uses pessimistic locking and both jobs attempt to acquire the same table-level write lock simultaneously with snapshot isolation and re-attempts the commit</li>
                 <li><span class="option-label">C.</span> The conflicts are caused by S3's eventual consistency model — both writers succeed on S3 but the Glue Data Catalog rejects the second commit</li>
                 <li><span class="option-label">D.</span> The conflicts occur because Iceberg limits each table to a single writer at any given time; the solution is to queue writes sequentially</li>
             </ul>
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Iceberg schema evolution (adding columns) is a metadata-only operation that completes in milliseconds regardless of table size. The new column definition is added to the table's schema metadata. Existing data files are NOT rewritten — when queried, Iceberg returns NULL for the new column in rows from files that predate the schema change. New data files include the column. This is possible because Iceberg uses column IDs (not names or positions) to map between schemas and data files</li>
                 <li><span class="option-label">B.</span> Iceberg initiates an asynchronous background process to add the new column to all existing Parquet files, with queries returning partial results until the migration completes</li>
-                <li><span class="option-label">C.</span> Iceberg requires creating a new table with the updated schema and using INSERT INTO ... SELECT to migrate all 2 billion rows to the new structure</li>
+                <li><span class="option-label">C.</span> Iceberg requires creating a new table with the updated schema and using INSERT INTO ... SELECT to migrate all 2 billion rows to the new structure and data files</li>
                 <li><span class="option-label">D.</span> Iceberg adds the column but requires running ALTER TABLE ... REORGANIZE to physically update existing data files before the new column is queryable</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -181,7 +181,7 @@
                 <li><span class="option-label">A.</span> Run expire_snapshots with a retention threshold of 7 days to remove snapshots older than 7 days (preserving recent time travel), then run rewrite_manifests to consolidate the remaining manifest files into fewer, larger manifests — reducing both the snapshot chain length and manifest file count that the query planner must process</li>
                 <li><span class="option-label">B.</span> Delete old metadata JSON files directly from the S3 metadata directory to reduce the metadata chain length</li>
                 <li><span class="option-label">C.</span> Run rewrite_data_files (compaction) which automatically cleans up old snapshots as a side effect of data file consolidation</li>
-                <li><span class="option-label">D.</span> Increase the metadata.max-snapshots-to-keep property to allow more snapshots without performance degradation</li>
+                <li><span class="option-label">D.</span> Increase the metadata.max-snapshots-to-keep property to allow more snapshots without performance degradation with a retention threshold of 7 days and manifest file count that the query planner must process</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
