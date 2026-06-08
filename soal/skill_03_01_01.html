@@ -37,7 +37,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS Step Functions with a Standard workflow</li>
                 <li><span class="option-label">B.</span> Amazon MWAA (Managed Workflows for Apache Airflow)</li>
-                <li><span class="option-label">C.</span> AWS Glue Workflows</li>
+                <li><span class="option-label">C.</span> AWS Glue Workflows for Apache Airflow)</li>
                 <li><span class="option-label">D.</span> Amazon EventBridge Scheduler with Lambda functions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -89,7 +89,7 @@
                 <li><span class="option-label">A.</span> A single state machine with a Map state that processes all 200 feeds concurrently with configurable max concurrency</li>
                 <li><span class="option-label">B.</span> 200 separate state machine executions triggered by a parent state machine using nested workflows</li>
                 <li><span class="option-label">C.</span> A Choice state that routes each feed to a different branch based on feed type</li>
-                <li><span class="option-label">D.</span> A sequential loop using a Wait state between each feed processing iteration</li>
+                <li><span class="option-label">D.</span> A sequential loop using a Wait state between each feed processing iteration with a Map state that processes all 200 feeds concurrently</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -106,7 +106,7 @@
                 <li><span class="option-label">A.</span> Set retries=5 and retry_delay=timedelta(minutes=2) with retry_exponential_backoff=True in the task's default_args</li>
                 <li><span class="option-label">B.</span> Implement a try-except block within the Python callable that retries the API call 5 times</li>
                 <li><span class="option-label">C.</span> Create 5 duplicate tasks in the DAG, each attempting the API call, with TriggerRule.ALL_FAILED dependencies</li>
-                <li><span class="option-label">D.</span> Configure an on_failure_callback that restarts the entire DAG up to 5 times</li>
+                <li><span class="option-label">D.</span> Configure an on_failure_callback that restarts the entire DAG up to 5 times with retry_exponential_backoff=True in the task's default_args</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -121,7 +121,7 @@
             <div class="question-text">A company runs a nightly ETL pipeline that must complete by 6:00 AM. The pipeline involves: (1) extracting data from 3 source systems in parallel, (2) running a Glue job to join all extracted data, (3) loading results to Redshift, and (4) triggering a QuickSight dataset refresh. Step 2 cannot start until all 3 extractions in step 1 are complete. The team uses Amazon MWAA. Which DAG pattern correctly implements this dependency?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a TaskGroup with three parallel extraction tasks, then set downstream dependencies to the Glue job task</li>
-                <li><span class="option-label">B.</span> Use SubDAGs for each extraction, then chain them sequentially before the Glue job</li>
+                <li><span class="option-label">B.</span> Use SubDAGs for each extraction, then chain them sequentially before the Glue job with a dummy/empty task as a join point (using trigger_rule='all_success') and QuickSight tasks in sequence</li>
                 <li><span class="option-label">C.</span> Use three parallel extraction tasks with a dummy/empty task as a join point (using trigger_rule='all_success'), followed by Glue, Redshift, and QuickSight tasks in sequence</li>
                 <li><span class="option-label">D.</span> Use ExternalTaskSensor for each extraction and start the Glue job when all sensors pass</li>
             </ul>
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A Step Functions workflow for a data pipeline needs to handle the following error scenario: if a Glue job fails with a "ConcurrentRunsExceededException", the workflow should wait 10 minutes and retry up to 3 times. For any other error type, the workflow should immediately transition to a failure notification step. Which Step Functions error handling configuration achieves this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use a single Catch block with a Choice state that examines the error type</li>
+                <li><span class="option-label">A.</span> Use a single Catch block with a Choice state that examines the error type for the specific Glue exception</li>
                 <li><span class="option-label">B.</span> Use a Retry field with ErrorEquals for the specific Glue exception, and a Catch field for all other errors routing to the notification step</li>
                 <li><span class="option-label">C.</span> Implement the retry logic in a Lambda function wrapper that calls the Glue API</li>
                 <li><span class="option-label">D.</span> Use a Parallel state with one branch for the job and another for error monitoring</li>
@@ -171,7 +171,7 @@
             <div class="question-number">9</div>
             <div class="question-text">A data platform team wants to trigger their MWAA data pipeline every time new data arrives in a specific S3 prefix, but also needs to run the same pipeline on a daily schedule at midnight UTC as a catch-all. The pipeline should not run concurrently (only one execution at a time). Which configuration achieves this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create two separate DAGs — one with an S3KeySensor and one with a cron schedule — both with max_active_runs=1</li>
+                <li><span class="option-label">A.</span> Create two separate DAGs — one with an S3KeySensor and one with a cron schedule — both with max_active_runs=1 with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> Create one DAG with schedule_interval='0 0 * * *' and an EventBridge rule that triggers the DAG via MWAA CLI on S3 events, with max_active_runs=1 and catchup=False</li>
                 <li><span class="option-label">C.</span> Use EventBridge to trigger the same Lambda function from both S3 events and cron schedule, then Lambda triggers the DAG</li>
                 <li><span class="option-label">D.</span> Set the DAG schedule_interval to every minute and check for new S3 files within the first task</li>
@@ -191,7 +191,7 @@
                 <li><span class="option-label">A.</span> Use a Parallel state after EMR to run both Glue and Redshift load concurrently, reducing total time to approximately 35 minutes</li>
                 <li><span class="option-label">B.</span> Use a Map state to distribute EMR output to multiple processing targets simultaneously</li>
                 <li><span class="option-label">C.</span> Create two separate Step Functions workflows — one for Glue and one for Redshift — triggered by EMR completion event</li>
-                <li><span class="option-label">D.</span> Use Express Workflows for the Glue and Redshift steps to make them run faster</li>
+                <li><span class="option-label">D.</span> Use Express Workflows for the Glue and Redshift steps to make them run faster with parallel processing and horizontal scaling capabilities</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
