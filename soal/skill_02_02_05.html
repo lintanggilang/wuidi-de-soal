@@ -35,7 +35,7 @@
             <div class="question-text">A company needs to catalog tables from an on-premises Oracle database into the AWS Glue Data Catalog. The Oracle instance is accessible only through a VPN connection to a specific VPC. A Glue crawler must connect to Oracle via JDBC. Which combination of configuration steps is required to establish this Glue JDBC connection? (Select the approach that addresses all requirements.)</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a Glue connection of type JDBC with the Oracle JDBC URL (jdbc:oracle:thin:@host:1521:ORCL), specify the VPC, subnet (in the same AZ as the VPN endpoint), and a security group that allows outbound traffic on port 1521. The security group must also have a self-referencing inbound rule to allow Glue components to communicate. Store Oracle credentials (username/password) in the connection properties. Assign this connection to the Glue crawler</li>
-                <li><span class="option-label">B.</span> Create a Glue connection of type Network, configure VPC and subnet settings, then specify the Oracle JDBC URL directly in the crawler's target configuration without referencing the connection</li>
+                <li><span class="option-label">B.</span> Create a Glue connection of type Network, configure VPC and subnet settings, then specify the Oracle JDBC URL directly in the crawler's target configuration without referencing the connection with the Oracle JDBC URL (jdbc:oracle:thin:@host:1521:ORCL) and a security group that allows outbound traffic on port 1521</li>
                 <li><span class="option-label">C.</span> Configure AWS Direct Connect to the Oracle database, then create a Glue crawler targeting the Oracle endpoint directly without a Glue connection since Direct Connect provides network-level access</li>
                 <li><span class="option-label">D.</span> Create an RDS Proxy in the VPC connected to VPN, configure the proxy to forward connections to the on-premises Oracle, then create a Glue JDBC connection to the RDS Proxy endpoint</li>
             </ul>
@@ -69,7 +69,7 @@
                 <li><span class="option-label">A.</span> Create a Glue connection of type MONGODB. Specify the MongoDB connection URL (mongodb://host:27017/database), the VPC, subnet, and security group for network access. Provide authentication credentials (username/password). The MONGODB connection type uses the native MongoDB protocol — Glue has built-in support for MongoDB as a data source that understands BSON document structures and can infer schemas from MongoDB collections</li>
                 <li><span class="option-label">B.</span> Create a JDBC connection using the MongoDB JDBC driver (third-party). Upload the JDBC driver JAR to S3 and reference it in the connection properties</li>
                 <li><span class="option-label">C.</span> Create a Network-type connection for VPC access, then configure the crawler with a custom MongoDB classifier to connect and extract schemas</li>
-                <li><span class="option-label">D.</span> Use the AWS Glue Marketplace to install a MongoDB connector, which creates a custom connection type automatically</li>
+                <li><span class="option-label">D.</span> Use the AWS Glue Marketplace to install a MongoDB connector, which creates a custom connection type automatically and security group for network access for network access</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> Store database credentials in AWS Secrets Manager with automatic rotation enabled (90-day rotation schedule). Configure Glue connections to reference the Secrets Manager secret ARN instead of embedding credentials directly. When Glue establishes a connection, it retrieves the current credentials from Secrets Manager at runtime. Credential rotation happens transparently — the secret is updated without modifying any Glue connection configuration</li>
                 <li><span class="option-label">B.</span> Store credentials in AWS Systems Manager Parameter Store (SecureString type) and reference the parameter in Glue connection properties for automatic rotation</li>
                 <li><span class="option-label">C.</span> Create an EventBridge rule that triggers a Lambda function every 90 days to update all Glue connection properties with new credentials via the UpdateConnection API</li>
-                <li><span class="option-label">D.</span> Use IAM database authentication for all RDS instances, eliminating passwords entirely — Glue connections use IAM roles instead of stored credentials</li>
+                <li><span class="option-label">D.</span> Use IAM database authentication for all RDS instances, eliminating passwords entirely — Glue connections use IAM roles instead of stored credentials with automatic rotation enabled (90-day rotation schedule)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -100,7 +100,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a Glue connection of type KAFKA. Specify the MSK bootstrap server endpoints, select IAM as the authentication method, configure the VPC, subnet, and security group matching the MSK cluster's networking. The Kafka connection allows Glue crawlers to connect to Kafka topics, consume sample messages, and infer schemas from message formats (Avro, JSON, Protobuf). The inferred schemas are registered in the Glue Data Catalog as tables</li>
                 <li><span class="option-label">B.</span> Create a JDBC connection to the MSK cluster using the Kafka JDBC connector URL, since Glue treats all database sources through JDBC</li>
-                <li><span class="option-label">C.</span> Use the MSK Connect integration with Glue — deploy a Kafka Connect sink connector that automatically syncs topic schemas to the Glue Data Catalog</li>
+                <li><span class="option-label">C.</span> Use the MSK Connect integration with Glue — deploy a Kafka Connect sink connector that automatically syncs topic schemas to the Glue Data Catalog and security group matching the MSK cluster's networking</li>
                 <li><span class="option-label">D.</span> Configure the Glue Schema Registry directly with MSK — the Schema Registry automatically catalogs all topic schemas without needing a Glue connection</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -115,7 +115,7 @@
             <div class="question-text">A Glue ETL job needs to read from a PostgreSQL database in VPC-A and write to a Redshift cluster in VPC-B. The two VPCs are peered. The team creates two Glue connections: Connection-PG (VPC-A, subnet-A, SG-A) for PostgreSQL and Connection-RS (VPC-B, subnet-B, SG-B) for Redshift. The job fails with a network connectivity error when trying to use both connections simultaneously. What is the issue and how should it be resolved?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> A Glue job can only run in ONE VPC at a time — it places all its ENIs in the VPC/subnet specified by a single connection. When multiple connections are assigned, all must be in the same VPC and subnet. The fix is to route all traffic through a single VPC: put both connections in VPC-A (since VPC peering allows VPC-A to reach VPC-B's Redshift via peering route), ensuring the subnet's route table includes the peering route to VPC-B's CIDR</li>
-                <li><span class="option-label">B.</span> Glue jobs support multiple VPCs natively but require AWS Transit Gateway instead of VPC peering for cross-VPC connections</li>
+                <li><span class="option-label">B.</span> Glue jobs support multiple VPCs natively but require AWS Transit Gateway instead of VPC peering for cross-VPC connections and subnet</li>
                 <li><span class="option-label">C.</span> The job needs two separate network interfaces — increase the job's DPU count to allocate additional ENIs for the second VPC</li>
                 <li><span class="option-label">D.</span> Create a third Glue connection of type NETWORK that spans both VPCs using a shared subnet, and assign all three connections to the job</li>
             </ul>
@@ -133,7 +133,7 @@
                 <li><span class="option-label">A.</span> Develop a custom Glue connector using the Glue Custom Connector Framework (Spark DataSource V2 API). Package the connector as a JAR that implements the REST API client logic, register it in AWS Marketplace or as a private connector, then create a Glue connection using the custom connector type. A crawler or ETL job using this connection invokes the custom connector to read data and infer schemas</li>
                 <li><span class="option-label">B.</span> Use Amazon AppFlow to extract data from the SaaS API into S3, then create a Glue crawler targeting the S3 output to catalog the schema. The Glue Data Catalog entry points to the S3 location where AppFlow deposits the data</li>
                 <li><span class="option-label">C.</span> Create a Lambda function that calls the REST API, writes data to S3, and manually creates a Glue catalog table via the CreateTable API with the JSON schema</li>
-                <li><span class="option-label">D.</span> Configure a Glue connection of type NETWORK with the SaaS API endpoint URL and use a custom classifier to parse the REST responses</li>
+                <li><span class="option-label">D.</span> Configure a Glue connection of type NETWORK with the SaaS API endpoint URL and use a custom classifier to parse the REST responses with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -147,7 +147,7 @@
             <div class="question-text">A Glue connection to an Amazon RDS SQL Server instance works correctly for ETL jobs but the connection test in the AWS Console always fails with "Connection timeout." The ETL job successfully reads and writes data through this connection. What explains this discrepancy between the test failure and successful job execution?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The Glue connection test uses a specific subnet (the first available in the connection's VPC configuration) which may differ from the subnet used by the actual ETL job. If the test subnet's route table doesn't have proper routing to the RDS instance (different AZ, missing routes), the test fails while jobs running in a different subnet succeed. Verify that ALL subnets configured in the connection have proper routing and security group access to the RDS instance</li>
-                <li><span class="option-label">B.</span> The connection test uses a smaller, more restricted ENI configuration than actual ETL jobs. The test ENI has a default security group applied in addition to the specified security group, and the default group may block outbound traffic</li>
+                <li><span class="option-label">B.</span> The connection test uses a smaller, more restricted ENI configuration than actual ETL jobs. The test ENI has a default security group applied in addition to the specified security group, and the default group may block outbound traffic and security group access to the RDS instance</li>
                 <li><span class="option-label">C.</span> The Glue connection test requires the testing IAM role (AWSGlueServiceRole) to have different permissions than the ETL job role. The test role may lack VPC or ENI creation permissions</li>
                 <li><span class="option-label">D.</span> The connection test has a shorter timeout period (10 seconds) compared to ETL jobs (configurable timeout). If the RDS instance takes longer than 10 seconds to respond to initial TCP handshake due to SSL negotiation, the test times out while the job's longer timeout allows completion</li>
             </ul>
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a Glue JDBC connection using the Snowflake JDBC URL pointing to the PrivateLink endpoint (e.g., account.privatelink.snowflakecomputing.com). Configure the VPC, subnet, and security group to match the VPC where the Snowflake PrivateLink endpoint exists. Upload the Snowflake JDBC driver JAR to S3 and reference it in the connection's custom JDBC driver path. The Glue ENIs connect to Snowflake through the VPC endpoint</li>
                 <li><span class="option-label">B.</span> Use Amazon AppFlow's Snowflake connector which natively supports PrivateLink without requiring Glue connections</li>
-                <li><span class="option-label">C.</span> Create a Glue Marketplace connector for Snowflake which automatically configures PrivateLink routing</li>
+                <li><span class="option-label">C.</span> Create a Glue Marketplace connector for Snowflake which automatically configures PrivateLink routing with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Configure AWS Glue to use Snowflake's public endpoint with IP whitelisting, bypassing PrivateLink since Glue doesn't support VPC endpoint connectivity</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -181,7 +181,7 @@
                 <li><span class="option-label">A.</span> Ensure the Glue JDBC connection URL uses the RDS endpoint hostname (e.g., mydb.xxxx.us-east-1.rds.amazonaws.com) rather than an IP address. After Multi-AZ failover, the RDS DNS endpoint automatically resolves to the new primary's IP. Also ensure the Glue connection's security group and subnet configuration allows access to BOTH Availability Zones where the primary and standby instances reside, so ENIs can reach the new primary regardless of which AZ it's in</li>
                 <li><span class="option-label">B.</span> Create a Route 53 health check that monitors the RDS instance and automatically updates the Glue connection properties with the new IP address upon failover</li>
                 <li><span class="option-label">C.</span> Deploy an NLB in front of the RDS instance so the Glue connection targets the NLB's static IP, which remains constant regardless of failover</li>
-                <li><span class="option-label">D.</span> Switch from Multi-AZ to Read Replicas for high availability, since Read Replicas maintain consistent IP addresses</li>
+                <li><span class="option-label">D.</span> Switch from Multi-AZ to Read Replicas for high availability, since Read Replicas maintain consistent IP addresses configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
