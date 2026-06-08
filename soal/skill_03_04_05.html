@@ -37,7 +37,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The cluster has insufficient memory. Increase the instance type to provide more RAM per executor.</li>
                 <li><span class="option-label">B.</span> Data skew exists on certain customer_id values. Apply a salting technique by appending a random suffix to the skewed keys before the join.</li>
-                <li><span class="option-label">C.</span> The shuffle partitions are too few. Increase spark.sql.shuffle.partitions from 200 to 2000.</li>
+                <li><span class="option-label">C.</span> The shuffle partitions are too few. Increase spark.sql.shuffle.partitions from 200 to 2000. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> The data is not compressed. Convert both tables to Snappy-compressed Parquet format.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -88,7 +88,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase the provisioned write capacity units (WCU) for the table to handle the peak load</li>
                 <li><span class="option-label">B.</span> Add a random suffix (0-9) to the partition key to create write sharding, and use parallel scatter-gather queries for reads</li>
-                <li><span class="option-label">C.</span> Switch to DynamoDB On-Demand capacity mode to automatically handle traffic spikes</li>
+                <li><span class="option-label">C.</span> Switch to DynamoDB On-Demand capacity mode to automatically handle traffic spikes and use parallel scatter-gather queries for reads</li>
                 <li><span class="option-label">D.</span> Create a Global Secondary Index (GSI) with a different partition key to distribute the load</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -105,7 +105,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase the number of shards from 10 to 50 to reduce per-shard load</li>
                 <li><span class="option-label">B.</span> Change the partition key strategy to use a more granular key such as user_id or a composite key combining country with a random suffix</li>
-                <li><span class="option-label">C.</span> Enable Kinesis Enhanced Fan-Out to increase per-shard throughput</li>
+                <li><span class="option-label">C.</span> Enable Kinesis Enhanced Fan-Out to increase per-shard throughput with a random suffix</li>
                 <li><span class="option-label">D.</span> Switch to Kinesis On-Demand capacity mode for automatic scaling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -123,7 +123,7 @@
                 <li><span class="option-label">A.</span> Add a random integer column (0 to N-1) to the left table, explode the right table N times with each salt value, then join on both original key and salt column</li>
                 <li><span class="option-label">B.</span> Add a random integer column (0 to N-1) to both tables independently, then join on both original key and salt column</li>
                 <li><span class="option-label">C.</span> Repartition both tables by the join key with N partitions, then perform a sort-merge join</li>
-                <li><span class="option-label">D.</span> Add a hash column based on the join key to both tables and join on the hash column instead of the original key</li>
+                <li><span class="option-label">D.</span> Add a hash column based on the join key to both tables and join on the hash column instead of the original key with each salt value and salt column</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -137,7 +137,7 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer notices that a Spark job on Amazon EMR has significant performance degradation after a data source change. Examining the Spark UI, they see that Stage 3 (a shuffle stage) has 200 tasks where 195 tasks complete in 10 seconds but 5 tasks take 20 minutes each. The Summary Metrics tab shows the 75th percentile shuffle read size is 50 MB but the max is 8 GB. Which Spark UI metric BEST confirms that this is a data skew problem?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> High GC time percentage in the executors running the slow tasks</li>
+                <li><span class="option-label">A.</span> High GC time percentage in the executors running the slow tasks configured for optimal performance and minimal</li>
                 <li><span class="option-label">B.</span> Large disparity between median and maximum values in the Shuffle Read Size/Records metric per task</li>
                 <li><span class="option-label">C.</span> High Scheduler Delay metric indicating cluster resource contention</li>
                 <li><span class="option-label">D.</span> Peak Execution Memory exceeding the executor memory allocation</li>
@@ -157,7 +157,7 @@
                 <li><span class="option-label">A.</span> Increase executor memory to 64 GB and enable off-heap memory with spark.memory.offHeap.enabled=true</li>
                 <li><span class="option-label">B.</span> Use a two-phase aggregation: first partial aggregate with a salt column to distribute skewed keys, then remove salt and perform final aggregation</li>
                 <li><span class="option-label">C.</span> Replace groupBy with reduceByKey and increase spark.sql.shuffle.partitions to 10000</li>
-                <li><span class="option-label">D.</span> Convert the job to use DynamicFrames with AWS Glue's built-in groupFilter transformation</li>
+                <li><span class="option-label">D.</span> Convert the job to use DynamicFrames with AWS Glue's built-in groupFilter transformation and perform final aggregation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -173,7 +173,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> spark.sql.adaptive.skewJoin.skewedPartitionFactor and spark.sql.adaptive.skewJoin.skewedPartitionThresholdInBytes</li>
                 <li><span class="option-label">B.</span> spark.sql.adaptive.advisoryPartitionSizeInBytes and spark.sql.adaptive.coalescePartitions.minPartitionSize</li>
-                <li><span class="option-label">C.</span> spark.sql.adaptive.maxShuffledHashJoinLocalMapThreshold and spark.sql.shuffle.partitions</li>
+                <li><span class="option-label">C.</span> spark.sql.adaptive.maxShuffledHashJoinLocalMapThreshold and spark.sql.shuffle.partitions and spark</li>
                 <li><span class="option-label">D.</span> spark.sql.adaptive.skewJoin.enabled and spark.sql.adaptive.localShuffleReader.enabled</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -190,7 +190,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Split the hot shards using the UpdateShardCount API and configure consumers to process from child shards</li>
                 <li><span class="option-label">B.</span> Modify the producer to use ExplicitHashKey with a calculated hash that evenly distributes records across all shards, bypassing the partition key hash</li>
-                <li><span class="option-label">C.</span> Enable Kinesis Enhanced Fan-Out for all consumers and increase the data retention period to 7 days</li>
+                <li><span class="option-label">C.</span> Enable Kinesis Enhanced Fan-Out for all consumers and increase the data retention period to 7 days with a calculated hash that evenly distributes records across all shards</li>
                 <li><span class="option-label">D.</span> Switch to Amazon MSK with more partitions since Kafka handles hot partitions better than Kinesis</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
