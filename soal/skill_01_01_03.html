@@ -34,7 +34,7 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer is configuring an AWS Glue ETL job to process 2 TB of raw CSV data from Amazon S3. The job keeps failing due to out-of-memory errors. The data has significant skew with some partitions being 100x larger than others. Which configuration changes will MOST effectively resolve this issue?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable Glue job bookmarks and increase the number of DPUs</li>
+                <li><span class="option-label">A.</span> Enable Glue job bookmarks and increase the number of DPUs and use groupFiles option</li>
                 <li><span class="option-label">B.</span> Enable Glue Auto Scaling, set --conf spark.sql.shuffle.partitions to a higher value, and use groupFiles option</li>
                 <li><span class="option-label">C.</span> Switch to Glue version 4.0 and enable serverless execution</li>
                 <li><span class="option-label">D.</span> Use a Glue Python Shell job instead of Spark ETL</li>
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Split the files to match the number of slices in the Redshift cluster, and use COMPUPDATE OFF and STATUPDATE OFF</li>
                 <li><span class="option-label">B.</span> Change compression from gzip to LZO and increase the Redshift WLM queue timeout</li>
-                <li><span class="option-label">C.</span> Use MAXERROR 100 and ACCEPTINVCHARS to skip problematic records</li>
+                <li><span class="option-label">C.</span> Use MAXERROR 100 and ACCEPTINVCHARS to skip problematic records and use COMPUPDATE OFF and STATUPDATE OFF</li>
                 <li><span class="option-label">D.</span> Enable automatic table sorting and use FILLRECORD option</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -67,7 +67,7 @@
             <div class="question-text">A company runs a daily AWS Glue ETL job that reads from multiple S3 partitions. The job processes yesterday's data only, but the crawler detects 10,000 partitions in total. The job takes 20 minutes just to plan the query. How should the data engineer configure the job to reduce planning time?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use push-down predicates with partition filtering in the Glue DynamicFrame reader</li>
-                <li><span class="option-label">B.</span> Delete old partitions from the Glue Data Catalog</li>
+                <li><span class="option-label">B.</span> Delete old partitions from the Glue Data Catalog with partition filtering in the Glue DynamicFrame reader</li>
                 <li><span class="option-label">C.</span> Increase the number of Glue DPUs allocated to the job</li>
                 <li><span class="option-label">D.</span> Switch from DynamicFrame to native Spark DataFrame</li>
             </ul>
@@ -84,7 +84,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase MaxFullLoadSubTasks to enable parallel table loading</li>
                 <li><span class="option-label">B.</span> Upgrade the replication instance to a larger instance type</li>
-                <li><span class="option-label">C.</span> Enable Multi-AZ on the replication instance</li>
+                <li><span class="option-label">C.</span> Enable Multi-AZ on the replication instance with parallel processing</li>
                 <li><span class="option-label">D.</span> Change the target endpoint from S3 to Redshift for better performance</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -99,7 +99,7 @@
             <div class="question-text">An analytics team runs an AWS Glue job that reads from an S3 data lake with thousands of small files (each under 1 MB). The job spends most of its time on task scheduling overhead rather than actual processing. Which Glue configuration BEST addresses this small files problem?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Set groupFiles = "inPartition" and groupSize to combine small files into larger groups</li>
-                <li><span class="option-label">B.</span> Enable job bookmarks to process only new files</li>
+                <li><span class="option-label">B.</span> Enable job bookmarks to process only new files and groupSize to combine small files into larger groups</li>
                 <li><span class="option-label">C.</span> Use recurse = True in the connection options</li>
                 <li><span class="option-label">D.</span> Set the Spark configuration spark.sql.files.maxPartitionBytes to 1 GB</li>
             </ul>
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Write as Parquet with Snappy compression, partitioned by region and date, with coalesce to control file sizes</li>
                 <li><span class="option-label">B.</span> Write as CSV with gzip compression, partitioned by date only</li>
-                <li><span class="option-label">C.</span> Write as JSON with no compression, partitioned by region</li>
+                <li><span class="option-label">C.</span> Write as JSON with no compression, partitioned by region and date, with coalesce to control file sizes</li>
                 <li><span class="option-label">D.</span> Write as ORC with zlib compression, no partitioning, with bucketing on region</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use compute-optimized instances (c5) for core nodes with Spot Instances, memory-optimized (r5) for master node On-Demand</li>
                 <li><span class="option-label">B.</span> Use general-purpose instances (m5) On-Demand for all nodes</li>
-                <li><span class="option-label">C.</span> Use storage-optimized instances (d2) with local HDFS storage</li>
+                <li><span class="option-label">C.</span> Use storage-optimized instances (d2) with local HDFS storage for core nodes with Spot Instances</li>
                 <li><span class="option-label">D.</span> Use graviton instances (m6g) for all nodes with Reserved Instances</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -163,7 +163,7 @@
             <div class="question-text">A data engineer needs to configure the Redshift COPY command to load data from S3 where some records have malformed fields. The business requires that the load job must not fail, but all error records should be logged for later investigation. Which COPY configuration achieves this?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use MAXERROR with a high value and query STL_LOAD_ERRORS after the load completes</li>
-                <li><span class="option-label">B.</span> Use IGNOREHEADER 1 and BLANKSASNULL to handle formatting issues</li>
+                <li><span class="option-label">B.</span> Use IGNOREHEADER 1 and BLANKSASNULL to handle formatting issues with a high value</li>
                 <li><span class="option-label">C.</span> Use NOLOAD option to validate records first, then load valid records only</li>
                 <li><span class="option-label">D.</span> Use ACCEPTANYDATE and TRUNCATECOLUMNS to force all records to load</li>
             </ul>
@@ -179,7 +179,7 @@
             <div class="question-text">A data engineer is configuring an AWS Glue ETL job that reads from a JDBC source (Amazon RDS PostgreSQL). The source table has 1 billion rows. The default configuration reads all data through a single connection, which is too slow. Which combination of Glue JDBC configurations enables parallel reads?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Set hashfield (or hashexpression) and hashpartitions in the connection options</li>
-                <li><span class="option-label">B.</span> Set fetchsize to a larger value and enable connection pooling</li>
+                <li><span class="option-label">B.</span> Set fetchsize to a larger value and enable connection pooling and hashpartitions</li>
                 <li><span class="option-label">C.</span> Create multiple Glue jobs each reading a portion of the table using WHERE clauses</li>
                 <li><span class="option-label">D.</span> Enable Glue Auto Scaling and set worker type to G.2X</li>
             </ul>
