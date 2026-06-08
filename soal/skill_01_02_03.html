@@ -35,7 +35,7 @@
             <div class="question-text">A retail company needs to integrate data from three sources: (1) transaction data in Amazon RDS MySQL, (2) product catalog in DynamoDB, and (3) customer clickstream in S3 (JSON format). The integrated dataset must be available for analytics in Amazon Redshift. Which approach provides the MOST efficient integration?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue ETL job to read all three sources, perform joins using DynamicFrames/Spark DataFrames, and write the unified result to Redshift</li>
-                <li><span class="option-label">B.</span> Load all raw data into Redshift first, then join using SQL</li>
+                <li><span class="option-label">B.</span> Load all raw data into Redshift first, then join using SQL and write the unified result to Redshift</li>
                 <li><span class="option-label">C.</span> Use three separate Lambda functions, each writing to a staging S3 bucket, then load to Redshift</li>
                 <li><span class="option-label">D.</span> Use Amazon AppFlow to extract all three sources into S3</li>
             </ul>
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS Glue Streaming ETL job that reads from Kinesis and performs a lookup join with S3 reference data</li>
                 <li><span class="option-label">B.</span> Amazon Kinesis Data Analytics (Flink) with a batch source table for S3 data</li>
-                <li><span class="option-label">C.</span> Lambda function consuming Kinesis that reads S3 for each record</li>
+                <li><span class="option-label">C.</span> Lambda function consuming Kinesis that reads S3 for each record with S3 reference data and performs a lookup join</li>
                 <li><span class="option-label">D.</span> Amazon Data Firehose with a Lambda transformation that reads S3</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -69,7 +69,7 @@
                 <li><span class="option-label">A.</span> Use AWS Glue with crawlers to discover schemas from each source, create a standardized canonical schema in the Data Catalog, and use Glue ETL jobs with schema mapping to transform all sources to the canonical format</li>
                 <li><span class="option-label">B.</span> Write custom Python scripts for each database connection</li>
                 <li><span class="option-label">C.</span> Use AWS DMS to replicate all databases to a single RDS instance, then export to S3</li>
-                <li><span class="option-label">D.</span> Use Amazon AppFlow to connect to all five databases</li>
+                <li><span class="option-label">D.</span> Use Amazon AppFlow to connect to all five databases with crawlers</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -83,7 +83,7 @@
             <div class="question-text">A data engineer needs to integrate data from a Salesforce CRM, a REST API (weather data), and an on-premises data warehouse (via JDBC). The integrated dataset updates daily. Which combination of AWS services provides a unified integration solution?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon AppFlow for Salesforce → S3, Lambda for REST API → S3, AWS Glue JDBC connection for the data warehouse → S3, then a consolidation Glue job to integrate all three S3 datasets</li>
-                <li><span class="option-label">B.</span> Use AWS DMS for all three sources</li>
+                <li><span class="option-label">B.</span> Use AWS DMS for all three sources with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">C.</span> Use a single Glue job to read from all three sources simultaneously</li>
                 <li><span class="option-label">D.</span> Use Amazon Kinesis to stream data from all three sources</li>
             </ul>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Use AWS Lake Formation cross-account sharing to grant access to the central account, then query via Athena with a unified Glue Data Catalog</li>
                 <li><span class="option-label">B.</span> Set up S3 replication from all accounts to the central account</li>
                 <li><span class="option-label">C.</span> Create IAM users in each account for the analytics team</li>
-                <li><span class="option-label">D.</span> Use AWS Organizations consolidated billing to access all data</li>
+                <li><span class="option-label">D.</span> Use AWS Organizations consolidated billing to access all data with a unified Glue Data Catalog</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -116,7 +116,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Read the dimension table from DynamoDB into a DynamicFrame, broadcast it to all workers, and perform a broadcast join with the fact table</li>
                 <li><span class="option-label">B.</span> Perform a shuffle/sort-merge join between both datasets</li>
-                <li><span class="option-label">C.</span> Load both tables into Redshift and join using SQL</li>
+                <li><span class="option-label">C.</span> Load both tables into Redshift and join using SQL with the fact table and perform a broadcast join with the fact table</li>
                 <li><span class="option-label">D.</span> For each record in the fact table, query DynamoDB using GetItem</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a medallion architecture where each source lands in bronze independently, and a scheduled integration job creates silver layer by joining the latest available partition from each source</li>
                 <li><span class="option-label">B.</span> Wait until all sources are available (weekly) before running any integration</li>
-                <li><span class="option-label">C.</span> Trigger integration every time any file arrives in S3</li>
+                <li><span class="option-label">C.</span> Trigger integration every time any file arrives in S3 with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> Use AWS Step Functions to poll all sources until they're all updated</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -149,7 +149,7 @@
                 <li><span class="option-label">A.</span> Apply a lowercase transformation to the email column in both DynamicFrames before performing the join</li>
                 <li><span class="option-label">B.</span> Use a fuzzy matching algorithm for the join condition</li>
                 <li><span class="option-label">C.</span> Configure Glue to perform case-insensitive joins automatically</li>
-                <li><span class="option-label">D.</span> Create a lookup table mapping uppercase to lowercase emails</li>
+                <li><span class="option-label">D.</span> Create a lookup table mapping uppercase to lowercase emails configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -163,7 +163,7 @@
             <div class="question-text">A financial company needs to integrate real-time market data (from an API), historical trade data (in Redshift), and risk parameters (in a configuration file on S3). An analyst needs to query the integrated view using SQL. Which architecture enables real-time integrated querying?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Land API data in Kinesis → materialize in Redshift via Streaming Ingestion, use Redshift Federated Query for other Redshift tables, and external tables for S3 config — all queryable via single Redshift SQL interface</li>
-                <li><span class="option-label">B.</span> Store all data in DynamoDB and query with PartiQL</li>
+                <li><span class="option-label">B.</span> Store all data in DynamoDB and query with PartiQL for other Redshift tables</li>
                 <li><span class="option-label">C.</span> Use Athena to query all three sources independently</li>
                 <li><span class="option-label">D.</span> Copy all data to a single PostgreSQL RDS instance</li>
             </ul>
@@ -179,7 +179,7 @@
             <div class="question-text">A data engineer is building an integration pipeline that merges incremental changes from a source system with the existing data lake. The source sends daily delta files (new records, updates, and deletes). The data lake uses Apache Parquet format on S3. Which approach handles all three operation types (insert, update, delete) on the data lake?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Apache Iceberg table format with MERGE INTO statement to apply inserts, updates, and deletes to the existing data in a single atomic operation</li>
-                <li><span class="option-label">B.</span> Overwrite the entire dataset with the latest full snapshot each day</li>
+                <li><span class="option-label">B.</span> Overwrite the entire dataset with the latest full snapshot each day and deletes to the existing data in a single atomic operation</li>
                 <li><span class="option-label">C.</span> Append all delta files and use a view that deduplicates at query time</li>
                 <li><span class="option-label">D.</span> Use AWS Glue job bookmarks to track which deltas have been applied</li>
             </ul>
