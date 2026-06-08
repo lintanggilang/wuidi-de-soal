@@ -37,7 +37,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create one datashare containing all tables, authorize all three consumer accounts, and rely on row-level security (RLS) policies in the consumer clusters</li>
                 <li><span class="option-label">B.</span> Create three separate datashares, each containing views filtered by region, and authorize each consumer account to only their respective datashare</li>
-                <li><span class="option-label">C.</span> Use Redshift Spectrum with a shared Glue Data Catalog and Lake Formation permissions per account</li>
+                <li><span class="option-label">C.</span> Use Redshift Spectrum with a shared Glue Data Catalog and Lake Formation permissions per account configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Create nightly UNLOAD jobs from the producer to S3 buckets partitioned by region, with cross-account S3 access for each business unit</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -52,7 +52,7 @@
             <div class="question-number">2</div>
             <div class="question-text">A data engineer needs to set up cross-account Redshift data sharing between a producer cluster in Account A and a consumer cluster in Account B. Both accounts are in the same AWS Organization. What is the correct sequence of steps to establish the data sharing?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Producer: CREATE DATASHARE → ADD objects → GRANT USAGE to consumer namespace | Consumer: CREATE DATABASE FROM DATASHARE → GRANT access to users</li>
+                <li><span class="option-label">A.</span> Producer: CREATE DATASHARE → ADD objects → GRANT USAGE to consumer namespace | Consumer: CREATE DATABASE FROM DATASHARE → GRANT access to users with consumer namespace → CREATE DATABASE FROM DATASHARE → GRANT</li>
                 <li><span class="option-label">B.</span> Producer: CREATE DATASHARE → ADD objects → ALTER DATASHARE SET ACCOUNT = consumer_account | Consumer: ACCEPT DATASHARE → CREATE EXTERNAL SCHEMA</li>
                 <li><span class="option-label">C.</span> Producer: CREATE DATASHARE → ADD objects → AUTHORIZE datashare to consumer account | Consumer: ASSOCIATE datashare with consumer namespace → CREATE DATABASE FROM DATASHARE → GRANT to users</li>
                 <li><span class="option-label">D.</span> Account A admin: Share via AWS RAM | Account B: Accept RAM share → Producer: ADD objects | Consumer: CREATE DATABASE FROM DATASHARE</li>
@@ -72,7 +72,7 @@
                 <li><span class="option-label">A.</span> Create a Lake Formation cross-account grant with column-level permissions that include only non-PII columns, then share using AWS RAM</li>
                 <li><span class="option-label">B.</span> Create an IAM role in the source account with column-level Glue permissions and allow the research account to assume it</li>
                 <li><span class="option-label">C.</span> Create a Glue Data Catalog resource policy that restricts GetTable to exclude PII column metadata</li>
-                <li><span class="option-label">D.</span> Use S3 Access Points with specific prefix restrictions to limit access to non-PII data files</li>
+                <li><span class="option-label">D.</span> Use S3 Access Points with specific prefix restrictions to limit access to non-PII data files configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -88,7 +88,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create S3 Access Points per tenant, each with an access point policy restricting access to the tenant's prefix, and grant applications access to specific access points</li>
                 <li><span class="option-label">B.</span> Use S3 bucket policies with conditions on s3:prefix matching the tenant ID extracted from the caller's IAM tags</li>
-                <li><span class="option-label">C.</span> Create separate S3 buckets per tenant and use cross-account access roles for each application</li>
+                <li><span class="option-label">C.</span> Create separate S3 buckets per tenant and use cross-account access roles for each application with an access point policy restricting access and grant applications access to specific access points</li>
                 <li><span class="option-label">D.</span> Use S3 Object Lambda Access Points to filter responses based on the requesting application's identity</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -104,7 +104,7 @@
             <div class="question-text">A data engineer configures a Redshift datashare that includes a schema with 20 tables. After the consumer creates a database from the datashare, they report that they can see all 20 tables. However, the producer team only wants to expose 5 specific tables and 2 views to this consumer. How should the producer modify the datashare configuration?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Remove the entire schema from the datashare and add only the 5 tables and 2 views individually using ALTER DATASHARE ADD TABLE and ADD VIEW</li>
-                <li><span class="option-label">B.</span> Keep the schema in the datashare but use REVOKE SELECT on the 15 tables that should be hidden from the consumer</li>
+                <li><span class="option-label">B.</span> Keep the schema in the datashare but use REVOKE SELECT on the 15 tables that should be hidden from the consumer configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Create a new schema containing only the 5 tables and 2 views, then replace the schema reference in the datashare</li>
                 <li><span class="option-label">D.</span> Add column-level permissions to the datashare to restrict which columns the consumer can see in the 15 hidden tables</li>
             </ul>
@@ -123,7 +123,7 @@
                 <li><span class="option-label">A.</span> Enable CloudTrail data events for Redshift and filter for cross-account query operations</li>
                 <li><span class="option-label">B.</span> Query the system view SVV_DATASHARE_CONSUMERS and SVL_DATASHARE_USAGE_PRODUCER on the producer cluster for detailed consumer activity</li>
                 <li><span class="option-label">C.</span> Use Amazon CloudWatch metrics for Redshift data sharing and create dashboards per consumer</li>
-                <li><span class="option-label">D.</span> Request consumers to share their STL_QUERY logs with the producer team</li>
+                <li><span class="option-label">D.</span> Request consumers to share their STL_QUERY logs with the producer team for detailed consumer activity</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -138,7 +138,7 @@
             <div class="question-text">A producer team discovers that a consumer account that previously had datashare access has been compromised. The team needs to immediately revoke all data sharing access from this consumer account. The datashare is currently being actively queried by the compromised consumer. What is the FASTEST way to cut off access?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Drop the datashare entirely using DROP DATASHARE and recreate it without the compromised consumer</li>
-                <li><span class="option-label">B.</span> Use ALTER DATASHARE REMOVE all objects from the datashare so consumers see empty results</li>
+                <li><span class="option-label">B.</span> Use ALTER DATASHARE REMOVE all objects from the datashare so consumers see empty results for cross-account</li>
                 <li><span class="option-label">C.</span> Use REVOKE USAGE ON DATASHARE from the compromised consumer's namespace and ALTER DATASHARE SET AUTHORIZATION to deny the account</li>
                 <li><span class="option-label">D.</span> Remove the consumer account's authorization using ALTER DATASHARE REMOVE ACCOUNT for cross-account, which immediately prevents the consumer from querying shared data</li>
             </ul>
@@ -191,7 +191,7 @@
                 <li><span class="option-label">A.</span> Use Redshift Workload Management (WLM) to allocate a dedicated queue with limited concurrency for datashare consumer queries</li>
                 <li><span class="option-label">B.</span> Consumer queries on datashares are processed on the consumer's cluster resources, not the producer's — investigate other causes of performance degradation</li>
                 <li><span class="option-label">C.</span> Set query timeout limits on the datashare to restrict how long consumer queries can run on the producer</li>
-                <li><span class="option-label">D.</span> Migrate from live datashares to scheduled data replication so consumers query their own copy</li>
+                <li><span class="option-label">D.</span> Migrate from live datashares to scheduled data replication so consumers query their own copy configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
