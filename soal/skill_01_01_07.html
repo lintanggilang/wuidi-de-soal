@@ -37,7 +37,7 @@
                 <li><span class="option-label">A.</span> Increase the ParallelizationFactor in the event source mapping to process multiple batches per shard concurrently</li>
                 <li><span class="option-label">B.</span> Increase the batch size to process more records per invocation</li>
                 <li><span class="option-label">C.</span> Decrease the Lambda function timeout to force faster processing</li>
-                <li><span class="option-label">D.</span> Enable Enhanced Fan-Out on the Kinesis stream</li>
+                <li><span class="option-label">D.</span> Enable Enhanced Fan-Out on the Kinesis stream with parallel processing and horizontal scaling capabilities</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -51,7 +51,7 @@
             <div class="question-text">A Lambda function consuming from a Kinesis stream encounters a processing error on one record in a batch of 100 records. The default behavior causes the entire batch to be retried, blocking the shard. How should the data engineer configure the event source mapping to handle this scenario efficiently?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable BisectBatchOnFunctionError to split failed batches and configure a MaximumRetryAttempts limit with an on-failure destination</li>
-                <li><span class="option-label">B.</span> Set MaximumRetryAttempts to 0 to skip all failures immediately</li>
+                <li><span class="option-label">B.</span> Set MaximumRetryAttempts to 0 to skip all failures immediately with an on-failure destination</li>
                 <li><span class="option-label">C.</span> Implement try-catch in the Lambda function to suppress all errors</li>
                 <li><span class="option-label">D.</span> Reduce batch size to 1 so only one record fails at a time</li>
             </ul>
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> Update the event source mapping's StartingPosition to AT_TIMESTAMP with the timestamp from 24 hours ago</li>
                 <li><span class="option-label">B.</span> Delete and recreate the event source mapping with TRIM_HORIZON as the starting position</li>
                 <li><span class="option-label">C.</span> Use the Kinesis GetShardIterator API with AT_TIMESTAMP in a separate Lambda function</li>
-                <li><span class="option-label">D.</span> Increase the Kinesis stream retention period and wait for automatic reprocessing</li>
+                <li><span class="option-label">D.</span> Increase the Kinesis stream retention period and wait for automatic reprocessing with the timestamp from 24 hours ago</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -100,7 +100,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase the ParallelizationFactor to allow concurrent processing within each shard</li>
                 <li><span class="option-label">B.</span> Increase the Lambda function memory to get more CPU and reduce execution time</li>
-                <li><span class="option-label">C.</span> Reduce the batch size to process fewer records per invocation</li>
+                <li><span class="option-label">C.</span> Reduce the batch size to process fewer records per invocation with parallel processing</li>
                 <li><span class="option-label">D.</span> Add more shards to the Kinesis stream using UpdateShardCount</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Implement item-level error handling using ReportBatchItemFailures in the Lambda response, returning only failed record sequence numbers</li>
                 <li><span class="option-label">B.</span> Use BisectBatchOnFunctionError for all error types</li>
                 <li><span class="option-label">C.</span> Catch all exceptions in a single try-catch and write to a dead-letter S3 bucket</li>
-                <li><span class="option-label">D.</span> Configure two separate event source mappings for the same stream</li>
+                <li><span class="option-label">D.</span> Configure two separate event source mappings for the same stream configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -133,7 +133,7 @@
                 <li><span class="option-label">A.</span> Configure Tumbling Windows on the event source mapping with a window size of 300 seconds and use the state parameter in the function response</li>
                 <li><span class="option-label">B.</span> Use Kinesis Data Analytics (Apache Flink) instead of Lambda for windowed aggregation</li>
                 <li><span class="option-label">C.</span> Store intermediate state in DynamoDB and aggregate manually in the Lambda function</li>
-                <li><span class="option-label">D.</span> Set MaximumBatchingWindowInSeconds to 300 to batch 5 minutes of records</li>
+                <li><span class="option-label">D.</span> Set MaximumBatchingWindowInSeconds to 300 to batch 5 minutes of records with a window size of 300 seconds and use the state parameter in the function response</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -147,7 +147,7 @@
             <div class="question-text">A Lambda function processes events from a Kinesis stream with 5 shards. The event source mapping is configured with ParallelizationFactor = 5. During peak hours, the data engineer notices that some Lambda invocations are being throttled. What is the maximum number of concurrent Lambda executions possible with this configuration?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> 25 concurrent executions (5 shards × 5 parallelization factor)</li>
-                <li><span class="option-label">B.</span> 5 concurrent executions (one per shard)</li>
+                <li><span class="option-label">B.</span> 5 concurrent executions (one per shard) with parallel processing</li>
                 <li><span class="option-label">C.</span> 10 concurrent executions (5 shards × 2 default parallelization)</li>
                 <li><span class="option-label">D.</span> 50 concurrent executions (5 shards × 10 maximum parallelization)</li>
             </ul>
@@ -165,7 +165,7 @@
                 <li><span class="option-label">A.</span> Configure event filtering criteria on the Lambda event source mapping with a filter pattern matching {"data": {"eventType": ["PURCHASE"]}}</li>
                 <li><span class="option-label">B.</span> Add an if-statement at the beginning of the Lambda function to skip non-PURCHASE records</li>
                 <li><span class="option-label">C.</span> Use Kinesis Data Analytics to filter records before they reach Lambda</li>
-                <li><span class="option-label">D.</span> Configure the Kinesis producer to only send PURCHASE events to a dedicated stream</li>
+                <li><span class="option-label">D.</span> Configure the Kinesis producer to only send PURCHASE events to a dedicated stream with a filter pattern matching {"data": {"eventType": ["PURCHASE"]}}</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -179,7 +179,7 @@
             <div class="question-text">A data engineer configured a Lambda function with a Kinesis event source mapping. The stream has a retention period of 24 hours. The Lambda function was disabled for maintenance for 30 hours. When the function is re-enabled, what happens to the records that are older than the retention period?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Records older than 24 hours are permanently lost; Lambda resumes from the oldest available record (TRIM_HORIZON of current data)</li>
-                <li><span class="option-label">B.</span> Lambda automatically replays all 30 hours of records from a backup</li>
+                <li><span class="option-label">B.</span> Lambda automatically replays all 30 hours of records from a backup configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> The event source mapping fails with an error and must be recreated</li>
                 <li><span class="option-label">D.</span> Lambda resumes from where it left off using the last checkpoint, including expired records from DynamoDB backup</li>
             </ul>
