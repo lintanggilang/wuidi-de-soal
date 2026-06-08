@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> Create a superuser account shared by all analysts and another shared by all engineers</li>
                 <li><span class="option-label">B.</span> Create a Redshift role "analysts_readonly" with SELECT on all tables in "sales" schema, and a role "engineers_full" with ALL on all schemas; then GRANT each role to the respective users. When new users join, simply GRANT the appropriate role</li>
                 <li><span class="option-label">C.</span> Use Redshift Spectrum to isolate analyst queries from engineer queries</li>
-                <li><span class="option-label">D.</span> Create separate Redshift clusters for analysts and engineers</li>
+                <li><span class="option-label">D.</span> Create separate Redshift clusters for analysts and engineers with SELECT on all tables in "sales" schema</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -55,7 +55,7 @@
                 <li><span class="option-label">A.</span> Create a view that excludes sensitive columns and grant access only to the view</li>
                 <li><span class="option-label">B.</span> Use column-level access control — GRANT SELECT (patient_id, name, appointment_date) ON patients TO ROLE customer_service; this ensures the role can only query permitted columns, and any attempt to SELECT diagnosis_code will return a permission error</li>
                 <li><span class="option-label">C.</span> Use dynamic data masking to show NULL for restricted columns</li>
-                <li><span class="option-label">D.</span> Separate the table into two tables and restrict access to the sensitive table</li>
+                <li><span class="option-label">D.</span> Separate the table into two tables and restrict access to the sensitive table configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -71,7 +71,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create separate schemas for each tenant and grant access to only their schema</li>
                 <li><span class="option-label">B.</span> Implement Row-Level Security (RLS) policies in Redshift — CREATE RLS POLICY tenant_isolation USING (tenant_id = current_setting('app.tenant_id')); ATTACH RLS POLICY to tables and enable for the analyst role. The policy automatically filters rows based on the session variable</li>
-                <li><span class="option-label">C.</span> Use Redshift Spectrum with S3 bucket-per-tenant partitioning</li>
+                <li><span class="option-label">C.</span> Use Redshift Spectrum with S3 bucket-per-tenant partitioning and enable for the analyst role for the analyst role</li>
                 <li><span class="option-label">D.</span> Add WHERE tenant_id = ? to all views accessed by customers</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -88,7 +88,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Query pg_catalog.pg_user for users, pg_catalog.pg_group for group memberships, and SVV_RELATION_PRIVILEGES for effective permissions on schema objects</li>
                 <li><span class="option-label">B.</span> Check CloudTrail logs for all Redshift GRANT statements executed in the past year</li>
-                <li><span class="option-label">C.</span> Query STL_QUERY system table for all SELECT statements on the finance schema</li>
+                <li><span class="option-label">C.</span> Query STL_QUERY system table for all SELECT statements on the finance schema configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Use AWS Config to evaluate Redshift database permissions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -105,7 +105,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable IAM database authentication on the RDS instance, create a database user mapped to the IAM role using GRANT rds_iam TO db_user, and configure the Lambda function to generate an authentication token using the RDS API (generate-db-auth-token) which is used as the password when connecting</li>
                 <li><span class="option-label">B.</span> Simply attach the AmazonRDSFullAccess policy to the Lambda role — RDS will automatically recognize it</li>
-                <li><span class="option-label">C.</span> Store IAM credentials in the RDS parameter group and enable auto-authentication</li>
+                <li><span class="option-label">C.</span> Store IAM credentials in the RDS parameter group and enable auto-authentication configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Create an RDS Proxy and it will automatically handle IAM authentication without any database-level configuration</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -123,7 +123,7 @@
                 <li><span class="option-label">A.</span> Access is allowed because group permissions override individual user revocations</li>
                 <li><span class="option-label">B.</span> Access is allowed because john inherits SELECT from the "analytics" group, and the individual REVOKE only removes directly-granted permissions, not group-inherited permissions — in Redshift, group grants and user grants are evaluated independently</li>
                 <li><span class="option-label">C.</span> Access is denied because REVOKE always overrides GRANT regardless of source</li>
-                <li><span class="option-label">D.</span> Access results in an error because conflicting permissions are not allowed</li>
+                <li><span class="option-label">D.</span> Access results in an error because conflicting permissions are not allowed configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -139,7 +139,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly;</li>
                 <li><span class="option-label">B.</span> GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly; combined with ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES TO ROLE bi_readonly; — the first covers existing tables, the second ensures future tables automatically get the same grant</li>
-                <li><span class="option-label">C.</span> GRANT ALL ON SCHEMA analytics TO ROLE bi_readonly;</li>
+                <li><span class="option-label">C.</span> GRANT ALL ON SCHEMA analytics TO ROLE bi_readonly; with ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES</li>
                 <li><span class="option-label">D.</span> GRANT USAGE ON SCHEMA analytics TO ROLE bi_readonly; only</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -156,7 +156,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create Redshift database users matching the IAM role names and manually assign permissions</li>
                 <li><span class="option-label">B.</span> Use Redshift's native IAM role integration — when federated users connect using GetClusterCredentials API with DbGroup parameter, they are automatically added to specified Redshift database groups; OR use role-based identity mapping where IAM roles are mapped to Redshift roles via the Redshift identity provider configuration</li>
-                <li><span class="option-label">C.</span> Federated users always get superuser access to Redshift</li>
+                <li><span class="option-label">C.</span> Federated users always get superuser access to Redshift with DbGroup parameter</li>
                 <li><span class="option-label">D.</span> Use S3 bucket policies to control Redshift access for federated users</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -174,7 +174,7 @@
                 <li><span class="option-label">A.</span> Only disable the user's password — their permissions will automatically expire</li>
                 <li><span class="option-label">B.</span> Execute ALTER USER contractor_user DISABLE; to immediately prevent login, then query STL_CONNECTION_LOG and STL_QUERY for the user's activity over the past 3 months, and implement a process using IAM-based temporary credentials (GetClusterCredentials) instead of persistent database passwords to ensure access automatically expires when IAM access is revoked</li>
                 <li><span class="option-label">C.</span> Delete the Redshift cluster and recreate it without the user</li>
-                <li><span class="option-label">D.</span> Wait for the password to expire naturally</li>
+                <li><span class="option-label">D.</span> Wait for the password to expire naturally configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -188,7 +188,7 @@
             <div class="question-number">10</div>
             <div class="question-text">A data warehouse team is implementing schema-level isolation in Redshift. They have schemas: "raw" (ETL landing), "staging" (transformations), and "presentation" (BI access). The requirements are: ETL role can write to raw and staging but NOT presentation; transformation role can read raw, write staging, and write presentation; BI role can ONLY read presentation. Which GRANT structure correctly implements this isolation?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Grant ALL on ALL schemas to all three roles for simplicity</li>
+                <li><span class="option-label">A.</span> Grant ALL on ALL schemas to all three roles for simplicity configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> ETL role: GRANT USAGE, CREATE, INSERT, SELECT ON raw/staging schemas; Transformation role: GRANT SELECT ON raw, GRANT ALL ON staging/presentation; BI role: GRANT USAGE ON SCHEMA presentation + GRANT SELECT ON ALL TABLES IN SCHEMA presentation. Each role gets ONLY what's needed</li>
                 <li><span class="option-label">C.</span> Create separate Redshift clusters for each schema</li>
                 <li><span class="option-label">D.</span> Use only views in the presentation schema that reference staging tables, and grant SELECT on views only</li>
