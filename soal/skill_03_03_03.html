@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> Create a CloudWatch alarm on the GetRecords.IteratorAgeMilliseconds metric with a static threshold of 300000ms, evaluation period of 1 minute for 3 consecutive datapoints, and an SNS action on ALARM state.</li>
                 <li><span class="option-label">B.</span> Create a CloudWatch alarm on the IncomingRecords metric with a threshold of 0 for 5 minutes to detect when no new data arrives.</li>
                 <li><span class="option-label">C.</span> Create a CloudWatch alarm on the ReadProvisionedThroughputExceeded metric with any threshold greater than 0.</li>
-                <li><span class="option-label">D.</span> Create a CloudWatch alarm on the GetRecords.Latency metric with a threshold of 300000ms.</li>
+                <li><span class="option-label">D.</span> Create a CloudWatch alarm on the GetRecords.Latency metric with a threshold of 300000ms. and an SNS action on ALARM state for 3 consecutive datapoints</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -54,7 +54,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a CloudWatch composite alarm that uses an AND rule combining the Kinesis IteratorAge alarm and the Glue job error rate alarm.</li>
                 <li><span class="option-label">B.</span> Create a single CloudWatch alarm using a math expression that multiplies both metrics together.</li>
-                <li><span class="option-label">C.</span> Create an EventBridge rule with two event patterns that must both match before triggering the alert.</li>
+                <li><span class="option-label">C.</span> Create an EventBridge rule with two event patterns that must both match before triggering the alert. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Create two separate CloudWatch alarms and configure a Lambda function to check if both are in ALARM state before sending SNS.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -70,7 +70,7 @@
             <div class="question-text">A data pipeline processes batch data every hour using AWS Glue. During a planned 4-hour maintenance window, the pipeline will be intentionally stopped. The team wants to suppress all pipeline-related CloudWatch alarms during this period to avoid false alerts to the on-call team. Which approach is MOST operationally efficient?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use CloudWatch alarm actions to temporarily disable alarm actions (using disable-alarm-actions API) before maintenance and re-enable after.</li>
-                <li><span class="option-label">B.</span> Delete all pipeline alarms before maintenance and recreate them afterward using CloudFormation.</li>
+                <li><span class="option-label">B.</span> Delete all pipeline alarms before maintenance and recreate them afterward using CloudFormation. and re-enable after</li>
                 <li><span class="option-label">C.</span> Change the SNS topic subscription's filter policy to reject messages during the maintenance window.</li>
                 <li><span class="option-label">D.</span> Set the alarm evaluation period to 5 hours so it won't trigger during the 4-hour maintenance window.</li>
             </ul>
@@ -88,7 +88,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Set evaluation periods to 5, datapoints to alarm to 4 out of 5 (M out of N evaluation).</li>
                 <li><span class="option-label">B.</span> Set evaluation periods to 1, datapoints to alarm to 1, with a very high threshold value.</li>
-                <li><span class="option-label">C.</span> Set evaluation periods to 15, datapoints to alarm to 15 out of 15.</li>
+                <li><span class="option-label">C.</span> Set evaluation periods to 15, datapoints to alarm to 15 out of 15. configured for optimal performance</li>
                 <li><span class="option-label">D.</span> Use anomaly detection band instead of static threshold with a sensitivity of 1 (lowest).</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -106,7 +106,7 @@
                 <li><span class="option-label">A.</span> Create two separate SNS topics (critical-alerts and warning-alerts). Configure critical alarms to publish to the critical-alerts topic (subscribed by PagerDuty HTTPS endpoint) and warning alarms to publish to the warning-alerts topic (subscribed by email).</li>
                 <li><span class="option-label">B.</span> Create one SNS topic with filter policies that route critical messages to PagerDuty and warning messages to email based on message attributes.</li>
                 <li><span class="option-label">C.</span> Create one SNS topic subscribed by a Lambda function that reads the alarm severity and routes to PagerDuty or email accordingly.</li>
-                <li><span class="option-label">D.</span> Create separate CloudWatch dashboards for critical and warning alarms, each with different notification preferences.</li>
+                <li><span class="option-label">D.</span> Create separate CloudWatch dashboards for critical and warning alarms, each with different notification preferences. and warning-alerts)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -122,7 +122,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The Amazon Redshift enhanced monitoring metric is published at 1-minute intervals but the alarm's period must match the metric's reporting frequency, which for Redshift standard metrics is 5 minutes.</li>
                 <li><span class="option-label">B.</span> The CloudWatch alarm does not have the correct IAM permissions to read Redshift metrics.</li>
-                <li><span class="option-label">C.</span> The Redshift cluster is in a different region than the CloudWatch alarm.</li>
+                <li><span class="option-label">C.</span> The Redshift cluster is in a different region than the CloudWatch alarm. for Redshift standard metrics is 5 minutes</li>
                 <li><span class="option-label">D.</span> The alarm's threshold is set too high and Redshift never reaches 80% CPU, causing INSUFFICIENT_DATA.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -138,7 +138,7 @@
             <div class="question-text">A data pipeline team wants to automatically remediate a common failure scenario: when their Glue ETL job fails due to transient DynamoDB throttling, the job should be automatically retried after a 5-minute delay. Which solution implements this auto-remediation using CloudWatch alarms?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a CloudWatch alarm on the Glue job failure metric. Configure the alarm action to trigger an EventBridge rule that invokes a Step Functions state machine with a Wait state (5 minutes) followed by a Glue StartJobRun action.</li>
-                <li><span class="option-label">B.</span> Create a CloudWatch alarm on the Glue job failure metric. Configure the alarm action to directly invoke the Glue StartJobRun API.</li>
+                <li><span class="option-label">B.</span> Create a CloudWatch alarm on the Glue job failure metric. Configure the alarm action to directly invoke the Glue StartJobRun API. with a Wait state (5 minutes) followed by a Glue StartJobRun action</li>
                 <li><span class="option-label">C.</span> Configure the Glue job with automatic retries set to 3 and a retry delay of 5 minutes in the job properties.</li>
                 <li><span class="option-label">D.</span> Create a CloudWatch alarm on the DynamoDB ThrottledRequests metric. Configure the alarm to trigger a Lambda function that restarts the Glue job.</li>
             </ul>
@@ -155,7 +155,7 @@
             <div class="question-text">A data engineering team needs to monitor their EMR cluster and receive alerts when the YARN memory utilization exceeds 90% for more than 10 minutes. The EMR cluster uses managed scaling. Which monitoring approach correctly captures YARN-level metrics for alerting?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable EMR managed scaling metrics that include YARNMemoryAvailablePercentage. Create a CloudWatch alarm with the threshold at less than 10% available, evaluated over 10 minutes.</li>
-                <li><span class="option-label">B.</span> Use the default EC2 CloudWatch metrics for memory utilization on EMR core nodes.</li>
+                <li><span class="option-label">B.</span> Use the default EC2 CloudWatch metrics for memory utilization on EMR core nodes. with the threshold at less than 10% available</li>
                 <li><span class="option-label">C.</span> Install the CloudWatch agent on the EMR master node to collect custom YARN metrics from the ResourceManager JMX port.</li>
                 <li><span class="option-label">D.</span> Query the EMR cluster's Ganglia dashboard metrics and set up alerts based on the Ganglia data.</li>
             </ul>
@@ -173,7 +173,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a CloudWatch alarm on the EventBridge FailedInvocations metric filtered by the specific rule name, with a threshold greater than 0.</li>
                 <li><span class="option-label">B.</span> Create a CloudWatch alarm on the EventBridge Invocations metric, alerting when it drops to 0 (indicating no rules are firing).</li>
-                <li><span class="option-label">C.</span> Create a CloudWatch alarm on the EventBridge ThrottledRules metric with a threshold greater than 0.</li>
+                <li><span class="option-label">C.</span> Create a CloudWatch alarm on the EventBridge ThrottledRules metric with a threshold greater than 0. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Create an EventBridge rule that monitors itself for failure events using a self-referencing pattern.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -191,7 +191,7 @@
                 <li><span class="option-label">A.</span> Create a scheduled EventBridge rule (daily) that triggers a Lambda function. The function calls DescribeAlarms API to list alarms in ALARM state and sends a summary via SES.</li>
                 <li><span class="option-label">B.</span> Configure all alarms to publish to a single SNS topic with a daily digest delivery option enabled.</li>
                 <li><span class="option-label">C.</span> Use CloudWatch dashboards with automatic daily email subscription for alarm status.</li>
-                <li><span class="option-label">D.</span> Create a composite alarm that aggregates all 50 alarms and sends a single notification per day.</li>
+                <li><span class="option-label">D.</span> Create a composite alarm that aggregates all 50 alarms and sends a single notification per day. and sends a summary via SES</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
