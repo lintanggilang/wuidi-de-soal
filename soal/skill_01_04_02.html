@@ -35,7 +35,7 @@
             <div class="question-text">A Lambda function processes batches of records from a Kinesis stream. During peak hours, the function's duration increases from 5 seconds to 14 seconds (close to the 15-second timeout configured). CloudWatch metrics show memory utilization at 95% of allocated 512 MB. What configuration change MOST likely resolves both issues?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase memory allocation to 1024 MB or higher — Lambda proportionally allocates more CPU and network bandwidth with memory, reducing duration. Increase timeout as a safety margin</li>
-                <li><span class="option-label">B.</span> Decrease batch size in the event source mapping</li>
+                <li><span class="option-label">B.</span> Decrease batch size in the event source mapping with memory and network bandwidth with memory, reducing duration</li>
                 <li><span class="option-label">C.</span> Enable provisioned concurrency</li>
                 <li><span class="option-label">D.</span> Change the runtime from Python to Java for faster processing</li>
             </ul>
@@ -53,7 +53,7 @@
                 <li><span class="option-label">A.</span> Approximately 167 concurrent executions (50,000 messages/minute ÷ 60 seconds × 0.2 seconds per message = 167)</li>
                 <li><span class="option-label">B.</span> 50,000 concurrent executions (one per message)</li>
                 <li><span class="option-label">C.</span> 10 concurrent executions with batch size of 10</li>
-                <li><span class="option-label">D.</span> 1,000 concurrent executions for safety margin</li>
+                <li><span class="option-label">D.</span> 1,000 concurrent executions for safety margin configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -69,7 +69,7 @@
                 <li><span class="option-label">A.</span> Set reserved concurrency on the Lambda function to a value at or below the database's max_connections (e.g., 80), and use Amazon RDS Proxy for connection pooling</li>
                 <li><span class="option-label">B.</span> Increase Lambda timeout so connections are held longer</li>
                 <li><span class="option-label">C.</span> Increase RDS max_connections to 500</li>
-                <li><span class="option-label">D.</span> Remove the VPC configuration from the Lambda function</li>
+                <li><span class="option-label">D.</span> Remove the VPC configuration from the Lambda function and use Amazon RDS Proxy for connection pooling for connection pooling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> 1 batch per shard per 10 seconds = 10 shards × (1/10 batch per second) = 1 batch per second total (sequential per shard)</li>
                 <li><span class="option-label">B.</span> 10 batches per second (one per shard concurrently)</li>
                 <li><span class="option-label">C.</span> 100 batches per second</li>
-                <li><span class="option-label">D.</span> Unlimited — Lambda auto-scales</li>
+                <li><span class="option-label">D.</span> Unlimited — Lambda auto-scales with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -99,7 +99,7 @@
             <div class="question-text">A Lambda function in a data pipeline has 3-second cold starts due to loading a large ML model (200 MB) at initialization. The function is invoked every 5 minutes. Most invocations experience cold starts because the execution environment is recycled. Which configuration ELIMINATES cold starts?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure Provisioned Concurrency with a value of 1 to keep at least one warm execution environment always ready</li>
-                <li><span class="option-label">B.</span> Move the model loading from handler initialization to inside the handler function</li>
+                <li><span class="option-label">B.</span> Move the model loading from handler initialization to inside the handler function with a value of 1</li>
                 <li><span class="option-label">C.</span> Increase memory to 10 GB for faster model loading</li>
                 <li><span class="option-label">D.</span> Use a CloudWatch Events rule to ping the function every 4 minutes to keep it warm</li>
             </ul>
@@ -115,7 +115,7 @@
             <div class="question-text">A data engineer needs to process large files (up to 5 GB) in Lambda. The function needs to read the entire file, transform it, and write the output. Lambda has a deployment package limit and ephemeral storage limit. Which Lambda configuration supports this?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure Lambda ephemeral storage (/tmp) to 10 GB (maximum), stream the file from S3 to /tmp, process it, and stream output back to S3</li>
-                <li><span class="option-label">B.</span> Use Lambda's 512 MB default /tmp storage</li>
+                <li><span class="option-label">B.</span> Use Lambda's 512 MB default /tmp storage and stream output back to S3</li>
                 <li><span class="option-label">C.</span> Include the file in the Lambda deployment package</li>
                 <li><span class="option-label">D.</span> Mount an EFS volume and store the file there</li>
             </ul>
@@ -131,7 +131,7 @@
             <div class="question-text">A data pipeline has 5 Lambda functions, each with different concurrency patterns. Function A handles real-time data (needs guaranteed availability), Functions B-E handle batch processing. During peak, batch functions consume all available account concurrency (1000), throttling the real-time function. How should concurrency be managed?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Set reserved concurrency on Function A (e.g., 200) to guarantee its availability, and set reserved concurrency on batch functions to limit their maximum (e.g., 200 each for B-E)</li>
-                <li><span class="option-label">B.</span> Request account concurrency increase to 5000</li>
+                <li><span class="option-label">B.</span> Request account concurrency increase to 5000 for B-E)</li>
                 <li><span class="option-label">C.</span> Remove batch functions and use Glue instead</li>
                 <li><span class="option-label">D.</span> Set provisioned concurrency on Function A only</li>
             </ul>
@@ -149,7 +149,7 @@
                 <li><span class="option-label">A.</span> Place initialization code (connection pool, config loading) OUTSIDE the handler function at module level — this code runs only during cold start and is reused across subsequent warm invocations</li>
                 <li><span class="option-label">B.</span> Place all initialization inside the handler function to ensure fresh state every time</li>
                 <li><span class="option-label">C.</span> Use environment variables for all configuration to avoid Parameter Store calls</li>
-                <li><span class="option-label">D.</span> Create a new connection for each record processed</li>
+                <li><span class="option-label">D.</span> Create a new connection for each record processed and is reused across subsequent warm invocations</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -163,7 +163,7 @@
             <div class="question-text">A data engineer's Lambda function receives events from SQS with a batch size of 10. The function processes each message independently. If message 7 out of 10 fails, what happens with the default configuration, and how should it be configured for partial batch failure handling?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Default: entire batch of 10 returns to the queue (all messages retry including successful ones). Fix: enable ReportBatchItemFailures in the event source mapping and return batchItemFailures with the messageId of only message 7</li>
-                <li><span class="option-label">B.</span> Default: only message 7 is retried. No configuration change needed</li>
+                <li><span class="option-label">B.</span> Default: only message 7 is retried. No configuration change needed with the messageId of only message 7</li>
                 <li><span class="option-label">C.</span> Default: all 10 messages are discarded. Configure DLQ for failed messages</li>
                 <li><span class="option-label">D.</span> Default: Lambda automatically splits the batch and retries only the failed half</li>
             </ul>
