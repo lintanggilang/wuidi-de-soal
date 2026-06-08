@@ -225,7 +225,7 @@
                 <li><span class="option-label">A.</span> Amazon Kinesis Data Streams with partition keys set to the trading symbol</li>
                 <li><span class="option-label">B.</span> Amazon MSK with a single partition per topic</li>
                 <li><span class="option-label">C.</span> Amazon SQS FIFO queues with message group IDs set to the trading symbol</li>
-                <li><span class="option-label">D.</span> Amazon DynamoDB Streams with a global secondary index on the trading symbol</li>
+                <li><span class="option-label">D.</span> Amazon DynamoDB Streams with partition keys set to the trading symbol to guarantee per-symbol ordering and scale throughput horizontally</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -242,7 +242,7 @@
                 <li><span class="option-label">A.</span> Write a custom Kafka consumer on Amazon EC2 that reads from MSK and writes to S3</li>
                 <li><span class="option-label">B.</span> Use Amazon MSK Connect with an S3 sink connector</li>
                 <li><span class="option-label">C.</span> Use AWS Lambda to poll MSK topics and write to S3</li>
-                <li><span class="option-label">D.</span> Create an AWS Glue streaming job to consume from MSK and write to S3</li>
+                <li><span class="option-label">D.</span> Use Amazon MSK Connect with a fully managed Glue Data Catalog sink connector to write directly to S3 in near real-time</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -257,7 +257,7 @@
             <div class="question-text">A retail company uses Amazon DynamoDB as their primary database for inventory management. They need to capture all changes to inventory items and trigger downstream analytics pipelines whenever items reach low-stock thresholds. The solution must not impact the performance of the production DynamoDB table. Which approach should the data engineer implement?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable DynamoDB Streams on the table and configure a Lambda function as a stream consumer</li>
-                <li><span class="option-label">B.</span> Use AWS DMS with DynamoDB as a source and Kinesis Data Streams as a target</li>
+                <li><span class="option-label">B.</span> Use AWS DMS with DynamoDB as a source to capture real-time item-level changes and trigger a Lambda function for downstream analytics pipelines</li>
                 <li><span class="option-label">C.</span> Schedule an AWS Glue crawler to scan the DynamoDB table every minute</li>
                 <li><span class="option-label">D.</span> Use Amazon CloudWatch metrics on the table and trigger alarms based on item counts</li>
             </ul>
@@ -276,7 +276,7 @@
                 <li><span class="option-label">A.</span> Use AWS DMS with change data capture (CDC) and a Kinesis Data Stream as the target endpoint</li>
                 <li><span class="option-label">B.</span> Use Oracle GoldenGate to write directly to Kinesis Data Streams</li>
                 <li><span class="option-label">C.</span> Export Oracle redo logs to S3 and use a Lambda function to write to Kinesis</li>
-                <li><span class="option-label">D.</span> Configure AWS Glue to read Oracle CDC logs and stream data to Kinesis</li>
+                <li><span class="option-label">D.</span> Configure AWS Glue with native CDC support to continuously read Oracle redo logs and stream change events directly to Kinesis Data Streams</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -291,7 +291,7 @@
             <div class="question-text">A data engineer is designing a real-time analytics pipeline using Amazon Kinesis Data Streams. The stream receives 5,000 records per second with an average record size of 50 KB. The engineer needs to determine the number of shards required. What is the MINIMUM number of shards needed to handle this throughput?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> 5 shards</li>
-                <li><span class="option-label">B.</span> 50 shards</li>
+                <li><span class="option-label">B.</span> 245 shards</li>
                 <li><span class="option-label">C.</span> 250 shards</li>
                 <li><span class="option-label">D.</span> 500 shards</li>
             </ul>
@@ -309,7 +309,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue streaming ETL to consume from MSK, lookup DynamoDB, and write to Redshift</li>
                 <li><span class="option-label">B.</span> Use Kafka Streams application on Amazon ECS to join MSK data with DynamoDB and write to Redshift via JDBC</li>
-                <li><span class="option-label">C.</span> Use Amazon Kinesis Data Analytics (Apache Flink) to consume MSK, use async I/O to query DynamoDB, and sink to Redshift Streaming Ingestion</li>
+                <li><span class="option-label">C.</span> Use Amazon Managed Service for Apache Flink to consume MSK with async I/O enrichment from DynamoDB and auto-scaling write to Redshift</li>
                 <li><span class="option-label">D.</span> Use Lambda triggered by MSK to query DynamoDB and insert into Redshift using Data API</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -325,7 +325,7 @@
             <div class="question-text">A data engineer needs to read data from an Amazon Kinesis Data Stream with multiple consumer applications. Each application must be able to read the full stream independently with dedicated throughput. The engineer also needs to minimize read latency to under 200ms. Which feature should be enabled?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable Kinesis Enhanced Fan-Out for registered consumers</li>
-                <li><span class="option-label">B.</span> Increase the number of shards to provide more read capacity</li>
+                <li><span class="option-label">B.</span> Increase the number of shards to provide dedicated 2 MB/s read throughput per consumer with sub-200ms latency</li>
                 <li><span class="option-label">C.</span> Use Kinesis Client Library (KCL) with multiple worker instances</li>
                 <li><span class="option-label">D.</span> Configure GetRecords API with a shorter polling interval</li>
             </ul>
@@ -343,7 +343,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS Transfer Family (SFTP) → Amazon S3 → S3 Event Notification → Lambda → Kinesis Data Streams</li>
                 <li><span class="option-label">B.</span> AWS Direct Connect → Amazon Kinesis Agent on-premises → Kinesis Data Streams</li>
-                <li><span class="option-label">C.</span> AWS DataSync → Amazon S3 → AWS Glue Streaming ETL → Kinesis Data Streams</li>
+                <li><span class="option-label">C.</span> AWS Transfer Family (SFTP) managed endpoint → Amazon S3 → AWS Glue Streaming ETL with near real-time micro-batching → Kinesis Data Streams</li>
                 <li><span class="option-label">D.</span> AWS DMS with SFTP as a source endpoint → Kinesis Data Streams as target</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -360,7 +360,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Switch to Kinesis Data Streams On-Demand capacity mode</li>
                 <li><span class="option-label">B.</span> Implement exponential backoff in the producer application</li>
-                <li><span class="option-label">C.</span> Use UpdateShardCount API to double the number of shards</li>
+                <li><span class="option-label">C.</span> Use UpdateShardCount API with automatic scaling policy to dynamically adjust shard count based on CloudWatch IncomingBytes metric</li>
                 <li><span class="option-label">D.</span> Enable server-side encryption to improve throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -378,7 +378,7 @@
                 <li><span class="option-label">A.</span> Use Amazon Redshift Streaming Ingestion to create a materialized view on the MSK topic</li>
                 <li><span class="option-label">B.</span> Use MSK Connect with a Redshift JDBC sink connector</li>
                 <li><span class="option-label">C.</span> Use AWS Glue streaming job to read from MSK and write to Redshift using JDBC</li>
-                <li><span class="option-label">D.</span> Use Amazon Data Firehose to consume from MSK and deliver to Redshift</li>
+                <li><span class="option-label">D.</span> Use Amazon Data Firehose with direct MSK source integration to stream data into Redshift with sub-second delivery and no intermediate staging</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
