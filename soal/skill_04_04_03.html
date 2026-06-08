@@ -54,7 +54,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create one organization event data store with both management and data events enabled, set retention to 2555 days with one-year extendable pricing</li>
                 <li><span class="option-label">B.</span> Create separate event data stores for management events (7-year retention) and data events (1-year retention) to optimize costs</li>
-                <li><span class="option-label">C.</span> Create individual event data stores in each account and query them separately from the management account</li>
+                <li><span class="option-label">C.</span> Create individual event data stores in each account and query them separately from the management account with 2555-day retention using seven-year extendable pricing</li>
                 <li><span class="option-label">D.</span> Create one organization event data store for management events with 2555-day retention using seven-year extendable pricing, and a separate one for S3 data events</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -71,7 +71,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> SELECT eventTime, userIdentity.arn, sourceIPAddress FROM event_data_store_id WHERE eventName = 'AssumeRole' AND sourceIPAddress NOT LIKE '10.%' AND sourceIPAddress NOT LIKE '172.16.%' AND eventTime > date_add('hour', -24, now())</li>
                 <li><span class="option-label">B.</span> SELECT eventTime, userIdentity.arn, sourceIPAddress FROM $EDS_ID WHERE eventName = 'AssumeRole' AND sourceIPAddress NOT LIKE '10.%' AND sourceIPAddress NOT LIKE '172.16.%' AND eventTime > dateadd('hour', -24, current_timestamp)</li>
-                <li><span class="option-label">C.</span> SELECT eventTime, userIdentity, sourceIPAddress FROM event_data_store WHERE eventName = 'AssumeRole' AND eventTime BETWEEN now() - INTERVAL '24' HOUR AND now()</li>
+                <li><span class="option-label">C.</span> SELECT eventTime, userIdentity, sourceIPAddress FROM event_data_store WHERE eventName = 'AssumeRole' AND eventTime BETWEEN now() - INTERVAL '24' HOUR AND now() and sourceIPAddress NOT LIKE '10</li>
                 <li><span class="option-label">D.</span> SELECT eventTime, element_at(userIdentity, 'arn') as user_arn, sourceIPAddress FROM $EDS_ID WHERE eventName = 'AssumeRole' AND sourceIPAddress NOT LIKE '10.%' AND sourceIPAddress NOT LIKE '172.16.%' AND eventTime > '2024-01-01'</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -88,7 +88,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> CloudTrail Lake is more cost-effective because it charges per query and has built-in retention, while Athena requires separate S3 storage management</li>
                 <li><span class="option-label">B.</span> Athena is more cost-effective because it only charges for data scanned per query, while CloudTrail Lake charges for both ingestion and retention regardless of query volume</li>
-                <li><span class="option-label">C.</span> CloudTrail Lake and Athena have identical pricing models — the choice should be based on query syntax preference only</li>
+                <li><span class="option-label">C.</span> CloudTrail Lake and Athena have identical pricing models — the choice should be based on query syntax preference only and retention regardless of query volume for data scanned per query</li>
                 <li><span class="option-label">D.</span> Athena is preferred because it supports federated queries across multiple data sources, while CloudTrail Lake only queries CloudTrail events</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -120,7 +120,7 @@
             <div class="question-number">6</div>
             <div class="question-text">A company creates a CloudTrail Lake event data store configured to collect management events from their organization. After 30 days, they realize they also need to capture S3 data events for compliance. What is the correct approach to add S3 data events to their existing setup?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Update the existing event data store to add S3 data events using advanced event selectors</li>
+                <li><span class="option-label">A.</span> Update the existing event data store to add S3 data events using advanced event selectors for S3 data events</li>
                 <li><span class="option-label">B.</span> Delete the existing event data store and create a new one that includes both management and S3 data events</li>
                 <li><span class="option-label">C.</span> Create a new separate event data store configured for S3 data events, keeping the existing one for management events</li>
                 <li><span class="option-label">D.</span> Add S3 data events to the existing organization trail — they will automatically appear in the event data store</li>
@@ -139,7 +139,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> SELECT eventTime, userIdentity.principalId, userIdentity.arn, sourceIPAddress, requestParameters FROM eds_id WHERE eventName = 'DeleteTable' AND eventSource = 'dynamodb.amazonaws.com' AND eventTime > date_add('day', -90, now())</li>
                 <li><span class="option-label">B.</span> SELECT eventTime, userIdentity.userName, requestParameters FROM eds_id WHERE eventName = 'DropTable' AND eventSource = 'dynamodb.amazonaws.com' AND eventTime > date_add('month', -3, now())</li>
-                <li><span class="option-label">C.</span> SELECT * FROM eds_id WHERE resourceType = 'AWS::DynamoDB::Table' AND eventCategory = 'Delete' AND eventTime > date_add('day', -90, now())</li>
+                <li><span class="option-label">C.</span> SELECT * FROM eds_id WHERE resourceType = 'AWS::DynamoDB::Table' AND eventCategory = 'Delete' AND eventTime > date_add('day', -90, now()) and eventSource = 'dynamodb</li>
                 <li><span class="option-label">D.</span> SELECT eventTime, userIdentity.arn FROM eds_id WHERE eventName = 'DeleteTable' AND resources.type = 'AWS::DynamoDB::Table' AND eventTime BETWEEN date_add('month', -4, now()) AND date_add('month', -2, now())</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A company is evaluating CloudTrail Lake pricing for their organization with 50 accounts. They estimate 500 million management events and 2 billion data events per month. They need 7-year retention. Which pricing consideration is MOST critical for their cost estimation?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> CloudTrail Lake charges per query executed, so the number of analysts running queries will be the primary cost driver</li>
+                <li><span class="option-label">A.</span> CloudTrail Lake charges per query executed, so the number of analysts running queries will be the primary cost driver with 2 billion data events monthly at 7-year retention</li>
                 <li><span class="option-label">B.</span> CloudTrail Lake charges for ingestion and retention — with 2 billion data events monthly at 7-year retention, the cumulative storage cost will be the primary cost driver</li>
                 <li><span class="option-label">C.</span> The first copy of management events is free in CloudTrail Lake, so only the 2 billion data events incur ingestion charges</li>
                 <li><span class="option-label">D.</span> CloudTrail Lake has a flat monthly fee per organization regardless of event volume, making it predictable for budgeting</li>
@@ -173,7 +173,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Schedule CloudTrail Lake queries using Amazon EventBridge Scheduler to run StartQuery API, then use Lambda to check results and send SNS notifications</li>
                 <li><span class="option-label">B.</span> Use CloudTrail Lake's built-in scheduled query feature with automatic email notifications</li>
-                <li><span class="option-label">C.</span> Export CloudTrail Lake data to S3 and use Athena scheduled queries with SNS notifications</li>
+                <li><span class="option-label">C.</span> Export CloudTrail Lake data to S3 and use Athena scheduled queries with SNS notifications and send SNS notifications</li>
                 <li><span class="option-label">D.</span> Use CloudTrail Insights instead, which automatically detects anomalies without requiring custom queries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -190,7 +190,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a custom event data store that accepts events via the PutAuditEvents API from the custom application through a CloudTrail Lake channel</li>
                 <li><span class="option-label">B.</span> Write custom application events to CloudWatch Logs and configure a subscription filter to CloudTrail Lake</li>
-                <li><span class="option-label">C.</span> Send custom application events to Amazon EventBridge which automatically routes them to CloudTrail Lake</li>
+                <li><span class="option-label">C.</span> Send custom application events to Amazon EventBridge which automatically routes them to CloudTrail Lake configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Format custom application events as CloudTrail-compatible JSON and write them directly to the CloudTrail S3 bucket</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
