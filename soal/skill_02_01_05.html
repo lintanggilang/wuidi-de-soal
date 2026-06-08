@@ -37,7 +37,7 @@
                 <li><span class="option-label">A.</span> Use Redshift federated queries to access Aurora PostgreSQL directly from within a Redshift SQL query, joining real-time Aurora inventory data with Redshift historical sales data in a single statement using an external schema configured with the Aurora connection details</li>
                 <li><span class="option-label">B.</span> Set up an AWS Glue ETL job that copies inventory data from Aurora to Redshift every 5 minutes, then run queries entirely within Redshift</li>
                 <li><span class="option-label">C.</span> Export Redshift sales data to S3 and load it into Aurora, then run all queries from Aurora</li>
-                <li><span class="option-label">D.</span> Use Amazon Athena with federated query connectors to query both Aurora and Redshift simultaneously</li>
+                <li><span class="option-label">D.</span> Use Amazon Athena with federated query connectors to query both Aurora and Redshift simultaneously with real-time processing and low-latency data delivery</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -53,7 +53,7 @@
                 <li><span class="option-label">A.</span> Create materialized views for the dashboard queries with AUTO REFRESH enabled. The materialized view pre-computes and stores the aggregation results. When the underlying fact/dimension tables are updated by the hourly ETL, AUTO REFRESH incrementally updates only the changed portions of the materialized view, making subsequent dashboard queries return in milliseconds from the stored results</li>
                 <li><span class="option-label">B.</span> Enable Redshift result caching to store query results and serve repeated identical queries from cache</li>
                 <li><span class="option-label">C.</span> Create a summary table and schedule a Lambda function to run the aggregation query hourly and INSERT INTO the summary table</li>
-                <li><span class="option-label">D.</span> Use Redshift Spectrum to offload the aggregation computation to the Spectrum layer, reducing load on the main cluster</li>
+                <li><span class="option-label">D.</span> Use Redshift Spectrum to offload the aggregation computation to the Spectrum layer, reducing load on the main cluster with AUTO REFRESH enabled and stores the aggregation results</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Redshift Spectrum by creating an external schema and external table pointing to the S3 log data location. Spectrum uses independent compute nodes to scan S3 data in parallel while the Redshift cluster handles the local business metrics table. JOIN operations between local Redshift tables and Spectrum external tables work in standard SQL with predicate pushdown to minimize S3 data scanned</li>
                 <li><span class="option-label">B.</span> Use Redshift COPY command to load the relevant portions of S3 data into temporary Redshift tables before running the join queries</li>
-                <li><span class="option-label">C.</span> Use Amazon Athena to query the S3 data and export results to Redshift for joining with business metrics</li>
+                <li><span class="option-label">C.</span> Use Amazon Athena to query the S3 data and export results to Redshift for joining with business metrics and external table pointing to the S3 log data location</li>
                 <li><span class="option-label">D.</span> Create a Redshift federated query connection to S3 and query the data as if it were in an external PostgreSQL database</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -83,7 +83,7 @@
             <div class="question-text">A global enterprise has two Redshift clusters: one in us-east-1 for North American analytics and one in eu-west-1 for European analytics. Both clusters need access to shared reference data (product catalog, customer segments, exchange rates) that is maintained by the central data team in us-east-1. The reference data is 200 GB and updates daily. The European team needs read access to this data without maintaining their own copy. Which Redshift feature provides the MOST efficient cross-cluster data access?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Redshift data sharing to share the reference data tables from the us-east-1 producer cluster to the eu-west-1 consumer cluster. Data sharing provides live, read-only access to the producer's data without physical data copying or ETL — the consumer cluster queries the producer's data directly with no storage duplication and sees daily updates immediately after they're committed on the producer</li>
-                <li><span class="option-label">B.</span> Set up an AWS Glue ETL job that copies the 200 GB reference tables from us-east-1 Redshift to eu-west-1 Redshift daily</li>
+                <li><span class="option-label">B.</span> Set up an AWS Glue ETL job that copies the 200 GB reference tables from us-east-1 Redshift to eu-west-1 Redshift daily with no storage duplication</li>
                 <li><span class="option-label">C.</span> Unload the reference data from us-east-1 Redshift to S3, replicate S3 to eu-west-1 using Cross-Region Replication, and load into the eu-west-1 cluster</li>
                 <li><span class="option-label">D.</span> Use Redshift federated queries from the eu-west-1 cluster to query the us-east-1 cluster in real-time</li>
             </ul>
@@ -100,7 +100,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Re-partition the S3 data to include event_type as an additional partition column (year/month/day/event_type), convert to Parquet with Snappy compression if not already columnar, and use Redshift Spectrum's partition pruning to scan only relevant event_type partitions — reducing scanned data from terabytes to gigabytes for event-specific queries</li>
                 <li><span class="option-label">B.</span> Increase the number of Redshift Spectrum nodes by adding more slices to the Redshift cluster</li>
-                <li><span class="option-label">C.</span> Create a materialized view in Redshift that pre-aggregates the Spectrum external table data</li>
+                <li><span class="option-label">C.</span> Create a materialized view in Redshift that pre-aggregates the Spectrum external table data with Snappy compression if not already columnar for event-specific queries</li>
                 <li><span class="option-label">D.</span> Enable S3 Intelligent-Tiering to optimize storage costs for the data lake files</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Configure a Redshift federated query to the RDS MySQL instance. Create an external schema with the RDS connection details. When analysts query order status, Redshift pushes filter predicates (WHERE status='shipped') to RDS, retrieves only matching rows, and joins them with local Redshift analytics tables — providing real-time data without any replication lag</li>
                 <li><span class="option-label">B.</span> Set up AWS DMS with CDC to continuously replicate the orders table from RDS to Redshift, maintaining near real-time synchronization</li>
                 <li><span class="option-label">C.</span> Schedule a Lambda function to export order status from RDS to S3 every 5 minutes, then query via Redshift Spectrum</li>
-                <li><span class="option-label">D.</span> Use Amazon Athena with a federated query connector to query RDS directly and export results to Redshift</li>
+                <li><span class="option-label">D.</span> Use Amazon Athena with a federated query connector to query RDS directly and export results to Redshift with real-time processing and low-latency data delivery</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Redshift cross-account data sharing: the production cluster (producer) creates a datashare containing the reference tables, grants usage to the consumer account IDs (dev/staging), and each consumer cluster creates a database from the datashare with read-only access. Consumers query shared data as if local but cannot INSERT, UPDATE, or DELETE</li>
                 <li><span class="option-label">B.</span> Set up cross-account IAM roles allowing development and staging clusters to execute federated queries against the production cluster</li>
-                <li><span class="option-label">C.</span> UNLOAD production reference tables to an S3 bucket with cross-account access policies, then COPY into dev/staging clusters</li>
+                <li><span class="option-label">C.</span> UNLOAD production reference tables to an S3 bucket with cross-account access policies, then COPY into dev/staging clusters configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Create read replicas of the production Redshift cluster in the development and staging accounts</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -147,7 +147,7 @@
             <div class="question-text">A Redshift data warehouse team notices that their Spectrum queries reading from a shared S3 data lake often have inconsistent performance. Some queries complete in 30 seconds while identical queries take 5 minutes at other times. Investigation reveals that the Spectrum compute layer is shared across multiple Redshift clusters in the same region, and peak-hour contention affects performance. The team needs consistent sub-60-second performance for critical Spectrum queries. Which strategy MOST reliably ensures consistent Spectrum query performance?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create materialized views that pre-compute and store the results of critical Spectrum queries locally in Redshift. Use AUTO REFRESH to keep the materialized views updated when underlying S3 data changes. Critical dashboards query the local materialized view (sub-second latency) instead of Spectrum, eliminating dependency on shared Spectrum compute resources</li>
-                <li><span class="option-label">B.</span> Schedule critical Spectrum queries during off-peak hours when Spectrum contention is lower</li>
+                <li><span class="option-label">B.</span> Schedule critical Spectrum queries during off-peak hours when Spectrum contention is lower with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">C.</span> Add more nodes to the Redshift cluster to increase the number of Spectrum requests that can be processed concurrently</li>
                 <li><span class="option-label">D.</span> Use Redshift concurrency scaling to handle peak-time Spectrum query bursts</li>
             </ul>
@@ -163,7 +163,7 @@
             <div class="question-text">A company wants to implement a "virtual data warehouse" pattern where their Redshift cluster can query data from multiple sources — local Redshift tables, S3 data lake, Aurora PostgreSQL operational database, and RDS MySQL CRM system — all in a single SQL query without pre-loading data. Which combination of Redshift features enables this multi-source access pattern?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Combine Redshift Spectrum (for S3 data lake access via external schemas/tables), Redshift federated queries (for Aurora PostgreSQL and RDS MySQL access via external schemas with database connections), and native Redshift tables (for local data) — all accessible through standard SQL JOINs in a single query session using different schema prefixes to identify each data source</li>
-                <li><span class="option-label">B.</span> Use AWS Glue DataBrew to create a unified view of all data sources and query it from Redshift</li>
+                <li><span class="option-label">B.</span> Use AWS Glue DataBrew to create a unified view of all data sources and query it from Redshift with database connections)</li>
                 <li><span class="option-label">C.</span> Set up Amazon Athena as the central query engine with federated connectors to all data sources, replacing Redshift</li>
                 <li><span class="option-label">D.</span> Use AWS Lake Formation to create a unified catalog and query all sources through Lake Formation's query engine</li>
             </ul>
@@ -180,7 +180,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Redshift Workload Management (WLM) to create separate query queues: a "Spectrum" queue with limited memory allocation (e.g., 30%) for queries hitting external tables, and a "Local" queue with higher allocation (70%) for queries on native tables. Route queries based on query groups or user groups, ensuring Spectrum's post-scan aggregation work doesn't starve local queries of resources</li>
                 <li><span class="option-label">B.</span> Create a separate Redshift cluster dedicated to Spectrum queries, sharing the same S3 data lake and Glue Data Catalog</li>
-                <li><span class="option-label">C.</span> Move all Spectrum queries to Amazon Athena since Athena uses its own compute and doesn't impact the Redshift cluster</li>
+                <li><span class="option-label">C.</span> Move all Spectrum queries to Amazon Athena since Athena uses its own compute and doesn't impact the Redshift cluster with limited memory allocation (e for queries hitting external tables</li>
                 <li><span class="option-label">D.</span> Increase the cluster size to have enough resources for both Spectrum and local workloads simultaneously</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
