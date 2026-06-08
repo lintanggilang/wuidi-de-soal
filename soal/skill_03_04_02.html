@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> Rules = [ Completeness "email" >= 0.98, ColumnValues "customer_status" in ["active", "inactive", "suspended"], ColumnValues "created_date" <= now() ]</li>
                 <li><span class="option-label">B.</span> Rules = [ IsComplete "email" >= 98%, ColumnValues "customer_status" = ["active", "inactive", "suspended"], DateColumnValues "created_date" < current_date ]</li>
                 <li><span class="option-label">C.</span> Rules = [ NullCheck "email" < 0.02, Enum "customer_status" in ("active", "inactive", "suspended"), RangeCheck "created_date" <= today() ]</li>
-                <li><span class="option-label">D.</span> Rules = [ Completeness "email" = 1.0, UniqueValues "customer_status" = 3, Freshness "created_date" <= 0 days ]</li>
+                <li><span class="option-label">D.</span> Rules = [ Completeness "email" = 1.0, UniqueValues "customer_status" = 3, Freshness "created_date" <= 0 days ] configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -54,7 +54,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Define rules with thresholds slightly below the profiled values to account for normal variance: Completeness "phone_number" >= 0.83 (allowing slightly more than current 15% nulls), ColumnValues "phone_number" matches "[0-9]{3}-[0-9]{3}-[0-9]{4}" >= 0.95, Uniqueness "phone_number" >= 0.93.</li>
                 <li><span class="option-label">B.</span> Use Glue Data Quality's "recommend rules" feature which automatically generates DQDL rules based on the statistical profile of the data, then review and adjust the generated rules to match business requirements.</li>
-                <li><span class="option-label">C.</span> Set all thresholds to 100% to enforce perfect data quality: Completeness = 1.0, PatternMatch = 1.0, Uniqueness = 1.0.</li>
+                <li><span class="option-label">C.</span> Set all thresholds to 100% to enforce perfect data quality: Completeness = 1.0, PatternMatch = 1.0, Uniqueness = 1.0. and adjust the generated rules to match business requirements</li>
                 <li><span class="option-label">D.</span> Skip defining rules for this column since the profiling shows existing quality issues that need to be fixed first in the source system.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -70,7 +70,7 @@
             <div class="question-text">A data engineer needs to define a conditional DQDL rule where the "discount_percentage" field must be between 0 and 30 ONLY when the "customer_tier" is "standard", but can be between 0 and 50 when "customer_tier" is "premium". How can this conditional logic be expressed in DQDL?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use two separate rules with the "where" clause: ColumnValues "discount_percentage" between 0 and 30 where "customer_tier = 'standard'", ColumnValues "discount_percentage" between 0 and 50 where "customer_tier = 'premium'"</li>
-                <li><span class="option-label">B.</span> Create a single rule using IF-THEN-ELSE syntax: IF "customer_tier" = "standard" THEN ColumnValues "discount_percentage" <= 30 ELSE ColumnValues "discount_percentage" <= 50</li>
+                <li><span class="option-label">B.</span> Create a single rule using IF-THEN-ELSE syntax: IF "customer_tier" = "standard" THEN ColumnValues "discount_percentage" <= 30 ELSE ColumnValues "discount_percentage" <= 50 with the "where" clause: ColumnValues "discount_percentage" between 0</li>
                 <li><span class="option-label">C.</span> DQDL does not support conditional rules; implement this logic as custom Python validation in the Glue ETL script instead.</li>
                 <li><span class="option-label">D.</span> Use the Composite rule type: CompositeRule "discount_validation" = (customer_tier = "standard" AND discount_percentage <= 30) OR (customer_tier = "premium" AND discount_percentage <= 50)</li>
             </ul>
@@ -89,7 +89,7 @@
                 <li><span class="option-label">A.</span> Store DQDL rulesets as files in a Git repository, use CloudFormation or CDK to deploy Glue Data Quality rulesets as resources, and promote rule changes through environment branches (dev → staging → prod) with code review requirements.</li>
                 <li><span class="option-label">B.</span> Define quality rules directly in the Glue console for each environment, using the console's built-in versioning to track changes.</li>
                 <li><span class="option-label">C.</span> Store quality rules in a DynamoDB table that all Glue jobs read at runtime, updating the table to change rules across all environments simultaneously.</li>
-                <li><span class="option-label">D.</span> Embed quality rules as hard-coded strings within each Glue ETL script, deploying script changes through the standard application deployment pipeline.</li>
+                <li><span class="option-label">D.</span> Embed quality rules as hard-coded strings within each Glue ETL script, deploying script changes through the standard application deployment pipeline. with code review requirements</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -122,7 +122,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Glue Data Quality's "ColumnValues in" rule with the 47 known categories listed explicitly, and schedule periodic reviews to update the allowed list when legitimate new categories are introduced.</li>
                 <li><span class="option-label">B.</span> Create a DataBrew recipe step that filters out rows with unexpected categories, effectively enforcing the rule during transformation.</li>
-                <li><span class="option-label">C.</span> Use the DistinctValuesCount rule to ensure exactly 47 distinct values exist, alerting if the count changes.</li>
+                <li><span class="option-label">C.</span> Use the DistinctValuesCount rule to ensure exactly 47 distinct values exist, alerting if the count changes. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Define a CustomSql rule in DQDL that joins against a reference table of valid categories maintained in a Glue Data Catalog table, validating that all product_category values exist in the reference.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -138,7 +138,7 @@
             <div class="question-text">A data quality team needs to implement rules that check relationships between columns. Specifically, when "payment_method" is "credit_card", the "card_last_four" field must not be null and must be exactly 4 digits. When "payment_method" is "bank_transfer", the "bank_account_id" must not be null. How should these cross-column dependency rules be defined in DQDL?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Rules = [ Completeness "card_last_four" = 1.0 where "payment_method = 'credit_card'", ColumnValues "card_last_four" matches "[0-9]{4}" where "payment_method = 'credit_card'", Completeness "bank_account_id" = 1.0 where "payment_method = 'bank_transfer'" ]</li>
-                <li><span class="option-label">B.</span> Rules = [ IF payment_method = "credit_card" THEN IsNotNull("card_last_four") AND Matches("card_last_four", "[0-9]{4}"), IF payment_method = "bank_transfer" THEN IsNotNull("bank_account_id") ]</li>
+                <li><span class="option-label">B.</span> Rules = [ IF payment_method = "credit_card" THEN IsNotNull("card_last_four") AND Matches("card_last_four", "[0-9]{4}"), IF payment_method = "bank_transfer" THEN IsNotNull("bank_account_id") ] configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Rules = [ CrossColumnCheck "payment_method" -> "card_last_four" when "credit_card" requires not_null and pattern "[0-9]{4}", CrossColumnCheck "payment_method" -> "bank_account_id" when "bank_transfer" requires not_null ]</li>
                 <li><span class="option-label">D.</span> Rules = [ Completeness "card_last_four" >= 0.5, ColumnValues "card_last_four" matches "[0-9]{4}", Completeness "bank_account_id" >= 0.5 ]</li>
             </ul>
@@ -155,7 +155,7 @@
             <div class="question-text">A company is migrating from a manual data quality process (analysts running SQL checks) to automated Glue Data Quality rules. They have 300 existing SQL validation queries. The team wants to gradually migrate these while maintaining backward compatibility. Which migration strategy is MOST practical?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Convert each SQL query to its equivalent DQDL native rule type where possible (e.g., COUNT(*) WHERE x IS NULL → Completeness, COUNT(DISTINCT x) → Uniqueness). For complex queries without DQDL equivalents, use CustomSql rules to wrap the existing SQL logic.</li>
-                <li><span class="option-label">B.</span> Rewrite all 300 SQL queries as custom Python functions within Glue ETL scripts that validate data programmatically.</li>
+                <li><span class="option-label">B.</span> Rewrite all 300 SQL queries as custom Python functions within Glue ETL scripts that validate data programmatically. for complex queries without DQDL equivalents</li>
                 <li><span class="option-label">C.</span> Keep all 300 SQL queries running as scheduled Athena queries and use the query results to populate a quality dashboard, without migrating to DQDL.</li>
                 <li><span class="option-label">D.</span> Use an automated tool to convert all SQL queries to DQDL syntax in bulk, deploying all 300 rules simultaneously.</li>
             </ul>
@@ -172,7 +172,7 @@
             <div class="question-text">A data engineer needs to schedule regular data quality evaluations on a Glue Data Catalog table without running an ETL job. The quality rules should evaluate the current state of data in S3 on a daily schedule and publish results to CloudWatch. Which setup is CORRECT?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a Glue Data Quality ruleset associated with the Data Catalog table, then create a Glue Data Quality evaluation task scheduled to run daily. The evaluation runs directly against the catalog table's underlying data without requiring an ETL job.</li>
-                <li><span class="option-label">B.</span> Create a minimal Glue ETL job that only reads the table and runs EvaluateDataQuality, scheduled by a Glue trigger to run daily.</li>
+                <li><span class="option-label">B.</span> Create a minimal Glue ETL job that only reads the table and runs EvaluateDataQuality, scheduled by a Glue trigger to run daily. with the Data Catalog table</li>
                 <li><span class="option-label">C.</span> Use EventBridge Scheduler to trigger a Lambda function that calls the Glue Data Quality API to evaluate rules against the catalog table daily.</li>
                 <li><span class="option-label">D.</span> Schedule an Athena query that runs the quality check SQL and publishes results to CloudWatch via a Lambda function triggered by query completion.</li>
             </ul>
@@ -189,7 +189,7 @@
             <div class="question-text">A data engineer defines a DQDL ruleset with 15 rules for a critical financial dataset. During testing, they notice that when one rule evaluates a column with an unexpected data type (e.g., applying a numeric range check on a column that contains string values in some partitions), the entire ruleset evaluation fails. How should the engineer make the ruleset more resilient?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Add a schema validation rule (ColumnDataType) as the first rule in the ruleset to verify column types before other rules execute, and use the "Analyzers" section to handle type-related evaluation errors gracefully.</li>
-                <li><span class="option-label">B.</span> Wrap each rule in a try-catch block within the DQDL ruleset to handle evaluation errors per-rule.</li>
+                <li><span class="option-label">B.</span> Wrap each rule in a try-catch block within the DQDL ruleset to handle evaluation errors per-rule. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Split the 15 rules into multiple smaller rulesets (one per rule) so that a single evaluation failure doesn't prevent other rules from running, and run all rulesets independently.</li>
                 <li><span class="option-label">D.</span> Configure the EvaluateDataQuality transform with the "failOnError = false" option so that rules that encounter evaluation errors are marked as failed rather than crashing the entire evaluation.</li>
             </ul>
