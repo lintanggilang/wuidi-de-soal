@@ -36,7 +36,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> HNSW (Hierarchical Navigable Small World) index with ef_construction=128 and m=16, providing approximate nearest neighbor search with 95%+ recall at sub-50ms latency by building a multi-layer proximity graph that enables logarithmic-time traversal through the vector space</li>
                 <li><span class="option-label">B.</span> IVF (Inverted File Index) with nlist=1000 and nprobe=50, partitioning vectors into 1000 Voronoi cells and searching only the 50 closest cells during query time</li>
-                <li><span class="option-label">C.</span> Exact brute-force search (sequential scan) without any index, computing cosine similarity against all 10 million vectors for guaranteed 100% recall</li>
+                <li><span class="option-label">C.</span> Exact brute-force search (sequential scan) without any index, computing cosine similarity against all 10 million vectors for guaranteed 100% recall with ef_construction=128</li>
                 <li><span class="option-label">D.</span> A B-tree index on a hash of the vector values for equality lookups on exact vector matches</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -51,7 +51,7 @@
             <div class="question-text">An online gaming platform needs a session state store that supports: 100,000 read/write operations per second, sub-millisecond latency for both reads and writes, complex data structures (sorted sets for leaderboards, lists for chat history, hashes for player state), and automatic failover with zero data loss. The data is ephemeral (24-hour TTL) but must not be lost during infrastructure failures within that window. Which AWS service is MOST appropriate?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon MemoryDB for Redis, which provides Redis-compatible data structure support (sorted sets, lists, hashes) with Multi-AZ durability using a distributed transaction log that ensures zero data loss on failover, while maintaining sub-millisecond read latency and single-digit millisecond write latency</li>
-                <li><span class="option-label">B.</span> Amazon ElastiCache for Redis with Multi-AZ replication enabled for automatic failover</li>
+                <li><span class="option-label">B.</span> Amazon ElastiCache for Redis with Multi-AZ replication enabled for automatic failover and single-digit millisecond write latency</li>
                 <li><span class="option-label">C.</span> Amazon DynamoDB with DAX caching layer for sub-millisecond reads</li>
                 <li><span class="option-label">D.</span> Amazon Aurora PostgreSQL with connection pooling using RDS Proxy for low-latency access</li>
             </ul>
@@ -69,7 +69,7 @@
                 <li><span class="option-label">A.</span> HNSW index because it provides consistent low-latency queries (sub-10ms for 500K vectors) regardless of data distribution changes, doesn't require retraining after weekly updates, and maintains high recall even with incremental insertions — critical for a fraud detection system where missing a similar pattern (false negative) has severe financial consequences</li>
                 <li><span class="option-label">B.</span> IVF index because it uses less memory than HNSW and provides faster index build times, making weekly rebuilds feasible</li>
                 <li><span class="option-label">C.</span> IVF index with nprobe equal to nlist (searching all cells) to guarantee 100% recall for the fraud detection use case</li>
-                <li><span class="option-label">D.</span> Neither — use exact brute-force search since 500K vectors is small enough for sequential scan within 10ms</li>
+                <li><span class="option-label">D.</span> Neither — use exact brute-force search since 500K vectors is small enough for sequential scan within 10ms with incremental insertions — critical for a fraud detection system where missing a similar pattern (false negative) has severe financial consequences</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> Amazon Aurora PostgreSQL with pgvector extension, which provides vector similarity search (HNSW/IVF indexes), traditional SQL for metadata filtering (WHERE department='Engineering' AND date > '2024-01-01'), full-text search via tsvector/tsquery, and native ACID transaction support — all in a single database engine</li>
                 <li><span class="option-label">B.</span> Amazon OpenSearch Service with k-NN plugin for vector search, combined with its native full-text search capabilities and metadata filtering</li>
                 <li><span class="option-label">C.</span> Amazon Neptune for storing document relationships as a knowledge graph with vector similarity as a graph traversal operation</li>
-                <li><span class="option-label">D.</span> Amazon DynamoDB for document storage with a separate Pinecone-compatible vector database for similarity search</li>
+                <li><span class="option-label">D.</span> Amazon DynamoDB for document storage with a separate Pinecone-compatible vector database for similarity search configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -99,7 +99,7 @@
             <div class="question-text">A supply chain company needs to model and query complex relationships between suppliers, manufacturers, distributors, and retailers. Key queries include: "find all suppliers within 3 hops of a given retailer," "identify the shortest supply route between two entities," and "detect circular dependencies in the supply chain." The graph has 2 million nodes and 50 million edges with properties on both. Which AWS service is specifically designed for this use case?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon Neptune, a purpose-built graph database supporting both property graph (Gremlin/openCypher) and RDF (SPARQL) models, optimized for traversal queries like multi-hop path finding, shortest path algorithms, and cycle detection across millions of nodes and edges with ACID transaction support</li>
-                <li><span class="option-label">B.</span> Amazon DynamoDB with an adjacency list pattern where each item stores a node and its direct connections as a list attribute</li>
+                <li><span class="option-label">B.</span> Amazon DynamoDB with an adjacency list pattern where each item stores a node and its direct connections as a list attribute for traversal queries like multi-hop path finding</li>
                 <li><span class="option-label">C.</span> Amazon Redshift with recursive CTEs (Common Table Expressions) to traverse the supply chain relationships stored in a relational table</li>
                 <li><span class="option-label">D.</span> Amazon Aurora PostgreSQL with a self-referencing table and application-level graph traversal logic</li>
             </ul>
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Amazon ElastiCache for Redis cluster mode with multiple shards distributing the 200M keys across nodes, using consistent hashing for key distribution. Configure read replicas per shard for read scaling, and use connection pooling to minimize connection overhead at 500K RPS</li>
                 <li><span class="option-label">B.</span> Amazon DynamoDB with DAX (DynamoDB Accelerator) as the caching layer in front of DynamoDB</li>
                 <li><span class="option-label">C.</span> Application-level in-memory cache (local HashMap) in each bidding service instance, refreshed periodically from S3</li>
-                <li><span class="option-label">D.</span> Amazon ElastiCache for Memcached with multiple nodes for simple key-value caching</li>
+                <li><span class="option-label">D.</span> Amazon ElastiCache for Memcached with multiple nodes for simple key-value caching with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon OpenSearch Service, which provides inverted indexes for full-text search with BM25 relevance scoring, aggregation framework for faceted navigation, completion suggesters for autocomplete, and fuzzy query support for misspelling tolerance — all optimized for search workloads at scale</li>
                 <li><span class="option-label">B.</span> Amazon Aurora PostgreSQL with GIN indexes on tsvector columns for full-text search and B-tree indexes for faceted filtering</li>
-                <li><span class="option-label">C.</span> Amazon DynamoDB with a GSI for each searchable attribute and application-level text matching</li>
+                <li><span class="option-label">C.</span> Amazon DynamoDB with a GSI for each searchable attribute and application-level text matching with parallel processing and horizontal scaling capabilities</li>
                 <li><span class="option-label">D.</span> Amazon Redshift with LIKE queries on product description columns and GROUP BY for facet counts</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -147,7 +147,7 @@
             <div class="question-text">A machine learning team has trained a product recommendation model that generates 768-dimensional embedding vectors. They need to serve recommendations with: (1) vector similarity search across 100 million product embeddings, (2) real-time filtering by product availability (boolean) and price range during the search, (3) updates to product availability status within 1 second of change, and (4) 99.9% availability. The team wants a fully managed solution. Which approach BEST meets all requirements?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon OpenSearch Service with k-NN plugin using HNSW algorithm, storing embeddings as knn_vector fields alongside product metadata. Use filtered k-NN queries that apply metadata filters (availability=true AND price BETWEEN 10 AND 50) during the vector search, with near real-time index refreshes for availability updates</li>
-                <li><span class="option-label">B.</span> Aurora PostgreSQL with pgvector, using HNSW index on the embedding column and WHERE clauses for metadata filtering</li>
+                <li><span class="option-label">B.</span> Aurora PostgreSQL with pgvector, using HNSW index on the embedding column and WHERE clauses for metadata filtering with real-time processing and low-latency data delivery</li>
                 <li><span class="option-label">C.</span> Amazon SageMaker with a custom endpoint hosting a FAISS index loaded from S3, with separate DynamoDB calls for metadata filtering</li>
                 <li><span class="option-label">D.</span> Amazon Neptune with vector similarity as a custom Lambda function integrated into graph queries</li>
             </ul>
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Deploy DynamoDB Accelerator (DAX) as an in-memory cache in front of DynamoDB. DAX provides microsecond read latency for cached items (the hot 100K items), transparently handles cache misses by reading from DynamoDB (long-tail items), and reduces DynamoDB RCU consumption by serving repeated reads from cache — enabling RCU reduction by up to 90%</li>
                 <li><span class="option-label">B.</span> Increase DynamoDB provisioned RCUs to handle 50K reads/second without throttling</li>
-                <li><span class="option-label">C.</span> Switch to DynamoDB On-Demand mode to pay per-request and avoid over-provisioning</li>
+                <li><span class="option-label">C.</span> Switch to DynamoDB On-Demand mode to pay per-request and avoid over-provisioning for cached items (the hot 100K items)</li>
                 <li><span class="option-label">D.</span> Implement application-level caching using ElastiCache Redis with TTL-based cache invalidation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -181,7 +181,7 @@
                 <li><span class="option-label">A.</span> Amazon Neptune for storing the road network graph with Gremlin traversal queries for path finding, combined with a property update mechanism that modifies edge weights (travel_time) every 5 minutes from real-time traffic feeds, using Neptune's ACID transactions to ensure consistent reads during weight updates</li>
                 <li><span class="option-label">B.</span> Amazon DynamoDB storing each road segment as an item with origin/destination as keys, with application-level Dijkstra's algorithm making individual GetItem calls for each step</li>
                 <li><span class="option-label">C.</span> Amazon Redshift with a roads table and recursive CTEs to find shortest paths using SQL</li>
-                <li><span class="option-label">D.</span> Amazon S3 storing the graph as an adjacency matrix CSV file, loaded into Lambda memory for route calculations</li>
+                <li><span class="option-label">D.</span> Amazon S3 storing the graph as an adjacency matrix CSV file, loaded into Lambda memory for route calculations with Gremlin traversal queries for path finding</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
