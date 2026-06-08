@@ -37,7 +37,7 @@
                 <li><span class="option-label">A.</span> Split the single 500 GB file into multiple smaller files, ideally a multiple of 16 (matching the cluster's slice count). For example, split into 16 or 32 files of roughly equal size. The COPY command assigns files to slices in parallel — with 16 slices, each slice processes one or more files simultaneously. A single file means only one slice handles the entire load while 15 slices sit idle</li>
                 <li><span class="option-label">B.</span> Compress the single CSV file using GZIP before loading. The COPY command with GZIP parameter decompresses on the fly, reducing network transfer time</li>
                 <li><span class="option-label">C.</span> Convert the CSV file to Parquet format and use COPY with FORMAT AS PARQUET parameter for columnar loading</li>
-                <li><span class="option-label">D.</span> Increase the COPY command's COMPROWS parameter to sample more rows for automatic compression encoding detection</li>
+                <li><span class="option-label">D.</span> Increase the COPY command's COMPROWS parameter to sample more rows for automatic compression encoding detection with 16 slices</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Add MAXERROR 12 (or higher) to the COPY command. This parameter specifies the maximum number of errors allowed before the COPY fails. With MAXERROR 12, the COPY completes successfully, loading all valid records and skipping the 12 invalid ones. Invalid records are logged in STL_LOAD_ERRORS system table for investigation, including the exact error, the raw record, and the column that failed</li>
                 <li><span class="option-label">B.</span> Add ACCEPTINVCHARS ' ' to the COPY command to replace invalid characters with spaces, allowing all records to load</li>
-                <li><span class="option-label">C.</span> Pre-process the CSV file with a Glue ETL job to fix or remove invalid records before loading into Redshift</li>
+                <li><span class="option-label">C.</span> Pre-process the CSV file with a Glue ETL job to fix or remove invalid records before loading into Redshift and skipping the 12 invalid ones for investigation</li>
                 <li><span class="option-label">D.</span> Change the column type from INTEGER to VARCHAR in the Redshift table to accept all values, then cast to integer in a post-load transformation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use the UNLOAD command with FORMAT AS PARQUET and PARTITION BY (year, month): UNLOAD ('SELECT *, EXTRACT(year FROM order_date) as year, EXTRACT(month FROM order_date) as month FROM complex_query') TO 's3://bucket/output/' IAM_ROLE 'arn:aws:iam::123:role/redshift-role' FORMAT AS PARQUET PARTITION BY (year, month). Redshift writes partitioned Parquet files to S3 with Hive-style directory structure (year=2024/month=06/)</li>
                 <li><span class="option-label">B.</span> Run UNLOAD for each year-month combination separately (24 UNLOAD commands for 2 years of monthly partitions), each targeting a different S3 prefix</li>
-                <li><span class="option-label">C.</span> UNLOAD to CSV, then use a Glue ETL job to convert CSV to partitioned Parquet — UNLOAD doesn't support Parquet format</li>
+                <li><span class="option-label">C.</span> UNLOAD to CSV, then use a Glue ETL job to convert CSV to partitioned Parquet — UNLOAD doesn't support Parquet format with FORMAT AS PARQUET</li>
                 <li><span class="option-label">D.</span> Use Redshift Spectrum with CTAS (CREATE TABLE AS) to write the query results directly to S3 as an external table in Parquet format</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> Add the "mandatory": true flag for each entry in the manifest JSON file. When a file is marked as mandatory and doesn't exist in S3, the COPY command fails with an explicit error rather than silently skipping the missing file. The manifest format supports: {"entries": [{"url": "s3://bucket/file1.csv", "mandatory": true}]}. This ensures all expected files are loaded or the entire COPY fails</li>
                 <li><span class="option-label">B.</span> Use COPY without a manifest, specifying only the S3 prefix. Redshift automatically loads all files under the prefix, so a deleted file is obviously missing from the result</li>
                 <li><span class="option-label">C.</span> Add a post-COPY validation step that counts loaded rows and compares against an expected count stored in a metadata table</li>
-                <li><span class="option-label">D.</span> Enable S3 versioning so deleted files can still be accessed by the COPY command through version-specific references</li>
+                <li><span class="option-label">D.</span> Enable S3 versioning so deleted files can still be accessed by the COPY command through version-specific references with an explicit error rather than silently skipping the missing file for each entry in the manifest JSON file</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -99,7 +99,7 @@
             <div class="question-text">A Redshift COPY command loads data from S3 using an IAM role attached to the cluster. The security team requires that the Redshift cluster can ONLY read from a specific S3 bucket (s3://production-data/) and cannot access any other S3 resources. Additionally, the COPY must use encryption in transit. Which configuration satisfies both requirements?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create an IAM role with a policy that restricts s3:GetObject and s3:ListBucket to only the s3://production-data/ bucket ARN. Attach this role to the Redshift cluster. In the COPY command, reference the role: COPY table FROM 's3://production-data/path/' IAM_ROLE 'arn:aws:iam::123:role/redshift-s3-readonly'. Encryption in transit is automatic — Redshift uses HTTPS (TLS) for all S3 communications by default when using IAM roles. No additional TLS configuration needed in the COPY command</li>
-                <li><span class="option-label">B.</span> Use temporary S3 credentials (access key + secret key) in the COPY command with CREDENTIALS parameter, scoping the credentials to the specific bucket via a session policy</li>
+                <li><span class="option-label">B.</span> Use temporary S3 credentials (access key + secret key) in the COPY command with CREDENTIALS parameter, scoping the credentials to the specific bucket via a session policy and s3:ListBucket to only the s3://production-data/ bucket ARN</li>
                 <li><span class="option-label">C.</span> Configure an S3 VPC endpoint with a resource policy that restricts access to only the Redshift cluster's VPC, then use COPY with the bucket path</li>
                 <li><span class="option-label">D.</span> Attach a bucket policy on s3://production-data/ that allows access only from the Redshift cluster's IP address, and enable SSE-S3 encryption on the bucket for encryption in transit</li>
             </ul>
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Run VACUUM SORT on the table. COPY appends new rows to the unsorted region of the table (data lands in arrival order, not sorted by order_date). After 6 months of appends, a large percentage of data is unsorted, making the SORTKEY ineffective for range filtering. VACUUM SORT re-sorts the unsorted region and merges it with the sorted region, restoring SORTKEY-based scan elimination. Alternatively, run VACUUM FULL to also reclaim deleted row space</li>
                 <li><span class="option-label">B.</span> Run ANALYZE on the table to update statistics. The query planner is choosing Seq Scan because statistics are stale and don't reflect the current data distribution</li>
                 <li><span class="option-label">C.</span> Resize the Redshift cluster by adding more nodes — the data volume has grown beyond the current cluster's capacity for efficient query execution</li>
-                <li><span class="option-label">D.</span> Drop and recreate the table with a compound SORTKEY instead of an interleaved SORTKEY to improve sort maintenance</li>
+                <li><span class="option-label">D.</span> Drop and recreate the table with a compound SORTKEY instead of an interleaved SORTKEY to improve sort maintenance for range filtering</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Apply LZO or ZSTD compression to the split CSV files before uploading to S3, AND convert from CSV to Parquet format. Compression reduces the data transferred from S3 to Redshift (from 1 TB to ~200 GB depending on data), reducing network time. Parquet's columnar format with built-in compression is even more efficient because COPY processes only needed columns and Redshift can apply columnar decompression natively. Combined with file splitting (already done), this addresses all three bottlenecks: parallelism, network transfer, and parsing</li>
                 <li><span class="option-label">B.</span> Enable Redshift Concurrency Scaling and run multiple COPY commands in parallel, each loading a subset of files</li>
-                <li><span class="option-label">C.</span> Increase the S3 request rate by distributing files across multiple S3 prefixes to avoid S3 throttling</li>
+                <li><span class="option-label">C.</span> Increase the S3 request rate by distributing files across multiple S3 prefixes to avoid S3 throttling with built-in compression is even more efficient because COPY processes only needed columns and convert from CSV to Parquet format</li>
                 <li><span class="option-label">D.</span> Enable Enhanced VPC Routing for the Redshift cluster to use faster VPC network paths for S3 access</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -149,7 +149,7 @@
                 <li><span class="option-label">A.</span> Use the MAXFILESIZE parameter in UNLOAD to set a larger maximum file size (e.g., MAXFILESIZE 1 GB). By default, UNLOAD creates files up to 6.2 GB for uncompressed data. MAXFILESIZE controls the upper bound — setting it larger produces fewer, larger files. Additionally, use PARALLEL OFF to write output as a single file (if fewer files is the priority), though this sacrifices UNLOAD speed for consolidation</li>
                 <li><span class="option-label">B.</span> Use the FILECOUNT parameter to specify exactly how many output files UNLOAD should produce</li>
                 <li><span class="option-label">C.</span> Use PARALLEL ON with a number (e.g., PARALLEL 4) to control the degree of output parallelism and thus the file count</li>
-                <li><span class="option-label">D.</span> Run a post-UNLOAD S3 batch operation to merge the 200 small files into fewer large files using S3 Object Lambda</li>
+                <li><span class="option-label">D.</span> Run a post-UNLOAD S3 batch operation to merge the 200 small files into fewer large files using S3 Object Lambda for uncompressed data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The IAM role in Account A must also have an IAM policy granting s3:GetObject and s3:ListBucket permissions on the cross-account bucket ARN. Cross-account S3 access requires BOTH: (1) the bucket policy in Account B allowing the Account A role, AND (2) the IAM policy on the Account A role granting access to the bucket. Both sides must explicitly permit the access — neither alone is sufficient for IAM role-based cross-account access</li>
                 <li><span class="option-label">B.</span> The Redshift cluster needs an additional trust policy allowing it to assume a role in Account B, then use role chaining in the COPY command</li>
-                <li><span class="option-label">C.</span> The S3 bucket must have ACLs disabled (bucket owner enforced) for cross-account COPY to work via bucket policies</li>
+                <li><span class="option-label">C.</span> The S3 bucket must have ACLs disabled (bucket owner enforced) for cross-account COPY to work via bucket policies and s3:ListBucket permissions on the cross-account bucket ARN</li>
                 <li><span class="option-label">D.</span> The COPY command must specify the bucket's Account B credentials explicitly using the ACCESS_KEY_ID and SECRET_ACCESS_KEY parameters</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -181,7 +181,7 @@
                 <li><span class="option-label">A.</span> The 'auto' jsonpaths option maps JSON top-level keys to table column names by matching names. Nested objects and arrays are not automatically flattened — only top-level keys are mapped. To load nested fields, create a JSONPaths file that explicitly specifies the path to each nested field (e.g., "$['address']['city']" maps to a flat "city" column). Reference this file in COPY: COPY table FROM 's3://data/' JSON 's3://config/jsonpaths.json'</li>
                 <li><span class="option-label">B.</span> The 'auto' option loads all nested fields but maps them to columns named with dot notation (address.city). The target table needs columns named with dots to match</li>
                 <li><span class="option-label">C.</span> JSON nested objects require Redshift SUPER type columns. Change the target table to use SUPER columns for nested data, then query with path extraction syntax</li>
-                <li><span class="option-label">D.</span> Add the NESTING parameter to the COPY command (COPY ... JSON 'auto' NESTING) to enable automatic nested field flattening</li>
+                <li><span class="option-label">D.</span> Add the NESTING parameter to the COPY command (COPY ... JSON 'auto' NESTING) to enable automatic nested field flattening with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
