@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> Create IAM policies in each account that deny all actions when aws:RequestedRegion is not an EU region</li>
                 <li><span class="option-label">B.</span> Apply a Service Control Policy (SCP) at the organization root that denies all actions except for global services when aws:RequestedRegion is not in the approved EU region list</li>
                 <li><span class="option-label">C.</span> Use AWS Config rules to detect resources in non-EU regions and automatically terminate them</li>
-                <li><span class="option-label">D.</span> Disable non-EU regions in the AWS Organizations account settings for all member accounts</li>
+                <li><span class="option-label">D.</span> Disable non-EU regions in the AWS Organizations account settings for all member accounts configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -55,7 +55,7 @@
                 <li><span class="option-label">A.</span> Apply a bucket policy on the source bucket that denies s3:PutReplicationConfiguration unless the destination ARN contains an EU region</li>
                 <li><span class="option-label">B.</span> Use an SCP that denies s3:PutReplicationConfiguration when the s3:DestinationRegion condition key is not in the approved EU region list</li>
                 <li><span class="option-label">C.</span> Configure AWS Config rule s3-bucket-replication-enabled with a parameter restricting allowed destination regions</li>
-                <li><span class="option-label">D.</span> Use S3 Object Lock in Compliance mode to prevent any replication outside the current region</li>
+                <li><span class="option-label">D.</span> Use S3 Object Lock in Compliance mode to prevent any replication outside the current region with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -89,7 +89,7 @@
                 <li><span class="option-label">A.</span> Enable the built-in "Disallow cross-region data transfer" elective guardrail in Control Tower</li>
                 <li><span class="option-label">B.</span> Create a custom Control Tower guardrail using an SCP that denies redshift:CopyClusterSnapshot when aws:RequestedRegion is not in the approved region list</li>
                 <li><span class="option-label">C.</span> Configure the Control Tower Region deny setting to block all services in non-approved regions</li>
-                <li><span class="option-label">D.</span> Use Control Tower's detective guardrail to identify cross-region snapshots and send alerts</li>
+                <li><span class="option-label">D.</span> Use Control Tower's detective guardrail to identify cross-region snapshots and send alerts configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -104,7 +104,7 @@
             <div class="question-text">A company uses AWS Backup to manage automated backups for their data infrastructure (RDS, DynamoDB, EFS) in eu-central-1. The compliance team discovers that AWS Backup has been configured to copy backups to us-east-1 as part of a cross-region backup strategy set up by a previous administrator. How should the data engineer prevent AWS Backup from creating copies in non-EU regions while maintaining the backup strategy for EU regions?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Modify the AWS Backup plan to remove the cross-region copy rule targeting us-east-1, and add copy rules only for eu-west-1</li>
-                <li><span class="option-label">B.</span> Apply an SCP that denies backup:CopyIntoRegion when the target region is not in the EU approved list</li>
+                <li><span class="option-label">B.</span> Apply an SCP that denies backup:CopyIntoRegion when the target region is not in the EU approved list with a condition that the destination vault ARN does not contain an EU region identifier</li>
                 <li><span class="option-label">C.</span> Modify the backup plan AND apply an SCP denying backup:StartCopyJob with a condition that the destination vault ARN does not contain an EU region identifier</li>
                 <li><span class="option-label">D.</span> Use AWS Backup Vault Lock to prevent any modification to backup copies and their destinations</li>
             </ul>
@@ -122,7 +122,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use the managed Config rule dynamodb-table-encrypted-kms to check if tables are encrypted in approved regions only</li>
                 <li><span class="option-label">B.</span> Create a custom AWS Config rule using a Lambda function that evaluates DynamoDB table replica regions against an approved region list and marks tables with non-EU replicas as NON_COMPLIANT</li>
-                <li><span class="option-label">C.</span> Use CloudTrail to log CreateTable events and create a CloudWatch alarm for non-EU region activities</li>
+                <li><span class="option-label">C.</span> Use CloudTrail to log CreateTable events and create a CloudWatch alarm for non-EU region activities with non-EU replicas as NON_COMPLIANT and marks tables with non-EU replicas as NON_COMPLIANT</li>
                 <li><span class="option-label">D.</span> Use the managed Config rule dynamodb-autoscaling-enabled and check its regional configuration</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -140,7 +140,7 @@
                 <li><span class="option-label">A.</span> Yes, S3 Object Lock Compliance mode prevents cross-region replication and movement of objects</li>
                 <li><span class="option-label">B.</span> No, S3 Object Lock protects against deletion/modification but does NOT prevent replication. Use SCPs to deny s3:ReplicateObject when the destination is not ap-southeast-2, combined with bucket policies restricting PutReplicationConfiguration</li>
                 <li><span class="option-label">C.</span> Yes, S3 Object Lock Legal Hold prevents any operation including replication on the objects</li>
-                <li><span class="option-label">D.</span> No, use S3 Glacier Vault Lock instead, which prevents cross-region movement of archived data</li>
+                <li><span class="option-label">D.</span> No, use S3 Glacier Vault Lock instead, which prevents cross-region movement of archived data with bucket policies restricting PutReplicationConfiguration</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -156,7 +156,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create the SCP with a Deny effect and add a NotAction list containing global service actions (iam:*, organizations:*, route53:*, cloudfront:*, etc.) so these services are excluded from the region restriction</li>
                 <li><span class="option-label">B.</span> Create two SCPs: one allowing all actions in EU regions, and another explicitly allowing global services in us-east-1</li>
-                <li><span class="option-label">C.</span> Add a condition to the SCP that checks if the service is a global service before applying the region restriction</li>
+                <li><span class="option-label">C.</span> Add a condition to the SCP that checks if the service is a global service before applying the region restriction with a Deny effect</li>
                 <li><span class="option-label">D.</span> Use StringNotEquals on aws:RequestedRegion with only the non-EU regions listed in the condition, rather than allowed regions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -171,7 +171,7 @@
             <div class="question-number">9</div>
             <div class="question-text">An organization needs to implement a comprehensive data residency solution that prevents data from leaving the EU across ALL data services (S3, RDS, Redshift, DynamoDB, EBS, EFS). They are concerned about both explicit copying (replication, snapshots) and implicit data movement (Lambda processing in other regions accessing EU data). Which layered approach provides the MOST comprehensive protection?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Apply a single SCP restricting aws:RequestedRegion to EU regions for all services</li>
+                <li><span class="option-label">A.</span> Apply a single SCP restricting aws:RequestedRegion to EU regions for all services with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> SCP restricting aws:RequestedRegion to EU + VPC endpoint policies denying cross-region API calls + S3 bucket policies restricting replication destinations + AWS Config rules for continuous compliance monitoring</li>
                 <li><span class="option-label">C.</span> Use AWS Control Tower Region deny guardrail combined with detective Config rules</li>
                 <li><span class="option-label">D.</span> Enable AWS Artifact agreements for GDPR and rely on AWS's contractual guarantee that data stays in specified regions</li>
@@ -190,7 +190,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure AWS Config automatic remediation using SSM Automation document that calls S3 DeleteBucketReplication API and then deletes objects in the destination bucket</li>
                 <li><span class="option-label">B.</span> Configure AWS Config automatic remediation to disable the replication rule only, then use a separate scheduled Lambda to identify and delete already-replicated objects in the unauthorized region with appropriate approval workflow</li>
-                <li><span class="option-label">C.</span> Use Config manual remediation to prevent accidental deletion of 500 TB of potentially needed data</li>
+                <li><span class="option-label">C.</span> Use Config manual remediation to prevent accidental deletion of 500 TB of potentially needed data with appropriate approval workflow</li>
                 <li><span class="option-label">D.</span> Configure EventBridge to detect the Config NON_COMPLIANT finding and trigger Step Functions that handles both remediation steps with error handling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
