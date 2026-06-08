@@ -37,7 +37,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure CloudTrail to deliver events to CloudWatch Logs. Create a metric filter for Glue GetTable/GetDatabase calls from non-authorized principals. Create a CloudWatch alarm on the metric.</li>
                 <li><span class="option-label">B.</span> Configure CloudTrail to send events to EventBridge. Create an EventBridge rule matching Glue API calls with a custom event pattern that excludes authorized principals, targeting an SNS topic.</li>
-                <li><span class="option-label">C.</span> Query CloudTrail event history every 5 minutes using a Lambda function to check for unauthorized access.</li>
+                <li><span class="option-label">C.</span> Query CloudTrail event history every 5 minutes using a Lambda function to check for unauthorized access. with a custom event pattern that excludes authorized principals</li>
                 <li><span class="option-label">D.</span> Enable CloudTrail Insights to automatically detect unusual Glue API access patterns.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -54,7 +54,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable CloudTrail data events for DynamoDB with advanced event selectors that filter only specific tables and operations of audit interest, rather than logging all DynamoDB data events account-wide.</li>
                 <li><span class="option-label">B.</span> Enable CloudTrail data events for all DynamoDB tables in the account to ensure comprehensive coverage.</li>
-                <li><span class="option-label">C.</span> Use DynamoDB Streams to capture all changes instead of CloudTrail data events.</li>
+                <li><span class="option-label">C.</span> Use DynamoDB Streams to capture all changes instead of CloudTrail data events. with advanced event selectors that filter only specific tables</li>
                 <li><span class="option-label">D.</span> Implement application-level logging that records each DynamoDB operation to a separate audit table.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -87,7 +87,7 @@
             <div class="question-text">A data pipeline team uses CloudTrail Lake to analyze API activity across their organization. They need to run a query that identifies all IAM roles that invoked AWS Glue StartJobRun in the production account over the last 30 days, grouped by role name with invocation count. Which CloudTrail Lake query accomplishes this?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> SELECT userIdentity.sessionContext.sessionIssuer.arn AS role_arn, COUNT(*) AS invocation_count FROM event_data_store_id WHERE eventName = 'StartJobRun' AND eventSource = 'glue.amazonaws.com' AND recipientAccountId = '123456789012' AND eventTime > '2024-01-01 00:00:00' GROUP BY userIdentity.sessionContext.sessionIssuer.arn</li>
-                <li><span class="option-label">B.</span> SELECT * FROM cloudtrail_events WHERE api_call = 'StartJobRun' AND service = 'glue'</li>
+                <li><span class="option-label">B.</span> SELECT * FROM cloudtrail_events WHERE api_call = 'StartJobRun' AND service = 'glue' and eventSource = 'glue</li>
                 <li><span class="option-label">C.</span> SELECT eventName, count FROM event_history WHERE eventName LIKE '%Glue%'</li>
                 <li><span class="option-label">D.</span> SELECT userIdentity.arn, eventName FROM trails WHERE eventName = 'StartJobRun' LIMIT 100</li>
             </ul>
@@ -106,7 +106,7 @@
                 <li><span class="option-label">A.</span> CloudTrail Insights, which uses machine learning to identify unusual activity patterns by establishing a baseline of normal API call volume and flagging deviations.</li>
                 <li><span class="option-label">B.</span> CloudTrail event history with time-based filtering to compare current vs. historical API volumes.</li>
                 <li><span class="option-label">C.</span> CloudWatch anomaly detection alarms on CloudTrail-sourced metrics.</li>
-                <li><span class="option-label">D.</span> AWS GuardDuty with CloudTrail as a data source for threat detection.</li>
+                <li><span class="option-label">D.</span> AWS GuardDuty with CloudTrail as a data source for threat detection. and flagging deviations</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -121,7 +121,7 @@
             <div class="question-text">A data engineer needs to track when Lambda functions in their data pipeline read objects from specific S3 buckets. They enable CloudTrail data events for S3. After reviewing the logs, they notice that GetObject events show the Lambda function's execution role as the identity, but they cannot determine which specific Lambda function made the call. How can they identify the specific Lambda function?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Examine the userIdentity.sessionContext.sessionIssuer field in the CloudTrail event, which contains the role ARN. Cross-reference with the Lambda function's execution role configuration to identify the function.</li>
-                <li><span class="option-label">B.</span> Look at the sourceIPAddress field in the CloudTrail event, which will show the Lambda function's IP address.</li>
+                <li><span class="option-label">B.</span> Look at the sourceIPAddress field in the CloudTrail event, which will show the Lambda function's IP address. with the Lambda function's execution role configuration</li>
                 <li><span class="option-label">C.</span> Check the userAgent field in the CloudTrail event, which may contain the Lambda function name in the AWS SDK user agent string.</li>
                 <li><span class="option-label">D.</span> Enable AWS X-Ray tracing on the Lambda functions to correlate S3 API calls with specific function invocations via trace IDs in the CloudTrail events.</li>
             </ul>
@@ -138,7 +138,7 @@
             <div class="question-text">An organization with 50 AWS accounts uses CloudTrail organization trails. They want to use CloudTrail Lake to query events across all accounts with SQL. The data must be retained for 7 years for compliance. What is a key cost consideration when configuring CloudTrail Lake for this scenario?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> CloudTrail Lake charges for data ingestion and storage based on the retention period. With 50 accounts and 7-year retention, the cost could be significantly higher than storing logs in S3 and querying with Athena.</li>
-                <li><span class="option-label">B.</span> CloudTrail Lake is free for organization trails and only charges for query execution.</li>
+                <li><span class="option-label">B.</span> CloudTrail Lake is free for organization trails and only charges for query execution. with 50 accounts and storage based on the retention period</li>
                 <li><span class="option-label">C.</span> CloudTrail Lake has the same pricing as standard CloudTrail log delivery to S3.</li>
                 <li><span class="option-label">D.</span> CloudTrail Lake is only available in us-east-1, requiring cross-region data transfer fees for other regions.</li>
             </ul>
@@ -157,7 +157,7 @@
                 <li><span class="option-label">A.</span> Create a single trail with management events enabled for all services. Use advanced event selectors to enable S3 data events only for the 5 sensitive buckets and DynamoDB data events only for specific tables.</li>
                 <li><span class="option-label">B.</span> Create two trails: one for management events across all services, and another for data events across all S3 buckets and DynamoDB tables.</li>
                 <li><span class="option-label">C.</span> Create a single trail with management events and data events enabled for all resources to ensure complete coverage.</li>
-                <li><span class="option-label">D.</span> Create separate trails for each sensitive S3 bucket with data events enabled.</li>
+                <li><span class="option-label">D.</span> Create separate trails for each sensitive S3 bucket with data events enabled. and DynamoDB data events only for specific tables</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -172,7 +172,7 @@
             <div class="question-text">A data pipeline automation uses Step Functions to orchestrate Glue jobs. The team needs to create an automated response when CloudTrail detects that someone manually runs a Glue job outside of the Step Functions workflow (bypassing the approved orchestration). Which integration achieves near real-time detection and automated response?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> CloudTrail → EventBridge rule matching StartJobRun events where userIdentity is NOT the Step Functions service role → Lambda function to terminate the job and notify the security team.</li>
-                <li><span class="option-label">B.</span> CloudTrail → S3 → S3 Event Notification → Lambda function to parse new log files and detect unauthorized StartJobRun events.</li>
+                <li><span class="option-label">B.</span> CloudTrail → S3 → S3 Event Notification → Lambda function to parse new log files and detect unauthorized StartJobRun events. and notify the security team</li>
                 <li><span class="option-label">C.</span> CloudTrail → CloudWatch Logs → Subscription filter → Lambda function to detect StartJobRun events from non-Step Functions principals.</li>
                 <li><span class="option-label">D.</span> IAM policy that denies StartJobRun for all principals except the Step Functions execution role.</li>
             </ul>
@@ -191,7 +191,7 @@
                 <li><span class="option-label">A.</span> Run the CloudTrail validate-logs CLI command with a time range spanning 6 months. The digest files chain together cryptographically, proving that no log files are missing or modified.</li>
                 <li><span class="option-label">B.</span> Count the total number of log files in S3 and compare against the expected number based on CloudTrail's delivery frequency.</li>
                 <li><span class="option-label">C.</span> Review the CloudTrail console's event history to confirm events are present for each day in the 6-month period.</li>
-                <li><span class="option-label">D.</span> Use AWS Config's CloudTrail compliance rule to verify trail has been continuously enabled for 6 months.</li>
+                <li><span class="option-label">D.</span> Use AWS Config's CloudTrail compliance rule to verify trail has been continuously enabled for 6 months. with a time range spanning 6 months</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
