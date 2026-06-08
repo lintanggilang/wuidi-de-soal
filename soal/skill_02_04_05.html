@@ -36,7 +36,7 @@
             <div class="question-text">A data engineering team stores 5 TB of sales transaction data in Amazon S3 as Parquet files. Analysts primarily query this data using Amazon Athena with filters on transaction_date and region. Current queries scan the entire dataset and take over 10 minutes. The team needs to reduce query time and cost. Which S3 partitioning strategy provides the MOST effective optimization?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Partition by s3://bucket/sales/year={yyyy}/month={MM}/day={dd}/region={region}/</li>
-                <li><span class="option-label">B.</span> Partition by s3://bucket/sales/region={region}/year={yyyy}/</li>
+                <li><span class="option-label">B.</span> Partition by s3://bucket/sales/region={region}/year={yyyy}/ with native S3 integration</li>
                 <li><span class="option-label">C.</span> Partition by s3://bucket/sales/transaction_id={id}/</li>
                 <li><span class="option-label">D.</span> Store all data in a single prefix with Parquet row group filtering</li>
             </ul>
@@ -70,7 +70,7 @@
             <div class="question-text">A data engineer is optimizing a DynamoDB table that stores IoT sensor readings. The table has a partition key of device_id and sort key of timestamp. Analysts frequently need to query readings by sensor_type across all devices for a specific time range. Current queries require full table scans. Which indexing strategy resolves this access pattern?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a Global Secondary Index (GSI) with sensor_type as partition key and timestamp as sort key</li>
-                <li><span class="option-label">B.</span> Create a Local Secondary Index (LSI) with sensor_type as the sort key</li>
+                <li><span class="option-label">B.</span> Create a Local Secondary Index (LSI) with sensor_type as the sort key and timestamp as sort key</li>
                 <li><span class="option-label">C.</span> Add a Global Secondary Index (GSI) with timestamp as partition key and sensor_type as sort key</li>
                 <li><span class="option-label">D.</span> Modify the base table's partition key to sensor_type</li>
             </ul>
@@ -86,7 +86,7 @@
             <div class="question-number">4</div>
             <div class="question-text">A data lake team is converting CSV files to Apache Parquet format for storage in S3. The dataset contains a mix of columns: 5 numeric columns frequently used for aggregations, 3 high-cardinality string columns, and 2 timestamp columns. They need to choose the optimal compression codec. Which codec selection strategy maximizes both compression ratio and query performance for this analytical workload?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use Gzip compression for all columns to maximize compression ratio</li>
+                <li><span class="option-label">A.</span> Use Gzip compression for all columns to maximize compression ratio and fast decompression suitable for analytical queries</li>
                 <li><span class="option-label">B.</span> Use Snappy compression for all columns to maximize decompression speed</li>
                 <li><span class="option-label">C.</span> Use ZSTD compression which provides a balance of high compression ratio and fast decompression suitable for analytical queries</li>
                 <li><span class="option-label">D.</span> Use LZO compression for all columns as it provides the fastest read performance</li>
@@ -105,7 +105,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase the Athena DPU count to process more files in parallel</li>
                 <li><span class="option-label">B.</span> Compact small files into larger files targeting 128-512 MB per file using AWS Glue or an S3DistCp job</li>
-                <li><span class="option-label">C.</span> Switch from Parquet to CSV format which handles small files better</li>
+                <li><span class="option-label">C.</span> Switch from Parquet to CSV format which handles small files better with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Add more partition levels to distribute files across more directories</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -140,7 +140,7 @@
                 <li><span class="option-label">A.</span> Create separate partitions for latitude ranges and longitude ranges in addition to date</li>
                 <li><span class="option-label">B.</span> Apply Z-ordering (space-filling curve) on latitude, longitude, and timestamp columns to co-locate related data</li>
                 <li><span class="option-label">C.</span> Use Parquet row group filtering with min/max statistics on lat/long columns</li>
-                <li><span class="option-label">D.</span> Implement bucketing on a geohash column derived from latitude and longitude</li>
+                <li><span class="option-label">D.</span> Implement bucketing on a geohash column derived from latitude and longitude and timestamp columns to co-locate related data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer is configuring Parquet file writes for a data lake that will be queried by both Athena and Redshift Spectrum. The dataset has 200 columns but typical queries only access 5-10 columns at a time. The engineer needs to optimize row group size for this access pattern. Which row group configuration is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Set row group size to 8 MB to minimize memory usage during reads</li>
+                <li><span class="option-label">A.</span> Set row group size to 8 MB to minimize memory usage during reads for columnar reads of wide tables</li>
                 <li><span class="option-label">B.</span> Set row group size to 128 MB (default) which provides optimal balance for columnar reads of wide tables</li>
                 <li><span class="option-label">C.</span> Set row group size to 1 GB to minimize the number of row groups per file</li>
                 <li><span class="option-label">D.</span> Set row group size to 32 KB to maximize predicate pushdown granularity</li>
@@ -174,7 +174,7 @@
                 <li><span class="option-label">A.</span> Zone maps don't work with VARCHAR columns; switch to integer encoding for categories</li>
                 <li><span class="option-label">B.</span> The table has too many unsorted rows after recent loads; run VACUUM SORT to restore zone map effectiveness</li>
                 <li><span class="option-label">C.</span> The query is using LIKE patterns which cannot leverage zone maps; use equality predicates instead</li>
-                <li><span class="option-label">D.</span> Compound sort keys don't support zone maps; switch to interleaved sort key</li>
+                <li><span class="option-label">D.</span> Compound sort keys don't support zone maps; switch to interleaved sort key configured for optimal performance and minimal</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -190,7 +190,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable Bloom filters on the user_id column during ORC file creation to enable predicate pushdown for equality filters</li>
                 <li><span class="option-label">B.</span> Partition the data by user_id to leverage partition pruning instead of predicate pushdown</li>
-                <li><span class="option-label">C.</span> Convert from ORC to Parquet format which has better predicate pushdown support</li>
+                <li><span class="option-label">C.</span> Convert from ORC to Parquet format which has better predicate pushdown support for equality filters</li>
                 <li><span class="option-label">D.</span> Increase the ORC stripe size to improve min/max index effectiveness</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
