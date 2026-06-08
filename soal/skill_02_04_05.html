@@ -43,7 +43,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Partitioning berdasarkan year/month/day/region adalah strategi optimal karena sesuai dengan pola query yang menggunakan filter transaction_date dan region. Hierarki date-first memungkinkan partition pruning yang efektif karena date range queries sangat umum. Opsi B menempatkan region di level pertama, yang kurang optimal jika date queries lebih sering. Opsi C (partition by transaction_id) menghasilkan terlalu banyak partisi kecil (high cardinality) yang justru menurunkan performa. Opsi D tanpa partitioning akan selalu melakukan full scan.</div>
+                <div class="explanation">Partitioning berdasarkan year/month/day/region adalah strategi optimal karena sesuai dengan pola query yang menggunakan filter transaction_date dan region. Hierarki date-first memungkinkan partition pruning yang efektif karena date range queries sangat umum. Opsi B menempatkan region di level pertama, yang kurang optimal jika date queries lebih sering — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (partition by transaction_id) menghasilkan terlalu banyak partisi kecil (high cardinality) yang justru menurunkan performa. Opsi D tanpa partitioning akan selalu melakukan full scan.</div>
             </div>
         </div>
 
@@ -77,7 +77,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">GSI dengan sensor_type sebagai partition key dan timestamp sebagai sort key memungkinkan query efisien berdasarkan sensor_type dengan time range filter tanpa scan seluruh tabel. GSI memberikan access pattern yang berbeda dari base table. Opsi B (LSI) tidak bisa digunakan karena LSI harus memiliki partition key yang sama dengan base table (device_id), sehingga tetap perlu query per device. Opsi C menggunakan timestamp sebagai partition key yang akan menghasilkan hot partitions. Opsi D mengubah base table akan merusak access pattern existing.</div>
+                <div class="explanation">GSI dengan sensor_type sebagai partition key dan timestamp sebagai sort key memungkinkan query efisien berdasarkan sensor_type dengan time range filter tanpa scan seluruh tabel. GSI memberikan access pattern yang berbeda dari base table. Opsi B (LSI) tidak bisa digunakan karena LSI harus memiliki partition key yang sama dengan base table (device_id), sehingga tetap perlu query per device — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C menggunakan timestamp sebagai partition key yang akan menghasilkan hot partitions. Opsi D mengubah base table akan merusak access pattern existing.</div>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">ZSTD (Zstandard) memberikan keseimbangan terbaik antara compression ratio yang tinggi (mendekati Gzip) dan kecepatan decompression yang cepat (mendekati Snappy). Untuk analytical workload dimana data dibaca berulang kali, ZSTD mengurangi storage cost sekaligus mempertahankan query performance. Opsi A (Gzip) memiliki compression ratio tertinggi tapi decompression yang lambat, meningkatkan query latency. Opsi B (Snappy) tercepat untuk decompress tapi compression ratio lebih rendah, meningkatkan scan volume dan cost. Opsi D (LZO) sudah less common dan tidak optimal dibandingkan ZSTD.</div>
+                <div class="explanation">ZSTD (Zstandard) memberikan keseimbangan terbaik antara compression ratio yang tinggi (mendekati Gzip) dan kecepatan decompression yang cepat (mendekati Snappy). Untuk analytical workload dimana data dibaca berulang kali, ZSTD mengurangi storage cost sekaligus mempertahankan query performance. Opsi A (Gzip) memiliki compression ratio tertinggi tapi decompression yang lambat, meningkatkan query latency — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi B (Snappy) tercepat untuk decompress tapi compression ratio lebih rendah, meningkatkan scan volume dan cost. Opsi D (LZO) sudah less common dan tidak optimal dibandingkan ZSTD.</div>
             </div>
         </div>
 
@@ -111,7 +111,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Small file problem adalah masalah umum di data lakes. Setiap file memerlukan overhead untuk opening, reading metadata, dan closing. Menggabungkan file kecil menjadi file 128-512 MB mengurangi jumlah file operations secara drastis dan memungkinkan parallel processing yang lebih efisien. Opsi A (lebih banyak DPU) meningkatkan biaya tanpa menyelesaikan root cause — overhead per-file tetap ada. Opsi C (CSV) justru lebih buruk karena kehilangan columnar benefits. Opsi D (lebih banyak partisi) akan memperburuk masalah dengan lebih banyak directory listings.</div>
+                <div class="explanation">Small file problem adalah masalah umum di data lakes. Setiap file memerlukan overhead untuk opening, reading metadata, dan closing. Menggabungkan file kecil menjadi file 128-512 MB mengurangi jumlah file operations secara drastis dan memungkinkan parallel processing yang lebih efisien. Opsi A (lebih banyak DPU) meningkatkan biaya tanpa menyelesaikan root cause — overhead per-file tetap ada. Opsi C (CSV) justru lebih buruk karena kehilangan columnar benefits — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (lebih banyak partisi) akan memperburuk masalah dengan lebih banyak directory listings.</div>
             </div>
         </div>
 
@@ -145,7 +145,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Z-ordering menggunakan space-filling curves untuk memetakan data multi-dimensi ke satu dimensi sambil mempertahankan locality. Ini memungkinkan data yang dekat dalam multiple dimensions (lat, long, timestamp) juga dekat secara fisik di storage, sehingga file pruning efektif untuk semua kombinasi filter. Opsi A (separate partitions) menyebabkan partition explosion karena kombinasi ranges yang banyak. Opsi C (row group min/max) membantu tapi tanpa Z-ordering, data mungkin tersebar acak sehingga min/max ranges overlap. Opsi D (geohash bucketing) hanya membantu spatial queries tapi tidak mengoptimalkan temporal dimension secara bersamaan.</div>
+                <div class="explanation">Z-ordering menggunakan space-filling curves untuk memetakan data multi-dimensi ke satu dimensi sambil mempertahankan locality. Ini memungkinkan data yang dekat dalam multiple dimensions (lat, long, timestamp) juga dekat secara fisik di storage, sehingga file pruning efektif untuk semua kombinasi filter. Opsi A (separate partitions) menyebabkan partition explosion karena kombinasi ranges yang banyak. Opsi C (row group min/max) membantu tapi tanpa Z-ordering, data mungkin tersebar acak sehingga min/max ranges overlap. Opsi D (geohash bucketing) hanya membantu spatial queries tapi tidak mengoptimalkan temporal dimension secara bersamaan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Row group size 128 MB (default Parquet) memberikan keseimbangan optimal. Untuk wide tables (200 kolom) dimana hanya 5-10 kolom dibaca, row group yang cukup besar memastikan column chunks memiliki cukup data untuk sequential I/O yang efisien. Opsi A (8 MB) terlalu kecil — column chunks hanya ~40 KB per kolom, menghasilkan banyak random I/O. Opsi C (1 GB) terlalu besar, memerlukan memory berlebihan dan membuat predicate pushdown kurang granular. Opsi D (32 KB) sangat kecil, setiap column chunk hanya ~160 bytes yang tidak efisien untuk I/O.</div>
+                <div class="explanation">Row group size 128 MB (default Parquet) memberikan keseimbangan optimal. Untuk wide tables (200 kolom) dimana hanya 5-10 kolom dibaca, row group yang cukup besar memastikan column chunks memiliki cukup data untuk sequential I/O yang efisien. Opsi A (8 MB) terlalu kecil — column chunks hanya ~40 KB per kolom, menghasilkan banyak random I/O — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (1 GB) terlalu besar, memerlukan memory berlebihan dan membuat predicate pushdown kurang granular. Opsi D (32 KB) sangat kecil, setiap column chunk hanya ~160 bytes yang tidak efisien untuk I/O.</div>
             </div>
         </div>
 
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Ketika data baru di-load ke Redshift (via COPY atau INSERT), rows baru ditambahkan sebagai unsorted region. Zone maps pada unsorted region memiliki min/max ranges yang sangat wide, membuat data skipping tidak efektif. VACUUM SORT mengurutkan ulang data sehingga zone maps memiliki ranges yang tight dan bisa melakukan effective pruning. Opsi A salah — zone maps bekerja dengan VARCHAR. Opsi C salah — LIKE dengan prefix bisa leverage zone maps. Opsi D salah — compound sort keys bekerja sangat baik dengan zone maps, terutama untuk kolom pertama.</div>
+                <div class="explanation">Ketika data baru di-load ke Redshift (via COPY atau INSERT), rows baru ditambahkan sebagai unsorted region. Zone maps pada unsorted region memiliki min/max ranges yang sangat wide, membuat data skipping tidak efektif. VACUUM SORT mengurutkan ulang data sehingga zone maps memiliki ranges yang tight dan bisa melakukan effective pruning. Opsi A salah — zone maps bekerja dengan VARCHAR. Opsi C salah — LIKE dengan prefix bisa leverage zone maps. Opsi D salah — compound sort keys bekerja sangat baik dengan zone maps, terutama untuk kolom pertama — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk high-cardinality columns, ORC min/max statistics (row index) tidak efektif karena setiap stripe likely memiliki wide range of user_ids. Bloom filters di ORC memberikan probabilistic test yang dapat menentukan apakah suatu stripe definitely doesn't contain a specific user_id, enabling effective data skipping untuk equality predicates. Opsi B (partition by user_id) akan menghasilkan jutaan partisi yang sangat buruk untuk performance (partition explosion). Opsi C salah — kedua format mendukung predicate pushdown, tapi ORC memiliki Bloom filter built-in. Opsi D (larger stripe size) justru memperburuk masalah karena ranges menjadi lebih wide.</div>
+                <div class="explanation">Untuk high-cardinality columns, ORC min/max statistics (row index) tidak efektif karena setiap stripe likely memiliki wide range of user_ids. Bloom filters di ORC memberikan probabilistic test yang dapat menentukan apakah suatu stripe definitely doesn't contain a specific user_id, enabling effective data skipping untuk equality predicates. Opsi B (partition by user_id) akan menghasilkan jutaan partisi yang sangat buruk untuk performance (partition explosion). Opsi C salah — kedua format mendukung predicate pushdown, tapi ORC memiliki Bloom filter built-in — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (larger stripe size) justru memperburuk masalah karena ranges menjadi lebih wide.</div>
             </div>
         </div>
         

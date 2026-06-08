@@ -42,7 +42,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">MaxConcurrency pada Map state membatasi berapa banyak iterations yang berjalan bersamaan. Dengan MaxConcurrency=100, hanya 100 Lambda invocations berjalan concurrent, jauh di bawah account limit. Files lain menunggu dalam queue dan diproses saat slots tersedia. Opsi B (Wait states) adds latency tanpa guaranteeing concurrency control. Opsi C (single Lambda) timeout 15 menit — 1,000 files mungkin tidak selesai. Opsi D (reserved 1,000) mengambil semua account concurrency dari functions lain.</div>
+                <div class="explanation">MaxConcurrency pada Map state membatasi berapa banyak iterations yang berjalan bersamaan. Dengan MaxConcurrency=100, hanya 100 Lambda invocations berjalan concurrent, jauh di bawah account limit. Files lain menunggu dalam queue dan diproses saat slots tersedia. Opsi B (Wait states) adds latency tanpa guaranteeing concurrency control — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (single Lambda) timeout 15 menit — 1,000 files mungkin tidak selesai. Opsi D (reserved 1,000) mengambil semua account concurrency dari functions lain.</div>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Step Functions can orchestrate multiple Lambda calls, each within the 15-minute limit. Pattern: first Lambda reads data and creates chunk list → Map state processes each chunk in separate Lambda invocations → final Lambda aggregates results. This remains fully serverless while removing the timeout constraint. Opsi B — 15 minutes is Lambda's hard limit, cannot be increased. Opsi C — provisioned concurrency doesn't change timeout. Opsi D — EC2 is not serverless, adds operational overhead.</div>
+                <div class="explanation">Step Functions can orchestrate multiple Lambda calls, each within the 15-minute limit. Pattern: first Lambda reads data and creates chunk list → Map state processes each chunk in separate Lambda invocations → final Lambda aggregates results. This remains fully serverless while removing the timeout constraint. Opsi B — 15 minutes is Lambda's hard limit, cannot be increased. Opsi C — provisioned concurrency doesn't change timeout. Opsi D — EC2 is not serverless, adds operational overhead — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -74,7 +74,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue Auto Scaling memungkinkan job menyesuaikan jumlah workers berdasarkan actual utilization. Jika utilization rendah, Auto Scaling mengurangi workers = fewer DPU-hours billed. Juga review NumberOfWorkers setting — mungkin over-provisioned dari awal. Opsi B (self-managed) menambah operational overhead, melanggar serverless principle. Opsi C mengubah business requirement. Opsi D (longer timeout) tetap membayar DPU per jam minimum billing.</div>
+                <div class="explanation">Glue Auto Scaling memungkinkan job menyesuaikan jumlah workers berdasarkan actual utilization. Jika utilization rendah, Auto Scaling mengurangi workers = fewer DPU-hours billed. Juga review NumberOfWorkers setting — mungkin over-provisioned dari awal. Opsi B (self-managed) menambah operational overhead, melanggar serverless principle — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C mengubah business requirement. Opsi D (longer timeout) tetap membayar DPU per jam minimum billing.</div>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Step Functions has built-in state management. Each state receives input JSON, produces output JSON, and passes it to the next state. InputPath selects which part of input to send to the task, ResultPath determines where task output is placed, OutputPath selects what passes to next state. Map state automatically collects results from all iterations. No external storage needed for workflow state. Opsi B/C (external storage) unnecessary complexity. Opsi D (env vars) cannot be shared between separate Lambda invocations.</div>
+                <div class="explanation">Step Functions has built-in state management. Each state receives input JSON, produces output JSON, and passes it to the next state. InputPath selects which part of input to send to the task, ResultPath determines where task output is placed, OutputPath selects what passes to next state. Map state automatically collects results from all iterations. No external storage needed for workflow state. Opsi B/C (external storage) unnecessary complexity. Opsi D (env vars) cannot be shared between separate Lambda invocations. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">S3 Event Notifications → Lambda is most cost-effective karena Lambda hanya dipanggil saat ada file baru (event-driven), bukan setiap 5 menit (polling). Jika tidak ada files, tidak ada cost. Processing under 1 minute easily fits Lambda limits. Opsi A (scheduled every 5 min) memicu Lambda bahkan ketika tidak ada new files. Opsi B (Step Functions) menambah cost tanpa benefit untuk simple single-step flow. Opsi D (Glue) memiliki minimum billing dan startup overhead yang overkill untuk sub-minute processing.</div>
+                <div class="explanation">S3 Event Notifications → Lambda is most cost-effective karena Lambda hanya dipanggil saat ada file baru (event-driven), bukan setiap 5 menit (polling). Jika tidak ada files, tidak ada cost. Processing under 1 minute easily fits Lambda limits. Opsi A (scheduled every 5 min) memicu Lambda bahkan ketika tidak ada new files. Opsi B (Step Functions) menambah cost tanpa benefit untuk simple single-step flow — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Glue) memiliki minimum billing dan startup overhead yang overkill untuk sub-minute processing.</div>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Provisioned Concurrency keeps specified number of Lambda execution environments initialized and ready. Invocations go to pre-warmed environments with no cold start. Since the function runs every 30 seconds, Provisioned Concurrency of 1 ensures always-warm state. Opsi B (pinging) is unreliable — Lambda can still create new environments. Opsi C (more memory) reduces cold start time but doesn't eliminate it. Opsi D (ECS) leaves serverless paradigm and adds management overhead.</div>
+                <div class="explanation">Provisioned Concurrency keeps specified number of Lambda execution environments initialized and ready. Invocations go to pre-warmed environments with no cold start. Since the function runs every 30 seconds, Provisioned Concurrency of 1 ensures always-warm state. Opsi B (pinging) is unreliable — Lambda can still create new environments. Opsi C (more memory) reduces cold start time but doesn't eliminate it — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (ECS) leaves serverless paradigm and adds management overhead.</div>
             </div>
         </div>
 
@@ -138,7 +138,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SAM deploys via CloudFormation. CloudFormation supports stack rollback — reverting all resources to previous state atomically. This rolls back Lambda code, Step Functions definition, and DynamoDB config together. Fastest because it's one command and handles all resources. Opsi B (delete+redeploy) causes downtime and potential data loss. Opsi C (individual Lambda) doesn't revert Step Functions or other resources. Opsi D (new stack) creates resource conflicts and doesn't fix the broken one.</div>
+                <div class="explanation">SAM deploys via CloudFormation. CloudFormation supports stack rollback — reverting all resources to previous state atomically. This rolls back Lambda code, Step Functions definition, and DynamoDB config together. Fastest because it's one command and handles all resources. Opsi B (delete+redeploy) causes downtime and potential data loss. Opsi C (individual Lambda) doesn't revert Step Functions or other resources — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (new stack) creates resource conflicts and doesn't fix the broken one.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Express Workflows pricing = (number of requests) + (duration × memory). Duration is calculated per state transition multiplied by execution memory (64MB increments). For 100K executions/day × multiple state transitions each, costs accumulate. If each execution has 10 states × 10 seconds, that's billed differently than expected. Understanding the pricing model (transitions × duration × memory) is critical. Opsi B — depends on the specific case, at high volume Express is often cheaper. Opsi C — true but not the "missed" consideration. Opsi D — Lambda not double-billed.</div>
+                <div class="explanation">Express Workflows pricing = (number of requests) + (duration × memory). Duration is calculated per state transition multiplied by execution memory (64MB increments). For 100K executions/day × multiple state transitions each, costs accumulate. If each execution has 10 states × 10 seconds, that's billed differently than expected. Understanding the pricing model (transitions × duration × memory) is critical. Opsi B — depends on the specific case, at high volume Express is often cheaper. Opsi C — true but not the "missed" consideration — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Lambda not double-billed.</div>
             </div>
         </div>
 
@@ -170,7 +170,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge Pipes filter criteria evaluates messages BEFORE enrichment and target. Messages that don't match are discarded at the pipe level — no Lambda invocation, no Step Functions execution. This is the earliest and cheapest filtering point. Opsi B (Lambda filter) — Lambda already invoked and billed before filtering. Opsi C (Step Functions Choice) — Step Functions execution already started and billed. Opsi D — SQS doesn't have built-in message body filtering (only for SNS subscriptions).</div>
+                <div class="explanation">EventBridge Pipes filter criteria evaluates messages BEFORE enrichment and target. Messages that don't match are discarded at the pipe level — no Lambda invocation, no Step Functions execution. This is the earliest and cheapest filtering point. Opsi B (Lambda filter) — Lambda already invoked and billed before filtering — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Step Functions Choice) — Step Functions execution already started and billed. Opsi D — SQS doesn't have built-in message body filtering (only for SNS subscriptions).</div>
             </div>
         </div>
 
@@ -186,7 +186,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Comprehensive observability: X-Ray provides end-to-end distributed traces showing timing and errors across all services. CloudWatch Logs at ALL level captures every state transition with input/output. Structured logging with correlation IDs (execution ID) links Lambda logs to specific Step Functions execution. This gives full picture. Opsi B (print statements) unstructured and hard to correlate. Opsi C (console only) limited detail. Opsi D (VPC Flow Logs) for network traffic, not application logic.</div>
+                <div class="explanation">Comprehensive observability: X-Ray provides end-to-end distributed traces showing timing and errors across all services. CloudWatch Logs at ALL level captures every state transition with input/output. Structured logging with correlation IDs (execution ID) links Lambda logs to specific Step Functions execution. This gives full picture. Opsi B (print statements) unstructured and hard to correlate — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (console only) limited detail. Opsi D (VPC Flow Logs) for network traffic, not application logic.</div>
             </div>
         </div>
         

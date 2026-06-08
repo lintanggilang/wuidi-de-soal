@@ -43,7 +43,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge mendukung dua jenis rules pada satu event bus: schedule rules (cron/rate expressions) dan event pattern rules. Kedua rules dapat mengarah ke target yang sama (Step Functions). Ini adalah pendekatan paling sederhana dengan satu service managing kedua triggers. Opsi B menggunakan dua service berbeda (EventBridge Scheduler + S3 notifications) yang menambah complexity. Opsi C salah — satu rule tidak bisa matching baik schedule maupun event pattern sekaligus. Opsi D (CloudWatch Events + EventBridge) redundant karena CloudWatch Events sekarang merupakan bagian dari EventBridge.</div>
+                <div class="explanation">EventBridge mendukung dua jenis rules pada satu event bus: schedule rules (cron/rate expressions) dan event pattern rules. Kedua rules dapat mengarah ke target yang sama (Step Functions). Ini adalah pendekatan paling sederhana dengan satu service managing kedua triggers. Opsi B menggunakan dua service berbeda (EventBridge Scheduler + S3 notifications) yang menambah complexity. Opsi C salah — satu rule tidak bisa matching baik schedule maupun event pattern sekaligus — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (CloudWatch Events + EventBridge) redundant karena CloudWatch Events sekarang merupakan bagian dari EventBridge.</div>
             </div>
         </div>
 
@@ -60,7 +60,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon EventBridge Scheduler (bukan EventBridge rules) dirancang khusus untuk scheduling use cases. Fiturnya termasuk: one-time schedules (at expressions) dengan FlexibleTimeWindow, auto-delete setelah execution, timezone-aware cron expressions (IANA timezone support), dan built-in retry policies. Opsi B (EventBridge rules) tidak mendukung one-time schedule dengan auto-cleanup natively — memerlukan custom cleanup logic. Opsi C (Maintenance Windows) untuk patching/maintenance, bukan data pipeline scheduling. Opsi D (MWAA) berlebihan overhead untuk simple scheduling needs.</div>
+                <div class="explanation">Amazon EventBridge Scheduler (bukan EventBridge rules) dirancang khusus untuk scheduling use cases. Fiturnya termasuk: one-time schedules (at expressions) dengan FlexibleTimeWindow, auto-delete setelah execution, timezone-aware cron expressions (IANA timezone support), dan built-in retry policies. Opsi B (EventBridge rules) tidak mendukung one-time schedule dengan auto-cleanup natively — memerlukan custom cleanup logic. Opsi C (Maintenance Windows) untuk patching/maintenance, bukan data pipeline scheduling. Opsi D (MWAA) berlebihan overhead untuk simple scheduling needs — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -77,7 +77,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge event patterns mendukung matching pada nested fields dalam event detail. Tiga rules terpisah, masing-masing matching pada "detail.state" yang spesifik, memungkinkan routing langsung ke target yang berbeda tanpa intermediate processing. Ini menggunakan EventBridge's native content-based routing. Opsi B salah — input transformers mengubah event format tetapi satu rule hanya bisa memiliki satu set targets, bukan routing conditional. Opsi C (Lambda router) bekerja tetapi menambah latency, cost, dan maintenance dibandingkan native EventBridge routing. Opsi D salah — Glue tidak mendukung direct notification configuration ke multiple services per state.</div>
+                <div class="explanation">EventBridge event patterns mendukung matching pada nested fields dalam event detail. Tiga rules terpisah, masing-masing matching pada "detail.state" yang spesifik, memungkinkan routing langsung ke target yang berbeda tanpa intermediate processing. Ini menggunakan EventBridge's native content-based routing. Opsi B salah — input transformers mengubah event format tetapi satu rule hanya bisa memiliki satu set targets, bukan routing conditional. Opsi C (Lambda router) bekerja tetapi menambah latency, cost, dan maintenance dibandingkan native EventBridge routing. Opsi D salah — Glue tidak mendukung direct notification configuration ke multiple services per state — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Cross-account event routing di EventBridge dilakukan dengan: (1) membuat custom event bus di central account dengan resource-based policy yang mengizinkan PutEvents dari source accounts, (2) membuat rules di source accounts yang mengirim events ke central account's event bus sebagai target. Rules di central account kemudian memproses incoming events. Opsi B salah — default event bus tidak bisa menjadi target cross-account rule langsung. Opsi C salah — tidak ada auto-sharing di Organizations level untuk semua events. Opsi D (SNS) menambah component yang tidak perlu karena EventBridge sudah mendukung cross-account natively.</div>
+                <div class="explanation">Cross-account event routing di EventBridge dilakukan dengan: (1) membuat custom event bus di central account dengan resource-based policy yang mengizinkan PutEvents dari source accounts, (2) membuat rules di source accounts yang mengirim events ke central account's event bus sebagai target. Rules di central account kemudian memproses incoming events. Opsi B salah — default event bus tidak bisa menjadi target cross-account rule langsung. Opsi C salah — tidak ada auto-sharing di Organizations level untuk semua events — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (SNS) menambah component yang tidak perlu karena EventBridge sudah mendukung cross-account natively.</div>
             </div>
         </div>
 
@@ -111,7 +111,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon EventBridge Pipes dirancang untuk point-to-point integrations dengan pipeline stages: Source (DynamoDB Streams, SQS, Kinesis, etc.) → Filter (event pattern matching) → Enrichment (optional Lambda, Step Functions, API Gateway, or API Destination) → Target (Kinesis, Lambda, Step Functions, etc.). Ini menyediakan filtering tanpa Lambda code dan optional enrichment. Opsi B (input transformers) hanya mengubah format, bukan enrich dari external source. Opsi C memerlukan Lambda code untuk enrichment yang bertentangan dengan requirement. Opsi D (Scheduler) untuk time-based triggers, bukan stream processing.</div>
+                <div class="explanation">Amazon EventBridge Pipes dirancang untuk point-to-point integrations dengan pipeline stages: Source (DynamoDB Streams, SQS, Kinesis, etc.) → Filter (event pattern matching) → Enrichment (optional Lambda, Step Functions, API Gateway, or API Destination) → Target (Kinesis, Lambda, Step Functions, etc.). Ini menyediakan filtering tanpa Lambda code dan optional enrichment. Opsi B (input transformers) hanya mengubah format, bukan enrich dari external source — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C memerlukan Lambda code untuk enrichment yang bertentangan dengan requirement. Opsi D (Scheduler) untuk time-based triggers, bukan stream processing.</div>
             </div>
         </div>
 
@@ -128,7 +128,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge rules mendukung dead-letter queue (SQS) configuration dimana events yang gagal dikirim setelah retry attempts dikirim ke DLQ untuk investigation. Retry policy mengonfigurasi: maximum event age (berapa lama EventBridge retry sebelum menyerah) dan maximum retry attempts. Ini memastikan tidak ada event yang hilang secara permanen. Opsi B (event replay) untuk memutar ulang archived events, bukan untuk handling delivery failures. Opsi C (Lambda async DLQ) hanya bekerja jika event berhasil sampai ke Lambda — jika EventBridge gagal deliver, Lambda DLQ tidak membantu. Opsi D (CloudWatch Logs) tidak menyimpan event payload untuk reprocessing.</div>
+                <div class="explanation">EventBridge rules mendukung dead-letter queue (SQS) configuration dimana events yang gagal dikirim setelah retry attempts dikirim ke DLQ untuk investigation. Retry policy mengonfigurasi: maximum event age (berapa lama EventBridge retry sebelum menyerah) dan maximum retry attempts. Ini memastikan tidak ada event yang hilang secara permanen. Opsi B (event replay) untuk memutar ulang archived events, bukan untuk handling delivery failures. Opsi C (Lambda async DLQ) hanya bekerja jika event berhasil sampai ke Lambda — jika EventBridge gagal deliver, Lambda DLQ tidak membantu. Opsi D (CloudWatch Logs) tidak menyimpan event payload untuk reprocessing — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -145,7 +145,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge Archive menyimpan events yang match an archive rule, dan Replay memungkinkan re-delivery events dari archive untuk time window tertentu ke event bus. Events yang di-replay memiliki "replay-name" header sehingga rules dapat membedakan replay events dari live events. Ini built-in untuk exactly this use case — reprocessing historical events. Opsi B (CloudTrail) mencatat API calls, bukan event payloads. Opsi C (CloudWatch Logs) tidak menyimpan structured events untuk replay. Opsi D (resend from source) mungkin tidak feasible — source system mungkin tidak mendukung historical resending.</div>
+                <div class="explanation">EventBridge Archive menyimpan events yang match an archive rule, dan Replay memungkinkan re-delivery events dari archive untuk time window tertentu ke event bus. Events yang di-replay memiliki "replay-name" header sehingga rules dapat membedakan replay events dari live events. Ini built-in untuk exactly this use case — reprocessing historical events. Opsi B (CloudTrail) mencatat API calls, bukan event payloads. Opsi C (CloudWatch Logs) tidak menyimpan structured events untuk replay — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (resend from source) mungkin tidak feasible — source system mungkin tidak mendukung historical resending.</div>
             </div>
         </div>
 
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge event patterns mendukung content-based routing dengan matching pada S3 event detail fields termasuk object key. Tiga rules terpisah memberikan clear separation of concerns, mudah di-maintain (add/remove rules independently), dan leverages EventBridge's native routing capability tanpa custom code. Opsi B (Lambda router) menambah latency, cost, dan maintenance burden. Opsi C (S3 event notifications) bisa bekerja tetapi memiliki limit per bucket dan kurang flexible dibanding EventBridge patterns. Opsi D (Step Functions) overhead untuk simple routing — Step Functions lebih cocok untuk complex orchestration.</div>
+                <div class="explanation">EventBridge event patterns mendukung content-based routing dengan matching pada S3 event detail fields termasuk object key. Tiga rules terpisah memberikan clear separation of concerns, mudah di-maintain (add/remove rules independently), dan leverages EventBridge's native routing capability tanpa custom code. Opsi B (Lambda router) menambah latency, cost, dan maintenance burden. Opsi C (S3 event notifications) bisa bekerja tetapi memiliki limit per bucket dan kurang flexible dibanding EventBridge patterns — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Step Functions) overhead untuk simple routing — Step Functions lebih cocok untuk complex orchestration.</div>
             </div>
         </div>
 
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Custom event bus menyediakan: (1) isolasi dari default bus events — hanya events yang explicitly dikirim ke custom bus yang ada di sana, (2) resource-based policy yang mengontrol siapa yang boleh PutEvents, (3) independent archive configuration dengan retention policy terpisah. Ini memenuhi semua tiga requirements: isolation, access control, dan retention. Opsi B (default bus + IAM) mencampur semua events di satu bus tanpa isolation yang bersih. Opsi C (SNS) menambah component dan tidak menyediakan archive/retention natively. Opsi D (Pipes) untuk point-to-point, bukan many-to-many event distribution.</div>
+                <div class="explanation">Custom event bus menyediakan: (1) isolasi dari default bus events — hanya events yang explicitly dikirim ke custom bus yang ada di sana, (2) resource-based policy yang mengontrol siapa yang boleh PutEvents, (3) independent archive configuration dengan retention policy terpisah. Ini memenuhi semua tiga requirements: isolation, access control, dan retention. Opsi B (default bus + IAM) mencampur semua events di satu bus tanpa isolation yang bersih. Opsi C (SNS) menambah component dan tidak menyediakan archive/retention natively — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Pipes) untuk point-to-point, bukan many-to-many event distribution.</div>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge Scheduler memiliki built-in features untuk semua requirements: (1) Retry Policy dengan configurable MaximumRetryAttempts dan MaximumEventAgeInSeconds untuk automatic retries pada transient failures, (2) FlexibleTimeWindow yang mendistribusikan invocations dalam time window untuk mengurangi thundering herd dan accommodate jitter, (3) CloudWatch metrics (InvocationAttemptCount, TargetErrorCount, InvocationDroppedCount) memberikan visibility ke execution history. Opsi B (EventBridge rules) memiliki retry tapi tidak FlexibleTimeWindow. Opsi C (Lambda polling) custom dan unreliable. Opsi D (Step Functions Wait) bukan scheduling service.</div>
+                <div class="explanation">EventBridge Scheduler memiliki built-in features untuk semua requirements: (1) Retry Policy dengan configurable MaximumRetryAttempts dan MaximumEventAgeInSeconds untuk automatic retries pada transient failures, (2) FlexibleTimeWindow yang mendistribusikan invocations dalam time window untuk mengurangi thundering herd dan accommodate jitter, (3) CloudWatch metrics (InvocationAttemptCount, TargetErrorCount, InvocationDroppedCount) memberikan visibility ke execution history. Opsi B (EventBridge rules) memiliki retry tapi tidak FlexibleTimeWindow. Opsi C (Lambda polling) custom dan unreliable — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Step Functions Wait) bukan scheduling service.</div>
             </div>
         </div>
         

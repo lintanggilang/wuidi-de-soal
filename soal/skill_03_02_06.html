@@ -60,7 +60,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">GROUPING SETS memberikan kontrol eksplisit atas level agregasi yang diinginkan. (quarter, category) memberikan detail per quarter per category, (quarter) memberikan subtotal per quarter, dan () memberikan grand total. Ini persis memenuhi requirement. Opsi A memerlukan multiple passes dan UNION yang kurang efisien. Opsi B (ROLLUP) akan menghasilkan subtotals hierarchical dari kanan: (quarter, category), (quarter), () yang sebenarnya juga benar dalam kasus ini - namun GROUPING SETS lebih eksplisit. Opsi C (CUBE) menghasilkan semua kemungkinan kombinasi termasuk (category) alone yang tidak diminta.</div>
+                <div class="explanation">GROUPING SETS memberikan kontrol eksplisit atas level agregasi yang diinginkan. (quarter, category) memberikan detail per quarter per category, (quarter) memberikan subtotal per quarter, dan () memberikan grand total. Ini persis memenuhi requirement. Opsi A memerlukan multiple passes dan UNION yang kurang efisien. Opsi B (ROLLUP) akan menghasilkan subtotals hierarchical dari kanan: (quarter, category), (quarter), () yang sebenarnya juga benar dalam kasus ini - namun GROUPING SETS lebih eksplisit. Opsi C (CUBE) menghasilkan semua kemungkinan kombinasi termasuk (category) alone yang tidak diminta — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -77,7 +77,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Conditional aggregation dengan CASE WHEN adalah teknik pivot yang paling reliable dan widely supported di Amazon Redshift. Setiap kolom output didefinisikan sebagai aggregate dengan CASE yang memfilter region tertentu. Opsi A (PIVOT clause) tersedia di beberapa database (SQL Server, Oracle) dan Redshift baru saja menambahkan dukungannya, namun conditional aggregation tetap menjadi pendekatan paling portable dan well-understood. Opsi C (CROSSTAB) bukan fitur Redshift. Opsi D (UNPIVOT then GROUP BY) melakukan kebalikan dari yang diminta.</div>
+                <div class="explanation">Conditional aggregation dengan CASE WHEN adalah teknik pivot yang paling reliable dan widely supported di Amazon Redshift. Setiap kolom output didefinisikan sebagai aggregate dengan CASE yang memfilter region tertentu. Opsi A (PIVOT clause) tersedia di beberapa database (SQL Server, Oracle) dan Redshift baru saja menambahkan dukungannya, namun conditional aggregation tetap menjadi pendekatan paling portable dan well-understood. Opsi C (CROSSTAB) bukan fitur Redshift. Opsi D (UNPIVOT then GROUP BY) melakukan kebalikan dari yang diminta — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -111,7 +111,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Window function dengan rangeBetween(-3600, 0) pada kolom timestamp (dalam detik) menghitung rolling average 1 jam untuk setiap row, looking back 3600 seconds dari current row. partitionBy("sensor_id") memastikan kalkulasi per sensor. Ini memberikan true rolling average bukan tumbling window. Opsi A hanya memberikan overall average, bukan rolling. Opsi B menggunakan tumbling window (fixed 1-hour windows) bukan rolling window. Opsi D (pivot) mengubah shape data, bukan menghitung rolling average.</div>
+                <div class="explanation">Window function dengan rangeBetween(-3600, 0) pada kolom timestamp (dalam detik) menghitung rolling average 1 jam untuk setiap row, looking back 3600 seconds dari current row. partitionBy("sensor_id") memastikan kalkulasi per sensor. Ini memberikan true rolling average bukan tumbling window. Opsi A hanya memberikan overall average, bukan rolling — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi B menggunakan tumbling window (fixed 1-hour windows) bukan rolling window. Opsi D (pivot) mengubah shape data, bukan menghitung rolling average.</div>
             </div>
         </div>
 
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Conditional aggregation (MAX/MIN with CASE WHEN) adalah teknik standar untuk pivoting di Athena (Trino/Presto). Setiap metric_name menjadi satu CASE expression. Tantangannya adalah 50 kolom membuat query panjang tapi tetap efisien karena single table scan. MAX digunakan karena setiap sensor_id + metric_name combination hanya memiliki satu value. Opsi A salah karena Athena (Trino) tidak memiliki PIVOT clause native dengan dynamic columns. Opsi C (UNPIVOT) melakukan kebalikan - wide ke narrow. Opsi D (50 UNION ALL) sangat tidak efisien dan menghasilkan narrow format, bukan wide.</div>
+                <div class="explanation">Conditional aggregation (MAX/MIN with CASE WHEN) adalah teknik standar untuk pivoting di Athena (Trino/Presto). Setiap metric_name menjadi satu CASE expression. Tantangannya adalah 50 kolom membuat query panjang tapi tetap efisien karena single table scan. MAX digunakan karena setiap sensor_id + metric_name combination hanya memiliki satu value. Opsi A salah karena Athena (Trino) tidak memiliki PIVOT clause native dengan dynamic columns. Opsi C (UNPIVOT) melakukan kebalikan - wide ke narrow — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (50 UNION ALL) sangat tidak efisien dan menghasilkan narrow format, bukan wide.</div>
             </div>
         </div>
 
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">LAG(revenue, 12) OVER (ORDER BY month_date) efisien karena mengakses row 12 posisi sebelumnya (12 bulan = 1 tahun) dalam single pass. Kemudian (revenue - LAG(revenue,12)) / LAG(revenue,12) * 100 memberikan growth percentage. Window functions di Redshift sangat optimized. Opsi A (self-join) memerlukan full table scan dua kali. Opsi C (correlated subquery) sangat tidak efisien untuk large tables. Opsi D (CTEs + join) lebih verbose dan kurang efisien dibanding single window function pass.</div>
+                <div class="explanation">LAG(revenue, 12) OVER (ORDER BY month_date) efisien karena mengakses row 12 posisi sebelumnya (12 bulan = 1 tahun) dalam single pass. Kemudian (revenue - LAG(revenue,12)) / LAG(revenue,12) * 100 memberikan growth percentage. Window functions di Redshift sangat optimized. Opsi A (self-join) memerlukan full table scan dua kali. Opsi C (correlated subquery) sangat tidak efisien untuk large tables. Opsi D (CTEs + join) lebih verbose dan kurang efisien dibanding single window function pass — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">PySpark groupBy().agg() dengan multiple aggregate functions menghitung semua metrik dalam single shuffle operation. sum(), avg(), countDistinct(), dan max() semua dikomputasi dalam satu pass setelah groupBy. datediff dengan max(purchase_date) memberikan days since last purchase. Ini paling efisien karena hanya satu shuffle. Opsi A (4 separate groupBy) menghasilkan 4 shuffle operations dan 3 joins tambahan. Opsi C (pandas) akan gagal pada large datasets karena memory constraints. Opsi D (window functions) tidak mengagregasi rows, hanya menambah kolom ke setiap row.</div>
+                <div class="explanation">PySpark groupBy().agg() dengan multiple aggregate functions menghitung semua metrik dalam single shuffle operation. sum(), avg(), countDistinct(), dan max() semua dikomputasi dalam satu pass setelah groupBy. datediff dengan max(purchase_date) memberikan days since last purchase. Ini paling efisien karena hanya satu shuffle. Opsi A (4 separate groupBy) menghasilkan 4 shuffle operations dan 3 joins tambahan. Opsi C (pandas) akan gagal pada large datasets karena memory constraints. Opsi D (window functions) tidak mengagregasi rows, hanya menambah kolom ke setiap row — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

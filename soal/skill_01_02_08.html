@@ -42,7 +42,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Redshift Data API bersifat asynchronous — cocok untuk queries 5-30 detik yang exceeds API Gateway's 29-second timeout. Pattern: POST /query returns queryId immediately, GET /query/{queryId} returns results when ready. Lambda tidak perlu menunggu query selesai (menghindari timeout). Opsi B (JDBC synchronous) — Lambda timeout dan API Gateway timeout menjadi masalah untuk 30-second queries. Connection pooling juga sulit di Lambda. Opsi C (direct Redshift) — security concern dan no rate limiting. Opsi D — tidak ada direct integration API Gateway-Redshift.</div>
+                <div class="explanation">Redshift Data API bersifat asynchronous — cocok untuk queries 5-30 detik yang exceeds API Gateway's 29-second timeout. Pattern: POST /query returns queryId immediately, GET /query/{queryId} returns results when ready. Lambda tidak perlu menunggu query selesai (menghindari timeout). Opsi B (JDBC synchronous) — Lambda timeout dan API Gateway timeout menjadi masalah untuk 30-second queries — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Connection pooling juga sulit di Lambda. Opsi C (direct Redshift) — security concern dan no rate limiting. Opsi D — tidak ada direct integration API Gateway-Redshift.</div>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">API Gateway provides authentication (API keys per partner), rate limiting, and usage plans. Lambda orchestrates Athena queries against the data lake (Parquet in S3) dan returns JSON results. Partners interact via REST API without knowing the underlying infrastructure. Opsi B (direct S3) — partners can't run SQL against Parquet directly, security concern. Opsi C (JDBC access) menambah ongoing Redshift costs dan exposes database directly. Opsi D (AppSync + DynamoDB) — data is in S3/Parquet not DynamoDB.</div>
+                <div class="explanation">API Gateway provides authentication (API keys per partner), rate limiting, and usage plans. Lambda orchestrates Athena queries against the data lake (Parquet in S3) dan returns JSON results. Partners interact via REST API without knowing the underlying infrastructure. Opsi B (direct S3) — partners can't run SQL against Parquet directly, security concern. Opsi C (JDBC access) menambah ongoing Redshift costs dan exposes database directly. Opsi D (AppSync + DynamoDB) — data is in S3/Parquet not DynamoDB — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -74,7 +74,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DynamoDB Query dengan partition key (device_id) dan ScanIndexForward=false (reverse sort) with Limit=1 returns the latest reading in single-digit milliseconds. DynamoDB adalah database optimal untuk point lookups dengan consistent low latency. API Gateway → Lambda → DynamoDB adalah pattern standar untuk real-time APIs. Opsi B (Athena) memiliki seconds of latency untuk query startup. Opsi C (Redshift) tidak designed untuk single-record lookups. Opsi D (Step Functions) menambah unnecessary latency.</div>
+                <div class="explanation">DynamoDB Query dengan partition key (device_id) dan ScanIndexForward=false (reverse sort) with Limit=1 returns the latest reading in single-digit milliseconds. DynamoDB adalah database optimal untuk point lookups dengan consistent low latency. API Gateway → Lambda → DynamoDB adalah pattern standar untuk real-time APIs. Opsi B (Athena) memiliki seconds of latency untuk query startup. Opsi C (Redshift) tidak designed untuk single-record lookups — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Step Functions) menambah unnecessary latency.</div>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS AppSync adalah managed GraphQL service yang natively supports multiple data source resolvers. DynamoDB direct resolver (no Lambda needed), Lambda resolver untuk ElastiCache, dan HTTP data source untuk S3. AppSync handles schema stitching dari multiple sources ke single GraphQL endpoint. Frontend teams query hanya fields yang mereka butuhkan. Opsi B (self-managed) menambah operational overhead. Opsi C (Lambda GraphQL) possible tapi tidak scalable dan membutuhkan semua custom code. Opsi D (REST) bukan GraphQL — each endpoint returns fixed structure.</div>
+                <div class="explanation">AWS AppSync adalah managed GraphQL service yang natively supports multiple data source resolvers. DynamoDB direct resolver (no Lambda needed), Lambda resolver untuk ElastiCache, dan HTTP data source untuk S3. AppSync handles schema stitching dari multiple sources ke single GraphQL endpoint. Frontend teams query hanya fields yang mereka butuhkan. Opsi B (self-managed) menambah operational overhead. Opsi C (Lambda GraphQL) possible tapi tidak scalable dan membutuhkan semua custom code. Opsi D (REST) bukan GraphQL — each endpoint returns fixed structure — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">API Gateway caching menyajikan cached responses tanpa memanggil backend. Dengan data yang hanya update per jam, TTL 1 jam memastikan cache selalu berisi data terkini. Ini mengurangi Redshift load hingga ~99% (hanya 1 query per unique request per hour). Opsi B (scale Redshift) mahal dan unnecessary jika data static. Opsi C — Redshift tidak memiliki read replicas (ada RA3 data sharing tapi beda konsep). Opsi D (rate limit) mengurangi service availability untuk users.</div>
+                <div class="explanation">API Gateway caching menyajikan cached responses tanpa memanggil backend. Dengan data yang hanya update per jam, TTL 1 jam memastikan cache selalu berisi data terkini. Ini mengurangi Redshift load hingga ~99% (hanya 1 query per unique request per hour). Opsi B (scale Redshift) mahal dan unnecessary jika data static. Opsi C — Redshift tidak memiliki read replicas (ada RA3 data sharing tapi beda konsep) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (rate limit) mengurangi service availability untuk users.</div>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Asynchronous request-reply pattern is ideal for long-running operations. Client receives immediate acknowledgment (jobId), then polls for status. API Gateway timeout is 29 seconds, so synchronous would fail. Step Functions orchestrates: receive request → run query → store results → mark complete. Opsi B (synchronous 5 min) impossible — API Gateway has 29s timeout. Opsi C (WebSocket) valid alternative tapi more complex for client implementation. Opsi D (daily batch) tidak on-demand.</div>
+                <div class="explanation">Asynchronous request-reply pattern is ideal for long-running operations. Client receives immediate acknowledgment (jobId), then polls for status. API Gateway timeout is 29 seconds, so synchronous would fail. Step Functions orchestrates: receive request → run query → store results → mark complete. Opsi B (synchronous 5 min) impossible — API Gateway has 29s timeout. Opsi C (WebSocket) valid alternative tapi more complex for client implementation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (daily batch) tidak on-demand.</div>
             </div>
         </div>
 
@@ -138,7 +138,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DynamoDB natively supports cursor-based pagination via LastEvaluatedKey. Ketika Query/Scan returns partial results, LastEvaluatedKey menunjukkan posisi terakhir. Ini di-encode sebagai opaque nextToken untuk client. Client mengirim nextToken pada request berikutnya. Ini efficient — DynamoDB langsung melompat ke posisi yang benar. Opsi B (offset) — DynamoDB tidak support OFFSET; Scan harus membaca semua records sampai offset yang mahal. Opsi C (all results) — response size limit dan slow. Opsi D (BatchGetItem) membutuhkan knowing all keys upfront.</div>
+                <div class="explanation">DynamoDB natively supports cursor-based pagination via LastEvaluatedKey. Ketika Query/Scan returns partial results, LastEvaluatedKey menunjukkan posisi terakhir. Ini di-encode sebagai opaque nextToken untuk client. Client mengirim nextToken pada request berikutnya. Ini efficient — DynamoDB langsung melompat ke posisi yang benar. Opsi B (offset) — DynamoDB tidak support OFFSET; Scan harus membaca semua records sampai offset yang mahal. Opsi C (all results) — response size limit dan slow. Opsi D (BatchGetItem) membutuhkan knowing all keys upfront — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Usage Plans provide all three: (1) Rate limit dan burst limit per plan (assignable per partner), (2) API keys for authentication dan partner identification, (3) Usage metering that tracks calls per API key for billing. This is the purpose-built feature for multi-tenant API monetization. Opsi B (Lambda authorizer) provides auth but not built-in rate limiting or metering. Opsi C (WAF) provides rate limiting but not per-partner metering. Opsi D (IAM) not suitable for external partners who don't have AWS accounts.</div>
+                <div class="explanation">Usage Plans provide all three: (1) Rate limit dan burst limit per plan (assignable per partner), (2) API keys for authentication dan partner identification, (3) Usage metering that tracks calls per API key for billing. This is the purpose-built feature for multi-tenant API monetization. Opsi B (Lambda authorizer) provides auth but not built-in rate limiting or metering. Opsi C (WAF) provides rate limiting but not per-partner metering — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (IAM) not suitable for external partners who don't have AWS accounts.</div>
             </div>
         </div>
 
@@ -170,7 +170,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Pre-signed S3 URL pattern: Athena writes results to S3, API generates a time-limited pre-signed URL, client downloads directly from S3. S3 supports unlimited file sizes dan high bandwidth. Ini bypasses API Gateway payload limit entirely. Opsi B (compression) mungkin tidak cukup jika data 50 MB bahkan compressed. Opsi C (split) — API Gateway doesn't auto-split responses. Opsi D — 10 MB adalah hard limit yang tidak bisa diubah.</div>
+                <div class="explanation">Pre-signed S3 URL pattern: Athena writes results to S3, API generates a time-limited pre-signed URL, client downloads directly from S3. S3 supports unlimited file sizes dan high bandwidth. Ini bypasses API Gateway payload limit entirely. Opsi B (compression) mungkin tidak cukup jika data 50 MB bahkan compressed. Opsi C (split) — API Gateway doesn't auto-split responses. Opsi D — 10 MB adalah hard limit yang tidak bisa diubah — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -186,7 +186,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">API Gateway has account-level (10,000 rps default) dan stage/route-level throttling. If method-level throttle is set lower than 5,000, API Gateway returns 429 before reaching Lambda/DynamoDB. The question states Lambda dan DynamoDB are NOT throttling, confirming the bottleneck is at API Gateway level. Solusi: increase throttle limits di stage settings atau request account quota increase. Opsi B/C explicitly stated not throttling. Opsi D (cache full) doesn't cause 429.</div>
+                <div class="explanation">API Gateway has account-level (10,000 rps default) dan stage/route-level throttling. If method-level throttle is set lower than 5,000, API Gateway returns 429 before reaching Lambda/DynamoDB. The question states Lambda dan DynamoDB are NOT throttling, confirming the bottleneck is at API Gateway level. Solusi: increase throttle limits di stage settings atau request account quota increase. Opsi B/C explicitly stated not throttling. Opsi D (cache full) doesn't cause 429. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
         

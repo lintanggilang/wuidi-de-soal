@@ -42,7 +42,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda CPU allocation is proportional to memory. At 512 MB, Lambda gets ~1/3 vCPU. At 1769 MB, it gets 1 full vCPU. Increasing memory reduces duration (more CPU + more memory headroom) and reduces memory pressure (95% → ~50%). This often makes functions faster AND cheaper because shorter duration offsets per-ms cost increase. Opsi B (smaller batch) reduces throughput. Opsi C (provisioned concurrency) eliminates cold starts but doesn't fix resource constraints. Opsi D (Java) has longer cold starts and unclear performance benefit.</div>
+                <div class="explanation">Lambda CPU allocation is proportional to memory. At 512 MB, Lambda gets ~1/3 vCPU. At 1769 MB, it gets 1 full vCPU. Increasing memory reduces duration (more CPU + more memory headroom) and reduces memory pressure (95% → ~50%). This often makes functions faster AND cheaper because shorter duration offsets per-ms cost increase. Opsi B (smaller batch) reduces throughput — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (provisioned concurrency) eliminates cold starts but doesn't fix resource constraints. Opsi D (Java) has longer cold starts and unclear performance benefit.</div>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Concurrency = (messages per second) × (processing time per message). 50,000/60 = 833 messages/second. If each takes 0.2s, needed concurrency = 833 × 0.2 = ~167. With batch size = 10 and batch processing: 833/10 = 83 invocations/second × 0.2s = ~17 concurrent (even less). The formula depends on whether processing is per-message or per-batch. For single message processing: ~167. Opsi B (50K) massively over-provisioned. Opsi C (10) insufficient. Opsi D (1000) over-provisioned but the math shows ~167 is minimum.</div>
+                <div class="explanation">Concurrency = (messages per second) × (processing time per message). 50,000/60 = 833 messages/second. If each takes 0.2s, needed concurrency = 833 × 0.2 = ~167. With batch size = 10 and batch processing: 833/10 = 83 invocations/second × 0.2s = ~17 concurrent (even less). The formula depends on whether processing is per-message or per-batch. For single message processing: ~167. Opsi B (50K) massively over-provisioned. Opsi C (10) insufficient. Opsi D (1000) over-provisioned but the math shows ~167 is minimum — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -74,7 +74,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Two complementary strategies: (1) Reserved concurrency limits Lambda to 80 concurrent executions, ensuring max 80 connections. (2) RDS Proxy pools and multiplexes connections — even if 80 Lambdas run, Proxy manages connection reuse efficiently. Together they prevent connection exhaustion. Opsi B (longer timeout) makes problem worse — connections held longer. Opsi C (500 connections) may impact RDS performance and memory. Opsi D (remove VPC) — Lambda still needs VPC to reach RDS in private subnet.</div>
+                <div class="explanation">Two complementary strategies: (1) Reserved concurrency limits Lambda to 80 concurrent executions, ensuring max 80 connections. (2) RDS Proxy pools and multiplexes connections — even if 80 Lambdas run, Proxy manages connection reuse efficiently. Together they prevent connection exhaustion. Opsi B (longer timeout) makes problem worse — connections held longer. Opsi C (500 connections) may impact RDS performance and memory. Opsi D (remove VPC) — Lambda still needs VPC to reach RDS in private subnet — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">With ParallelizationFactor=1, each shard has exactly 1 concurrent Lambda invocation. Since each takes 10 seconds, each shard processes 1 batch every 10 seconds = 0.1 batches/sec/shard. With 10 shards processing concurrently: 10 × 0.1 = 1 batch/second total. To increase throughput: (1) increase ParallelizationFactor (up to 10), or (2) reduce processing time, or (3) add shards. Opsi B would be correct if each batch took 1 second. Opsi C/D incorrect — Kinesis-Lambda doesn't auto-scale beyond configured parallelism per shard.</div>
+                <div class="explanation">With ParallelizationFactor=1, each shard has exactly 1 concurrent Lambda invocation. Since each takes 10 seconds, each shard processes 1 batch every 10 seconds = 0.1 batches/sec/shard. With 10 shards processing concurrently: 10 × 0.1 = 1 batch/second total. To increase throughput: (1) increase ParallelizationFactor (up to 10), or (2) reduce processing time, or (3) add shards. Opsi B would be correct if each batch took 1 second. Opsi C/D incorrect — Kinesis-Lambda doesn't auto-scale beyond configured parallelism per shard. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Provisioned Concurrency guarantees pre-initialized execution environments. Model is loaded during provisioning (not at invocation time). Every invocation hits a warm environment with zero cold start. Cost: you pay for provisioned environment 24/7 regardless of usage. Opsi B (model in handler) makes EVERY invocation load the model — worse than cold start. Opsi C (more memory) speeds up cold start but doesn't eliminate it. Opsi D (pinging) unreliable — Lambda may still recycle, and doesn't guarantee preventing cold starts.</div>
+                <div class="explanation">Provisioned Concurrency guarantees pre-initialized execution environments. Model is loaded during provisioning (not at invocation time). Every invocation hits a warm environment with zero cold start. Cost: you pay for provisioned environment 24/7 regardless of usage. Opsi B (model in handler) makes EVERY invocation load the model — worse than cold start — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (more memory) speeds up cold start but doesn't eliminate it. Opsi D (pinging) unreliable — Lambda may still recycle, and doesn't guarantee preventing cold starts.</div>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda supports configurable ephemeral storage from 512 MB to 10,240 MB (10 GB). For a 5 GB file, allocating 10 GB /tmp provides sufficient space. Download from S3 to /tmp, process, upload result to S3. Ensure memory is sufficient for processing (up to 10 GB). Opsi B (512 MB default) insufficient for 5 GB file. Opsi C (deployment package) max 250 MB unzipped — can't include 5 GB file. Opsi D (EFS) works but adds VPC requirement and latency — /tmp is simpler for this use case.</div>
+                <div class="explanation">Lambda supports configurable ephemeral storage from 512 MB to 10,240 MB (10 GB). For a 5 GB file, allocating 10 GB /tmp provides sufficient space. Download from S3 to /tmp, process, upload result to S3. Ensure memory is sufficient for processing (up to 10 GB). Opsi B (512 MB default) insufficient for 5 GB file — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (deployment package) max 250 MB unzipped — can't include 5 GB file. Opsi D (EFS) works but adds VPC requirement and latency — /tmp is simpler for this use case.</div>
             </div>
         </div>
 
@@ -138,7 +138,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Reserved concurrency serves two purposes: (1) For Function A — guarantees 200 execution slots always available, even if other functions consume the remaining 800. (2) For batch functions — caps each at 200, preventing any single function from consuming all account concurrency. Total: 200 (A) + 200×4 (B-E) = 1000 = full account allocation, properly divided. Opsi B (increase limit) doesn't prevent batch from starving real-time. Opsi D (provisioned concurrency) prevents cold starts but doesn't guarantee concurrent execution slots.</div>
+                <div class="explanation">Reserved concurrency serves two purposes: (1) For Function A — guarantees 200 execution slots always available, even if other functions consume the remaining 800. (2) For batch functions — caps each at 200, preventing any single function from consuming all account concurrency. Total: 200 (A) + 200×4 (B-E) = 1000 = full account allocation, properly divided. Opsi B (increase limit) doesn't prevent batch from starving real-time — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (provisioned concurrency) prevents cold starts but doesn't guarantee concurrent execution slots.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda execution model: code outside the handler (module/global scope) executes once during cold start (INIT phase). The execution environment persists between invocations. Connection pools and config loaded at INIT are reused in subsequent warm invocations — 2-second initialization only happens once per environment lifecycle. Opsi B (inside handler) pays 2-second init EVERY invocation — terrible performance. Opsi C (env vars) still need to be read; connection pool still needed. Opsi D (new connection per record) highest latency possible.</div>
+                <div class="explanation">Lambda execution model: code outside the handler (module/global scope) executes once during cold start (INIT phase). The execution environment persists between invocations. Connection pools and config loaded at INIT are reused in subsequent warm invocations — 2-second initialization only happens once per environment lifecycle. Opsi B (inside handler) pays 2-second init EVERY invocation — terrible performance. Opsi C (env vars) still need to be read; connection pool still needed. Opsi D (new connection per record) highest latency possible — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -170,7 +170,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Without ReportBatchItemFailures, any exception from the Lambda handler causes the ENTIRE batch to return to the queue — 9 successful messages are reprocessed unnecessarily. With FunctionResponseTypes: ["ReportBatchItemFailures"], the function returns a response specifying which messageIds failed. Only those messages return to the queue. Processed messages are deleted. This prevents duplicate processing. Opsi B — not the default behavior. Opsi C — messages aren't discarded by default. Opsi D — batch splitting is for Kinesis (BisectBatchOnError), not SQS.</div>
+                <div class="explanation">Without ReportBatchItemFailures, any exception from the Lambda handler causes the ENTIRE batch to return to the queue — 9 successful messages are reprocessed unnecessarily. With FunctionResponseTypes: ["ReportBatchItemFailures"], the function returns a response specifying which messageIds failed. Only those messages return to the queue. Processed messages are deleted. This prevents duplicate processing. Opsi B — not the default behavior — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — messages aren't discarded by default. Opsi D — batch splitting is for Kinesis (BisectBatchOnError), not SQS.</div>
             </div>
         </div>
 

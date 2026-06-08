@@ -42,7 +42,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">ParallelizationFactor (default 1, max 10) memungkinkan Lambda memproses multiple batches dari satu shard secara bersamaan. Dengan 10 shards dan parallelization factor 10, bisa ada hingga 100 Lambda invocations concurrent. Ini meningkatkan throughput secara signifikan. Opsi B (batch size) menambah records per invocation tapi tidak menambah concurrency. Opsi C (timeout rendah) bisa menyebabkan failures. Opsi D (Enhanced Fan-Out) untuk dedicated throughput per consumer app, bukan untuk meningkatkan Lambda processing speed.</div>
+                <div class="explanation">ParallelizationFactor (default 1, max 10) memungkinkan Lambda memproses multiple batches dari satu shard secara bersamaan. Dengan 10 shards dan parallelization factor 10, bisa ada hingga 100 Lambda invocations concurrent. Ini meningkatkan throughput secara signifikan. Opsi B (batch size) menambah records per invocation tapi tidak menambah concurrency. Opsi C (timeout rendah) bisa menyebabkan failures. Opsi D (Enhanced Fan-Out) untuk dedicated throughput per consumer app, bukan untuk meningkatkan Lambda processing speed — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">BisectBatchOnFunctionError membagi batch menjadi dua bagian dan mencoba masing-masing secara terpisah, secara rekursif mengidentifikasi record yang bermasalah. MaximumRetryAttempts membatasi jumlah retry sebelum mengirim ke on-failure destination (SQS/SNS) untuk investigasi. Opsi B kehilangan data karena langsung skip. Opsi C menyembunyikan errors dan bisa menyebabkan data loss silently. Opsi D (batch size 1) mengurangi throughput secara drastis.</div>
+                <div class="explanation">BisectBatchOnFunctionError membagi batch menjadi dua bagian dan mencoba masing-masing secara terpisah, secara rekursif mengidentifikasi record yang bermasalah. MaximumRetryAttempts membatasi jumlah retry sebelum mengirim ke on-failure destination (SQS/SNS) untuk investigasi. Opsi B kehilangan data karena langsung skip — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C menyembunyikan errors dan bisa menyebabkan data loss silently. Opsi D (batch size 1) mengurangi throughput secara drastis.</div>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Mengupdate event source mapping dengan StartingPosition AT_TIMESTAMP memungkinkan Lambda mulai membaca dari posisi waktu tertentu. Ini adalah cara paling langsung untuk replay records dari titik waktu spesifik. Opsi B (TRIM_HORIZON) memproses semua records dari awal retention period, bukan hanya 24 jam terakhir. Opsi C membutuhkan custom consumer terpisah yang lebih kompleks. Opsi D (retention period) tidak menyebabkan reprocessing otomatis.</div>
+                <div class="explanation">Mengupdate event source mapping dengan StartingPosition AT_TIMESTAMP memungkinkan Lambda mulai membaca dari posisi waktu tertentu. Ini adalah cara paling langsung untuk replay records dari titik waktu spesifik. Opsi B (TRIM_HORIZON) memproses semua records dari awal retention period, bukan hanya 24 jam terakhir. Opsi C membutuhkan custom consumer terpisah yang lebih kompleks. Opsi D (retention period) tidak menyebabkan reprocessing otomatis — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">ParallelizationFactor langsung meningkatkan throughput dengan memproses multiple batches per shard secara bersamaan tanpa perubahan kode atau infrastruktur. Ini adalah first step paling efektif. Opsi B bisa membantu jika function CPU-bound tapi tidak dijamin signifikan. Opsi C (reduce batch size) bisa meningkatkan invocation rate tapi setiap invocation masih overhead. Opsi D (add shards) lebih mahal dan memerlukan resharding time, sebaiknya dilakukan setelah tuning options lain.</div>
+                <div class="explanation">ParallelizationFactor langsung meningkatkan throughput dengan memproses multiple batches per shard secara bersamaan tanpa perubahan kode atau infrastruktur. Ini adalah first step paling efektif. Opsi B bisa membantu jika function CPU-bound tapi tidak dijamin signifikan. Opsi C (reduce batch size) bisa meningkatkan invocation rate tapi setiap invocation masih overhead — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (add shards) lebih mahal dan memerlukan resharding time, sebaiknya dilakukan setelah tuning options lain.</div>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">ReportBatchItemFailures (FunctionResponseTypes) memungkinkan Lambda melaporkan hanya records yang gagal diproses. Lambda mengembalikan batchItemFailures dengan sequence numbers dari records yang perlu diretry. Records yang berhasil tidak diproses ulang. Ini memberikan granular error handling per record. Opsi B (BisectBatch) hanya splits batch tanpa granular per-record control. Opsi C kehilangan kemampuan retry. Opsi D tidak supported - hanya satu event source mapping per stream-function pair.</div>
+                <div class="explanation">ReportBatchItemFailures (FunctionResponseTypes) memungkinkan Lambda melaporkan hanya records yang gagal diproses. Lambda mengembalikan batchItemFailures dengan sequence numbers dari records yang perlu diretry. Records yang berhasil tidak diproses ulang. Ini memberikan granular error handling per record. Opsi B (BisectBatch) hanya splits batch tanpa granular per-record control. Opsi C kehilangan kemampuan retry. Opsi D tidak supported - hanya satu event source mapping per stream-function pair — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -138,7 +138,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda event source mappings mendukung Tumbling Windows (hingga 900 detik) yang memungkinkan stateful processing. Fungsi menerima state dari invocation sebelumnya dan mengembalikan state yang diperbarui. Pada akhir window, fungsi menerima isFinalInvokeForWindow=true untuk emit hasil akhir. Opsi B bisa bekerja tapi over-engineering jika hanya perlu aggregasi sederhana. Opsi C membutuhkan custom code dan DynamoDB costs. Opsi D (batching window) bukan sama dengan tumbling window - tidak menyimpan state antar batches.</div>
+                <div class="explanation">Lambda event source mappings mendukung Tumbling Windows (hingga 900 detik) yang memungkinkan stateful processing. Fungsi menerima state dari invocation sebelumnya dan mengembalikan state yang diperbarui. Pada akhir window, fungsi menerima isFinalInvokeForWindow=true untuk emit hasil akhir. Opsi B bisa bekerja tapi over-engineering jika hanya perlu aggregasi sederhana. Opsi C membutuhkan custom code dan DynamoDB costs. Opsi D (batching window) bukan sama dengan tumbling window - tidak menyimpan state antar batches — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Maximum concurrent executions = jumlah shards × ParallelizationFactor. Dengan 5 shards dan ParallelizationFactor 5, maximum adalah 5 × 5 = 25 concurrent Lambda invocations. Jika account-level concurrency limit atau reserved concurrency kurang dari 25, throttling terjadi. Opsi B (5) adalah tanpa parallelization (factor=1). Opsi C (10) bukan default behavior. Opsi D (50) salah karena parallelization factor dikonfigurasi sebagai 5, bukan 10.</div>
+                <div class="explanation">Maximum concurrent executions = jumlah shards × ParallelizationFactor. Dengan 5 shards dan ParallelizationFactor 5, maximum adalah 5 × 5 = 25 concurrent Lambda invocations. Jika account-level concurrency limit atau reserved concurrency kurang dari 25, throttling terjadi. Opsi B (5) adalah tanpa parallelization (factor=1) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (10) bukan default behavior. Opsi D (50) salah karena parallelization factor dikonfigurasi sebagai 5, bukan 10.</div>
             </div>
         </div>
 
@@ -170,7 +170,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda event source mapping mendukung event filtering (filter criteria) yang memfilter records sebelum invocation. Records yang tidak cocok dengan filter tidak memicu Lambda, menghemat biaya invocation. Filter pattern mengevaluasi record data setelah base64 decode. Opsi B memfilter di dalam Lambda sehingga invocation tetap terjadi (biaya tetap ada). Opsi C menambah service dan complexity. Opsi D membutuhkan perubahan di producer side yang mungkin tidak feasible.</div>
+                <div class="explanation">Lambda event source mapping mendukung event filtering (filter criteria) yang memfilter records sebelum invocation. Records yang tidak cocok dengan filter tidak memicu Lambda, menghemat biaya invocation. Filter pattern mengevaluasi record data setelah base64 decode. Opsi B memfilter di dalam Lambda sehingga invocation tetap terjadi (biaya tetap ada). Opsi C menambah service dan complexity. Opsi D membutuhkan perubahan di producer side yang mungkin tidak feasible — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -186,7 +186,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Kinesis records yang melewati retention period (24 jam) dihapus secara permanen dari stream. Ketika Lambda di-enable kembali setelah 30 jam, iterator lama sudah expired. Lambda akan mendapatkan error iterator dan otomatis meresolve dengan membaca dari TRIM_HORIZON (data tertua yang masih tersedia). Records dari 6 jam terakhir (30-24) sudah hilang. Opsi B tidak ada mekanisme backup otomatis di Kinesis. Opsi C (event source mapping) tetap valid dan tidak perlu dibuat ulang. Opsi D tidak akurat karena Kinesis tidak backup ke DynamoDB.</div>
+                <div class="explanation">Kinesis records yang melewati retention period (24 jam) dihapus secara permanen dari stream. Ketika Lambda di-enable kembali setelah 30 jam, iterator lama sudah expired. Lambda akan mendapatkan error iterator dan otomatis meresolve dengan membaca dari TRIM_HORIZON (data tertua yang masih tersedia). Records dari 6 jam terakhir (30-24) sudah hilang. Opsi B tidak ada mekanisme backup otomatis di Kinesis — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (event source mapping) tetap valid dan tidak perlu dibuat ulang. Opsi D tidak akurat karena Kinesis tidak backup ke DynamoDB.</div>
             </div>
         </div>
         

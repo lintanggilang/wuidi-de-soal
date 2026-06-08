@@ -43,7 +43,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Apache Iceberg mendukung schema evolution yang aman: columns bisa ditambahkan tanpa menulis ulang data files yang ada. Data files lama yang tidak memiliki kolom baru akan mengembalikan NULL untuk kolom-kolom tersebut. Iceberg menggunakan unique column IDs (bukan nama atau posisi) untuk mapping, sehingga existing queries tetap berfungsi tanpa modifikasi. Opsi B salah — Iceberg tidak perlu rewrite. Opsi C salah — schema evolution in-place didukung. Opsi D salah — backward compatibility adalah fitur utama Iceberg schema evolution.</div>
+                <div class="explanation">Apache Iceberg mendukung schema evolution yang aman: columns bisa ditambahkan tanpa menulis ulang data files yang ada. Data files lama yang tidak memiliki kolom baru akan mengembalikan NULL untuk kolom-kolom tersebut. Iceberg menggunakan unique column IDs (bukan nama atau posisi) untuk mapping, sehingga existing queries tetap berfungsi tanpa modifikasi. Opsi B salah — Iceberg tidak perlu rewrite — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah — schema evolution in-place didukung. Opsi D salah — backward compatibility adalah fitur utama Iceberg schema evolution.</div>
             </div>
         </div>
 
@@ -60,7 +60,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Ketika producer berubah terlebih dahulu dan consumers belum diupdate, diperlukan FORWARD compatibility — artinya consumer dengan schema lama masih bisa membaca data yang ditulis dengan schema baru. Type promotion int→long adalah forward compatible di Avro karena consumer yang mengharapkan int bisa membaca long (dengan truncation risk tapi secara Avro resolution rules, long bisa di-read sebagai compatible). Opsi A (NONE) tidak aman untuk production. Opsi B (BACKWARD) memastikan consumer baru bisa baca data lama — tapi tidak menjamin consumer lama bisa baca data baru. Opsi D (FULL) paling restrictive tapi int→long memenuhi full compatibility di Avro.</div>
+                <div class="explanation">Ketika producer berubah terlebih dahulu dan consumers belum diupdate, diperlukan FORWARD compatibility — artinya consumer dengan schema lama masih bisa membaca data yang ditulis dengan schema baru. Type promotion int→long adalah forward compatible di Avro karena consumer yang mengharapkan int bisa membaca long (dengan truncation risk tapi secara Avro resolution rules, long bisa di-read sebagai compatible). Opsi A (NONE) tidak aman untuk production — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi B (BACKWARD) memastikan consumer baru bisa baca data lama — tapi tidak menjamin consumer lama bisa baca data baru. Opsi D (FULL) paling restrictive tapi int→long memenuhi full compatibility di Avro.</div>
             </div>
         </div>
 
@@ -77,7 +77,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Apache Iceberg mendukung column rename sebagai metadata-only operation. Karena Iceberg menggunakan column IDs (bukan nama) untuk mapping ke data files, rename hanya mengubah metadata table tanpa perlu menulis ulang file data. Ini instan terlepas dari ukuran tabel. Opsi A (rewrite 500TB) sangat mahal dan memakan waktu berhari-hari. Opsi C (view) adalah workaround yang tidak mengubah source of truth dan menambah layer abstraksi. Opsi D (copy column) menggandakan data dan storage cost. Jika menggunakan Iceberg, rename adalah pilihan terbaik.</div>
+                <div class="explanation">Apache Iceberg mendukung column rename sebagai metadata-only operation. Karena Iceberg menggunakan column IDs (bukan nama) untuk mapping ke data files, rename hanya mengubah metadata table tanpa perlu menulis ulang file data. Ini instan terlepas dari ukuran tabel. Opsi A (rewrite 500TB) sangat mahal dan memakan waktu berhari-hari — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (view) adalah workaround yang tidak mengubah source of truth dan menambah layer abstraksi. Opsi D (copy column) menggandakan data dan storage cost. Jika menggunakan Iceberg, rename adalah pilihan terbaik.</div>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon Redshift mengoptimasi ALTER TABLE ADD COLUMN dengan DEFAULT value — kolom baru ditambahkan sebagai metadata operation dan default value diterapkan secara virtual tanpa menulis ulang seluruh tabel. Ini sangat cepat bahkan untuk tabel miliaran rows dan tidak memblokir operasi lain. Opsi B (deep copy) memerlukan downtime saat swap dan double storage sementara. Opsi C (UPDATE 2B rows) mengonsumsi resources signifikan, memerlukan VACUUM setelahnya, dan memblokir concurrent operations. Opsi D (export/reimport) memerlukan downtime terlama.</div>
+                <div class="explanation">Amazon Redshift mengoptimasi ALTER TABLE ADD COLUMN dengan DEFAULT value — kolom baru ditambahkan sebagai metadata operation dan default value diterapkan secara virtual tanpa menulis ulang seluruh tabel. Ini sangat cepat bahkan untuk tabel miliaran rows dan tidak memblokir operasi lain. Opsi B (deep copy) memerlukan downtime saat swap dan double storage sementara. Opsi C (UPDATE 2B rows) mengonsumsi resources signifikan, memerlukan VACUUM setelahnya, dan memblokir concurrent operations. Opsi D (export/reimport) memerlukan downtime terlama — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -111,7 +111,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS Glue Schema Registry mendukung compatibility modes (BACKWARD, FORWARD, FULL, NONE) yang secara otomatis menolak registrasi schema yang tidak compatible. Dengan BACKWARD compatibility, menghapus required field tanpa default value akan ditolak saat registrasi karena consumer baru tidak bisa membaca data lama yang memiliki field tersebut. Opsi A (rollback) mengatasi setelah masalah terjadi, bukan mencegah. Opsi C (IAM) membatasi siapa yang bisa register tapi tidak mengecek compatibility. Opsi D (CloudWatch) hanya monitoring, bukan prevention.</div>
+                <div class="explanation">AWS Glue Schema Registry mendukung compatibility modes (BACKWARD, FORWARD, FULL, NONE) yang secara otomatis menolak registrasi schema yang tidak compatible. Dengan BACKWARD compatibility, menghapus required field tanpa default value akan ditolak saat registrasi karena consumer baru tidak bisa membaca data lama yang memiliki field tersebut. Opsi A (rollback) mengatasi setelah masalah terjadi, bukan mencegah — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (IAM) membatasi siapa yang bisa register tapi tidak mengecek compatibility. Opsi D (CloudWatch) hanya monitoring, bukan prevention.</div>
             </div>
         </div>
 
@@ -128,7 +128,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DynamoDB adalah schemaless — setiap item bisa memiliki atribut berbeda. Pendekatan terbaik adalah menambah atribut baru "price_numeric" dengan tipe Number, backfill existing items secara gradual (menggunakan Scan+UpdateItem atau DynamoDB Streams), dan update aplikasi untuk menulis ke kedua atribut selama transisi. Setelah migrasi selesai, deprecated attribute bisa diabaikan. Opsi B (export/reimport) menyebabkan downtime dan kompleksitas tinggi. Opsi C salah — DynamoDB PartiQL tidak memiliki CAST function untuk type conversion. Opsi D menghapus semua data yang sangat berisiko.</div>
+                <div class="explanation">DynamoDB adalah schemaless — setiap item bisa memiliki atribut berbeda. Pendekatan terbaik adalah menambah atribut baru "price_numeric" dengan tipe Number, backfill existing items secara gradual (menggunakan Scan+UpdateItem atau DynamoDB Streams), dan update aplikasi untuk menulis ke kedua atribut selama transisi. Setelah migrasi selesai, deprecated attribute bisa diabaikan. Opsi B (export/reimport) menyebabkan downtime dan kompleksitas tinggi. Opsi C salah — DynamoDB PartiQL tidak memiliki CAST function untuk type conversion. Opsi D menghapus semua data yang sangat berisiko — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -145,7 +145,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Apache Iceberg mendukung safe type promotions sebagai operasi metadata-only: int→long, float→double, dan peningkatan precision decimal. Data files yang ada tidak perlu ditulis ulang — Iceberg reader melakukan conversion secara otomatis saat membaca data files lama dengan tipe yang lebih sempit. Opsi A salah — Iceberg mendukung type promotion. Opsi C salah — tidak perlu rewrite data files. Opsi D salah — type widening berlaku untuk numeric types, bukan hanya string.</div>
+                <div class="explanation">Apache Iceberg mendukung safe type promotions sebagai operasi metadata-only: int→long, float→double, dan peningkatan precision decimal. Data files yang ada tidak perlu ditulis ulang — Iceberg reader melakukan conversion secara otomatis saat membaca data files lama dengan tipe yang lebih sempit. Opsi A salah — Iceberg mendukung type promotion — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah — tidak perlu rewrite data files. Opsi D salah — type widening berlaku untuk numeric types, bukan hanya string.</div>
             </div>
         </div>
 
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Glue Crawlers dapat dikonfigurasi dengan SchemaChangePolicy yang menentukan behavior saat schema berubah. Setting "LOG" mencatat perubahan tanpa langsung mengupdate Data Catalog, memungkinkan review manual sebelum perubahan diterapkan. Ini mencegah schema instability dari mempengaruhi downstream queries. Opsi A (disable Crawlers + manual) tidak scalable untuk 20 services yang berubah weekly. Opsi C (Schema Registry) mengelola streaming schemas tapi tidak langsung mengontrol Crawler behavior. Opsi D (separate databases) tidak menyelesaikan masalah schema instability per-service.</div>
+                <div class="explanation">Glue Crawlers dapat dikonfigurasi dengan SchemaChangePolicy yang menentukan behavior saat schema berubah. Setting "LOG" mencatat perubahan tanpa langsung mengupdate Data Catalog, memungkinkan review manual sebelum perubahan diterapkan. Ini mencegah schema instability dari mempengaruhi downstream queries. Opsi A (disable Crawlers + manual) tidak scalable untuk 20 services yang berubah weekly. Opsi C (Schema Registry) mengelola streaming schemas tapi tidak langsung mengontrol Crawler behavior. Opsi D (separate databases) tidak menyelesaikan masalah schema instability per-service — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Apache Iceberg menyediakan "migrate" procedure (atau "add_files") yang mendaftarkan existing Parquet files sebagai Iceberg table tanpa menulis ulang data. Iceberg menangani perbedaan schema antar files melalui schema evolution metadata — files lama dengan 50 columns mengembalikan NULL untuk 35 columns yang tidak ada. Ini instan dan tanpa biaya rewrite. Opsi A (rewrite 100TB) memakan waktu berhari-hari dan biaya compute/storage signifikan. Opsi C (incremental copy) juga memerlukan waktu lama. Opsi D (Glue per-partition) masih melibatkan rewrite yang tidak perlu.</div>
+                <div class="explanation">Apache Iceberg menyediakan "migrate" procedure (atau "add_files") yang mendaftarkan existing Parquet files sebagai Iceberg table tanpa menulis ulang data. Iceberg menangani perbedaan schema antar files melalui schema evolution metadata — files lama dengan 50 columns mengembalikan NULL untuk 35 columns yang tidak ada. Ini instan dan tanpa biaya rewrite. Opsi A (rewrite 100TB) memakan waktu berhari-hari dan biaya compute/storage signifikan. Opsi C (incremental copy) juga memerlukan waktu lama. Opsi D (Glue per-partition) masih melibatkan rewrite yang tidak perlu — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon Redshift mendukung ALTER TABLE ALTER COLUMN untuk meningkatkan panjang VARCHAR. Operasi ini hanya mengubah metadata dan tidak memerlukan rewrite data atau exclusive lock yang berkepanjangan. Ini karena Redshift menyimpan VARCHAR sebagai variable-length dan metadata length hanya digunakan untuk validasi input, bukan storage format. Opsi B salah — Redshift mendukung increase VARCHAR length sejak 2019. Opsi C salah — tidak ada full table rewrite. Opsi D salah — decrease tidak didukung (hanya increase). Catatan: mengubah data type yang berbeda (misalnya INT ke VARCHAR) masih memerlukan deep copy.</div>
+                <div class="explanation">Amazon Redshift mendukung ALTER TABLE ALTER COLUMN untuk meningkatkan panjang VARCHAR. Operasi ini hanya mengubah metadata dan tidak memerlukan rewrite data atau exclusive lock yang berkepanjangan. Ini karena Redshift menyimpan VARCHAR sebagai variable-length dan metadata length hanya digunakan untuk validasi input, bukan storage format. Opsi B salah — Redshift mendukung increase VARCHAR length sejak 2019. Opsi C salah — tidak ada full table rewrite. Opsi D salah — decrease tidak didukung (hanya increase) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Catatan: mengubah data type yang berbeda (misalnya INT ke VARCHAR) masih memerlukan deep copy.</div>
             </div>
         </div>
         

@@ -43,7 +43,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Event source mapping maximum concurrency (fitur yang lebih baru) langsung membatasi jumlah concurrent Lambda invocations yang dipicu oleh SQS, memberikan kontrol yang presisi. Batch size 10 memproses lebih banyak pesan per invocation, mempercepat processing. Opsi A (reserved concurrency) membatasi fungsi secara global tetapi bisa menyebabkan throttling dan message kembali ke queue jika exceeded. Opsi C (provisioned concurrency) mengurangi cold starts tetapi tidak membatasi total concurrent invocations — reserved concurrency yang membatasi. Opsi D (redrive policy + timeout) tidak mengontrol concurrency.</div>
+                <div class="explanation">Event source mapping maximum concurrency (fitur yang lebih baru) langsung membatasi jumlah concurrent Lambda invocations yang dipicu oleh SQS, memberikan kontrol yang presisi. Batch size 10 memproses lebih banyak pesan per invocation, mempercepat processing. Opsi A (reserved concurrency) membatasi fungsi secara global tetapi bisa menyebabkan throttling dan message kembali ke queue jika exceeded. Opsi C (provisioned concurrency) mengurangi cold starts tetapi tidak membatasi total concurrent invocations — reserved concurrency yang membatasi. Opsi D (redrive policy + timeout) tidak mengontrol concurrency — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -60,7 +60,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk Kinesis event source mappings, "bisect on function error" memecah batch menjadi dua jika terjadi error, secara progresif mengisolasi record yang bermasalah. "Maximum retry attempts" membatasi berapa kali record diretryi. "On-failure destination" mengirim failed record ke SQS DLQ setelah retry limit tercapai, memungkinkan processing melanjutkan ke record berikutnya. Opsi B (retention expiry) berarti menunggu 24 jam — unacceptable delay. Opsi C (skip errors) kehilangan visibility ke masalah data. Opsi D (async DLQ) tidak berlaku untuk stream-based invocations (Kinesis) yang synchronous — DLQ pada fungsi hanya untuk async invocations.</div>
+                <div class="explanation">Untuk Kinesis event source mappings, "bisect on function error" memecah batch menjadi dua jika terjadi error, secara progresif mengisolasi record yang bermasalah. "Maximum retry attempts" membatasi berapa kali record diretryi. "On-failure destination" mengirim failed record ke SQS DLQ setelah retry limit tercapai, memungkinkan processing melanjutkan ke record berikutnya. Opsi B (retention expiry) berarti menunggu 24 jam — unacceptable delay — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (skip errors) kehilangan visibility ke masalah data. Opsi D (async DLQ) tidak berlaku untuk stream-based invocations (Kinesis) yang synchronous — DLQ pada fungsi hanya untuk async invocations.</div>
             </div>
         </div>
 
@@ -77,7 +77,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda layers memungkinkan packaging shared dependencies secara terpisah dari function code. Layers dapat di-share antar multiple functions dan di-version independently. Ketika dependency diupdate, hanya layer version baru yang di-publish dan functions menggunakan versi baru. Ini mengurangi deployment package size (function code tanpa dependencies) dan centralize management. Opsi B (monolithic) menghilangkan keuntungan microservices dan memperbesar blast radius. Opsi C (container images) viable tetapi lebih overhead untuk sharing dependencies. Opsi D (EFS) menambah latency cold start karena mount operation dan biaya EFS yang lebih tinggi.</div>
+                <div class="explanation">Lambda layers memungkinkan packaging shared dependencies secara terpisah dari function code. Layers dapat di-share antar multiple functions dan di-version independently. Ketika dependency diupdate, hanya layer version baru yang di-publish dan functions menggunakan versi baru. Ini mengurangi deployment package size (function code tanpa dependencies) dan centralize management. Opsi B (monolithic) menghilangkan keuntungan microservices dan memperbesar blast radius. Opsi C (container images) viable tetapi lebih overhead untuk sharing dependencies. Opsi D (EFS) menambah latency cold start karena mount operation dan biaya EFS yang lebih tinggi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda destinations (fitur async invocation) memungkinkan routing hasil invocation — baik success maupun failure — ke target destinations seperti Lambda function, SQS, SNS, atau EventBridge. On-failure destination langsung mengirim event payload beserta error details ke Lambda lain untuk analysis. Ini lebih rich dibanding DLQ karena menyertakan response payload dan metadata. Opsi B (DLQ) bisa bekerja tetapi hanya mengirim original event tanpa error context details dan memerlukan intermediate SQS queue. Opsi C (CloudWatch) kompleks dan memiliki delay. Opsi D (Step Functions) overhead yang berlebihan untuk use case ini.</div>
+                <div class="explanation">Lambda destinations (fitur async invocation) memungkinkan routing hasil invocation — baik success maupun failure — ke target destinations seperti Lambda function, SQS, SNS, atau EventBridge. On-failure destination langsung mengirim event payload beserta error details ke Lambda lain untuk analysis. Ini lebih rich dibanding DLQ karena menyertakan response payload dan metadata. Opsi B (DLQ) bisa bekerja tetapi hanya mengirim original event tanpa error context details dan memerlukan intermediate SQS queue. Opsi C (CloudWatch) kompleks dan memiliki delay. Opsi D (Step Functions) overhead yang berlebihan untuk use case ini — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -111,7 +111,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Lambda Power Tuning adalah open-source tool (Step Functions-based) yang secara otomatis menjalankan fungsi dengan berbagai memory configurations, mengukur execution time dan cost untuk masing-masing, dan menghasilkan visualization curve yang menunjukkan sweet spot optimal. Ini data-driven dan comprehensive. Opsi B (manual testing) viable tetapi tidak se-comprehensive dan lebih time-consuming. Opsi C (max memory) mengabaikan cost optimization — setelah titik tertentu, more memory tidak mengurangi time secara proporsional. Opsi D (Compute Optimizer) memberikan rekomendasi tetapi kurang detail dibanding Power Tuning's multi-point analysis.</div>
+                <div class="explanation">AWS Lambda Power Tuning adalah open-source tool (Step Functions-based) yang secara otomatis menjalankan fungsi dengan berbagai memory configurations, mengukur execution time dan cost untuk masing-masing, dan menghasilkan visualization curve yang menunjukkan sweet spot optimal. Ini data-driven dan comprehensive. Opsi B (manual testing) viable tetapi tidak se-comprehensive dan lebih time-consuming — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (max memory) mengabaikan cost optimization — setelah titik tertentu, more memory tidak mengurangi time secara proporsional. Opsi D (Compute Optimizer) memberikan rekomendasi tetapi kurang detail dibanding Power Tuning's multi-point analysis.</div>
             </div>
         </div>
 
@@ -128,7 +128,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Parallelization factor (1-10) memungkinkan multiple Lambda invocations per shard, meningkatkan throughput processing tanpa menambah shard. DynamoDB Streams mempertahankan records selama 24 jam, jadi data tidak hilang selama throttle — hanya processing tertunda. Increasing reserved concurrency memastikan fungsi memiliki kapasitas untuk burst. Opsi B (Kinesis) memerlukan redesign arsitektur yang signifikan. Opsi C (SQS buffer) tidak bisa disisipkan antara DynamoDB Streams dan Lambda — streams langsung trigger Lambda. Opsi D (batch window 0) justru meningkatkan invocations per record, memperburuk throttling.</div>
+                <div class="explanation">Parallelization factor (1-10) memungkinkan multiple Lambda invocations per shard, meningkatkan throughput processing tanpa menambah shard. DynamoDB Streams mempertahankan records selama 24 jam, jadi data tidak hilang selama throttle — hanya processing tertunda. Increasing reserved concurrency memastikan fungsi memiliki kapasitas untuk burst. Opsi B (Kinesis) memerlukan redesign arsitektur yang signifikan. Opsi C (SQS buffer) tidak bisa disisipkan antara DynamoDB Streams dan Lambda — streams langsung trigger Lambda — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (batch window 0) justru meningkatkan invocations per record, memperburuk throttling.</div>
             </div>
         </div>
 
@@ -145,7 +145,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda supports ephemeral storage (/tmp) up to 10,240 MB (10 GB), cukup untuk file 5 GB. Streaming processing (membaca dan menulis file dalam chunks) menghindari kebutuhan memuat seluruh file ke memory sekaligus, memungkinkan processing file besar dengan memory yang lebih kecil. Opsi B (EFS) viable tetapi menambah cold start latency (VPC + mount), biaya lebih tinggi, dan overhead konfigurasi. Opsi C (S3 Select) hanya mendukung subset format (CSV, JSON, Parquet) dan query sederhana, bukan transformasi kompleks. Opsi D (10 GB memory) wasteful dan mahal — memory lebih mahal dari ephemeral storage.</div>
+                <div class="explanation">Lambda supports ephemeral storage (/tmp) up to 10,240 MB (10 GB), cukup untuk file 5 GB. Streaming processing (membaca dan menulis file dalam chunks) menghindari kebutuhan memuat seluruh file ke memory sekaligus, memungkinkan processing file besar dengan memory yang lebih kecil. Opsi B (EFS) viable tetapi menambah cold start latency (VPC + mount), biaya lebih tinggi, dan overhead konfigurasi. Opsi C (S3 Select) hanya mendukung subset format (CSV, JSON, Parquet) dan query sederhana, bukan transformasi kompleks — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (10 GB memory) wasteful dan mahal — memory lebih mahal dari ephemeral storage.</div>
             </div>
         </div>
 
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Step Functions menyediakan orchestration visual dengan: parallel states untuk steps yang bisa run concurrently, Retry policies per step (configurable intervals, max attempts, backoff rate), Catch blocks untuk error handling spesifik per step, dan conditional branching (Choice state). Ini memberikan full control dan visibility atas multi-step pipeline. Opsi B (S3 event chaining) sulit di-debug, tidak memiliki built-in retry, dan tidak mendukung conditional logic. Opsi C (synchronous invoke) menghadapi Lambda timeout limit dan single point of failure. Opsi D (SNS) bersifat fire-and-forget tanpa orchestration state atau error handling.</div>
+                <div class="explanation">AWS Step Functions menyediakan orchestration visual dengan: parallel states untuk steps yang bisa run concurrently, Retry policies per step (configurable intervals, max attempts, backoff rate), Catch blocks untuk error handling spesifik per step, dan conditional branching (Choice state). Ini memberikan full control dan visibility atas multi-step pipeline. Opsi B (S3 event chaining) sulit di-debug, tidak memiliki built-in retry, dan tidak mendukung conditional logic. Opsi C (synchronous invoke) menghadapi Lambda timeout limit dan single point of failure. Opsi D (SNS) bersifat fire-and-forget tanpa orchestration state atau error handling — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Menempatkan SQS queue antara S3 events dan Lambda memberikan buffering — events tidak hilang karena persisted di queue. Lambda SQS event source mapping dengan maximum concurrency setting mengontrol berapa banyak concurrent invocations, mencegah throttling. SQS messages di-retry secara otomatis jika processing gagal. Opsi B (increase limit) mungkin tidak cukup untuk extreme bursts dan meningkatkan biaya. Opsi C (prefix filter) mengurangi events tetapi tidak menyelesaikan concurrency issue untuk files yang match filter. Opsi D (provisioned concurrency) mengurangi cold starts tetapi tidak mencegah throttling jika invocations melebihi reserved concurrency.</div>
+                <div class="explanation">Menempatkan SQS queue antara S3 events dan Lambda memberikan buffering — events tidak hilang karena persisted di queue. Lambda SQS event source mapping dengan maximum concurrency setting mengontrol berapa banyak concurrent invocations, mencegah throttling. SQS messages di-retry secara otomatis jika processing gagal. Opsi B (increase limit) mungkin tidak cukup untuk extreme bursts dan meningkatkan biaya. Opsi C (prefix filter) mengurangi events tetapi tidak menyelesaikan concurrency issue untuk files yang match filter. Opsi D (provisioned concurrency) mengurangi cold starts tetapi tidak mencegah throttling jika invocations melebihi reserved concurrency — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda function URLs menyediakan dedicated HTTPS endpoint langsung untuk Lambda function tanpa memerlukan API Gateway atau load balancer. Dengan auth type NONE, endpoint menjadi public. Function URLs mendukung request/response streaming, built-in HTTPS, dan CORS configuration. Ini adalah solusi paling sederhana untuk simple HTTP endpoints. Opsi B (ALB) memerlukan provisioning dan biaya load balancer. Opsi C (Lambda@Edge) untuk content customization di edge, bukan general-purpose API. Opsi D (API Gateway) bekerja tetapi requirement spesifik menyebutkan "tanpa API Gateway" — dan function URL lebih sederhana untuk use case ini.</div>
+                <div class="explanation">Lambda function URLs menyediakan dedicated HTTPS endpoint langsung untuk Lambda function tanpa memerlukan API Gateway atau load balancer. Dengan auth type NONE, endpoint menjadi public. Function URLs mendukung request/response streaming, built-in HTTPS, dan CORS configuration. Ini adalah solusi paling sederhana untuk simple HTTP endpoints. Opsi B (ALB) memerlukan provisioning dan biaya load balancer. Opsi C (Lambda@Edge) untuk content customization di edge, bukan general-purpose API. Opsi D (API Gateway) bekerja tetapi requirement spesifik menyebutkan "tanpa API Gateway" — dan function URL lebih sederhana untuk use case ini — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

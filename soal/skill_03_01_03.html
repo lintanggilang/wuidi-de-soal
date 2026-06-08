@@ -43,7 +43,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Boto3 paginators adalah cara yang paling clean dan recommended untuk menangani paginated API responses. Paginator secara otomatis handle continuation tokens, iterating melalui semua halaman tanpa manual loop. Ini juga mendukung PageSize configuration dan JMESPath filtering. Opsi A salah — MaxKeys dibatasi 1000 oleh S3 API, tidak bisa diset lebih tinggi. Opsi C bisa bekerja untuk use case sederhana tapi resource interface memberikan kurang kontrol dan bisa memory-intensive untuk 2M objects. Opsi D secara teknis benar tapi manual token management lebih error-prone dan verbose dibandingkan paginator — paginator adalah best practice.</div>
+                <div class="explanation">Boto3 paginators adalah cara yang paling clean dan recommended untuk menangani paginated API responses. Paginator secara otomatis handle continuation tokens, iterating melalui semua halaman tanpa manual loop. Ini juga mendukung PageSize configuration dan JMESPath filtering. Opsi A salah — MaxKeys dibatasi 1000 oleh S3 API, tidak bisa diset lebih tinggi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C bisa bekerja untuk use case sederhana tapi resource interface memberikan kurang kontrol dan bisa memory-intensive untuk 2M objects. Opsi D secara teknis benar tapi manual token management lebih error-prone dan verbose dibandingkan paginator — paginator adalah best practice.</div>
             </div>
         </div>
 
@@ -60,7 +60,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Boto3 adaptive retry mode menggunakan token bucket algorithm yang secara dinamis menyesuaikan retry behavior berdasarkan throttling responses. Ini lebih sophisticated dari standard mode — ia memperlambat request rate ketika mendeteksi throttling, mencegah thundering herd. max_attempts: 10 memberikan cukup retry untuk intermittent throttling. Konfigurasi ini berlaku untuk semua API calls pada client tersebut. Opsi A (manual retry) tidak adaptive dan memerlukan modifikasi setiap call. Opsi C (timeout) tidak menyelesaikan throttling — hanya memberikan lebih banyak waktu untuk gagal. Opsi D (default) menggunakan 'legacy' mode dengan hanya 5 attempts tanpa adaptive behavior.</div>
+                <div class="explanation">Boto3 adaptive retry mode menggunakan token bucket algorithm yang secara dinamis menyesuaikan retry behavior berdasarkan throttling responses. Ini lebih sophisticated dari standard mode — ia memperlambat request rate ketika mendeteksi throttling, mencegah thundering herd. max_attempts: 10 memberikan cukup retry untuk intermittent throttling. Konfigurasi ini berlaku untuk semua API calls pada client tersebut. Opsi A (manual retry) tidak adaptive dan memerlukan modifikasi setiap call. Opsi C (timeout) tidak menyelesaikan throttling — hanya memberikan lebih banyak waktu untuk gagal — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (default) menggunakan 'legacy' mode dengan hanya 5 attempts tanpa adaptive behavior.</div>
             </div>
         </div>
 
@@ -77,7 +77,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Boto3 waiters adalah built-in polling mechanism yang menunggu resource mencapai state tertentu. Waiters memiliki configurable Delay (polling interval) dan MaxAttempts, dengan proper error handling untuk terminal failure states. Untuk EMR, 'cluster_running' waiter polls describe_cluster secara teratur. WaiterConfig memungkinkan tuning untuk fit within Lambda timeout. Opsi B (increase timeout) masih unreliable jika cluster takes longer than 15 min. Opsi C (EventBridge) adalah arsitektur yang lebih baik untuk long waits tapi pertanyaan spesifik tentang boto3 pattern. Opsi D — EMR tidak memiliki "resource interface" yang blocking di boto3.</div>
+                <div class="explanation">Boto3 waiters adalah built-in polling mechanism yang menunggu resource mencapai state tertentu. Waiters memiliki configurable Delay (polling interval) dan MaxAttempts, dengan proper error handling untuk terminal failure states. Untuk EMR, 'cluster_running' waiter polls describe_cluster secara teratur. WaiterConfig memungkinkan tuning untuk fit within Lambda timeout. Opsi B (increase timeout) masih unreliable jika cluster takes longer than 15 min — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (EventBridge) adalah arsitektur yang lebih baik untuk long waits tapi pertanyaan spesifik tentang boto3 pattern. Opsi D — EMR tidak memiliki "resource interface" yang blocking di boto3.</div>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Cross-account access ke AWS resources menggunakan STS AssumeRole pattern. Pipeline di Account A memanggil sts.assume_role() untuk mendapatkan temporary credentials (AccessKeyId, SecretAccessKey, SessionToken) yang memiliki permissions dari role di Account B. Credentials ini digunakan untuk membuat DynamoDB client baru yang beroperasi dalam context Account B. Opsi B (region) hanya mengatur region, tidak memberikan cross-account access. Opsi C — tidak ada parameter account ID di client constructor. Opsi D — DynamoDB endpoint URL sama untuk semua accounts dalam region yang sama; endpoint tidak membedakan antar accounts.</div>
+                <div class="explanation">Cross-account access ke AWS resources menggunakan STS AssumeRole pattern. Pipeline di Account A memanggil sts.assume_role() untuk mendapatkan temporary credentials (AccessKeyId, SecretAccessKey, SessionToken) yang memiliki permissions dari role di Account B. Credentials ini digunakan untuk membuat DynamoDB client baru yang beroperasi dalam context Account B. Opsi B (region) hanya mengatur region, tidak memberikan cross-account access — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — tidak ada parameter account ID di client constructor. Opsi D — DynamoDB endpoint URL sama untuk semua accounts dalam region yang sama; endpoint tidak membedakan antar accounts.</div>
             </div>
         </div>
 
@@ -111,7 +111,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">batch_write_item() dapat mengembalikan UnprocessedItems ketika throughput terlampaui. Items ini TIDAK secara otomatis di-retry oleh SDK — developer harus explicitly menangani mereka. Pattern yang benar: loop yang mengambil UnprocessedItems dari response, apply exponential backoff, dan re-submit sampai tidak ada UnprocessedItems tersisa. Opsi A salah — UnprocessedItems akan HILANG jika tidak di-handle (ini penyebab data loss). Opsi C (increase capacity) mengurangi kemungkinan UnprocessedItems tapi tidak menghilangkannya sepenuhnya — handling tetap diperlukan. Opsi D (individual put_item) sangat lambat untuk 500K records dan tetap bisa throttled.</div>
+                <div class="explanation">batch_write_item() dapat mengembalikan UnprocessedItems ketika throughput terlampaui. Items ini TIDAK secara otomatis di-retry oleh SDK — developer harus explicitly menangani mereka. Pattern yang benar: loop yang mengambil UnprocessedItems dari response, apply exponential backoff, dan re-submit sampai tidak ada UnprocessedItems tersisa. Opsi A salah — UnprocessedItems akan HILANG jika tidak di-handle (ini penyebab data loss) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (increase capacity) mengurangi kemungkinan UnprocessedItems tapi tidak menghilangkannya sepenuhnya — handling tetap diperlukan. Opsi D (individual put_item) sangat lambat untuk 500K records dan tetap bisa throttled.</div>
             </div>
         </div>
 
@@ -128,7 +128,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Boto3 S3 operations raise botocore.exceptions.ClientError untuk service-level errors. Untuk menangani "object tidak ada", Anda catch ClientError dan periksa error code di response dictionary. Untuk S3 get_object, code akan '404' atau 'NoSuchKey'. Pattern ini memberikan granular error handling. Opsi A (generic Exception) terlalu broad — tidak bisa membedakan antara missing object vs permission error vs network error. Opsi C — S3 client tidak expose exceptions sebagai attributes pada client object (berbeda dengan beberapa service seperti DynamoDB). Opsi D (head_object check) memiliki race condition — object bisa dihapus antara check dan download (TOCTOU).</div>
+                <div class="explanation">Boto3 S3 operations raise botocore.exceptions.ClientError untuk service-level errors. Untuk menangani "object tidak ada", Anda catch ClientError dan periksa error code di response dictionary. Untuk S3 get_object, code akan '404' atau 'NoSuchKey'. Pattern ini memberikan granular error handling. Opsi A (generic Exception) terlalu broad — tidak bisa membedakan antara missing object vs permission error vs network error. Opsi C — S3 client tidak expose exceptions sebagai attributes pada client object (berbeda dengan beberapa service seperti DynamoDB). Opsi D (head_object check) memiliki race condition — object bisa dihapus antara check dan download (TOCTOU) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -145,7 +145,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">IAM task roles pada ECS adalah best practice karena: (1) tidak ada credentials yang perlu di-manage — boto3 secara otomatis mendapatkan temporary credentials dari credential provider chain melalui container metadata endpoint, (2) credentials rotate otomatis, (3) tidak ada risk credential exposure. Boto3 akan otomatis menemukan dan menggunakan task role credentials tanpa konfigurasi tambahan. Opsi A (env vars) masih menggunakan long-lived credentials. Opsi B (Secrets Manager) memerlukan logic tambahan dan masih menggunakan long-lived keys. Opsi D (encrypted config) tetap memerlukan decryption key dan access keys management.</div>
+                <div class="explanation">IAM task roles pada ECS adalah best practice karena: (1) tidak ada credentials yang perlu di-manage — boto3 secara otomatis mendapatkan temporary credentials dari credential provider chain melalui container metadata endpoint, (2) credentials rotate otomatis, (3) tidak ada risk credential exposure. Boto3 akan otomatis menemukan dan menggunakan task role credentials tanpa konfigurasi tambahan. Opsi A (env vars) masih menggunakan long-lived credentials. Opsi B (Secrets Manager) memerlukan logic tambahan dan masih menggunakan long-lived keys. Opsi D (encrypted config) tetap memerlukan decryption key dan access keys management — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Redshift Data API adalah asynchronous — execute_statement() returns immediately dengan Id (query ID). Untuk mendapatkan results, Anda harus poll describe_statement() sampai Status menjadi 'FINISHED' (atau 'FAILED'/'ABORTED'), kemudian call get_statement_result() untuk mengambil data. Pattern: while loop dengan sleep interval checking status. Opsi B salah — get_statement_result() akan throw error jika statement belum selesai, tidak blocking. Opsi C — boto3 tidak memiliki built-in waiter untuk Redshift Data API statement completion. Opsi D — tidak ada parameter 'synchronous' di execute_statement() API.</div>
+                <div class="explanation">Redshift Data API adalah asynchronous — execute_statement() returns immediately dengan Id (query ID). Untuk mendapatkan results, Anda harus poll describe_statement() sampai Status menjadi 'FINISHED' (atau 'FAILED'/'ABORTED'), kemudian call get_statement_result() untuk mengambil data. Pattern: while loop dengan sleep interval checking status. Opsi B salah — get_statement_result() akan throw error jika statement belum selesai, tidak blocking. Opsi C — boto3 tidak memiliki built-in waiter untuk Redshift Data API statement completion. Opsi D — tidak ada parameter 'synchronous' di execute_statement() API — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Botocore memiliki exception hierarchy yang jelas: botocore.exceptions.ConnectionError (dan subclasses EndpointConnectionError, ConnectTimeoutError, ReadTimeoutError) adalah transient network errors yang aman untuk di-retry. botocore.exceptions.ClientError adalah service-level errors yang memerlukan pemeriksaan error code — beberapa retryable (throttling, 500) dan beberapa tidak (validation errors, access denied). Membedakan kedua tipe ini penting untuk retry strategy yang benar. Opsi B salah — retry pada non-retryable errors (misalnya AccessDenied) adalah sia-sia. Opsi C (string matching) fragile dan tidak reliable. Opsi D — network errors bukan ClientError dan tidak memiliki HTTP status code.</div>
+                <div class="explanation">Botocore memiliki exception hierarchy yang jelas: botocore.exceptions.ConnectionError (dan subclasses EndpointConnectionError, ConnectTimeoutError, ReadTimeoutError) adalah transient network errors yang aman untuk di-retry. botocore.exceptions.ClientError adalah service-level errors yang memerlukan pemeriksaan error code — beberapa retryable (throttling, 500) dan beberapa tidak (validation errors, access denied). Membedakan kedua tipe ini penting untuk retry strategy yang benar. Opsi B salah — retry pada non-retryable errors (misalnya AccessDenied) adalah sia-sia. Opsi C (string matching) fragile dan tidak reliable. Opsi D — network errors bukan ClientError dan tidak memiliki HTTP status code — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 

@@ -43,7 +43,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">KEY distribution pada kolom yang paling sering di-join (seperti product_id) memastikan bahwa rows dengan value yang sama berada di node yang sama, menghindari data redistribution saat join. Compound sort key yang dimulai dengan transaction_date memungkinkan zone maps untuk melakukan block-level pruning pada filter tanggal, sangat efektif untuk range queries. Opsi A (EVEN + interleaved) — interleaved sort key memiliki overhead maintenance yang tinggi untuk tabel besar. Opsi C (ALL distribution) tidak mungkin untuk tabel 5 miliar rows — ALL hanya cocok untuk dimension tables kecil. Opsi D (distribute on date) akan menyebabkan data skew jika tanggal tidak merata.</div>
+                <div class="explanation">KEY distribution pada kolom yang paling sering di-join (seperti product_id) memastikan bahwa rows dengan value yang sama berada di node yang sama, menghindari data redistribution saat join. Compound sort key yang dimulai dengan transaction_date memungkinkan zone maps untuk melakukan block-level pruning pada filter tanggal, sangat efektif untuk range queries. Opsi A (EVEN + interleaved) — interleaved sort key memiliki overhead maintenance yang tinggi untuk tabel besar. Opsi C (ALL distribution) tidak mungkin untuk tabel 5 miliar rows — ALL hanya cocok untuk dimension tables kecil. Opsi D (distribute on date) akan menyebabkan data skew jika tanggal tidak merata — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -60,7 +60,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Pattern 1 (posts by user sorted by time): PK=user_id, SK=timestamp memungkinkan query dengan ScanIndexForward. Pattern 2 (specific post): bisa menggunakan PK=user_id dan filter pada post_id (atau encode post_id dalam sort key dengan composite key). Pattern 3 (hashtag + engagement): GSI dengan PK=hashtag, SK=engagement_score. Opsi B tidak mendukung pattern 1 efisien dari base table. Opsi C menggunakan post_id sebagai sort key yang tidak mendukung sorting by timestamp secara native. Opsi D menggunakan hashtag sebagai PK utama yang menyebabkan hot partition untuk hashtag populer.</div>
+                <div class="explanation">Pattern 1 (posts by user sorted by time): PK=user_id, SK=timestamp memungkinkan query dengan ScanIndexForward. Pattern 2 (specific post): bisa menggunakan PK=user_id dan filter pada post_id (atau encode post_id dalam sort key dengan composite key). Pattern 3 (hashtag + engagement): GSI dengan PK=hashtag, SK=engagement_score. Opsi B tidak mendukung pattern 1 efisien dari base table — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C menggunakan post_id sebagai sort key yang tidak mendukung sorting by timestamp secara native. Opsi D menggunakan hashtag sebagai PK utama yang menyebabkan hot partition untuk hashtag populer.</div>
             </div>
         </div>
 
@@ -77,7 +77,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Strategi optimal: dimension kecil (< beberapa juta rows) gunakan ALL distribution sehingga seluruh tabel direplikasi di setiap node, menghindari redistribution saat join. Dimension besar (5M+ rows) gunakan KEY distribution pada kolom join ke fact table, karena ALL distribution untuk tabel besar membuang storage dan memperlambat write. Opsi A membuang storage untuk dimension 5M rows yang direplikasi di setiap node. Opsi C (EVEN) akan memerlukan data redistribution saat setiap join. Opsi D (KEY semua) tidak optimal untuk dimension kecil yang lebih baik direplikasi penuh.</div>
+                <div class="explanation">Strategi optimal: dimension kecil (< beberapa juta rows) gunakan ALL distribution sehingga seluruh tabel direplikasi di setiap node, menghindari redistribution saat join. Dimension besar (5M+ rows) gunakan KEY distribution pada kolom join ke fact table, karena ALL distribution untuk tabel besar membuang storage dan memperlambat write. Opsi A membuang storage untuk dimension 5M rows yang direplikasi di setiap node. Opsi C (EVEN) akan memerlukan data redistribution saat setiap join — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (KEY semua) tidak optimal untuk dimension kecil yang lebih baik direplikasi penuh.</div>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Dalam single-table design, one-to-many relationship dimodelkan dengan menempatkan parent dan children items di partition key yang sama. PK=CUSTOMER#123, SK=CUSTOMER#123 untuk record customer, dan PK=CUSTOMER#123, SK=ORDER#456 untuk setiap order. Ini memungkinkan satu Query operation untuk mendapatkan customer beserta semua order-nya. Opsi B memisahkan orders ke partition berbeda sehingga tidak bisa query customer + orders dalam satu operasi. Opsi C tidak memanfaatkan item collection. Opsi D melanggar best practice karena Set memiliki batas 400KB per item dan tidak scalable.</div>
+                <div class="explanation">Dalam single-table design, one-to-many relationship dimodelkan dengan menempatkan parent dan children items di partition key yang sama. PK=CUSTOMER#123, SK=CUSTOMER#123 untuk record customer, dan PK=CUSTOMER#123, SK=ORDER#456 untuk setiap order. Ini memungkinkan satu Query operation untuk mendapatkan customer beserta semua order-nya. Opsi B memisahkan orders ke partition berbeda sehingga tidak bisa query customer + orders dalam satu operasi. Opsi C tidak memanfaatkan item collection. Opsi D melanggar best practice karena Set memiliki batas 400KB per item dan tidak scalable — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -128,7 +128,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Redshift SUPER data type dirancang untuk semi-structured data (JSON, arrays, nested objects). SUPER menyimpan data dalam format binary yang efisien, mendukung schemaless ingestion (schema-on-read), dan bisa di-query menggunakan PartiQL atau dot notation. Ini ideal ketika schema sering berubah. Opsi A (VARCHAR + JSON functions) bekerja tapi less efficient — tidak ada columnar optimization dan parsing ulang setiap query. Opsi C (multiple columns) tidak flexible ketika fields berubah. Opsi D (VARBYTE) untuk binary data, bukan structured JSON navigation.</div>
+                <div class="explanation">Redshift SUPER data type dirancang untuk semi-structured data (JSON, arrays, nested objects). SUPER menyimpan data dalam format binary yang efisien, mendukung schemaless ingestion (schema-on-read), dan bisa di-query menggunakan PartiQL atau dot notation. Ini ideal ketika schema sering berubah. Opsi A (VARCHAR + JSON functions) bekerja tapi less efficient — tidak ada columnar optimization dan parsing ulang setiap query. Opsi C (multiple columns) tidak flexible ketika fields berubah. Opsi D (VARBYTE) untuk binary data, bukan structured JSON navigation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -145,7 +145,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Compound sort key dengan impression_date sebagai leading column optimal ketika queries selalu filter by date range terlebih dahulu. Zone maps di Redshift menyimpan min/max values per block — leading sort column memungkinkan maximum block skipping. Date range filter mengeliminasi sebagian besar blocks, kemudian campaign_id filter diterapkan pada subset yang tersisa. Opsi A (interleaved) memiliki overhead VACUUM yang tinggi untuk tabel 20B rows dan tidak seefisien compound ketika ada satu dominant filter pattern. Opsi C menempatkan campaign_id pertama — kurang efisien karena range scan pada date lebih selective. Opsi D menghindari masalah tapi menambah storage cost.</div>
+                <div class="explanation">Compound sort key dengan impression_date sebagai leading column optimal ketika queries selalu filter by date range terlebih dahulu. Zone maps di Redshift menyimpan min/max values per block — leading sort column memungkinkan maximum block skipping. Date range filter mengeliminasi sebagian besar blocks, kemudian campaign_id filter diterapkan pada subset yang tersisa. Opsi A (interleaved) memiliki overhead VACUUM yang tinggi untuk tabel 20B rows dan tidak seefisien compound ketika ada satu dominant filter pattern. Opsi C menempatkan campaign_id pertama — kurang efisien karena range scan pada date lebih selective. Opsi D menghindari masalah tapi menambah storage cost — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">PK=player_id, SK=item_id mendukung semua access patterns secara optimal: (1) Query PK=player_id mendapatkan semua items, (2) GetItem PK=player_id SK=item_id mendapatkan item spesifik, (3) UpdateItem PK=player_id SK=item_id memperbarui quantity. Dengan 500 items per player, item collection masih di bawah 10GB partition limit. Opsi B (single item JSON) memiliki batas 400KB per item dan setiap update memerlukan read-modify-write seluruh map. Opsi C (item_id sebagai PK) tidak efisien untuk "get all items by player". Opsi D (write sharding) tidak diperlukan — player_id sudah memberikan distribusi yang baik natural.</div>
+                <div class="explanation">PK=player_id, SK=item_id mendukung semua access patterns secara optimal: (1) Query PK=player_id mendapatkan semua items, (2) GetItem PK=player_id SK=item_id mendapatkan item spesifik, (3) UpdateItem PK=player_id SK=item_id memperbarui quantity. Dengan 500 items per player, item collection masih di bawah 10GB partition limit. Opsi B (single item JSON) memiliki batas 400KB per item dan setiap update memerlukan read-modify-write seluruh map. Opsi C (item_id sebagai PK) tidak efisien untuk "get all items by player". Opsi D (write sharding) tidak diperlukan — player_id sudah memberikan distribusi yang baik natural — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Star schema dengan denormalized dimensions adalah best practice untuk Amazon Redshift. Redshift dioptimalkan untuk join patterns sederhana (fact-to-dimension) dan columnar storage membuat denormalization murah dari segi storage. Denormalized dimension mengurangi jumlah joins, meningkatkan query performance. Opsi A (snowflake) menambah joins yang mahal di Redshift — setiap join memerlukan data redistribution. Opsi C (3NF) sangat tidak cocok untuk analytics workload — terlalu banyak joins. Opsi D menambah kompleksitas maintenance tanpa benefit signifikan — satu star schema melayani keduanya dengan baik.</div>
+                <div class="explanation">Star schema dengan denormalized dimensions adalah best practice untuk Amazon Redshift. Redshift dioptimalkan untuk join patterns sederhana (fact-to-dimension) dan columnar storage membuat denormalization murah dari segi storage. Denormalized dimension mengurangi jumlah joins, meningkatkan query performance. Opsi A (snowflake) menambah joins yang mahal di Redshift — setiap join memerlukan data redistribution. Opsi C (3NF) sangat tidak cocok untuk analytics workload — terlalu banyak joins — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D menambah kompleksitas maintenance tanpa benefit signifikan — satu star schema melayani keduanya dengan baik.</div>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Apache Parquet dengan schema-on-write adalah best practice untuk data lake analytics. Parquet menyediakan columnar storage yang efficient, compression yang baik, dan predicate pushdown. Registrasi di Glue Data Catalog memungkinkan discovery oleh semua query engines (Athena, Spectrum, EMR). Partitioning by date memungkinkan partition pruning. Opsi A (raw JSON) sangat tidak efisien untuk analytics — tidak columnar, tidak compressed optimal, dan schema inference bisa bermasalah. Opsi C (CSV) tidak mendukung complex types, tidak columnar, dan compression kurang baik. Opsi D (ORC tanpa catalog) tidak bisa di-discover oleh Lake Formation dan tools lainnya.</div>
+                <div class="explanation">Apache Parquet dengan schema-on-write adalah best practice untuk data lake analytics. Parquet menyediakan columnar storage yang efficient, compression yang baik, dan predicate pushdown. Registrasi di Glue Data Catalog memungkinkan discovery oleh semua query engines (Athena, Spectrum, EMR). Partitioning by date memungkinkan partition pruning. Opsi A (raw JSON) sangat tidak efisien untuk analytics — tidak columnar, tidak compressed optimal, dan schema inference bisa bermasalah. Opsi C (CSV) tidak mendukung complex types, tidak columnar, dan compression kurang baik. Opsi D (ORC tanpa catalog) tidak bisa di-discover oleh Lake Formation dan tools lainnya — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

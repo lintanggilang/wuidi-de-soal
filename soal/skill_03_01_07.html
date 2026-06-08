@@ -43,7 +43,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Kombinasi konversi ke Parquet (columnar format — hanya kolom yang diquery di-scan), Snappy compression (mengurangi ukuran data yang di-scan), dan partitioning by event_date dan event_type (Athena hanya membaca partisi yang relevan) memberikan pengurangan drastis pada data scanned. Parquet sendiri bisa mengurangi scan 90%+ untuk query yang hanya memerlukan beberapa kolom. Partitioning menghindari full table scan. Opsi B (Intelligent-Tiering) tidak mengurangi scan size. Opsi C (compress JSON) tetap memerlukan parsing seluruh file karena JSON row-based. Opsi D (views + LIMIT) — views tidak menyimpan data dan LIMIT berjalan setelah full scan.</div>
+                <div class="explanation">Kombinasi konversi ke Parquet (columnar format — hanya kolom yang diquery di-scan), Snappy compression (mengurangi ukuran data yang di-scan), dan partitioning by event_date dan event_type (Athena hanya membaca partisi yang relevan) memberikan pengurangan drastis pada data scanned. Parquet sendiri bisa mengurangi scan 90%+ untuk query yang hanya memerlukan beberapa kolom. Partitioning menghindari full table scan. Opsi B (Intelligent-Tiering) tidak mengurangi scan size — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (compress JSON) tetap memerlukan parsing seluruh file karena JSON row-based. Opsi D (views + LIMIT) — views tidak menyimpan data dan LIMIT berjalan setelah full scan.</div>
             </div>
         </div>
 
@@ -60,7 +60,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena workgroups menyediakan: (1) per-query data usage control — membatasi maximum data yang boleh di-scan per query (100 GB limit), (2) workgroup-level data scan limits yang bisa dikonfigurasi per periode (equivalent spending control), (3) CloudWatch metrics per workgroup untuk tracking usage per team. Ini single feature yang memenuhi semua kebutuhan. Opsi B (separate accounts) berlebihan dan menambah complexity. Opsi C (IAM) mengontrol akses tabel bukan spending. Opsi D (Lambda proxy) memerlukan custom development dan tidak bisa akurat memperkirakan cost sebelum execution.</div>
+                <div class="explanation">Athena workgroups menyediakan: (1) per-query data usage control — membatasi maximum data yang boleh di-scan per query (100 GB limit), (2) workgroup-level data scan limits yang bisa dikonfigurasi per periode (equivalent spending control), (3) CloudWatch metrics per workgroup untuk tracking usage per team. Ini single feature yang memenuhi semua kebutuhan. Opsi B (separate accounts) berlebihan dan menambah complexity. Opsi C (IAM) mengontrol akses tabel bukan spending — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Lambda proxy) memerlukan custom development dan tidak bisa akurat memperkirakan cost sebelum execution.</div>
             </div>
         </div>
 
@@ -77,7 +77,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CTAS (CREATE TABLE AS SELECT) di Athena memungkinkan transformasi data dan pembuatan tabel baru dalam satu operasi SQL. Properties yang bisa dikonfigurasi termasuk: format (PARQUET, ORC, JSON, etc.), compression, partitioned_by columns, external_location untuk S3 path, dan bucketing. Ini ideal untuk ETL operations. Opsi B (VIEW + export) — Athena views tidak menyimpan data dan tidak ada native "export" feature. Opsi C (INSERT INTO) bisa digunakan tetapi memerlukan tabel sudah dibuat sebelumnya — bukan single operation. Opsi D (workgroup results) menyimpan sebagai CSV query results, bukan partitioned Parquet table.</div>
+                <div class="explanation">CTAS (CREATE TABLE AS SELECT) di Athena memungkinkan transformasi data dan pembuatan tabel baru dalam satu operasi SQL. Properties yang bisa dikonfigurasi termasuk: format (PARQUET, ORC, JSON, etc.), compression, partitioned_by columns, external_location untuk S3 path, dan bucketing. Ini ideal untuk ETL operations. Opsi B (VIEW + export) — Athena views tidak menyimpan data dan tidak ada native "export" feature. Opsi C (INSERT INTO) bisa digunakan tetapi memerlukan tabel sudah dibuat sebelumnya — bukan single operation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (workgroup results) menyimpan sebagai CSV query results, bukan partitioned Parquet table.</div>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena prepared statements memungkinkan parameterized queries dimana user-supplied values di-bind sebagai parameter (menggunakan ?) dan tidak diinterpretasi sebagai SQL code. Ini adalah best practice keamanan standard untuk mencegah SQL injection. Opsi B (views) membatasi akses tetapi tidak menyelesaikan injection jika views menerima parameter. Opsi C (regex validation) adalah defense-in-depth yang baik tetapi rentan terhadap bypass dan tidak menyelesaikan root cause. Opsi D (IAM) mengontrol akses ke resources, bukan content dari SQL queries.</div>
+                <div class="explanation">Athena prepared statements memungkinkan parameterized queries dimana user-supplied values di-bind sebagai parameter (menggunakan ?) dan tidak diinterpretasi sebagai SQL code. Ini adalah best practice keamanan standard untuk mencegah SQL injection. Opsi B (views) membatasi akses tetapi tidak menyelesaikan injection jika views menerima parameter. Opsi C (regex validation) adalah defense-in-depth yang baik tetapi rentan terhadap bypass dan tidak menyelesaikan root cause — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (IAM) mengontrol akses ke resources, bukan content dari SQL queries.</div>
             </div>
         </div>
 
@@ -111,7 +111,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena Federated Query memungkinkan eksekusi SQL queries terhadap berbagai data sources menggunakan Lambda-based data source connectors. Connectors tersedia untuk RDS (PostgreSQL, MySQL), DynamoDB, Redshift, CloudWatch Logs, dan lainnya. Ini memungkinkan JOIN lintas sumber dalam satu query tanpa memindahkan data. Opsi B dan C (export/materialize) memerlukan data movement dan tidak memberikan real-time access ke data terbaru. Opsi D (replicate to Redshift) berlebihan dan mahal untuk satu kebutuhan query.</div>
+                <div class="explanation">Athena Federated Query memungkinkan eksekusi SQL queries terhadap berbagai data sources menggunakan Lambda-based data source connectors. Connectors tersedia untuk RDS (PostgreSQL, MySQL), DynamoDB, Redshift, CloudWatch Logs, dan lainnya. Ini memungkinkan JOIN lintas sumber dalam satu query tanpa memindahkan data. Opsi B dan C (export/materialize) memerlukan data movement dan tidak memberikan real-time access ke data terbaru. Opsi D (replicate to Redshift) berlebihan dan mahal untuk satu kebutuhan query. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -128,7 +128,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena query result reuse memungkinkan identical queries (same SQL) mengembalikan hasil yang sudah di-cache tanpa re-scanning data. Dengan max-age setting (misalnya 6 jam sesuai update frequency), queries berulang tidak dikenakan biaya scan tambahan. Ini transparan bagi dashboards — tidak perlu modifikasi. Opsi B salah karena Athena tidak mendukung materialized views (itu fitur Redshift). Opsi C (Lambda + separate table) memerlukan modifikasi dashboard untuk membaca dari tabel berbeda. Opsi D (DPUs) mempercepat execution tetapi tidak mengurangi biaya scan.</div>
+                <div class="explanation">Athena query result reuse memungkinkan identical queries (same SQL) mengembalikan hasil yang sudah di-cache tanpa re-scanning data. Dengan max-age setting (misalnya 6 jam sesuai update frequency), queries berulang tidak dikenakan biaya scan tambahan. Ini transparan bagi dashboards — tidak perlu modifikasi. Opsi B salah karena Athena tidak mendukung materialized views (itu fitur Redshift) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Lambda + separate table) memerlukan modifikasi dashboard untuk membaca dari tabel berbeda. Opsi D (DPUs) mempercepat execution tetapi tidak mengurangi biaya scan.</div>
             </div>
         </div>
 
@@ -145,7 +145,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena views dengan built-in WHERE clause pada partition column memastikan bahwa queries melalui view hanya scan 30 hari data secara default. Workgroup per-query data scan limits memberikan safety net — jika query melebihi threshold (misalnya 1 TB), query akan dibatalkan. Kombinasi ini mencegah accidental full scans. Opsi B (Glacier) membuat data historis tidak queryable jika diperlukan. Opsi C (split tables) memerlukan maintenance dua tabel dan logic pemisahan. Opsi D (partition projection) membantu performance metadata lookup tetapi tidak mencegah user dari scanning semua partisi.</div>
+                <div class="explanation">Athena views dengan built-in WHERE clause pada partition column memastikan bahwa queries melalui view hanya scan 30 hari data secara default. Workgroup per-query data scan limits memberikan safety net — jika query melebihi threshold (misalnya 1 TB), query akan dibatalkan. Kombinasi ini mencegah accidental full scans. Opsi B (Glacier) membuat data historis tidak queryable jika diperlukan. Opsi C (split tables) memerlukan maintenance dua tabel dan logic pemisahan. Opsi D (partition projection) membantu performance metadata lookup tetapi tidak mencegah user dari scanning semua partisi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Small file problem adalah masalah umum di data lakes. Setiap file memerlukan overhead: S3 LIST operations untuk menemukan file, GET requests untuk membuka file, dan Parquet footer reading per file. Dengan jutaan file kecil, overhead ini mendominasi query time. Solusinya adalah compaction — menggabungkan file kecil menjadi file berukuran 128-512 MB yang optimal untuk Athena/Presto. CTAS atau Glue job dapat melakukan compaction ini. Opsi B salah — ORC tidak menangani small files lebih baik dari Parquet. Opsi C (reduce partitions) tidak menyelesaikan masalah file per partition yang terlalu banyak. Opsi D (provisioned capacity) membantu throughput tetapi overhead per-file tetap ada.</div>
+                <div class="explanation">Small file problem adalah masalah umum di data lakes. Setiap file memerlukan overhead: S3 LIST operations untuk menemukan file, GET requests untuk membuka file, dan Parquet footer reading per file. Dengan jutaan file kecil, overhead ini mendominasi query time. Solusinya adalah compaction — menggabungkan file kecil menjadi file berukuran 128-512 MB yang optimal untuk Athena/Presto. CTAS atau Glue job dapat melakukan compaction ini. Opsi B salah — ORC tidak menangani small files lebih baik dari Parquet — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (reduce partitions) tidak menyelesaikan masalah file per partition yang terlalu banyak. Opsi D (provisioned capacity) membantu throughput tetapi overhead per-file tetap ada.</div>
             </div>
         </div>
 
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena views menyediakan abstraction layer yang ideal: column aliases memberikan business-friendly names, pre-built JOINs menyederhanakan access pattern, dan column selection menyembunyikan technical fields. Views tidak menyimpan data duplikat dan selalu reflect data terbaru. Opsi B (crawler rename) akan mengubah metadata yang bisa memecah pipeline lain yang menggunakan nama kolom asli. Opsi C (CTAS) membuat duplikat data yang perlu di-refresh — mahal dan not real-time. Opsi D salah — Lake Formation tidak memiliki fitur "virtual columns" untuk renaming.</div>
+                <div class="explanation">Athena views menyediakan abstraction layer yang ideal: column aliases memberikan business-friendly names, pre-built JOINs menyederhanakan access pattern, dan column selection menyembunyikan technical fields. Views tidak menyimpan data duplikat dan selalu reflect data terbaru. Opsi B (crawler rename) akan mengubah metadata yang bisa memecah pipeline lain yang menggunakan nama kolom asli. Opsi C (CTAS) membuat duplikat data yang perlu di-refresh — mahal dan not real-time — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D salah — Lake Formation tidak memiliki fitur "virtual columns" untuk renaming.</div>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Parquet row group statistics (min/max values) dan page-level column indexes memungkinkan predicate pushdown — Athena (Presto/Trino) dapat skip row groups dimana filter condition (customer_segment = 'enterprise') tidak bisa dipenuhi berdasarkan statistics, tanpa membaca actual data. Ini signifikan mengurangi I/O untuk non-partition column filters. Opsi B (add partition) bisa over-partition dan meningkatkan small file problem jika cardinality tinggi. Opsi C (CSV) kehilangan semua keuntungan columnar format. Opsi D (larger files) mengurangi open operations tetapi tidak membantu filtering within files tanpa statistics.</div>
+                <div class="explanation">Parquet row group statistics (min/max values) dan page-level column indexes memungkinkan predicate pushdown — Athena (Presto/Trino) dapat skip row groups dimana filter condition (customer_segment = 'enterprise') tidak bisa dipenuhi berdasarkan statistics, tanpa membaca actual data. Ini signifikan mengurangi I/O untuk non-partition column filters. Opsi B (add partition) bisa over-partition dan meningkatkan small file problem jika cardinality tinggi. Opsi C (CSV) kehilangan semua keuntungan columnar format — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (larger files) mengurangi open operations tetapi tidak membantu filtering within files tanpa statistics.</div>
             </div>
         </div>
         

@@ -58,7 +58,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Dengan 10 shards, total kapasitas adalah 10 MB/s write. Traffic 8 MB/s seharusnya cukup. Masalahnya adalah 60% records menggunakan partition key yang sama, sehingga satu shard menerima ~4.8 MB/s (melebihi 1 MB/s per shard limit). Solusinya adalah mendesain ulang partition key untuk distribusi merata. Opsi B menambah shard tapi hot shard tetap menerima semua traffic yang sama. Opsi C (deduplication) tidak relevan dengan throttling. Opsi D (encryption) overhead negligible.</div>
+                <div class="explanation">Dengan 10 shards, total kapasitas adalah 10 MB/s write. Traffic 8 MB/s seharusnya cukup. Masalahnya adalah 60% records menggunakan partition key yang sama, sehingga satu shard menerima ~4.8 MB/s (melebihi 1 MB/s per shard limit). Solusinya adalah mendesain ulang partition key untuk distribusi merata. Opsi B menambah shard tapi hot shard tetap menerima semua traffic yang sama. Opsi C (deduplication) tidak relevan dengan throttling. Opsi D (encryption) overhead negligible — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -74,7 +74,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue hashpartitions menentukan jumlah koneksi paralel ke database. Dengan menetapkan hashpartitions ke nilai di bawah max_connections (misalnya 50), Glue membatasi jumlah concurrent connections. Mengurangi workers juga mengurangi parallelism. Opsi B (RDS Proxy) valid tapi "without modifying the RDS instance" — RDS Proxy adalah komponen terpisah yang bisa ditambahkan. Opsi C (timeout) tidak menyelesaikan connection limit. Opsi D (Auto Scaling) bisa menambah lebih banyak workers yang memperburuk masalah.</div>
+                <div class="explanation">Glue hashpartitions menentukan jumlah koneksi paralel ke database. Dengan menetapkan hashpartitions ke nilai di bawah max_connections (misalnya 50), Glue membatasi jumlah concurrent connections. Mengurangi workers juga mengurangi parallelism. Opsi B (RDS Proxy) valid tapi "without modifying the RDS instance" — RDS Proxy adalah komponen terpisah yang bisa ditambahkan. Opsi C (timeout) tidak menyelesaikan connection limit — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Auto Scaling) bisa menambah lebih banyak workers yang memperburuk masalah.</div>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">UnprocessedItems menunjukkan items yang gagal karena throttling. Best practice adalah retry hanya UnprocessedItems (bukan seluruh batch) dengan exponential backoff untuk memberikan waktu tabel recover. AWS SDK melakukan ini secara default. Opsi B membuang resources karena memproses ulang items yang sudah berhasil. Opsi C (batch size 100) — BatchWriteItem sudah dibatasi 25 items per batch. Opsi D (skip) menyebabkan data loss.</div>
+                <div class="explanation">UnprocessedItems menunjukkan items yang gagal karena throttling. Best practice adalah retry hanya UnprocessedItems (bukan seluruh batch) dengan exponential backoff untuk memberikan waktu tabel recover. AWS SDK melakukan ini secara default. Opsi B membuang resources karena memproses ulang items yang sudah berhasil. Opsi C (batch size 100) — BatchWriteItem sudah dibatasi 25 items per batch — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (skip) menyebabkan data loss.</div>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">KPL aggregation menggabungkan multiple user records menjadi satu Kinesis record, dramatically mengurangi jumlah API calls. Dengan 1,000 records/detik dan 5 shards (limit 1,000 records/shard/detik = 5,000 total), throttling mungkin terjadi karena hot partition. KPL juga memiliki built-in retry dan batching. Opsi A (PutRecords) mengurangi HTTP calls tapi masih 1 record = 1 Kinesis record. Opsi C (buffering) membantu tapi kurang sophisticated dibanding KPL. Opsi D (encryption) tidak terkait throughput.</div>
+                <div class="explanation">KPL aggregation menggabungkan multiple user records menjadi satu Kinesis record, dramatically mengurangi jumlah API calls. Dengan 1,000 records/detik dan 5 shards (limit 1,000 records/shard/detik = 5,000 total), throttling mungkin terjadi karena hot partition. KPL juga memiliki built-in retry dan batching. Opsi A (PutRecords) mengurangi HTTP calls tapi masih 1 record = 1 Kinesis record. Opsi C (buffering) membantu tapi kurang sophisticated dibanding KPL. Opsi D (encryption) tidak terkait throughput — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">DynamoDB Export to S3 menggunakan PITR backup dan tidak mengonsumsi RCU tabel sama sekali. Ini memberikan zero impact pada production workload. Data diekspor ke S3 dalam format DynamoDB JSON atau ION dan bisa diquery dengan Athena. Opsi A (rate limiter) masih mengonsumsi RCU walaupun lebih terkontrol. Opsi C (off-peak) masih compete untuk RCU selama scan. Opsi D (GSI scan) tetap mengonsumsi RCU dari GSI yang bisa affect main table jika terjadi GSI backpressure.</div>
+                <div class="explanation">DynamoDB Export to S3 menggunakan PITR backup dan tidak mengonsumsi RCU tabel sama sekali. Ini memberikan zero impact pada production workload. Data diekspor ke S3 dalam format DynamoDB JSON atau ION dan bisa diquery dengan Athena. Opsi A (rate limiter) masih mengonsumsi RCU walaupun lebih terkontrol. Opsi C (off-peak) masih compete untuk RCU selama scan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (GSI scan) tetap mengonsumsi RCU dari GSI yang bisa affect main table jika terjadi GSI backpressure.</div>
             </div>
         </div>
 
@@ -138,7 +138,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">API Gateway caching menyajikan responses dari cache tanpa memanggil Lambda atau DynamoDB. Dengan data yang hanya berubah setiap 5 menit, TTL 300 detik sangat efektif mengurangi backend calls hingga ~99% selama cache hit rate tinggi. Opsi B (DAX) mengurangi DynamoDB load tapi Lambda masih dipanggil setiap request (biaya compute). Opsi C (100K RCU) sangat mahal. Opsi D (Auto Scaling) memiliki delay dan tetap costly untuk 50K rps sustained.</div>
+                <div class="explanation">API Gateway caching menyajikan responses dari cache tanpa memanggil Lambda atau DynamoDB. Dengan data yang hanya berubah setiap 5 menit, TTL 300 detik sangat efektif mengurangi backend calls hingga ~99% selama cache hit rate tinggi. Opsi B (DAX) mengurangi DynamoDB load tapi Lambda masih dipanggil setiap request (biaya compute). Opsi C (100K RCU) sangat mahal — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Auto Scaling) memiliki delay dan tetap costly untuk 50K rps sustained.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Step Functions Map state dengan MaxConcurrency=10 membatasi parallelism ke 10 iterations bersamaan. Dengan Wait state 1 detik di setiap iteration, ini menghasilkan ~10 requests/second yang sesuai rate limit. Ini scalable dan fault-tolerant. Opsi B (Choice + time check) tidak bisa mengontrol concurrency dengan presisi. Opsi C (single Lambda) timeout setelah 15 menit — 100K records × 0.1s = 2.7 jam. Opsi D (SQS delay) tidak bisa mengontrol exactly 10/second dari consumer side.</div>
+                <div class="explanation">Step Functions Map state dengan MaxConcurrency=10 membatasi parallelism ke 10 iterations bersamaan. Dengan Wait state 1 detik di setiap iteration, ini menghasilkan ~10 requests/second yang sesuai rate limit. Ini scalable dan fault-tolerant. Opsi B (Choice + time check) tidak bisa mengontrol concurrency dengan presisi. Opsi C (single Lambda) timeout setelah 15 menit — 100K records × 0 — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.1s = 2.7 jam. Opsi D (SQS delay) tidak bisa mengontrol exactly 10/second dari consumer side.</div>
             </div>
         </div>
 
@@ -170,7 +170,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Adaptive retry mode menggunakan token bucket algorithm untuk proaktif mengurangi request rate sebelum throttling terjadi, bukan hanya retry setelah failure. Ini mencegah thundering herd dan mengurangi total retry overhead. AWS SDK v2/v3 mendukung STANDARD, LEGACY, dan ADAPTIVE modes. Opsi B kehilangan data dan menambah complexity. Opsi C menambah biaya dan tidak menyelesaikan root cause. Opsi D custom retry mungkin tidak lebih baik dari built-in adaptive mode.</div>
+                <div class="explanation">Adaptive retry mode menggunakan token bucket algorithm untuk proaktif mengurangi request rate sebelum throttling terjadi, bukan hanya retry setelah failure. Ini mencegah thundering herd dan mengurangi total retry overhead. AWS SDK v2/v3 mendukung STANDARD, LEGACY, dan ADAPTIVE modes. Opsi B kehilangan data dan menambah complexity — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C menambah biaya dan tidak menyelesaikan root cause. Opsi D custom retry mungkin tidak lebih baik dari built-in adaptive mode.</div>
             </div>
         </div>
 
@@ -186,7 +186,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DynamoDB On-Demand memiliki initial throughput limit untuk tabel baru (dimulai dengan kapasitas terbatas dan scales berdasarkan traffic history). Jika full load dimulai langsung dengan throughput tinggi tanpa ramp-up, tabel belum punya history untuk scale. Solusinya adalah pre-warming (gradual increase) atau minta AWS Support untuk raise initial limits. Opsi B salah — DMS kompatibel dengan On-Demand. Opsi C (instance size) mempengaruhi DMS bukan DynamoDB throttling. Opsi D salah — On-Demand mendukung batch writes.</div>
+                <div class="explanation">DynamoDB On-Demand memiliki initial throughput limit untuk tabel baru (dimulai dengan kapasitas terbatas dan scales berdasarkan traffic history). Jika full load dimulai langsung dengan throughput tinggi tanpa ramp-up, tabel belum punya history untuk scale. Solusinya adalah pre-warming (gradual increase) atau minta AWS Support untuk raise initial limits. Opsi B salah — DMS kompatibel dengan On-Demand. Opsi C (instance size) mempengaruhi DMS bukan DynamoDB throttling — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D salah — On-Demand mendukung batch writes.</div>
             </div>
         </div>
         

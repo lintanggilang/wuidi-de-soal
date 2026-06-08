@@ -43,7 +43,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Ketika DAG tidak muncul di Airflow UI, penyebab paling umum adalah syntax error atau import error dalam file DAG. Airflow scheduler mem-parse semua DAG files secara periodik, dan jika ada error saat parsing, DAG tidak akan di-register. Error ini terlihat di scheduler logs di CloudWatch. Opsi A salah — MWAA tidak perlu restart, scheduler secara otomatis mendeteksi file baru di S3. Opsi C salah — S3 versioning diperlukan tapi ini akan menyebabkan error saat setup environment, bukan saat adding DAGs. Opsi D salah — tidak ada hard limit 1 MB untuk DAG files.</div>
+                <div class="explanation">Ketika DAG tidak muncul di Airflow UI, penyebab paling umum adalah syntax error atau import error dalam file DAG. Airflow scheduler mem-parse semua DAG files secara periodik, dan jika ada error saat parsing, DAG tidak akan di-register. Error ini terlihat di scheduler logs di CloudWatch. Opsi A salah — MWAA tidak perlu restart, scheduler secara otomatis mendeteksi file baru di S3. Opsi C salah — S3 versioning diperlukan tapi ini akan menyebabkan error saat setup environment, bukan saat adding DAGs. Opsi D salah — tidak ada hard limit 1 MB untuk DAG files — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -60,7 +60,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">SIGTERM signals ketika worker CPU secara konsisten tinggi (>90%) menunjukkan resource exhaustion — workers kehabisan resources dan Airflow/system mengirim SIGTERM untuk membunuh task processes yang melebihi limits. Upgrade environment class (mw1.small → mw1.medium/large) meningkatkan CPU dan memory per worker. Opsi A (increase timeout) tidak menyelesaikan resource exhaustion. Opsi C (increase concurrency) justru memperburuk masalah dengan menambah load pada workers yang sudah overloaded. Opsi D tidak berlaku — MWAA selalu menggunakan CeleryExecutor dan tidak bisa diubah ke LocalExecutor.</div>
+                <div class="explanation">SIGTERM signals ketika worker CPU secara konsisten tinggi (>90%) menunjukkan resource exhaustion — workers kehabisan resources dan Airflow/system mengirim SIGTERM untuk membunuh task processes yang melebihi limits. Upgrade environment class (mw1.small → mw1.medium/large) meningkatkan CPU dan memory per worker. Opsi A (increase timeout) tidak menyelesaikan resource exhaustion — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (increase concurrency) justru memperburuk masalah dengan menambah load pada workers yang sudah overloaded. Opsi D tidak berlaku — MWAA selalu menggunakan CeleryExecutor dan tidak bisa diubah ke LocalExecutor.</div>
             </div>
         </div>
 
@@ -77,7 +77,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">MWAA menyimpan log instalasi requirements di CloudWatch Logs. Langkah pertama adalah memeriksa log tersebut untuk mengidentifikasi error spesifik — biasanya dependency conflicts, package incompatibilities, atau package yang tidak tersedia. Ini memberikan informasi untuk fix yang tepat. Opsi A (delete/recreate) sangat disruptive dan tidak diperlukan. Opsi C (revert tanpa diagnosa) tidak membantu memahami masalah untuk fix di masa depan. Opsi D salah — UPDATE_FAILED biasanya karena user's requirements/plugins, bukan AWS service issue.</div>
+                <div class="explanation">MWAA menyimpan log instalasi requirements di CloudWatch Logs. Langkah pertama adalah memeriksa log tersebut untuk mengidentifikasi error spesifik — biasanya dependency conflicts, package incompatibilities, atau package yang tidak tersedia. Ini memberikan informasi untuk fix yang tepat. Opsi A (delete/recreate) sangat disruptive dan tidak diperlukan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (revert tanpa diagnosa) tidak membantu memahami masalah untuk fix di masa depan. Opsi D salah — UPDATE_FAILED biasanya karena user's requirements/plugins, bukan AWS service issue.</div>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Connection timeout (bukan authentication failure atau connection refused) antara resources di VPC yang berbeda subnet paling sering disebabkan oleh security group rules. MWAA workers berjalan di VPC menggunakan security group tertentu, dan RDS security group harus explicitly allow inbound traffic dari MWAA security group pada port database (3306/5432). Opsi B (IAM role) — RDS PostgreSQL connection menggunakan username/password melalui network, bukan IAM roles (kecuali IAM auth di-enable). Opsi C (max_connections) akan menyebabkan "too many connections" error, bukan timeout. Opsi D (connection config) — jika sebelumnya berfungsi dan konfigurasi tidak berubah, ini bukan penyebab.</div>
+                <div class="explanation">Connection timeout (bukan authentication failure atau connection refused) antara resources di VPC yang berbeda subnet paling sering disebabkan oleh security group rules. MWAA workers berjalan di VPC menggunakan security group tertentu, dan RDS security group harus explicitly allow inbound traffic dari MWAA security group pada port database (3306/5432). Opsi B (IAM role) — RDS PostgreSQL connection menggunakan username/password melalui network, bukan IAM roles (kecuali IAM auth di-enable) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (max_connections) akan menyebabkan "too many connections" error, bukan timeout. Opsi D (connection config) — jika sebelumnya berfungsi dan konfigurasi tidak berubah, ini bukan penyebab.</div>
             </div>
         </div>
 
@@ -111,7 +111,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Airflow scheduler mem-parse setiap DAG file secara periodik (default setiap 30 detik). Kode di top-level (di luar task functions) dieksekusi setiap kali scheduler parse file. Jika top-level code membuat API calls ke S3/DynamoDB, ini menambah latency signifikan yang dimultiplikasi dengan jumlah DAG files (150 × API call latency). Solusinya adalah memindahkan semua API calls ke dalam task callables yang hanya dieksekusi saat task running. Opsi A (upgrade) bisa membantu sedikit tapi tidak menyelesaikan root cause. Opsi C salah — 150 DAGs masih dalam batas wajar. Opsi D (S3 throttling) tidak relevan dengan DAG parsing time.</div>
+                <div class="explanation">Airflow scheduler mem-parse setiap DAG file secara periodik (default setiap 30 detik). Kode di top-level (di luar task functions) dieksekusi setiap kali scheduler parse file. Jika top-level code membuat API calls ke S3/DynamoDB, ini menambah latency signifikan yang dimultiplikasi dengan jumlah DAG files (150 × API call latency). Solusinya adalah memindahkan semua API calls ke dalam task callables yang hanya dieksekusi saat task running. Opsi A (upgrade) bisa membantu sedikit tapi tidak menyelesaikan root cause — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah — 150 DAGs masih dalam batas wajar. Opsi D (S3 throttling) tidak relevan dengan DAG parsing time.</div>
             </div>
         </div>
 
@@ -128,7 +128,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">MWAA webserver memerlukan network connectivity yang proper. HTTP 503 menunjukkan webserver tidak bisa melayani requests, yang sering disebabkan oleh networking issues — NAT Gateway unhealthy, VPC endpoint misconfiguration, atau network ACL blocking traffic. Fakta bahwa scheduler masih berjalan (DAGs running) menunjukkan masalah spesifik pada webserver networking, bukan general environment failure. Opsi B salah — scheduler dan webserver adalah komponen terpisah; scheduler overload tidak menyebabkan webserver 503. Opsi C salah — worker failure tidak membuat webserver inaccessible. Opsi D salah — jika DAGs bucket dihapus, scheduler juga akan berhenti.</div>
+                <div class="explanation">MWAA webserver memerlukan network connectivity yang proper. HTTP 503 menunjukkan webserver tidak bisa melayani requests, yang sering disebabkan oleh networking issues — NAT Gateway unhealthy, VPC endpoint misconfiguration, atau network ACL blocking traffic. Fakta bahwa scheduler masih berjalan (DAGs running) menunjukkan masalah spesifik pada webserver networking, bukan general environment failure. Opsi B salah — scheduler dan webserver adalah komponen terpisah; scheduler overload tidak menyebabkan webserver 503. Opsi C salah — worker failure tidak membuat webserver inaccessible — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D salah — jika DAGs bucket dihapus, scheduler juga akan berhenti.</div>
             </div>
         </div>
 
@@ -145,7 +145,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">MWAA workers memiliki limited local storage. Solusi terbaik adalah mengubah approach — gunakan streaming reads (misalnya boto3 S3 streaming atau pandas chunked reading) untuk memproses file tanpa menyimpan seluruhnya di disk lokal. Jika perlu temp storage, gunakan /tmp dengan explicit cleanup setelah selesai. Opsi A (more workers) tidak membantu jika setiap worker masih harus process file 2 GB secara lokal. Opsi C — environment class upgrade memberikan sedikit lebih banyak storage tapi mungkin masih tidak cukup untuk 2 GB files + intermediate data. Opsi D (EFS) — MWAA tidak mendukung mounting EFS ke workers secara native.</div>
+                <div class="explanation">MWAA workers memiliki limited local storage. Solusi terbaik adalah mengubah approach — gunakan streaming reads (misalnya boto3 S3 streaming atau pandas chunked reading) untuk memproses file tanpa menyimpan seluruhnya di disk lokal. Jika perlu temp storage, gunakan /tmp dengan explicit cleanup setelah selesai. Opsi A (more workers) tidak membantu jika setiap worker masih harus process file 2 GB secara lokal — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — environment class upgrade memberikan sedikit lebih banyak storage tapi mungkin masih tidak cukup untuk 2 GB files + intermediate data. Opsi D (EFS) — MWAA tidak mendukung mounting EFS ke workers secara native.</div>
             </div>
         </div>
 
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">MWAA auto-scaling memerlukan waktu untuk menambah workers (provisioning new containers). Jika ada burst 50 tasks tiba-tiba dengan hanya 2 min workers, scaling ke 10 workers membutuhkan waktu. Selama scaling period, tasks menunggu di queue. Solusinya adalah meningkatkan min_workers agar ada cukup workers ready untuk peak demand. Opsi A (worker_concurrency) — jika ini masalahnya, tasks akan stuck bukan karena kurang workers tapi karena limit per worker, tapi ini biasanya terlihat saat workers idle yang tidak sesuai scenario ini. Opsi C — MWAA manages Celery broker configuration, users tidak bisa set message delay. Opsi D — scheduler queuing dan task execution are separate; scheduler sudah queued tasks (mereka sudah di "queued" state).</div>
+                <div class="explanation">MWAA auto-scaling memerlukan waktu untuk menambah workers (provisioning new containers). Jika ada burst 50 tasks tiba-tiba dengan hanya 2 min workers, scaling ke 10 workers membutuhkan waktu. Selama scaling period, tasks menunggu di queue. Solusinya adalah meningkatkan min_workers agar ada cukup workers ready untuk peak demand. Opsi A (worker_concurrency) — jika ini masalahnya, tasks akan stuck bukan karena kurang workers tapi karena limit per worker, tapi ini biasanya terlihat saat workers idle yang tidak sesuai scenario ini. Opsi C — MWAA manages Celery broker configuration, users tidak bisa set message delay — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — scheduler queuing dan task execution are separate; scheduler sudah queued tasks (mereka sudah di "queued" state).</div>
             </div>
         </div>
 
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">MWAA mengekstrak plugins.zip ke folder plugins/ Airflow. Jika directory structure di dalam zip salah (misalnya ada extra parent directory seperti plugins/my-plugin/ bukannya langsung file di root), module path tidak sesuai dan import gagal. Structure yang benar: zip root harus langsung berisi __init__.py dan module files yang bisa di-import. Opsi A — jika path salah, environment update seharusnya gagal atau warning muncul, bukan silent failure. Opsi C salah — MWAA fully mendukung custom plugins. Opsi D — jika permission issue, environment update akan gagal karena MWAA perlu membaca plugins.zip saat update.</div>
+                <div class="explanation">MWAA mengekstrak plugins.zip ke folder plugins/ Airflow. Jika directory structure di dalam zip salah (misalnya ada extra parent directory seperti plugins/my-plugin/ bukannya langsung file di root), module path tidak sesuai dan import gagal. Structure yang benar: zip root harus langsung berisi __init__.py dan module files yang bisa di-import. Opsi A — jika path salah, environment update seharusnya gagal atau warning muncul, bukan silent failure. Opsi C salah — MWAA fully mendukung custom plugins. Opsi D — jika permission issue, environment update akan gagal karena MWAA perlu membaca plugins — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.zip saat update.</div>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Scheduler heartbeat failures dan frequent process kills/restarts adalah classic symptoms of scheduler resource exhaustion (OOM — Out of Memory). Ketika scheduler kehabisan memory (karena parsing terlalu banyak DAGs, DAGs yang sangat complex, atau banyak running task instances), process di-kill oleh OS dan di-restart oleh supervisor. Zombie tasks terjadi karena scheduler tidak bisa send heartbeats saat dead. Solusi: kurangi jumlah/complexity DAGs, atau upgrade environment class untuk lebih banyak scheduler memory. Opsi B (DNS) akan menyebabkan connectivity errors, bukan OOM kills. Opsi C (IAM) — MWAA manages credential rotation otomatis. Opsi D (CloudWatch filters) tidak mempengaruhi scheduler operation.</div>
+                <div class="explanation">Scheduler heartbeat failures dan frequent process kills/restarts adalah classic symptoms of scheduler resource exhaustion (OOM — Out of Memory). Ketika scheduler kehabisan memory (karena parsing terlalu banyak DAGs, DAGs yang sangat complex, atau banyak running task instances), process di-kill oleh OS dan di-restart oleh supervisor. Zombie tasks terjadi karena scheduler tidak bisa send heartbeats saat dead. Solusi: kurangi jumlah/complexity DAGs, atau upgrade environment class untuk lebih banyak scheduler memory. Opsi B (DNS) akan menyebabkan connectivity errors, bukan OOM kills. Opsi C (IAM) — MWAA manages credential rotation otomatis — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (CloudWatch filters) tidak mempengaruhi scheduler operation.</div>
             </div>
         </div>
         

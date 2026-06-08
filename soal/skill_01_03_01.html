@@ -42,7 +42,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Step Functions mendukung semua requirements: complex workflows (up to 25,000 events), Choice states for conditional branching, Parallel states for concurrent execution, built-in retry with exponential backoff, dan ASL definition yang bisa di-define di CloudFormation/CDK. Opsi B (Glue Workflows) lebih limited dalam conditional logic dan hanya untuk Glue jobs/crawlers. Opsi C (EventBridge chaining) tidak memiliki native branching atau parallel state management. Opsi D (single Lambda) batas 15 menit dan anti-pattern untuk complex workflows.</div>
+                <div class="explanation">Step Functions mendukung semua requirements: complex workflows (up to 25,000 events), Choice states for conditional branching, Parallel states for concurrent execution, built-in retry with exponential backoff, dan ASL definition yang bisa di-define di CloudFormation/CDK. Opsi B (Glue Workflows) lebih limited dalam conditional logic dan hanya untuk Glue jobs/crawlers — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (EventBridge chaining) tidak memiliki native branching atau parallel state management. Opsi D (single Lambda) batas 15 menit dan anti-pattern untuk complex workflows.</div>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Parallel state runs all branches concurrently dan waits for ALL branches to complete before proceeding (fan-out/fan-in). Each branch handles one database (extract → transform). After Parallel completes, the next states (join → load) execute knowing all data is ready. This is exactly the fan-in pattern needed. Opsi B (Map) valid alternative tapi Parallel lebih explicit untuk fixed known branches. Opsi C (sequential) wastes time — 5x slower. Opsi D (separate state machines) membutuhkan external coordination for fan-in.</div>
+                <div class="explanation">Parallel state runs all branches concurrently dan waits for ALL branches to complete before proceeding (fan-out/fan-in). Each branch handles one database (extract → transform). After Parallel completes, the next states (join → load) execute knowing all data is ready. This is exactly the fan-in pattern needed. Opsi B (Map) valid alternative tapi Parallel lebih explicit untuk fixed known branches. Opsi C (sequential) wastes time — 5x slower. Opsi D (separate state machines) membutuhkan external coordination for fan-in — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -74,7 +74,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Deferrable operators (introduced in Airflow 2.2+) release the worker slot while waiting for external jobs. The task is deferred to a triggerer that uses asyncio — no worker blocked. When Glue job completes, triggerer resumes the task. This is essential for long-running external jobs to avoid worker starvation. Opsi B (BashOperator while loop) blocks a worker for 45 minutes. Opsi C (synchronous) also blocks a worker slot. Opsi D (sleep polling) same blocking issue and wastes resources.</div>
+                <div class="explanation">Deferrable operators (introduced in Airflow 2.2+) release the worker slot while waiting for external jobs. The task is deferred to a triggerer that uses asyncio — no worker blocked. When Glue job completes, triggerer resumes the task. This is essential for long-running external jobs to avoid worker starvation. Opsi B (BashOperator while loop) blocks a worker for 45 minutes — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (synchronous) also blocks a worker slot. Opsi D (sleep polling) same blocking issue and wastes resources.</div>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue Workflow adalah solusi paling sederhana untuk orchestrating Glue-native resources (crawlers + ETL jobs). Zero additional infrastructure — fully integrated dalam Glue console. Scheduled trigger → crawler → conditional trigger (on success) → ETL job. Minimal operational overhead. Opsi B (MWAA) requires managing Airflow environment — overkill untuk 3 steps. Opsi C (Step Functions) valid tapi requires defining ASL and Lambda functions. Opsi D (Lambda) requires custom code for polling crawler status.</div>
+                <div class="explanation">Glue Workflow adalah solusi paling sederhana untuk orchestrating Glue-native resources (crawlers + ETL jobs). Zero additional infrastructure — fully integrated dalam Glue console. Scheduled trigger → crawler → conditional trigger (on success) → ETL job. Minimal operational overhead. Opsi B (MWAA) requires managing Airflow environment — overkill untuk 3 steps. Opsi C (Step Functions) valid tapi requires defining ASL and Lambda functions — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Lambda) requires custom code for polling crawler status.</div>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Map state (Distributed mode) iterates over an array (file list) dan executes the same steps for each item. Distributed Map supports up to 10,000 concurrent executions and can process millions of items. MaxConcurrency controls parallelism. Perfect for processing independent items with same logic. Opsi B (Parallel 10,000 branches) — Parallel state has limit of ~50 branches and is for fixed, different branches. Opsi C (Choice) for conditional routing, not iteration. Opsi D (loop) sequential processing, very slow.</div>
+                <div class="explanation">Map state (Distributed mode) iterates over an array (file list) dan executes the same steps for each item. Distributed Map supports up to 10,000 concurrent executions and can process millions of items. MaxConcurrency controls parallelism. Perfect for processing independent items with same logic. Opsi B (Parallel 10,000 branches) — Parallel state has limit of ~50 branches and is for fixed, different branches — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Choice) for conditional routing, not iteration. Opsi D (loop) sequential processing, very slow.</div>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">ExternalTaskSensor waits (polls/defers) until a task in another DAG reaches a successful state for the same execution_date. TriggerDagRunOperator explicitly triggers another DAG, creating a clear dependency chain. Both are Airflow-native patterns for inter-DAG dependencies. Opsi B (merge DAGs) creates unmaintainable mega-DAGs. Opsi C (time-based) fragile — if DAG A runs longer than estimated, DAG B starts with incomplete data. Opsi D (variables) race-condition prone and not reliable for dependency management.</div>
+                <div class="explanation">ExternalTaskSensor waits (polls/defers) until a task in another DAG reaches a successful state for the same execution_date. TriggerDagRunOperator explicitly triggers another DAG, creating a clear dependency chain. Both are Airflow-native patterns for inter-DAG dependencies. Opsi B (merge DAGs) creates unmaintainable mega-DAGs. Opsi C (time-based) fragile — if DAG A runs longer than estimated, DAG B starts with incomplete data. Opsi D (variables) race-condition prone and not reliable for dependency management — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -138,7 +138,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Step Functions .sync integration pattern (Run a Job) memanggil service API dan secara otomatis menunggu job completion sebelum transition ke state berikutnya. Untuk Glue, ini berarti StartJobRun.sync akan wait sampai Glue job finishes (success/failure). Tidak perlu custom polling logic. Opsi B (Wait 30 min) — hardcoded wait tidak account for variable run times. Opsi C (Lambda polling) reinvents what .sync does natively. Opsi D (Request Response) returns immediately without waiting — workflow proceeds before job finishes.</div>
+                <div class="explanation">Step Functions .sync integration pattern (Run a Job) memanggil service API dan secara otomatis menunggu job completion sebelum transition ke state berikutnya. Untuk Glue, ini berarti StartJobRun.sync akan wait sampai Glue job finishes (success/failure). Tidak perlu custom polling logic. Opsi B (Wait 30 min) — hardcoded wait tidak account for variable run times. Opsi C (Lambda polling) reinvents what .sync does natively. Opsi D (Request Response) returns immediately without waiting — workflow proceeds before job finishes — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Wrapping states in a Parallel state (single branch) creates a "try-catch" block equivalent. Any failure in any enclosed state bubbles up to the Parallel's Catch block. The shared error state handles notification and logging once, eliminating duplication. Alternative: use EventBridge integration to capture state machine failure events. Opsi B (individual catches) has code duplication. Opsi C (no handling) loses context about which step failed. Opsi D (Express Workflows) don't have automatic error handling — they have different execution model.</div>
+                <div class="explanation">Wrapping states in a Parallel state (single branch) creates a "try-catch" block equivalent. Any failure in any enclosed state bubbles up to the Parallel's Catch block. The shared error state handles notification and logging once, eliminating duplication. Alternative: use EventBridge integration to capture state machine failure events. Opsi B (individual catches) has code duplication. Opsi C (no handling) loses context about which step failed — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Express Workflows) don't have automatic error handling — they have different execution model.</div>
             </div>
         </div>
 
@@ -170,7 +170,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EcsRunTaskOperator is the recommended replacement for KubernetesPodOperator in MWAA. It runs containers as ECS tasks (Fargate = serverless). Container images stay the same, just the orchestration layer changes. ECS Fargate requires no cluster management. Opsi B (separate EKS) adds operational complexity — valid but more overhead than ECS. Opsi C (convert to PythonOperator) requires significant code refactoring and loses container isolation benefits. Opsi D (Docker on worker) — MWAA workers don't have Docker daemon access.</div>
+                <div class="explanation">EcsRunTaskOperator is the recommended replacement for KubernetesPodOperator in MWAA. It runs containers as ECS tasks (Fargate = serverless). Container images stay the same, just the orchestration layer changes. ECS Fargate requires no cluster management. Opsi B (separate EKS) adds operational complexity — valid but more overhead than ECS. Opsi C (convert to PythonOperator) requires significant code refactoring and loses container isolation benefits. Opsi D (Docker on worker) — MWAA workers don't have Docker daemon access — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -186,7 +186,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Standard Workflows support long-running executions (up to 1 year). The .sync pattern waits for Glue completion. Wait state with Seconds or Timestamp combined with Choice state can implement "send alert after 1 hour if not done, continue waiting." Standard supports exactly-once execution semantics. Opsi B (Express) has 5-minute maximum duration — far too short for 3-hour workflow. Opsi C unnecessary complexity. Opsi D (Express timeout) cannot exceed 5 minutes regardless of configuration.</div>
+                <div class="explanation">Standard Workflows support long-running executions (up to 1 year). The .sync pattern waits for Glue completion. Wait state with Seconds or Timestamp combined with Choice state can implement "send alert after 1 hour if not done, continue waiting." Standard supports exactly-once execution semantics. Opsi B (Express) has 5-minute maximum duration — far too short for 3-hour workflow — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C unnecessary complexity. Opsi D (Express timeout) cannot exceed 5 minutes regardless of configuration.</div>
             </div>
         </div>
         

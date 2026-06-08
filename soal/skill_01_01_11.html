@@ -42,7 +42,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Best practice untuk replayability adalah menyimpan raw data di immutable storage (S3) sebelum pemrosesan. S3 berfungsi sebagai "source of truth" yang bisa digunakan kapan saja untuk replay. Firehose mengarchive ke S3 secara otomatis. Opsi B (365 day retention) mahal dan Kinesis tetap lebih costly dibanding S3. Opsi C (Enhanced Fan-Out) untuk throughput bukan retention. Opsi D (DynamoDB Streams) hanya retain data 24 jam juga.</div>
+                <div class="explanation">Best practice untuk replayability adalah menyimpan raw data di immutable storage (S3) sebelum pemrosesan. S3 berfungsi sebagai "source of truth" yang bisa digunakan kapan saja untuk replay. Firehose mengarchive ke S3 secara otomatis. Opsi B (365 day retention) mahal dan Kinesis tetap lebih costly dibanding S3 — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Enhanced Fan-Out) untuk throughput bukan retention. Opsi D (DynamoDB Streams) hanya retain data 24 jam juga.</div>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">S3 lifecycle policies mengoptimalkan biaya berdasarkan umur data. Recent data di Standard (fast access), moderate di Glacier Instant Retrieval (millisecond access, lower cost), dan old data di Deep Archive (cheapest). Date partitioning memungkinkan replay hanya hari spesifik. Opsi B (Standard only) sangat mahal untuk 7 tahun × 500 GB/day (~1.2 PB). Opsi C (Redshift) sangat mahal untuk cold storage. Opsi D — Kinesis tidak mendukung 7-year retention (max 365 days).</div>
+                <div class="explanation">S3 lifecycle policies mengoptimalkan biaya berdasarkan umur data. Recent data di Standard (fast access), moderate di Glacier Instant Retrieval (millisecond access, lower cost), dan old data di Deep Archive (cheapest). Date partitioning memungkinkan replay hanya hari spesifik. Opsi B (Standard only) sangat mahal untuk 7 tahun × 500 GB/day (~1.2 PB). Opsi C (Redshift) sangat mahal untuk cold storage. Opsi D — Kinesis tidak mendukung 7-year retention (max 365 days) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -74,7 +74,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Menggunakan natural unique key (misalnya order_id, transaction_id) sebagai partition key membuat operasi idempotent. PutItem dengan key yang sama akan overwrite record yang sudah ada dengan data yang identik — tidak ada duplikasi. Ini memungkinkan replay tanpa cleanup. Opsi B (UUID) membuat setiap replay menghasilkan record baru (duplikasi). Opsi C (conditional writes) akan menolak replay yang justru diinginkan. Opsi D (delete all) menghilangkan data yang mungkin masih valid dan bukan scalable approach.</div>
+                <div class="explanation">Menggunakan natural unique key (misalnya order_id, transaction_id) sebagai partition key membuat operasi idempotent. PutItem dengan key yang sama akan overwrite record yang sudah ada dengan data yang identik — tidak ada duplikasi. Ini memungkinkan replay tanpa cleanup. Opsi B (UUID) membuat setiap replay menghasilkan record baru (duplikasi) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (conditional writes) akan menolak replay yang justru diinginkan. Opsi D (delete all) menghilangkan data yang mungkin masih valid dan bukan scalable approach.</div>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Kafka menyimpan messages dalam append-only immutable log. Messages tidak dihapus setelah consumed (berbeda dengan traditional queues). Consumers melacak posisi (offset) mereka sendiri. Offset bisa di-reset ke timestamp tertentu menggunakan kafka-consumer-groups.sh --reset-offsets atau API. Ini memungkinkan replay kapan saja dalam retention period. Opsi B (auto replay new group) — perilaku default bisa "earliest" atau "latest" tergantung config. Opsi C mendeskripsikan traditional queue (SQS), bukan Kafka. Opsi D tidak ada replay topic built-in.</div>
+                <div class="explanation">Kafka menyimpan messages dalam append-only immutable log. Messages tidak dihapus setelah consumed (berbeda dengan traditional queues). Consumers melacak posisi (offset) mereka sendiri. Offset bisa di-reset ke timestamp tertentu menggunakan kafka-consumer-groups.sh --reset-offsets atau API. Ini memungkinkan replay kapan saja dalam retention period. Opsi B (auto replay new group) — perilaku default bisa "earliest" atau "latest" tergantung config — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C mendeskripsikan traditional queue (SQS), bukan Kafka. Opsi D tidak ada replay topic built-in.</div>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Bronze layer dalam medallion pattern menyimpan data mentah persis seperti diterima (raw, immutable). Append-only berarti data tidak pernah diubah atau dihapus. Partisi berdasarkan waktu ingestion memungkinkan replay dari periode waktu tertentu. Ini adalah prinsip utama replayability — selalu simpan raw source data yang tidak dimodifikasi. Opsi B (pre-processed) bukan definisi bronze layer. Opsi C (ACID) adalah fitur data format bukan prinsip replay. Opsi D (version control transformations) adalah tentang code bukan data.</div>
+                <div class="explanation">Bronze layer dalam medallion pattern menyimpan data mentah persis seperti diterima (raw, immutable). Append-only berarti data tidak pernah diubah atau dihapus. Partisi berdasarkan waktu ingestion memungkinkan replay dari periode waktu tertentu. Ini adalah prinsip utama replayability — selalu simpan raw source data yang tidak dimodifikasi. Opsi B (pre-processed) bukan definisi bronze layer — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (ACID) adalah fitur data format bukan prinsip replay. Opsi D (version control transformations) adalah tentang code bukan data.</div>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Safe replayability membutuhkan tiga hal: (1) Deterministic logic — same input selalu menghasilkan same output, (2) Idempotent writes — menghindari duplikasi saat replay (upsert by natural key), (3) Immutable source — data sumber tidak berubah antara replays. Kombinasi ini menjamin output identik. Opsi B (commutative) hanya membantu ordering tapi tidak menjamin idempotency. Opsi C (exactly-once) membantu tapi tidak sufficient tanpa idempotent writes. Opsi D (caching) menghasilkan stale data jika replay diperlukan karena bug fix.</div>
+                <div class="explanation">Safe replayability membutuhkan tiga hal: (1) Deterministic logic — same input selalu menghasilkan same output, (2) Idempotent writes — menghindari duplikasi saat replay (upsert by natural key), (3) Immutable source — data sumber tidak berubah antara replays. Kombinasi ini menjamin output identik. Opsi B (commutative) hanya membantu ordering tapi tidak menjamin idempotency. Opsi C (exactly-once) membantu tapi tidak sufficient tanpa idempotent writes. Opsi D (caching) menghasilkan stale data jika replay diperlukan karena bug fix — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -138,7 +138,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Firehose automatically delivers semua Kinesis records ke S3 dengan near-zero operational overhead. S3 sebagai replay source sangat cost-effective. Pipeline ETL didesain untuk bisa membaca dari Kinesis (real-time) atau S3 (replay). S3 lifecycle policies menghapus data setelah 30 hari. Opsi B (30-day Kinesis retention) sangat mahal — extended retention dicharge per shard-hour. Opsi C (Lambda→DynamoDB) mahal untuk high-volume event storage. Opsi D — on-demand mode untuk throughput bukan retention.</div>
+                <div class="explanation">Firehose automatically delivers semua Kinesis records ke S3 dengan near-zero operational overhead. S3 sebagai replay source sangat cost-effective. Pipeline ETL didesain untuk bisa membaca dari Kinesis (real-time) atau S3 (replay). S3 lifecycle policies menghapus data setelah 30 hari. Opsi B (30-day Kinesis retention) sangat mahal — extended retention dicharge per shard-hour. Opsi C (Lambda→DynamoDB) mahal untuk high-volume event storage — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — on-demand mode untuk throughput bukan retention.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Staging table pattern (atau DELETE+INSERT within transaction) adalah best practice untuk idempotent writes ke Redshift. Langkahnya: (1) Load data ke staging table, (2) Begin transaction, (3) DELETE existing records untuk time window dari target, (4) INSERT from staging ke target, (5) Commit. Replay akan menghapus data lama dan memasukkan yang baru. Opsi B (INSERT) tidak mencegah duplikasi. Opsi C (UNIQUE constraint) — Redshift tidak enforce uniqueness constraints. Opsi D (VACUUM) tidak menghapus logical duplicates.</div>
+                <div class="explanation">Staging table pattern (atau DELETE+INSERT within transaction) adalah best practice untuk idempotent writes ke Redshift. Langkahnya: (1) Load data ke staging table, (2) Begin transaction, (3) DELETE existing records untuk time window dari target, (4) INSERT from staging ke target, (5) Commit. Replay akan menghapus data lama dan memasukkan yang baru. Opsi B (INSERT) tidak mencegah duplikasi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (UNIQUE constraint) — Redshift tidak enforce uniqueness constraints. Opsi D (VACUUM) tidak menghapus logical duplicates.</div>
             </div>
         </div>
 
@@ -170,7 +170,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Jika source data memiliki window terbatas (7 hari), pipeline kehilangan kemampuan replay dari source setelah window tersebut. Untuk memastikan replayability, raw responses HARUS disimpan di S3 saat ingestion (capture at source). Ini adalah prinsip fundamental: jika source bisa hilang, simpan salinan raw data. Opsi B (data warehouse) berisi processed data, bukan raw — tidak bisa replay transformasi. Opsi C salah karena API tidak punya data setelah 7 hari. Opsi D — AWS tidak menyimpan third-party API responses.</div>
+                <div class="explanation">Jika source data memiliki window terbatas (7 hari), pipeline kehilangan kemampuan replay dari source setelah window tersebut. Untuk memastikan replayability, raw responses HARUS disimpan di S3 saat ingestion (capture at source). Ini adalah prinsip fundamental: jika source bisa hilang, simpan salinan raw data. Opsi B (data warehouse) berisi processed data, bukan raw — tidak bisa replay transformasi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah karena API tidak punya data setelah 7 hari. Opsi D — AWS tidak menyimpan third-party API responses.</div>
             </div>
         </div>
 
@@ -186,7 +186,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Iceberg's branching (table branching) memungkinkan reprocessing di branch terpisah tanpa mempengaruhi main table yang dibaca downstream consumers. Setelah validasi, branch di-merge (fast-forward) ke main. Time travel membantu identify correct snapshot. Ini adalah safe replay pattern. Opsi B (delete+recreate) menyebabkan downtime dan kehilangan history. Opsi C (overwrite) mempengaruhi downstream consumers selama reprocessing. Opsi D (expire_snapshots) menghapus metadata bukan data correction.</div>
+                <div class="explanation">Iceberg's branching (table branching) memungkinkan reprocessing di branch terpisah tanpa mempengaruhi main table yang dibaca downstream consumers. Setelah validasi, branch di-merge (fast-forward) ke main. Time travel membantu identify correct snapshot. Ini adalah safe replay pattern. Opsi B (delete+recreate) menyebabkan downtime dan kehilangan history. Opsi C (overwrite) mempengaruhi downstream consumers selama reprocessing. Opsi D (expire_snapshots) menghapus metadata bukan data correction — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

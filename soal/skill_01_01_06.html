@@ -42,7 +42,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon EventBridge integration dengan S3 adalah cara paling reliable untuk event-driven triggers. EventBridge menangkap semua S3 events dengan at-least-once delivery dan mendukung filtering berdasarkan prefix. Ini juga bisa langsung menargetkan Glue API. Opsi B (S3 → Lambda → Glue) bisa kehilangan events jika Lambda throttled. Opsi C arsitektur-nya salah karena EventBridge tidak "poll" SQS. Opsi D (polling) tidak real-time dan bisa miss files di antara interval polling.</div>
+                <div class="explanation">Amazon EventBridge integration dengan S3 adalah cara paling reliable untuk event-driven triggers. EventBridge menangkap semua S3 events dengan at-least-once delivery dan mendukung filtering berdasarkan prefix. Ini juga bisa langsung menargetkan Glue API. Opsi B (S3 → Lambda → Glue) bisa kehilangan events jika Lambda throttled. Opsi C arsitektur-nya salah karena EventBridge tidak "poll" SQS — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (polling) tidak real-time dan bisa miss files di antara interval polling.</div>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge rules mendukung content-based filtering pada event payload termasuk S3 object key. Tiga rules terpisah dengan suffix filter (.csv, .json, .parquet) memberikan routing paling bersih tanpa kode tambahan. Setiap rule menargetkan pipeline yang berbeda. Opsi B menambah Lambda sebagai router yang meningkatkan kompleksitas. Opsi C memaksa reorganisasi data berdasarkan format. Opsi D (Object Lambda) untuk transformasi read access, bukan event routing.</div>
+                <div class="explanation">EventBridge rules mendukung content-based filtering pada event payload termasuk S3 object key. Tiga rules terpisah dengan suffix filter (.csv, .json, .parquet) memberikan routing paling bersih tanpa kode tambahan. Setiap rule menargetkan pipeline yang berbeda. Opsi B menambah Lambda sebagai router yang meningkatkan kompleksitas. Opsi C memaksa reorganisasi data berdasarkan format — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Object Lambda) untuk transformasi read access, bukan event routing.</div>
             </div>
         </div>
 
@@ -74,7 +74,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DLQ menangkap messages yang gagal diproses setelah max retries, mencegah infinite reprocessing. Idempotent processing dengan DynamoDB tracking memastikan bahwa jika message diproses ulang, hasilnya sama (tidak ada duplikasi data). Opsi B (24h visibility timeout) menunda retry terlalu lama tanpa menyelesaikan masalah root cause. Opsi C (FIFO) membatasi throughput ke 300 msg/s dan S3 events tidak guarantee deduplication ID. Opsi D (delete sebelum proses) menyebabkan data loss jika processing gagal.</div>
+                <div class="explanation">DLQ menangkap messages yang gagal diproses setelah max retries, mencegah infinite reprocessing. Idempotent processing dengan DynamoDB tracking memastikan bahwa jika message diproses ulang, hasilnya sama (tidak ada duplikasi data). Opsi B (24h visibility timeout) menunda retry terlalu lama tanpa menyelesaikan masalah root cause — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (FIFO) membatasi throughput ke 300 msg/s dan S3 events tidak guarantee deduplication ID. Opsi D (delete sebelum proses) menyebabkan data loss jika processing gagal.</div>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Marker file (sentinel file) pattern adalah solusi paling sederhana dan reliable. Source system mengupload "_COMPLETE" file setelah semua data files selesai diupload. S3 event notification hanya memicu pipeline ketika marker file muncul, menjamin semua data sudah tersedia. Opsi A bisa bekerja tapi lebih kompleks dan rentan race condition. Opsi B (EventBridge) tidak bisa menghitung events sebelum trigger. Opsi D (polling) tidak event-driven dan memiliki latency.</div>
+                <div class="explanation">Marker file (sentinel file) pattern adalah solusi paling sederhana dan reliable. Source system mengupload "_COMPLETE" file setelah semua data files selesai diupload. S3 event notification hanya memicu pipeline ketika marker file muncul, menjamin semua data sudah tersedia. Opsi A bisa bekerja tapi lebih kompleks dan rentan race condition. Opsi B (EventBridge) tidak bisa menghitung events sebelum trigger. Opsi D (polling) tidak event-driven dan memiliki latency — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SQS queue sebagai buffer antara S3 events dan Lambda mencegah event loss. SQS menyimpan messages hingga Lambda siap memprosesnya (retention up to 14 days). Lambda SQS event source mapping juga mengatur batch size dan concurrency secara otomatis. Opsi B (increase concurrency) membantu tapi masih bisa hit account-level limits. Opsi C (S3 retry) — S3 Event Notifications tidak memiliki configurable retry policy. Opsi D (Batch Operations) bukan event-driven dan untuk operasi massal yang dijadwalkan.</div>
+                <div class="explanation">SQS queue sebagai buffer antara S3 events dan Lambda mencegah event loss. SQS menyimpan messages hingga Lambda siap memprosesnya (retention up to 14 days). Lambda SQS event source mapping juga mengatur batch size dan concurrency secara otomatis. Opsi B (increase concurrency) membantu tapi masih bisa hit account-level limits. Opsi C (S3 retry) — S3 Event Notifications tidak memiliki configurable retry policy — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Batch Operations) bukan event-driven dan untuk operasi massal yang dijadwalkan.</div>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Enabling EventBridge on an S3 bucket works alongside existing S3 Event Notifications tanpa konflik. EventBridge menerima semua S3 events secara independen dan Anda bisa membuat rules dengan multiple targets. Existing notification ke SNS tetap berfungsi. Opsi B memerlukan Glue memiliki SNS subscription endpoint yang tidak langsung supported. Opsi C membutuhkan migrasi aplikasi existing. Opsi D bisa bekerja tapi menambah overhead Lambda invocation.</div>
+                <div class="explanation">Enabling EventBridge on an S3 bucket works alongside existing S3 Event Notifications tanpa konflik. EventBridge menerima semua S3 events secara independen dan Anda bisa membuat rules dengan multiple targets. Existing notification ke SNS tetap berfungsi. Opsi B memerlukan Glue memiliki SNS subscription endpoint yang tidak langsung supported — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C membutuhkan migrasi aplikasi existing. Opsi D bisa bekerja tapi menambah overhead Lambda invocation.</div>
             </div>
         </div>
 
@@ -138,7 +138,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge menangkap Glue Job State Change events natively. Dengan rule filtering pada state "FAILED" dan input transformation, event detail (jobName, error message) bisa diteruskan ke Step Functions sebagai input. Ini adalah pola event-driven yang paling direct. Opsi B (CloudWatch Alarm) tidak membawa detail error message. Opsi C — Glue tidak memiliki "notification trigger" built-in yang memanggil API langsung. Opsi D menambah layer SNS dan Lambda yang tidak diperlukan.</div>
+                <div class="explanation">EventBridge menangkap Glue Job State Change events natively. Dengan rule filtering pada state "FAILED" dan input transformation, event detail (jobName, error message) bisa diteruskan ke Step Functions sebagai input. Ini adalah pola event-driven yang paling direct. Opsi B (CloudWatch Alarm) tidak membawa detail error message. Opsi C — Glue tidak memiliki "notification trigger" built-in yang memanggil API langsung — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D menambah layer SNS dan Lambda yang tidak diperlukan.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge mendukung content-based filtering termasuk numeric matching pada field seperti object size. Rule bisa memfilter events dimana detail.object.size > 104857600 (100 MB). Ini menghindari invokasi yang tidak perlu. Opsi B — S3 Event Notifications tidak mendukung filtering berdasarkan ukuran file. Opsi C bekerja tapi memicu Lambda untuk setiap file yang tidak efisien. Opsi D (Intelligent-Tiering) untuk storage class management, bukan event filtering.</div>
+                <div class="explanation">EventBridge mendukung content-based filtering termasuk numeric matching pada field seperti object size. Rule bisa memfilter events dimana detail.object.size > 104857600 (100 MB). Ini menghindari invokasi yang tidak perlu. Opsi B — S3 Event Notifications tidak mendukung filtering berdasarkan ukuran file. Opsi C bekerja tapi memicu Lambda untuk setiap file yang tidak efisien. Opsi D (Intelligent-Tiering) untuk storage class management, bukan event filtering — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -170,7 +170,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge S3 events include detail.reason field yang menunjukkan bagaimana object dibuat (PutObject, CompleteMultipartUpload, CopyObject, dll). Memfilter pada field ini di EventBridge rule memastikan Lambda hanya dipanggil untuk multipart uploads. Opsi B (filter di Lambda) membuang invocation cost untuk events yang tidak diproses. Opsi C bisa bekerja tapi S3 Event Notifications kurang fleksibel dibanding EventBridge. Opsi D (separate bucket) mengubah arsitektur storage secara tidak perlu.</div>
+                <div class="explanation">EventBridge S3 events include detail.reason field yang menunjukkan bagaimana object dibuat (PutObject, CompleteMultipartUpload, CopyObject, dll). Memfilter pada field ini di EventBridge rule memastikan Lambda hanya dipanggil untuk multipart uploads. Opsi B (filter di Lambda) membuang invocation cost untuk events yang tidak diproses — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C bisa bekerja tapi S3 Event Notifications kurang fleksibel dibanding EventBridge. Opsi D (separate bucket) mengubah arsitektur storage secara tidak perlu.</div>
             </div>
         </div>
 
@@ -186,7 +186,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Cross-account EventBridge event forwarding adalah pola paling secure dan native untuk cross-account event triggers. Account A mengizinkan Account B's event bus sebagai target melalui resource-based policy. Ini menggunakan IAM untuk security dan tidak memerlukan shared credentials. Opsi B (SNS cross-account) bekerja tapi membutuhkan subscription confirmation. Opsi C tidak supported — S3 Event Notifications tidak bisa langsung target cross-account Lambda. Opsi D (polling) tidak event-driven, lambat, dan membutuhkan cross-account S3 access.</div>
+                <div class="explanation">Cross-account EventBridge event forwarding adalah pola paling secure dan native untuk cross-account event triggers. Account A mengizinkan Account B's event bus sebagai target melalui resource-based policy. Ini menggunakan IAM untuk security dan tidak memerlukan shared credentials. Opsi B (SNS cross-account) bekerja tapi membutuhkan subscription confirmation. Opsi C tidak supported — S3 Event Notifications tidak bisa langsung target cross-account Lambda. Opsi D (polling) tidak event-driven, lambat, dan membutuhkan cross-account S3 access — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         
