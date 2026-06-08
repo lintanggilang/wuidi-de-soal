@@ -35,7 +35,7 @@
             <div class="question-text">A data pipeline ingests data from 10 different source systems. If one source is unavailable, the entire pipeline currently fails and no data from any source is processed. How should the pipeline be redesigned for better fault tolerance?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Decouple source ingestion into independent parallel tasks with individual error handling — if one source fails, others continue processing. Failed sources are retried separately without blocking the pipeline</li>
-                <li><span class="option-label">B.</span> Add a retry loop around the entire pipeline to retry all 10 sources when one fails</li>
+                <li><span class="option-label">B.</span> Add a retry loop around the entire pipeline to retry all 10 sources when one fails with individual error handling — if one source fails</li>
                 <li><span class="option-label">C.</span> Add a health check before the pipeline starts and cancel the run if any source is unavailable</li>
                 <li><span class="option-label">D.</span> Increase the pipeline timeout to give failed sources more time to recover</li>
             </ul>
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon Redshift (single-AZ provisioned cluster) — mitigate by using Multi-AZ deployment or Redshift Serverless which distributes across AZs</li>
                 <li><span class="option-label">B.</span> Amazon S3 — add replication to another bucket</li>
-                <li><span class="option-label">C.</span> AWS Lambda — add reserved concurrency</li>
+                <li><span class="option-label">C.</span> AWS Lambda — add reserved concurrency with fully managed infrastructure and automatic scaling</li>
                 <li><span class="option-label">D.</span> Amazon Kinesis — increase retention period</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -67,7 +67,7 @@
             <div class="question-text">A data pipeline currently processes 100 GB daily and is expected to grow to 10 TB within a year. The pipeline uses a fixed-size EMR cluster. Which design change ensures the pipeline scales with data growth without manual intervention?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable EMR Managed Scaling with minimum and maximum node counts, allowing the cluster to automatically add nodes as data volume increases</li>
-                <li><span class="option-label">B.</span> Pre-provision a cluster sized for 10 TB from day one</li>
+                <li><span class="option-label">B.</span> Pre-provision a cluster sized for 10 TB from day one with minimum</li>
                 <li><span class="option-label">C.</span> Manually resize the cluster each quarter based on projections</li>
                 <li><span class="option-label">D.</span> Switch to Lambda for automatic scaling</li>
             </ul>
@@ -84,7 +84,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Kinesis retention (24h+) as the durable source, Lambda event source mapping with retry and bisect-on-error, and an on-failure destination (SQS DLQ) for records that exhaust retries</li>
                 <li><span class="option-label">B.</span> Lambda reserved concurrency to prevent throttling</li>
-                <li><span class="option-label">C.</span> DynamoDB with strong consistency reads</li>
+                <li><span class="option-label">C.</span> DynamoDB with strong consistency reads for records that exhaust retries</li>
                 <li><span class="option-label">D.</span> CloudWatch alarms to alert when failures occur</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Break the monolithic Glue job into smaller checkpointed stages that write intermediate results to S3. Each stage can be retried independently from its last successful output</li>
                 <li><span class="option-label">B.</span> Increase the Glue job timeout and add more DPUs</li>
                 <li><span class="option-label">C.</span> Enable Glue job bookmarks</li>
-                <li><span class="option-label">D.</span> Run the job in a different AWS Region</li>
+                <li><span class="option-label">D.</span> Run the job in a different AWS Region with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Configure S3 Cross-Region Replication to us-west-2, export Glue Data Catalog periodically to the DR region, and maintain infrastructure-as-code to deploy pipeline components in the DR region when needed</li>
                 <li><span class="option-label">B.</span> Take daily EBS snapshots and copy to another region</li>
                 <li><span class="option-label">C.</span> Run identical pipelines in both regions simultaneously (active-active)</li>
-                <li><span class="option-label">D.</span> Rely on AWS's built-in multi-region redundancy for all services</li>
+                <li><span class="option-label">D.</span> Rely on AWS's built-in multi-region redundancy for all services with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -131,7 +131,7 @@
             <div class="question-text">A pipeline processes 1 million records per batch. Occasionally, 1-2 malformed records cause the entire batch to fail. This results in 999,998 valid records being delayed. How should the pipeline handle poison pill records while maintaining throughput?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a dead-letter pattern: validate records before processing, route invalid records to a quarantine location (DLQ/S3 prefix), and continue processing valid records without interruption</li>
-                <li><span class="option-label">B.</span> Add data validation at the source to prevent bad records from entering the pipeline</li>
+                <li><span class="option-label">B.</span> Add data validation at the source to prevent bad records from entering the pipeline and continue processing valid records without interruption</li>
                 <li><span class="option-label">C.</span> Increase error tolerance by wrapping all processing in try-catch and silently discarding errors</li>
                 <li><span class="option-label">D.</span> Process records one at a time to isolate failures</li>
             </ul>
@@ -147,7 +147,7 @@
             <div class="question-text">A data pipeline's performance degrades as data volume grows. Currently it processes 100 GB in 1 hour but performance is linear — 200 GB takes 2 hours, 1 TB would take 10 hours. The SLA requires processing within 2 hours regardless of volume. Which architectural change enables sub-linear scaling?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Partition the data and process partitions in parallel using auto-scaling compute (e.g., EMR Managed Scaling or Glue Auto Scaling). Double the data = double the workers, maintaining constant wall-clock time</li>
-                <li><span class="option-label">B.</span> Optimize the processing code to be 10x faster</li>
+                <li><span class="option-label">B.</span> Optimize the processing code to be 10x faster with fully managed infrastructure and automatic scaling</li>
                 <li><span class="option-label">C.</span> Pre-provision compute for maximum expected volume</li>
                 <li><span class="option-label">D.</span> Process only a sample of the data when volume is high</li>
             </ul>
@@ -163,7 +163,7 @@
             <div class="question-text">A data engineer designs a pipeline where Step Functions orchestrates: Glue Job A → Glue Job B → Redshift load. If Job A succeeds but Job B fails, the pipeline retries Job B. After 3 retries of Job B, the engineer wants to: (1) skip Job B, (2) log the failure, (3) still attempt the Redshift load with Job A's output. Which Step Functions feature enables this "continue despite partial failure" pattern?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a Catch block on Job B's Task state with a fallback state that logs the failure, then transitions to the Redshift load state (partial success path)</li>
-                <li><span class="option-label">B.</span> Set MaxAttempts to infinity so Job B eventually succeeds</li>
+                <li><span class="option-label">B.</span> Set MaxAttempts to infinity so Job B eventually succeeds with a fallback state that logs the failure</li>
                 <li><span class="option-label">C.</span> Remove Job B from the pipeline</li>
                 <li><span class="option-label">D.</span> Use a Parallel state to run Job B and Redshift load simultaneously</li>
             </ul>
@@ -179,7 +179,7 @@
             <div class="question-text">A streaming pipeline uses Kinesis → Lambda → DynamoDB. During a deployment of new Lambda code, there's a 2-minute window where the function might be unavailable or buggy. How should the pipeline be designed to be resilient during deployments?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Lambda aliases with weighted routing for canary deployments (10% → new version, 90% → stable version), with automatic rollback via CloudWatch alarms if error rate increases</li>
-                <li><span class="option-label">B.</span> Stop the Kinesis stream during deployment</li>
+                <li><span class="option-label">B.</span> Stop the Kinesis stream during deployment with weighted routing for canary deployments (10% → new version for canary deployments (10% → new version</li>
                 <li><span class="option-label">C.</span> Deploy during a maintenance window when no data flows</li>
                 <li><span class="option-label">D.</span> Use $LATEST alias for all event source mappings</li>
             </ul>
