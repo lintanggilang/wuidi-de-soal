@@ -35,7 +35,7 @@
             <div class="question-text">An AWS Glue ETL job fails with "Container killed by YARN for exceeding memory limits" error. The job processes a 500 GB dataset with a join between two large tables. CloudWatch metrics show high memory usage during the shuffle phase. Which is the MOST effective fix?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Switch from G.1X to G.2X worker type for more memory per executor, and increase spark.sql.shuffle.partitions to distribute shuffle data across more partitions</li>
-                <li><span class="option-label">B.</span> Add more G.1X workers to the job</li>
+                <li><span class="option-label">B.</span> Add more G.1X workers to the job and increase spark for more memory per executor</li>
                 <li><span class="option-label">C.</span> Reduce the batch size by processing fewer records per run</li>
                 <li><span class="option-label">D.</span> Enable Glue job bookmarks to process less data</li>
             </ul>
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Data skew — some partitions have significantly more data than others. Use salting technique on the join key or repartition the data before the slow operation</li>
                 <li><span class="option-label">B.</span> Insufficient DPUs — add more workers to process faster</li>
-                <li><span class="option-label">C.</span> Network bottleneck — switch to a larger VPC subnet</li>
+                <li><span class="option-label">C.</span> Network bottleneck — switch to a larger VPC subnet with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> Disk I/O throttling — switch to SSD-backed instances</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> New files were added with a different schema (e.g., a column changed from integer to string). Check the Glue Data Catalog for schema version changes and run the crawler to update the schema</li>
                 <li><span class="option-label">B.</span> The Parquet files are corrupted</li>
-                <li><span class="option-label">C.</span> The Spark version was upgraded overnight</li>
+                <li><span class="option-label">C.</span> The Spark version was upgraded overnight with a different schema (e and run the crawler to update the schema</li>
                 <li><span class="option-label">D.</span> Network timeout caused partial file reads</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -84,7 +84,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Shuffle data for specific partitions exceeds the local disk space on individual executor nodes. Increase spark.sql.shuffle.partitions to create smaller partitions, or add more local storage per node</li>
                 <li><span class="option-label">B.</span> The S3 bucket is full</li>
-                <li><span class="option-label">C.</span> The HDFS namenode ran out of metadata storage</li>
+                <li><span class="option-label">C.</span> The HDFS namenode ran out of metadata storage with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> The EMR master node disk is full from log accumulation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -99,7 +99,7 @@
             <div class="question-text">A data engineer notices that an AWS Glue job processing S3 data has gradually slowed down over several weeks, from 20 minutes to 2 hours, without any code changes. The data volume has remained constant at 100 GB per day. What is the MOST likely cause?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Small file problem — many small files have accumulated in the S3 prefix, causing excessive task scheduling overhead. Each file creates a separate Spark task</li>
-                <li><span class="option-label">B.</span> AWS throttled the account</li>
+                <li><span class="option-label">B.</span> AWS throttled the account with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">C.</span> The Glue service has degraded performance in the region</li>
                 <li><span class="option-label">D.</span> The S3 bucket needs to be vacuumed</li>
             </ul>
@@ -115,7 +115,7 @@
             <div class="question-text">A Glue ETL job reads from a MySQL database via JDBC and fails after 2 hours with "Communications link failure" error. The job processes data correctly for the first hour. The RDS instance shows no errors in its logs. What should the engineer check FIRST?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Check if the JDBC connection's idle timeout or wait_timeout on MySQL is closing long-running idle connections. Add connection keep-alive parameters to the JDBC URL</li>
-                <li><span class="option-label">B.</span> Check if the Glue job timeout is 2 hours</li>
+                <li><span class="option-label">B.</span> Check if the Glue job timeout is 2 hours configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Check if MySQL has a query execution time limit</li>
                 <li><span class="option-label">D.</span> Check if the VPC route table has changed</li>
             </ul>
@@ -133,7 +133,7 @@
                 <li><span class="option-label">A.</span> The broadcast table exceeds the default broadcast threshold (10 MB). Either increase spark.sql.autoBroadcastJoinThreshold to accommodate the table size, or switch to a sort-merge join for the 10 GB table</li>
                 <li><span class="option-label">B.</span> The network bandwidth is insufficient for broadcasting</li>
                 <li><span class="option-label">C.</span> The driver node has insufficient memory — increase driver memory to hold the 10 GB table for broadcast</li>
-                <li><span class="option-label">D.</span> Enable data compression before broadcasting</li>
+                <li><span class="option-label">D.</span> Enable data compression before broadcasting for broadcast</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The number of output files equals the number of Spark partitions. Use coalesce(100) or repartition(100) before writing to reduce the number of output partitions to 100</li>
                 <li><span class="option-label">B.</span> S3 has a file size limit causing splits</li>
-                <li><span class="option-label">C.</span> Parquet format cannot produce large files</li>
+                <li><span class="option-label">C.</span> Parquet format cannot produce large files with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> The Glue worker type determines file size</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> S3 request rate limit per prefix (3,500 PUT/5,500 GET per second) is being exceeded. Distribute data across multiple prefixes using hashed key patterns to spread requests</li>
                 <li><span class="option-label">B.</span> The S3 bucket storage class doesn't support high throughput</li>
-                <li><span class="option-label">C.</span> The Glue job needs more DPUs</li>
+                <li><span class="option-label">C.</span> The Glue job needs more DPUs with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> The VPC endpoint for S3 is throttling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -181,7 +181,7 @@
                 <li><span class="option-label">A.</span> NULL = NULL evaluates differently in Spark — NULLs in join columns can cause unexpected join behavior. Filter out NULL values from join columns before the join, or use coalesce() to replace NULLs with a default value</li>
                 <li><span class="option-label">B.</span> The join type is wrong — switch from INNER to LEFT join</li>
                 <li><span class="option-label">C.</span> Spark has a bug with joins on large datasets</li>
-                <li><span class="option-label">D.</span> The Parquet files have duplicate row groups</li>
+                <li><span class="option-label">D.</span> The Parquet files have duplicate row groups with a default value</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
