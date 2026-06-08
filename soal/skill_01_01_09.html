@@ -53,7 +53,7 @@
                 <li><span class="option-label">A.</span> Hot shard due to partition key skew; redesign the partition key to distribute writes more evenly across shards</li>
                 <li><span class="option-label">B.</span> Insufficient total stream capacity; double the number of shards to 20</li>
                 <li><span class="option-label">C.</span> Producer retry logic is causing duplicate writes; implement deduplication</li>
-                <li><span class="option-label">D.</span> Stream encryption is causing throughput overhead; disable encryption</li>
+                <li><span class="option-label">D.</span> Stream encryption is causing throughput overhead; disable encryption with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Reduce the Glue job's number of workers and use hashpartitions with a value lower than max_connections</li>
                 <li><span class="option-label">B.</span> Use Amazon RDS Proxy in front of the database to pool connections</li>
-                <li><span class="option-label">C.</span> Increase the Glue job timeout to allow connections to queue</li>
+                <li><span class="option-label">C.</span> Increase the Glue job timeout to allow connections to queue with a value lower than max_connections and use</li>
                 <li><span class="option-label">D.</span> Enable Glue Auto Scaling to dynamically adjust the number of connections</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -84,7 +84,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Retry the UnprocessedItems with exponential backoff, starting with a short delay and doubling with each retry</li>
                 <li><span class="option-label">B.</span> Immediately retry all items in the batch including already processed ones</li>
-                <li><span class="option-label">C.</span> Increase batch size to 100 items to reduce the number of API calls</li>
+                <li><span class="option-label">C.</span> Increase batch size to 100 items to reduce the number of API calls with exponential backoff and doubling with each retry</li>
                 <li><span class="option-label">D.</span> Log the UnprocessedItems and continue processing new batches</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Switch from PutRecord to PutRecords (batch API) to aggregate multiple records into fewer API calls</li>
                 <li><span class="option-label">B.</span> Use the Kinesis Producer Library (KPL) with aggregation enabled to combine multiple user records into single Kinesis records</li>
                 <li><span class="option-label">C.</span> Implement client-side buffering with a 1-second window before sending</li>
-                <li><span class="option-label">D.</span> Enable server-side encryption to optimize record processing</li>
+                <li><span class="option-label">D.</span> Enable server-side encryption to optimize record processing with aggregation enabled</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -116,7 +116,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a rate limiter to control scan throughput and set Limit parameter to read fewer items per request with a delay between pages</li>
                 <li><span class="option-label">B.</span> Use DynamoDB Export to S3 feature to export data without consuming table RCUs</li>
-                <li><span class="option-label">C.</span> Run the scan during off-peak hours only</li>
+                <li><span class="option-label">C.</span> Run the scan during off-peak hours only with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Create a Global Secondary Index and scan the index instead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable API Gateway caching with a TTL of 300 seconds to serve repeated requests from cache</li>
                 <li><span class="option-label">B.</span> Add DynamoDB Accelerator (DAX) as a read-through cache in front of DynamoDB</li>
-                <li><span class="option-label">C.</span> Increase DynamoDB provisioned RCUs to 100,000</li>
+                <li><span class="option-label">C.</span> Increase DynamoDB provisioned RCUs to 100,000 with a TTL of 300 seconds</li>
                 <li><span class="option-label">D.</span> Enable DynamoDB Auto Scaling with aggressive scaling policy</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a Map state with MaxConcurrency set to 10, with each iteration including a Wait state of 1 second</li>
                 <li><span class="option-label">B.</span> Use a Choice state to check current time and skip if too many requests were sent</li>
-                <li><span class="option-label">C.</span> Process all 100,000 records in a single Lambda function with sleep intervals</li>
+                <li><span class="option-label">C.</span> Process all 100,000 records in a single Lambda function with sleep intervals configured for optimal performance</li>
                 <li><span class="option-label">D.</span> Use an SQS FIFO queue with a message delay of 100ms between sends</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -163,7 +163,7 @@
             <div class="question-text">A Lambda function writes to DynamoDB and occasionally receives throttling errors. The function uses the AWS SDK with default retry configuration. The data engineer notices that retries are consuming Lambda execution time and causing timeouts. Which SDK configuration change addresses this?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure the SDK client with adaptive retry mode (RetryMode.ADAPTIVE) which includes token bucket rate limiting</li>
-                <li><span class="option-label">B.</span> Set max retries to 0 and handle failures with a dead-letter queue</li>
+                <li><span class="option-label">B.</span> Set max retries to 0 and handle failures with a dead-letter queue configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Increase Lambda timeout to 15 minutes to accommodate retries</li>
                 <li><span class="option-label">D.</span> Disable SDK retries and implement custom retry logic with shorter delays</li>
             </ul>
@@ -180,7 +180,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> DynamoDB On-Demand has an initial throughput limit for new tables; pre-warm the table by gradually increasing load before the full migration, or contact AWS Support to increase initial limits</li>
                 <li><span class="option-label">B.</span> DMS is not compatible with DynamoDB On-Demand mode</li>
-                <li><span class="option-label">C.</span> The DMS replication instance is too small</li>
+                <li><span class="option-label">C.</span> The DMS replication instance is too small configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> DynamoDB On-Demand mode doesn't support batch writes from DMS</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
