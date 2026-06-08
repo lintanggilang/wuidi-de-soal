@@ -36,7 +36,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Designate a central governance account with AWS Lake Formation. Use Lake Formation's cross-account catalog sharing to grant the central account read access to each business unit's Glue Data Catalog. Analysts browse the central catalog to discover datasets across all 15 accounts, view schemas and table properties, and request access through Lake Formation permissions — all without needing IAM access to individual accounts' resources</li>
                 <li><span class="option-label">B.</span> Create AWS Glue crawlers in each account that export catalog metadata to a shared S3 bucket, then build a custom search application on top of the exported metadata files</li>
-                <li><span class="option-label">C.</span> Use AWS Resource Access Manager (RAM) to share individual S3 buckets and databases from all 15 accounts directly with every analyst</li>
+                <li><span class="option-label">C.</span> Use AWS Resource Access Manager (RAM) to share individual S3 buckets and databases from all 15 accounts directly with every analyst configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Deploy Amazon DataZone in each account separately and let analysts log into each account's DataZone portal individually to discover that account's data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -53,7 +53,7 @@
                 <li><span class="option-label">A.</span> Use the AWS Glue Data Catalog's search functionality to search for tables by name, column names, or classification. Search for keywords like "purchase," "order," or "transaction" across table names, descriptions, and column names. The catalog returns matching tables with their schemas, locations, and any business metadata tags — allowing the analyst to identify the correct table without querying every database</li>
                 <li><span class="option-label">B.</span> Write an Athena query that scans INFORMATION_SCHEMA across all databases to find tables with columns containing "purchase" in their name</li>
                 <li><span class="option-label">C.</span> Contact each database owner individually to ask which table contains purchase data</li>
-                <li><span class="option-label">D.</span> Run SELECT * LIMIT 10 on every table in the catalog to inspect sample data and determine which contains purchase information</li>
+                <li><span class="option-label">D.</span> Run SELECT * LIMIT 10 on every table in the catalog to inspect sample data and determine which contains purchase information with their schemas and column names</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS Lake Formation with column-level permissions — define grants specifying which IAM principals can access which columns of which catalog tables. When Athena, Redshift Spectrum, or Glue ETL queries reference a table through the catalog, Lake Formation enforces column-level filtering automatically. Researchers see only de-identified columns, billing sees financial columns, and compliance sees all columns — all consuming the same physical data through different permission grants</li>
                 <li><span class="option-label">B.</span> Create separate physical copies of the data in S3 for each team with different column subsets, and register each copy as a separate table in the Glue Data Catalog</li>
-                <li><span class="option-label">C.</span> Use S3 Access Points with different access policies for each team, creating separate access paths to the same underlying data</li>
+                <li><span class="option-label">C.</span> Use S3 Access Points with different access policies for each team, creating separate access paths to the same underlying data configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Define IAM policies with S3 object-level ARN conditions that restrict which Parquet column data can be read</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -83,7 +83,7 @@
             <div class="question-text">A data engineering team supports 50 data analysts who use Amazon Athena to query the data lake. Analysts frequently write incorrect table references (wrong database name, misspelled table names, outdated table versions) because they reference data from memory rather than checking the catalog. The team wants to make data consumption self-service by ensuring analysts always discover and reference current, valid catalog entries. Which approach MOST effectively promotes catalog-driven data consumption?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement Amazon DataZone as a data marketplace portal integrated with the Glue Data Catalog. Analysts browse published data products (curated catalog entries with descriptions, schemas, sample queries, and quality indicators), subscribe to datasets they need, and receive pre-configured Athena connections. DataZone surfaces catalog metadata in a business-friendly interface, ensuring analysts always work from current, approved data sources</li>
-                <li><span class="option-label">B.</span> Create a shared wiki page listing all available tables with their database names, schemas, and example queries that analysts can reference</li>
+                <li><span class="option-label">B.</span> Create a shared wiki page listing all available tables with their database names, schemas, and example queries that analysts can reference configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Restrict Athena access to only allow queries against tables that the analyst has explicitly requested permission for via a ticketing system</li>
                 <li><span class="option-label">D.</span> Enable Athena query suggestions that auto-complete table names from the Glue Data Catalog while analysts type their queries</li>
             </ul>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Create an external schema in Redshift that references the Glue Data Catalog database. Redshift automatically reads table definitions, column schemas, partition information, and data locations from the catalog. Analysts query external tables using standard Redshift SQL — the catalog provides the metadata layer that maps SQL table references to physical S3 locations, eliminating the need to define external tables manually in Redshift</li>
                 <li><span class="option-label">B.</span> Export the Glue Data Catalog definitions to DDL scripts and execute them in Redshift to create matching external table definitions</li>
                 <li><span class="option-label">C.</span> Configure a JDBC connection from Redshift to the Glue Data Catalog service endpoint to read metadata at query time</li>
-                <li><span class="option-label">D.</span> Use AWS DMS to synchronize the Glue Data Catalog metadata into Redshift's internal pg_catalog system tables</li>
+                <li><span class="option-label">D.</span> Use AWS DMS to synchronize the Glue Data Catalog metadata into Redshift's internal pg_catalog system tables and data locations from the catalog</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -116,7 +116,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Lake Formation tag-based access control (LF-TBAC) combined with resource links. Domain teams tag their data products with standardized business tags (domain, product-name, classification). Consumer teams receive access through tag-based grants. Resource links in the consumer's catalog point to producer tables, providing a local reference without copying metadata. Consumers discover products by tag and consume through their local resource links</li>
                 <li><span class="option-label">B.</span> Create a single Glue Data Catalog database where all domain teams register their tables with standardized naming conventions like domain_productname</li>
-                <li><span class="option-label">C.</span> Have each consumer team maintain a configuration file mapping logical data product names to physical Glue database.table paths</li>
+                <li><span class="option-label">C.</span> Have each consumer team maintain a configuration file mapping logical data product names to physical Glue database.table paths with resource links and consume through their local resource links</li>
                 <li><span class="option-label">D.</span> Use AWS Service Catalog to publish Glue Data Catalog table definitions as provisioned products that consumers deploy into their own accounts</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure EMR to use the Glue Data Catalog as its Hive metastore by setting hive.metastore.client.factory.class to the AWS Glue catalog implementation. Spark's catalog integration then resolves table references (spark.sql("SELECT * FROM glue_db.table_name")) against the Glue catalog — for S3 tables, it reads the location/schema from catalog metadata; for JDBC sources registered in the catalog, connection details are stored as table properties. All data access is catalog-mediated</li>
                 <li><span class="option-label">B.</span> Install the AWS Glue SDK on EMR and write custom code that calls the Glue GetTable API before each Spark read operation to retrieve connection details programmatically</li>
-                <li><span class="option-label">C.</span> Export all Glue Data Catalog metadata to a JSON file on S3 and have Spark read this file at job startup to configure data source connections</li>
+                <li><span class="option-label">C.</span> Export all Glue Data Catalog metadata to a JSON file on S3 and have Spark read this file at job startup to configure data source connections for S3 tables</li>
                 <li><span class="option-label">D.</span> Use AWS Secrets Manager to store all data source connection details and reference Secrets Manager ARNs in Spark configurations instead of using the catalog</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -149,7 +149,7 @@
                 <li><span class="option-label">A.</span> Implement a catalog classification system using Glue Data Catalog table properties and Lake Formation tags to designate data quality tiers: "gold" (authoritative, curated), "silver" (transformed but not primary), "bronze" (raw ingestion). Add business metadata properties like owner, refresh-frequency, source-system, and data-quality-score. Deprecate non-authoritative tables by adding a "status: deprecated" property with migration guidance pointing to the gold-tier equivalent</li>
                 <li><span class="option-label">B.</span> Delete all duplicate and non-authoritative tables from the catalog, keeping only one version of each dataset</li>
                 <li><span class="option-label">C.</span> Create IAM policies that deny access to non-authoritative tables, forcing analysts to use only the designated gold tables</li>
-                <li><span class="option-label">D.</span> Rename all non-authoritative tables with a "DO_NOT_USE_" prefix so analysts can identify them by name</li>
+                <li><span class="option-label">D.</span> Rename all non-authoritative tables with a "DO_NOT_USE_" prefix so analysts can identify them by name configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -163,7 +163,7 @@
             <div class="question-text">A financial institution needs to share specific catalog tables with an external partner organization that has its own AWS account. The partner needs to query shared data using their own Athena environment. The institution requires: (1) the partner sees only approved tables, (2) data remains in the institution's S3 bucket (no copying), (3) the institution can revoke access instantly, (4) all partner queries are auditable. Which mechanism enables secure catalog-based data sharing with external AWS accounts?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Lake Formation cross-account data sharing with named resources. Grant SELECT permission on specific catalog tables to the partner's AWS account ID. The partner creates a resource link in their own catalog pointing to the shared tables, then queries through their Athena — data stays in the institution's S3, Lake Formation enforces permissions, and CloudTrail logs all cross-account catalog access for audit</li>
-                <li><span class="option-label">B.</span> Create an S3 bucket policy granting the partner's account read access to the specific S3 prefixes containing the approved table data</li>
+                <li><span class="option-label">B.</span> Create an S3 bucket policy granting the partner's account read access to the specific S3 prefixes containing the approved table data with named resources and CloudTrail logs all cross-account catalog access for audit</li>
                 <li><span class="option-label">C.</span> Set up a VPN connection between both accounts and share a JDBC connection string for the partner to query the institution's Athena directly</li>
                 <li><span class="option-label">D.</span> Export approved table data to CSV files daily and upload them to a shared S3 bucket that both accounts can access</li>
             </ul>
@@ -179,7 +179,7 @@
             <div class="question-text">A data team manages a Glue Data Catalog with 2,000 tables. They notice that different query engines (Athena, Redshift Spectrum, EMR Spark, Glue ETL) sometimes interpret the same catalog table differently — Athena handles a certain date format correctly while EMR Spark throws parsing errors on the same table. The root cause is that catalog table definitions need engine-specific configurations. How should the team ensure consistent data consumption across all engines using the same catalog metadata?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Ensure catalog table definitions use standardized, engine-agnostic configurations: (1) use Hive-compatible SerDe formats that all engines understand (OpenCSVSerDe, ParquetHiveSerDe); (2) define explicit data types using catalog-standard type mappings; (3) set table properties like "skip.header.line.count" and date format properties that all engines honor; (4) use Parquet/ORC columnar formats which embed schemas in the files themselves, reducing dependence on catalog-level type definitions for parsing</li>
-                <li><span class="option-label">B.</span> Create separate catalog tables for each engine — athena_sales, emr_sales, spectrum_sales — each with engine-specific configurations</li>
+                <li><span class="option-label">B.</span> Create separate catalog tables for each engine — athena_sales, emr_sales, spectrum_sales — each with engine-specific configurations configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Standardize on a single query engine across the organization to eliminate cross-engine compatibility issues</li>
                 <li><span class="option-label">D.</span> Add a pre-processing Lambda function that transforms catalog metadata into engine-specific configurations before each query executes</li>
             </ul>
