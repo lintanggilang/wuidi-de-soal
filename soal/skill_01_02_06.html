@@ -53,7 +53,7 @@
                 <li><span class="option-label">A.</span> Enable Firehose format conversion with output format set to Parquet, referencing a schema from the AWS Glue Data Catalog</li>
                 <li><span class="option-label">B.</span> Use a Lambda transformation function to convert JSON to Parquet within Firehose</li>
                 <li><span class="option-label">C.</span> Configure S3 to automatically convert JSON to Parquet on write</li>
-                <li><span class="option-label">D.</span> Use Firehose data partitioning to output as Parquet</li>
+                <li><span class="option-label">D.</span> Use Firehose data partitioning to output as Parquet with output format set</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -69,7 +69,7 @@
                 <li><span class="option-label">A.</span> Re-write the Parquet file using Glue ETL with Spark config spark.sql.parquet.outputTimestampType set to TIMESTAMP_MICROS (INT64)</li>
                 <li><span class="option-label">B.</span> Cast the timestamp column in the Redshift Spectrum query</li>
                 <li><span class="option-label">C.</span> Update the Glue Data Catalog table to change the timestamp format</li>
-                <li><span class="option-label">D.</span> Use a Redshift UDF to interpret INT96 timestamps</li>
+                <li><span class="option-label">D.</span> Use a Redshift UDF to interpret INT96 timestamps with Spark config spark</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> Use the Glue DynamicFrame's repartition() or coalesce() before writing, calculating the number of partitions based on target file size</li>
                 <li><span class="option-label">B.</span> Set maxRecordsPerFile in the write options to control records per file</li>
                 <li><span class="option-label">C.</span> The file size is automatically optimized by Glue</li>
-                <li><span class="option-label">D.</span> Set the S3 multipart upload size to 256 MB</li>
+                <li><span class="option-label">D.</span> Set the S3 multipart upload size to 256 MB with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -100,7 +100,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue ETL with schema evolution enabled — Glue reads Avro schemas automatically and can merge schemas when writing to Parquet</li>
                 <li><span class="option-label">B.</span> Manually update the target Parquet schema definition each time the Avro schema changes</li>
-                <li><span class="option-label">C.</span> Reject files with new fields until the pipeline is updated</li>
+                <li><span class="option-label">C.</span> Reject files with new fields until the pipeline is updated and can merge schemas when writing to Parquet</li>
                 <li><span class="option-label">D.</span> Convert to JSON first as an intermediate format</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Snappy — because it provides faster decompression speed which reduces query latency, despite slightly larger file sizes compared to GZIP</li>
                 <li><span class="option-label">B.</span> GZIP — because it produces smaller files which reduce Athena scan costs</li>
                 <li><span class="option-label">C.</span> No compression — for fastest read performance</li>
-                <li><span class="option-label">D.</span> LZO — because it is splittable unlike Snappy</li>
+                <li><span class="option-label">D.</span> LZO — because it is splittable unlike Snappy configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -133,7 +133,7 @@
                 <li><span class="option-label">A.</span> Use the Relationalize transform in Glue DynamicFrames to flatten nested structures into separate flat tables with foreign key relationships</li>
                 <li><span class="option-label">B.</span> Use standard Spark explode() and select() functions manually for each nested level</li>
                 <li><span class="option-label">C.</span> Glue automatically flattens nested JSON when writing to Parquet</li>
-                <li><span class="option-label">D.</span> Use AWS Glue DataBrew to flatten before the ETL job</li>
+                <li><span class="option-label">D.</span> Use AWS Glue DataBrew to flatten before the ETL job with foreign key relationships</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -149,7 +149,7 @@
                 <li><span class="option-label">A.</span> Use the UNLOAD command with FORMAT PARQUET option to export query results directly to S3 in Parquet format</li>
                 <li><span class="option-label">B.</span> Use UNLOAD to export as CSV, then run a Glue job to convert to Parquet</li>
                 <li><span class="option-label">C.</span> Use a Python script with psycopg2 to fetch results and write Parquet using PyArrow</li>
-                <li><span class="option-label">D.</span> Create an external table in Redshift Spectrum and write to it</li>
+                <li><span class="option-label">D.</span> Create an external table in Redshift Spectrum and write to it with FORMAT PARQUET option</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Both Athena and Redshift Spectrum support ORC natively, so conversion to Parquet is optional; however, Parquet has broader ecosystem support and is the AWS recommended format for new workloads</li>
                 <li><span class="option-label">B.</span> ORC must be converted to Parquet immediately because Athena cannot read ORC</li>
-                <li><span class="option-label">C.</span> Parquet and ORC are identical formats with different names</li>
+                <li><span class="option-label">C.</span> Parquet and ORC are identical formats with different names for new workloads</li>
                 <li><span class="option-label">D.</span> ORC is always superior to Parquet for analytical queries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -180,7 +180,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue's ResolveChoice transform to handle ambiguous types by casting to a common type (e.g., cast to string) or creating separate columns for each detected type</li>
                 <li><span class="option-label">B.</span> Parquet will automatically handle mixed types using variant type</li>
-                <li><span class="option-label">C.</span> Remove rows with incorrect types before conversion</li>
+                <li><span class="option-label">C.</span> Remove rows with incorrect types before conversion for each detected type</li>
                 <li><span class="option-label">D.</span> Use CSV format permanently since it handles mixed types</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
