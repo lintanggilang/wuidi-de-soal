@@ -35,7 +35,7 @@
             <div class="question-text">A company receives daily data files from 50 different vendors in various formats (CSV, JSON, Parquet, XML). New vendors are onboarded monthly, each with their own schema. The data engineering team needs to automatically discover schemas for new vendor files and register them in the Glue Data Catalog without manual intervention. The files are uploaded to s3://vendor-data/{vendor_name}/{date}/. Which Glue crawler configuration MOST effectively handles this multi-vendor auto-discovery scenario?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure a single Glue crawler with the S3 target path s3://vendor-data/ and set the crawler's grouping behavior to "Create a single schema per S3 prefix at the vendor_name level." The crawler traverses each vendor subdirectory, samples files to infer schemas, creates one table per vendor (using the prefix as table name), discovers partition structure (date), and applies built-in classifiers for CSV/JSON/Parquet/XML format detection. Schedule the crawler daily after vendor uploads complete</li>
-                <li><span class="option-label">B.</span> Create 50 separate crawlers (one per vendor) with individual S3 paths, each running on its own schedule based on vendor upload times</li>
+                <li><span class="option-label">B.</span> Create 50 separate crawlers (one per vendor) with individual S3 paths, each running on its own schedule based on vendor upload times for CSV/JSON/Parquet/XML format detection</li>
                 <li><span class="option-label">C.</span> Write a Lambda function that runs daily, lists new S3 prefixes, and calls CreateTable API for each new vendor with a generic schema that is updated later</li>
                 <li><span class="option-label">D.</span> Configure a single crawler targeting the root path but set the exclusion pattern to exclude all known vendor prefixes, only crawling new vendor directories</li>
             </ul>
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> This behavior is correct and expected. The crawler updated the catalog schema to include the new column (additive schema evolution). When Athena queries older Parquet files that don't contain the loyalty_points column, it returns NULL for that column because Parquet is self-describing — Athena reads whatever columns exist in each file and fills missing columns with NULL. This is the standard behavior for schema evolution in data lakes: the catalog reflects the UNION of all columns, and each file contributes only the columns it contains</li>
                 <li><span class="option-label">B.</span> This behavior indicates a crawler misconfiguration — the crawler should have created a new table version rather than updating the existing table, preserving the old schema for old partitions</li>
-                <li><span class="option-label">C.</span> This is an error — Athena should fail with a schema mismatch error when querying partitions whose files don't match the catalog schema exactly</li>
+                <li><span class="option-label">C.</span> This is an error — Athena should fail with a schema mismatch error when querying partitions whose files don't match the catalog schema exactly and expected</li>
                 <li><span class="option-label">D.</span> The crawler should have backfilled the loyalty_points column with default values in the older Parquet files to maintain consistency</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -67,7 +67,7 @@
             <div class="question-text">A data lake receives IoT sensor data in a custom binary format that Glue crawlers' built-in classifiers cannot parse. The files have extension .sensordata and contain fixed-width records with a proprietary header. The team needs the crawler to correctly identify these files' format and extract column schemas. Which Glue feature enables crawling custom file formats?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a custom Glue classifier that uses a Grok pattern (regex-based pattern matching) to define the record structure of the .sensordata files. The custom classifier specifies how to parse the fixed-width records into named columns with data types. Assign the custom classifier to the crawler — when the crawler encounters .sensordata files, it applies the custom classifier first (before built-in classifiers), extracting the schema according to the defined Grok pattern</li>
-                <li><span class="option-label">B.</span> Convert all .sensordata files to CSV using a pre-processing Lambda before the crawler runs, then crawl the CSV output</li>
+                <li><span class="option-label">B.</span> Convert all .sensordata files to CSV using a pre-processing Lambda before the crawler runs, then crawl the CSV output with data types</li>
                 <li><span class="option-label">C.</span> Add a file extension mapping in the Glue crawler configuration that maps .sensordata to an existing classifier like CSVClassifier</li>
                 <li><span class="option-label">D.</span> Write a custom ETL job that reads the binary files and creates the catalog table definition manually, bypassing the crawler entirely</li>
             </ul>
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> Configure the crawler's recrawl policy to "Crawl new folders only" (incremental crawl). This setting uses S3 event notifications or metadata tracking to identify only newly-created S3 prefixes since the last successful crawl run. The crawler processes only the 500 new partition directories instead of re-listing all 2 million objects, reducing runtime from 4 hours to minutes</li>
                 <li><span class="option-label">B.</span> Add S3 exclusion patterns to the crawler configuration excluding partition paths older than 7 days, limiting the scan scope to recent data only</li>
                 <li><span class="option-label">C.</span> Split the single crawler into 10 separate crawlers, each responsible for different date ranges, and run them in parallel</li>
-                <li><span class="option-label">D.</span> Increase the crawler's DPU allocation from the default to 10 DPUs for faster S3 listing and object sampling</li>
+                <li><span class="option-label">D.</span> Increase the crawler's DPU allocation from the default to 10 DPUs for faster S3 listing and object sampling with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -99,7 +99,7 @@
             <div class="question-text">A Glue crawler discovers data at s3://data-lake/events/ and creates a table. The S3 structure is: s3://data-lake/events/year=2024/month=03/day=15/hour=10/part-00000.parquet. However, the crawler creates multiple tables (events_year_2024, events_year_2024_month_03, etc.) instead of a single partitioned table. What is the MOST likely cause and how should it be fixed?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The crawler's table grouping behavior is set to treat each S3 path as a separate table. Fix by configuring the crawler's "Create a single schema for each S3 path" option with the S3 target set to the root path (s3://data-lake/events/) and setting the "Table level" depth parameter to indicate that tables start at the events/ level. This tells the crawler to recognize year/month/day/hour as partition keys of a single table, not as separate table prefixes</li>
-                <li><span class="option-label">B.</span> The Parquet files in different partitions have incompatible schemas, causing the crawler to create separate tables for each schema variation</li>
+                <li><span class="option-label">B.</span> The Parquet files in different partitions have incompatible schemas, causing the crawler to create separate tables for each schema variation with the S3 target set</li>
                 <li><span class="option-label">C.</span> The S3 paths use Hive-style naming (key=value) which confuses the crawler into treating each key as a table prefix rather than a partition</li>
                 <li><span class="option-label">D.</span> The crawler's IAM role doesn't have permission to list objects below the first partition level, so it creates tables at the highest accessible level</li>
             </ul>
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Configure the JDBC crawler target with Include path set to "database/sales/%" and "database/inventory/%" to crawl only those schemas. Add Exclude patterns "database/sales/tmp_%" and "database/inventory/tmp_%" to skip temporary tables. The Include path uses database/schema/table format where % is a wildcard. The crawler connects via JDBC, queries only the specified schemas' metadata, and creates Glue Catalog tables matching the included pattern minus exclusions</li>
                 <li><span class="option-label">B.</span> Create a database user in PostgreSQL with SELECT grants only on sales and inventory schemas, and configure the crawler with that user's credentials</li>
                 <li><span class="option-label">C.</span> Set the crawler to crawl all tables, then delete unwanted tables from the Glue Catalog after the crawler completes using a post-crawl Lambda function</li>
-                <li><span class="option-label">D.</span> Configure the PostgreSQL instance to only expose sales and inventory schemas via the JDBC connection by modifying pg_hba.conf</li>
+                <li><span class="option-label">D.</span> Configure the PostgreSQL instance to only expose sales and inventory schemas via the JDBC connection by modifying pg_hba.conf with Include path set and "database/inventory/%" to crawl only those schemas</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -131,7 +131,7 @@
             <div class="question-text">A data lake receives JSON event files where the schema evolves frequently — new fields appear weekly, field types occasionally change (e.g., a field changes from string to integer), and some fields are deprecated (no longer present in new files). The Glue crawler is configured to run daily. The team needs a schema change policy that prevents breaking existing Athena queries while still incorporating new fields. Which schema update policy BEST balances stability and evolution?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Set the crawler's schema change policy to "Add new columns only" — the crawler adds newly-discovered columns to the existing table schema but does NOT remove columns that are no longer present in the data and does NOT change existing column data types. This ensures: (1) existing queries referencing known columns continue to work; (2) new fields are automatically available; (3) type changes don't break queries relying on the original type. Manually review and update type changes through a separate governed process</li>
-                <li><span class="option-label">B.</span> Set the policy to "Update all table properties in the catalog" to always reflect the latest schema from the most recent files</li>
+                <li><span class="option-label">B.</span> Set the policy to "Update all table properties in the catalog" to always reflect the latest schema from the most recent files and does NOT change existing column data types</li>
                 <li><span class="option-label">C.</span> Set the policy to "Do not update table definition" and manually add new columns when data consumers request them</li>
                 <li><span class="option-label">D.</span> Set the policy to "Log schema changes to CloudWatch" and let an automated Lambda function decide whether to apply each change based on backward compatibility rules</li>
             </ul>
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Set the crawler's S3 target to s3://bucket/data/ (limiting scope to business data only) and add exclusion patterns: "_metadata", "_SUCCESS", "_committed*", "_started*", ".*" (hidden files). These patterns use glob syntax and are applied to file/folder names within the target path. The crawler skips any path segment matching these patterns, avoiding Spark metadata directories and output marker files while processing only actual data files</li>
                 <li><span class="option-label">B.</span> Set the crawler target to s3://bucket/ and use include patterns "data/**" with exclusions for "logs/**" and "tmp/**"</li>
-                <li><span class="option-label">C.</span> Configure S3 lifecycle policies to delete _metadata and _SUCCESS files before the crawler runs</li>
+                <li><span class="option-label">C.</span> Configure S3 lifecycle policies to delete _metadata and _SUCCESS files before the crawler runs with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Create an S3 bucket policy that denies the crawler's IAM role access to paths containing _metadata and _SUCCESS</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The crawler role needs Glue Data Catalog permissions: glue:CreateTable, glue:UpdateTable, glue:GetTable, glue:GetDatabase, glue:CreatePartition, glue:BatchCreatePartition, glue:UpdatePartition, and glue:GetPartition. The crawler reads from S3 (s3:GetObject, s3:ListBucket) and WRITES to the Glue Data Catalog (creating/updating databases, tables, and partitions). Additionally, it needs logs:CreateLogGroup and logs:PutLogEvents for CloudWatch logging</li>
                 <li><span class="option-label">B.</span> The crawler role only needs the AWSGlueServiceRole managed policy which provides all necessary permissions automatically</li>
-                <li><span class="option-label">C.</span> The crawler needs iam:PassRole permission to pass itself to the Glue service during execution</li>
+                <li><span class="option-label">C.</span> The crawler needs iam:PassRole permission to pass itself to the Glue service during execution and glue:GetPartition for CloudWatch logging</li>
                 <li><span class="option-label">D.</span> The crawler needs glue:StartCrawler and glue:StopCrawler permissions to manage its own execution lifecycle</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -181,7 +181,7 @@
                 <li><span class="option-label">A.</span> Configure the crawler with "Crawl new folders only" recrawl policy AND set the schema change policy to "Do not update table definition." The recrawl policy skips already-processed S3 prefixes (only discovering new partition directories), and the schema policy skips file sampling for schema comparison since the table definition is never updated. Together, these eliminate both full S3 listing and data file sampling — the crawler only identifies new partition-style directories and registers them as partitions, completing in minutes</li>
                 <li><span class="option-label">B.</span> Replace the crawler entirely with a Lambda function triggered by S3 event notifications that calls BatchCreatePartition when new partition directories are created</li>
                 <li><span class="option-label">C.</span> Schedule the crawler monthly instead of weekly since the schema is stable</li>
-                <li><span class="option-label">D.</span> Reduce the crawler's sample size (CrawlerLineageSettings) to inspect fewer files per partition for schema inference</li>
+                <li><span class="option-label">D.</span> Reduce the crawler's sample size (CrawlerLineageSettings) to inspect fewer files per partition for schema inference with "Crawl new folders only" recrawl policy</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
