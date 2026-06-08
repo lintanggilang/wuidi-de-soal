@@ -37,7 +37,7 @@
                 <li><span class="option-label">A.</span> Transition to S3 Standard-IA after 30 days (covering the 7-day heavy access + buffer), transition to S3 Glacier Instant Retrieval after 90 days (rarely accessed but instant retrieval for compliance), transition to S3 Glacier Flexible Retrieval after 365 days (hours retrieval acceptable). This policy respects the 30-day minimum for Standard-IA transition and matches each tier to the access pattern</li>
                 <li><span class="option-label">B.</span> Transition to S3 One Zone-IA after 7 days, transition to S3 Glacier Deep Archive after 90 days</li>
                 <li><span class="option-label">C.</span> Enable S3 Intelligent-Tiering immediately upon upload and let AWS automatically move objects between tiers based on access patterns</li>
-                <li><span class="option-label">D.</span> Transition to S3 Standard-IA after 7 days, transition to S3 Glacier Flexible Retrieval after 60 days</li>
+                <li><span class="option-label">D.</span> Transition to S3 Standard-IA after 7 days, transition to S3 Glacier Flexible Retrieval after 60 days and matches each tier to the access pattern for compliance)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -53,7 +53,7 @@
                 <li><span class="option-label">A.</span> S3 Standard-IA has a minimum object size charge of 128 KB. Objects smaller than 128 KB are billed AS IF they were 128 KB. The 50 KB IoT files, when transitioned to Standard-IA, are charged for 128 KB each — a 2.5x increase in billed storage per object. Combined with Standard-IA's per-GB rate being lower than Standard, the effective cost per actual byte is HIGHER for small files. Additionally, Standard-IA has a minimum storage duration charge of 30 days — objects deleted/overwritten before 30 days are charged for the full 30 days</li>
                 <li><span class="option-label">B.</span> The lifecycle transition itself incurs a PUT request charge for each object moved, and with millions of files, the transition request costs exceed the storage savings</li>
                 <li><span class="option-label">C.</span> S3 Standard-IA charges for retrieval (per GB retrieved), and the IoT files are still being accessed frequently within the first 30 days after transition</li>
-                <li><span class="option-label">D.</span> The 15-day transition violates the 30-day minimum duration requirement for Standard-IA, causing penalty charges for early transition</li>
+                <li><span class="option-label">D.</span> The 15-day transition violates the 30-day minimum duration requirement for Standard-IA, causing penalty charges for early transition with Standard-IA's per-GB rate being lower than Standard</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> S3 Lifecycle has a "waterfall" constraint — transitions must follow the defined storage class ordering. The allowed transition path from Glacier Instant Retrieval is to Glacier Deep Archive (not Glacier Flexible Retrieval). Restructure as: Standard → Standard-IA (30 days) → Glacier Instant Retrieval (90 days) → Glacier Deep Archive (365 days). Alternatively, skip Glacier Instant Retrieval entirely: Standard → Standard-IA (45 days) → Glacier Flexible Retrieval (180 days)</li>
                 <li><span class="option-label">B.</span> Glacier Instant Retrieval and Glacier Flexible Retrieval are in the same storage class family — transitions within the same family aren't allowed. Use Glacier Deep Archive instead of Glacier Flexible Retrieval as the next tier</li>
-                <li><span class="option-label">C.</span> The 180-day transition must account for the 90-day minimum storage duration of Glacier Instant Retrieval. Set the second transition to at least 135 days (45 + 90) to avoid the error</li>
+                <li><span class="option-label">C.</span> The 180-day transition must account for the 90-day minimum storage duration of Glacier Instant Retrieval. Set the second transition to at least 135 days (45 + 90) to avoid the error with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Create two separate lifecycle rules instead of one rule with multiple transitions. One rule transitions to Glacier Instant Retrieval at 45 days, and a second rule transitions to Glacier Flexible Retrieval at 180 days. S3 evaluates rules independently</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> Create three separate lifecycle rules with different filters: Rule 1: Filter by prefix "logs/" → transition to Glacier Flexible Retrieval after 30 days. Rule 2: Filter by prefix "analytics/" → transition to Standard-IA after 1 day (or manage via PUT storage class). Rule 3: Filter by prefix "raw/" AND tag "archive=true" → transition to Glacier Deep Archive after 90 days. Each rule operates independently on objects matching its filter. Objects matching no rule (raw/ with archive=false) remain in their current class unchanged</li>
                 <li><span class="option-label">B.</span> Create one lifecycle rule with multiple actions and use conditional logic (if prefix=logs then Glacier, elif prefix=analytics then IA) in a single filter expression</li>
                 <li><span class="option-label">C.</span> Create one lifecycle rule per bucket — since rules can only have one filter, separate the data into three buckets with one rule each</li>
-                <li><span class="option-label">D.</span> Use S3 Intelligent-Tiering with archive access tiers enabled for the entire bucket, relying on access patterns to automatically move objects to appropriate tiers</li>
+                <li><span class="option-label">D.</span> Use S3 Intelligent-Tiering with archive access tiers enabled for the entire bucket, relying on access patterns to automatically move objects to appropriate tiers configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -115,7 +115,7 @@
             <div class="question-text">A lifecycle rule transitions objects from S3 Standard to S3 One Zone-IA after 30 days for cost savings. During a data center disruption, several objects stored in One Zone-IA become unavailable (the AZ is experiencing an outage). Critical reports fail because they require access to this data. Which storage class provides similar cost savings to One Zone-IA but with cross-AZ resilience?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> S3 Standard-Infrequent Access (Standard-IA). It provides the same infrequent access pricing model as One Zone-IA but stores data redundantly across multiple Availability Zones (minimum 3 AZs). The per-GB storage cost is slightly higher than One Zone-IA ($0.0125 vs $0.01 per GB), but it provides 99.9% availability (vs 99.5% for One Zone-IA) and 99.999999999% durability (vs 99.999999999% but only within one AZ). For data that cannot tolerate AZ-level outages, Standard-IA is the appropriate tier</li>
-                <li><span class="option-label">B.</span> S3 Glacier Instant Retrieval provides cross-AZ redundancy with lower cost than Standard-IA and millisecond retrieval</li>
+                <li><span class="option-label">B.</span> S3 Glacier Instant Retrieval provides cross-AZ redundancy with lower cost than Standard-IA and millisecond retrieval and 99 for One Zone-IA) and 99</li>
                 <li><span class="option-label">C.</span> S3 Intelligent-Tiering's Infrequent Access tier provides cross-AZ redundancy and automatically handles tier placement</li>
                 <li><span class="option-label">D.</span> Enable Cross-Region Replication (CRR) for the One Zone-IA objects to maintain a copy in a different AZ in another region</li>
             </ul>
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Standard-IA charges per-GB retrieval fee ($0.01/GB) in addition to the standard S3 GET request charges. When Athena scans 45-day-old data in Standard-IA, it incurs: (1) standard Athena per-TB scanned charge; (2) S3 GET request charges; AND (3) Standard-IA retrieval fee proportional to data scanned. Minimize costs by: using columnar formats (Parquet) so Athena reads only needed columns, partitioning data so queries scan fewer objects, and considering whether frequently-queried historical data should remain in Standard</li>
                 <li><span class="option-label">B.</span> Standard-IA requires an explicit restore operation before data can be read — the unexpected cost is from the restore API calls</li>
-                <li><span class="option-label">C.</span> Athena cannot directly query Standard-IA objects — it triggers an automatic transition back to Standard, incurring transition costs</li>
+                <li><span class="option-label">C.</span> Athena cannot directly query Standard-IA objects — it triggers an automatic transition back to Standard, incurring transition costs and (3) Standard-IA retrieval fee proportional to data scanned</li>
                 <li><span class="option-label">D.</span> The unexpected cost is from the 30-day minimum storage duration — querying objects triggers a "reset" of the minimum duration timer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a lifecycle rule with the action "Transition noncurrent versions" to S3 Glacier Deep Archive after 7 days, AND "Expire noncurrent versions" after 90 days keeping the latest 3 noncurrent versions (NewerNoncurrentVersions = 3). This transitions old versions to cheap storage quickly and permanently deletes all but the 3 most recent noncurrent versions after 90 days. Current versions are unaffected — lifecycle rules for noncurrent versions only target noncurrent objects</li>
                 <li><span class="option-label">B.</span> Disable versioning on the bucket — this automatically deletes all noncurrent versions and prevents future version accumulation</li>
-                <li><span class="option-label">C.</span> Create a lifecycle rule that expires ALL objects older than 90 days — this removes old versions while keeping recently updated files</li>
+                <li><span class="option-label">C.</span> Create a lifecycle rule that expires ALL objects older than 90 days — this removes old versions while keeping recently updated files with the action "Transition noncurrent versions"</li>
                 <li><span class="option-label">D.</span> Use S3 Batch Operations to delete all noncurrent versions in a one-time cleanup, then set versioning to suspended to prevent future growth</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -165,7 +165,7 @@
                 <li><span class="option-label">A.</span> Initiate a restore request for the archived objects using S3 console, CLI (aws s3api restore-object), or S3 Batch Operations. Specify the retrieval tier (Expedited: 1-5 minutes, Standard: 3-5 hours, Bulk: 5-12 hours) and the number of days to keep the restored copy. After restore completes, a temporary copy is placed in S3 Standard (while the archive copy remains). Athena can query the restored copy for the duration specified. After the temporary copy expires, the object reverts to Glacier-only access</li>
                 <li><span class="option-label">B.</span> Change the lifecycle rule to keep data in Standard-IA instead of Glacier, wait for the rule to transition objects back to Standard-IA, then query</li>
                 <li><span class="option-label">C.</span> Use Athena's GLACIER_RETRIEVAL query hint to automatically restore objects during query execution</li>
-                <li><span class="option-label">D.</span> Create a new Glue table pointing to the same S3 location — the new table metadata will bypass the Glacier access restriction</li>
+                <li><span class="option-label">D.</span> Create a new Glue table pointing to the same S3 location — the new table metadata will bypass the Glacier access restriction and the number of days to keep the restored copy for the archived objects using S3 console</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -180,7 +180,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Replace the blanket 180-day Deep Archive rule with a combination approach: (1) Tag quarterly-accessed datasets with "access-pattern=quarterly"; (2) Create lifecycle rule filtered by tag "access-pattern=quarterly" that transitions to Glacier Instant Retrieval after 30 days (instant access, low storage cost for infrequent access); (3) Keep the 180-day Deep Archive rule but add a tag filter excluding "access-pattern=quarterly" objects. This uses tag-based lifecycle filtering to apply different retention strategies to different access patterns within the same bucket</li>
                 <li><span class="option-label">B.</span> Enable S3 Intelligent-Tiering with Deep Archive Access tier for the entire bucket — it will automatically keep quarterly-accessed objects in higher tiers and only archive truly unused data</li>
-                <li><span class="option-label">C.</span> Move quarterly-accessed objects to a separate bucket with no lifecycle rules, keeping the Deep Archive rule only on the original bucket</li>
+                <li><span class="option-label">C.</span> Move quarterly-accessed objects to a separate bucket with no lifecycle rules, keeping the Deep Archive rule only on the original bucket configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Increase the lifecycle rule from 180 days to 365 days so quarterly-accessed objects (accessed every 90 days) never reach the transition age</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
