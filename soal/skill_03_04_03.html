@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> Run a reconciliation query that performs a MINUS/EXCEPT operation: query the source primary keys and compare against target primary keys using Redshift federated query to the RDS source. The resulting set identifies the specific missing records for root cause analysis.</li>
                 <li><span class="option-label">B.</span> Check the DMS task's table statistics to compare the full load and CDC row counts, then review the DMS task logs for any rows that were rejected due to data type conversion errors or constraint violations.</li>
                 <li><span class="option-label">C.</span> Rerun the entire ETL pipeline from scratch to resolve the inconsistency, then implement a row count check to prevent future issues.</li>
-                <li><span class="option-label">D.</span> Compare the MD5 hash of all columns concatenated at the source and target to identify modified records.</li>
+                <li><span class="option-label">D.</span> Compare the MD5 hash of all columns concatenated at the source and target to identify modified records. configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -54,7 +54,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue DataBrew to profile both datasets independently, comparing statistical distributions (mean, median, percentiles) of CLV values, null percentages, and record counts per customer segment between the two targets.</li>
                 <li><span class="option-label">B.</span> Sample 100 specific customers and manually trace their events through both pipelines end-to-end, comparing the raw events received, transformations applied, and final values computed.</li>
-                <li><span class="option-label">C.</span> Compare aggregate totals (SUM of CLV) between both systems; if they match, the issue is resolved.</li>
+                <li><span class="option-label">C.</span> Compare aggregate totals (SUM of CLV) between both systems; if they match, the issue is resolved. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Add logging to both pipelines and wait for the next data load to identify where values diverge.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -72,7 +72,7 @@
                 <li><span class="option-label">A.</span> Implement a multi-level validation: Level 1 (fast) — compare file counts and total bytes per table; Level 2 (medium) — compare row counts per partition using Athena; Level 3 (thorough) — compute column-level checksums on a sample of critical tables using Spark on EMR.</li>
                 <li><span class="option-label">B.</span> Compute MD5 checksums for every file on both HDFS and S3 and compare them byte-for-byte.</li>
                 <li><span class="option-label">C.</span> Run SELECT COUNT(*) on every table in both locations and consider the migration successful if counts match.</li>
-                <li><span class="option-label">D.</span> Use AWS DataSync's built-in verification which compares source and destination after transfer.</li>
+                <li><span class="option-label">D.</span> Use AWS DataSync's built-in verification which compares source and destination after transfer. with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -87,7 +87,7 @@
             <div class="question-text">A data warehouse team notices that aggregated revenue figures in their Redshift summary tables don't match the sum of detailed transaction records. The summary table is rebuilt nightly by a Glue ETL job that reads from the transaction detail table. Both tables exist in Redshift. What is the MOST likely cause of this inconsistency?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The Glue ETL job that rebuilds the summary table runs at 2 AM, but late-arriving transactions are inserted into the detail table by a separate real-time pipeline after the summary rebuild completes. The summary misses records that arrive between 2 AM and midnight.</li>
-                <li><span class="option-label">B.</span> Redshift's columnar compression is causing rounding errors in the revenue SUM calculation.</li>
+                <li><span class="option-label">B.</span> Redshift's columnar compression is causing rounding errors in the revenue SUM calculation. and midnight</li>
                 <li><span class="option-label">C.</span> The VACUUM operation hasn't run on the transaction table, causing deleted rows to be included in the aggregation.</li>
                 <li><span class="option-label">D.</span> Redshift's eventual consistency model means the transaction table reads may not reflect recent commits.</li>
             </ul>
@@ -104,7 +104,7 @@
             <div class="question-text">A data engineer uses AWS Glue DataBrew to profile a customer dataset and discovers consistency issues: the "country" field contains variations like "US", "USA", "United States", "us", and "U.S." all representing the same country. There are similar variations across 50+ countries. What is the MOST efficient approach to investigate the full scope of this consistency issue and standardize the data?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use DataBrew's profiling results to identify all distinct values in the country column, then create a DataBrew recipe with a mapping transformation that uses a lookup table to standardize all variations to ISO 3166-1 alpha-2 country codes.</li>
-                <li><span class="option-label">B.</span> Write a custom Glue ETL job with complex regex patterns to normalize each country variation individually.</li>
+                <li><span class="option-label">B.</span> Write a custom Glue ETL job with complex regex patterns to normalize each country variation individually. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Use DataBrew's built-in "Nest column by similarity" feature to automatically group similar values and replace them with a canonical form.</li>
                 <li><span class="option-label">D.</span> Ignore the variations since they all represent valid country names and downstream systems should handle normalization.</li>
             </ul>
@@ -122,7 +122,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> DynamoDB Export to S3 uses point-in-time recovery (PITR) to create a consistent snapshot at the requested timestamp. Verify by comparing the export's item count with the ItemCount metric from CloudWatch at that timestamp, and spot-check specific items using GetItem with ConsistentRead against the current table.</li>
                 <li><span class="option-label">B.</span> Use DynamoDB Export to S3's built-in manifest file that contains the item count and checksum of the export. Compare the manifest's item count with a Scan operation's count on the live table.</li>
-                <li><span class="option-label">C.</span> Run a full table Scan immediately after the export completes and compare every item between the scan results and the exported S3 data.</li>
+                <li><span class="option-label">C.</span> Run a full table Scan immediately after the export completes and compare every item between the scan results and the exported S3 data. with the ItemCount metric from CloudWatch at that timestamp</li>
                 <li><span class="option-label">D.</span> Compare the S3 export file sizes with the DynamoDB table's storage size metric to verify all data was exported.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -138,7 +138,7 @@
             <div class="question-text">A multi-region data platform replicates datasets across us-east-1 and eu-west-1 using S3 Cross-Region Replication (CRR). A data engineer needs to verify that the replicated data in eu-west-1 is consistent with the source in us-east-1. Some analysts report seeing stale data in eu-west-1. Which validation approach is MOST appropriate?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use S3 Replication Metrics and S3 Replication Time Control (RTC) to monitor replication latency. Check the ReplicationLatency metric and PendingReplication byte count. For data-level validation, compare S3 Inventory reports from both regions to identify objects present in source but missing in destination.</li>
-                <li><span class="option-label">B.</span> Run an S3 ListObjects operation on both buckets and compare the object keys and sizes.</li>
+                <li><span class="option-label">B.</span> Run an S3 ListObjects operation on both buckets and compare the object keys and sizes. for data-level validation</li>
                 <li><span class="option-label">C.</span> Enable S3 event notifications on both buckets and compare the events to identify replication gaps.</li>
                 <li><span class="option-label">D.</span> Use Athena to query the same table in both regions and compare row counts to verify consistency.</li>
             </ul>
@@ -155,7 +155,7 @@
             <div class="question-text">A data engineer identifies duplicate customer records across three source systems being merged into a unified data lake. Each system has its own customer ID format. Some customers exist in all three systems with different IDs but the same name and email. The team needs to identify and resolve these cross-system duplicates. Which approach is MOST scalable?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue's FindMatches ML transform which uses machine learning to identify duplicate records across datasets based on fuzzy matching of multiple fields (name, email, address) without requiring exact key matches.</li>
-                <li><span class="option-label">B.</span> Perform exact joins on email address across all three sources to identify customers present in multiple systems.</li>
+                <li><span class="option-label">B.</span> Perform exact joins on email address across all three sources to identify customers present in multiple systems. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Use DataBrew profiling to identify records with similar names across datasets, then manually review and merge them.</li>
                 <li><span class="option-label">D.</span> Create a deterministic hash of (lowercase_name + email_domain) and join on the hash across all three sources.</li>
             </ul>
@@ -174,7 +174,7 @@
                 <li><span class="option-label">A.</span> Implement schema evolution controls in the Iceberg table configuration with strict schema enforcement, and manage schema changes through a version-controlled schema registry that promotes changes from dev → staging → production with automated consistency checks.</li>
                 <li><span class="option-label">B.</span> Use the same Glue Data Catalog database for all environments so schema changes are applied everywhere simultaneously.</li>
                 <li><span class="option-label">C.</span> Run Glue crawlers on all environments with the same schedule to ensure schemas are detected consistently.</li>
-                <li><span class="option-label">D.</span> Manually compare table definitions monthly and align them when differences are found.</li>
+                <li><span class="option-label">D.</span> Manually compare table definitions monthly and align them when differences are found. with strict schema enforcement</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -189,7 +189,7 @@
             <div class="question-text">A data engineer needs to implement a daily reconciliation process for a pipeline that loads data from S3 to Redshift. The reconciliation must verify: (1) row counts match between S3 source and Redshift target, (2) aggregate sums for numeric columns match, and (3) no orphaned records exist in related tables. The reconciliation should run automatically and alert on failures. Which architecture is MOST operationally efficient?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a Step Functions workflow that: (1) runs an Athena query on S3 to get source row counts and sums, (2) runs a Redshift Data API query for target counts and sums, (3) compares results in a Lambda function, (4) runs a Redshift referential integrity query for orphans, (5) publishes results to CloudWatch and triggers SNS on mismatch.</li>
-                <li><span class="option-label">B.</span> Write a Glue ETL job that reads both source and target, joins them, and fails if discrepancies are found.</li>
+                <li><span class="option-label">B.</span> Write a Glue ETL job that reads both source and target, joins them, and fails if discrepancies are found. for target counts and sums</li>
                 <li><span class="option-label">C.</span> Create Glue Data Quality rules on the Redshift table that check RowCount and ColumnSum, scheduled to run daily.</li>
                 <li><span class="option-label">D.</span> Build a QuickSight dashboard that displays source and target metrics side-by-side for manual comparison by analysts.</li>
             </ul>
