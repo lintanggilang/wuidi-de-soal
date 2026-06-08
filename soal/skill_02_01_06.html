@@ -35,7 +35,7 @@
             <div class="question-text">A data engineering team runs a nightly ETL pipeline that performs a COPY command to load 500 million rows into a large fact table in Amazon Redshift. During the COPY operation, analysts report that their SELECT queries on the same table hang for 30+ minutes. The team needs to allow concurrent reads during bulk data loads. Which approach BEST resolves the lock contention while maintaining data consistency?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Load data into a staging table first, then use ALTER TABLE APPEND to move rows from the staging table to the target fact table — this operation acquires only a brief exclusive lock at the metadata level rather than holding a write lock throughout the entire load duration</li>
-                <li><span class="option-label">B.</span> Increase the WLM concurrency level for the queue handling analyst queries to allow more parallel query slots</li>
+                <li><span class="option-label">B.</span> Increase the WLM concurrency level for the queue handling analyst queries to allow more parallel query slots configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Use LOCK TABLE with ACCESS SHARE mode before running the COPY command to allow concurrent reads</li>
                 <li><span class="option-label">D.</span> Split the 500 million rows into 10 smaller COPY commands of 50 million each to reduce lock duration per operation</li>
             </ul>
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a read replica for reporting workloads and set hot_standby_feedback = on to prevent query cancellations on the replica, allowing long-running read queries to execute against a consistent snapshot without interference from primary write locks</li>
                 <li><span class="option-label">B.</span> Change the transaction isolation level to READ UNCOMMITTED for reporting queries to bypass write locks</li>
-                <li><span class="option-label">C.</span> Set lock_timeout to 0 for reporting queries so they wait indefinitely for locks to release</li>
+                <li><span class="option-label">C.</span> Set lock_timeout to 0 for reporting queries so they wait indefinitely for locks to release configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Increase shared_buffers on the primary instance to allow more concurrent transactions to hold locks simultaneously</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Replace VACUUM FULL with VACUUM DELETE ONLY followed by VACUUM SORT ONLY during a maintenance window. VACUUM DELETE ONLY reclaims space with minimal blocking and can run concurrently with read queries. Schedule VACUUM SORT ONLY (which requires an exclusive lock) during the lowest-traffic maintenance window</li>
                 <li><span class="option-label">B.</span> Disable automatic VACUUM entirely and rely on Redshift's automatic table optimization to manage sort order and disk reclamation</li>
-                <li><span class="option-label">C.</span> Increase the WLM query timeout threshold to allow dashboard queries to wait until VACUUM completes</li>
+                <li><span class="option-label">C.</span> Increase the WLM query timeout threshold to allow dashboard queries to wait until VACUUM completes with VACUUM DELETE ONLY followed by VACUUM SORT ONLY during a maintenance window and can run concurrently with read queries</li>
                 <li><span class="option-label">D.</span> Use VACUUM REINDEX instead of VACUUM FULL to avoid table-level locks during the sort operation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -83,7 +83,7 @@
             <div class="question-text">A financial services company uses Amazon RDS MySQL with multiple microservices writing to a shared accounts table. During peak trading hours, they experience frequent deadlocks: Service A updates account balances in order (account 101, then 102) while Service B updates in reverse order (account 102, then 101). Both services use explicit BEGIN/COMMIT transactions. Which approach MOST effectively prevents these deadlocks?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enforce a canonical lock ordering across all services — mandate that all transactions acquire row locks in ascending account ID order regardless of which service initiates the transaction, preventing circular wait conditions that cause deadlocks</li>
-                <li><span class="option-label">B.</span> Set innodb_lock_wait_timeout to 1 second so deadlocked transactions fail quickly and can be retried</li>
+                <li><span class="option-label">B.</span> Set innodb_lock_wait_timeout to 1 second so deadlocked transactions fail quickly and can be retried configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Change all transactions to use READ COMMITTED isolation level instead of REPEATABLE READ to reduce lock duration</li>
                 <li><span class="option-label">D.</span> Enable MySQL's innodb_deadlock_detect and increase innodb_lock_wait_timeout to allow the system to resolve deadlocks automatically</li>
             </ul>
@@ -100,7 +100,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create separate WLM queues for each ETL stream with concurrency level 1 per queue, and assign each ETL stream to its own queue using query groups. This isolates each stream's resources but does NOT resolve the table-level write lock contention since all streams target the same table</li>
                 <li><span class="option-label">B.</span> Redesign the ETL to load each source system into separate staging tables, then merge into the final denormalized table sequentially — eliminating concurrent write contention on the same table entirely</li>
-                <li><span class="option-label">C.</span> Set the WLM queue concurrency to 15 and enable short query acceleration (SQA) for all ETL streams</li>
+                <li><span class="option-label">C.</span> Set the WLM queue concurrency to 15 and enable short query acceleration (SQA) for all ETL streams configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Enable Auto WLM and let Redshift dynamically allocate memory and concurrency based on workload requirements</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -115,7 +115,7 @@
             <div class="question-text">A data engineering team uses Amazon Redshift with serializable isolation level for a financial reconciliation process. The process reads account balances, performs calculations, and writes adjusted balances — all within a single transaction. During month-end close, multiple reconciliation jobs run concurrently on different account groups but occasionally fail with "ERROR: 1023 — Serializable isolation violation on table." What causes this error and how should the team address it?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The serializable violation occurs because Redshift detects that concurrent transactions accessed overlapping data ranges that could produce different results if executed in a different serial order. Implement application-level retry logic with exponential backoff — when a serialization failure occurs, the transaction is rolled back and can be safely retried since no partial changes persist</li>
-                <li><span class="option-label">B.</span> Change the isolation level to READ COMMITTED for all reconciliation jobs to eliminate serializable violations entirely</li>
+                <li><span class="option-label">B.</span> Change the isolation level to READ COMMITTED for all reconciliation jobs to eliminate serializable violations entirely with exponential backoff — when a serialization failure occurs and can be safely retried since no partial changes persist</li>
                 <li><span class="option-label">C.</span> Add LOCK TABLE statements at the beginning of each reconciliation job to pre-acquire exclusive access to the accounts table</li>
                 <li><span class="option-label">D.</span> Increase the Redshift cluster size to provide more memory for tracking serialization dependencies across concurrent transactions</li>
             </ul>
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Replace pg_advisory_lock (session-level) with pg_advisory_xact_lock (transaction-level advisory locks). Transaction-level advisory locks are automatically released when the transaction ends — whether by COMMIT, ROLLBACK, or unexpected session termination — eliminating the possibility of orphaned locks from crashed workers</li>
                 <li><span class="option-label">B.</span> Use pg_try_advisory_lock with a timeout and implement a separate cleanup process that detects and releases abandoned locks hourly</li>
-                <li><span class="option-label">C.</span> Increase max_locks_per_transaction to accommodate 20 concurrent workers acquiring advisory locks</li>
+                <li><span class="option-label">C.</span> Increase max_locks_per_transaction to accommodate 20 concurrent workers acquiring advisory locks with pg_advisory_xact_lock (transaction-level advisory locks)</li>
                 <li><span class="option-label">D.</span> Implement a heartbeat mechanism where each worker periodically confirms its advisory lock is still needed and releases it if processing is complete</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Redshift's snapshot isolation behavior: in Redshift, SELECT queries read from a snapshot of committed data and are NOT blocked by concurrent write locks. If dashboards are experiencing delays, the actual issue is likely WLM queue configuration or resource contention, not write locks blocking reads</li>
                 <li><span class="option-label">B.</span> Create a secondary Redshift cluster using data sharing specifically for dashboard queries, completely isolating read workloads from ETL write contention</li>
-                <li><span class="option-label">C.</span> Configure WLM with a high-priority queue for dashboard queries with queue-hopping rules that preempt ETL queries when dashboards are waiting</li>
+                <li><span class="option-label">C.</span> Configure WLM with a high-priority queue for dashboard queries with queue-hopping rules that preempt ETL queries when dashboards are waiting and are NOT blocked by concurrent write locks</li>
                 <li><span class="option-label">D.</span> Implement table-level read locks using LOCK TABLE IN SHARE MODE before dashboard queries execute to prevent concurrent writes</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -163,7 +163,7 @@
             <div class="question-text">A multi-tenant SaaS platform uses Amazon RDS MySQL with tenant data in a shared table (tenant_id column). During a bulk data migration for Tenant A (updating 2 million rows), other tenants experience query timeouts because the migration's long-running transaction holds gap locks in the InnoDB index that span across tenant boundaries when using REPEATABLE READ isolation. Which approach BEST prevents cross-tenant lock interference during bulk operations?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Execute the bulk migration in smaller batches (e.g., 1,000 rows per transaction with LIMIT) using READ COMMITTED isolation level. READ COMMITTED eliminates gap locks entirely in InnoDB — only the specific rows being updated are locked, preventing lock ranges from spanning into other tenants' data ranges</li>
-                <li><span class="option-label">B.</span> Add a unique index on (tenant_id, primary_key) to prevent gap locks from crossing tenant boundaries</li>
+                <li><span class="option-label">B.</span> Add a unique index on (tenant_id, primary_key) to prevent gap locks from crossing tenant boundaries with LIMIT) using READ COMMITTED isolation level</li>
                 <li><span class="option-label">C.</span> Use SELECT ... FOR UPDATE SKIP LOCKED to allow other tenants' queries to skip rows locked by the migration</li>
                 <li><span class="option-label">D.</span> Increase innodb_buffer_pool_size to allow MySQL to maintain more concurrent lock structures in memory</li>
             </ul>
@@ -180,7 +180,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a CREATE TABLE AS SELECT to build the new data in a differently-named staging table, then execute ALTER TABLE target RENAME TO target_old followed by ALTER TABLE staging RENAME TO target in immediate succession within the same transaction — the rename operations are metadata-only (near-instantaneous) and queries see either the old or new version, never a missing table</li>
                 <li><span class="option-label">B.</span> Use CREATE OR REPLACE VIEW to point a view at the new table without dropping the underlying table</li>
-                <li><span class="option-label">C.</span> Implement a blue-green table strategy using Redshift data sharing between two schemas</li>
+                <li><span class="option-label">C.</span> Implement a blue-green table strategy using Redshift data sharing between two schemas configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Add error handling in dashboard queries to retry with exponential backoff when the table is temporarily unavailable</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
