@@ -35,7 +35,7 @@
             <div class="question-number">1</div>
             <div class="question-text">A data lake team is migrating from S3 bucket policies to AWS Lake Formation for permission management. Currently, 30 different IAM policies grant access to various S3 paths for different teams. After enabling Lake Formation, some Athena queries that previously worked now return "Access Denied". What is the MOST likely cause?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Athena is not compatible with Lake Formation</li>
+                <li><span class="option-label">A.</span> Athena is not compatible with Lake Formation for a database/table</li>
                 <li><span class="option-label">B.</span> When Lake Formation is enabled for a database/table, it becomes the authoritative permission layer — the IAMAllowedPrincipals group (which previously gave broad S3/Glue access) must be removed, and explicit Lake Formation GRANT permissions must be given to each principal that needs access. Existing IAM policies alone are no longer sufficient</li>
                 <li><span class="option-label">C.</span> The S3 bucket was encrypted and Lake Formation cannot read encrypted data</li>
                 <li><span class="option-label">D.</span> Lake Formation requires all tables to be re-crawled before access is granted</li>
@@ -52,7 +52,7 @@
             <div class="question-number">2</div>
             <div class="question-text">A data engineer needs to implement row-level and cell-level security for a data lake table accessed via Athena and Redshift Spectrum. The "transactions" table contains a "region" column and a "ssn" column. The US team should only see US region rows and the SSN column should be masked for all non-admin users. Which Lake Formation feature provides this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create separate tables for each region and grant access accordingly</li>
+                <li><span class="option-label">A.</span> Create separate tables for each region and grant access accordingly with column-level exclusion or masking (exclude/mask SSN column)</li>
                 <li><span class="option-label">B.</span> Use Lake Formation Data Filters — create a filter that combines row-level filtering (WHERE region = 'US') with column-level exclusion or masking (exclude/mask SSN column), then grant table access WITH the data filter applied to the US team's principal</li>
                 <li><span class="option-label">C.</span> Use S3 bucket policies to restrict access to specific S3 partitions</li>
                 <li><span class="option-label">D.</span> Implement client-side filtering in the application query layer</li>
@@ -71,7 +71,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a single "data lake admin" role that has access to everything and share credentials</li>
                 <li><span class="option-label">B.</span> Use LF-Tags (Tag-Based Access Control) — assign key-value tags to databases/tables/columns (e.g., "classification"="confidential", "domain"="finance"), then GRANT permissions based on tag expressions rather than specific resource ARNs. When new tables are created with matching tags, permissions are automatically applied</li>
-                <li><span class="option-label">C.</span> Use AWS Organizations SCPs to manage all data lake permissions</li>
+                <li><span class="option-label">C.</span> Use AWS Organizations SCPs to manage all data lake permissions with matching tags</li>
                 <li><span class="option-label">D.</span> Write a custom Lambda function to auto-generate GRANT statements nightly</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -89,7 +89,7 @@
                 <li><span class="option-label">A.</span> Create S3 cross-account bucket policies and share the Glue catalog ARNs directly</li>
                 <li><span class="option-label">B.</span> In Account A: use Lake Formation to GRANT SELECT on specific tables to Account B's AWS account ID (or specific IAM roles/Organization). In Account B: accept the RAM share (if using RAM method) or create a resource link in the local Glue catalog pointing to the shared database; then grant Lake Formation permissions to local principals on the resource link</li>
                 <li><span class="option-label">C.</span> Use AWS Glue crawlers in Account B to re-crawl Account A's S3 data</li>
-                <li><span class="option-label">D.</span> Export data from Account A to Account B nightly using Glue ETL jobs</li>
+                <li><span class="option-label">D.</span> Export data from Account A to Account B nightly using Glue ETL jobs configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -106,7 +106,7 @@
                 <li><span class="option-label">A.</span> Access is allowed because Lake Formation permissions override S3 bucket policies</li>
                 <li><span class="option-label">B.</span> Access is denied — S3 bucket policies still apply as an additional layer. Lake Formation grants permission at the catalog/metadata level, but the actual data read from S3 still requires the S3 access to not be explicitly denied. However, when Lake Formation manages S3 access through its service role, the user's direct S3 permissions are not evaluated — the Lake Formation service role reads S3 on the user's behalf</li>
                 <li><span class="option-label">C.</span> Lake Formation disables all S3 bucket policies automatically when enabled</li>
-                <li><span class="option-label">D.</span> The query succeeds but returns empty results</li>
+                <li><span class="option-label">D.</span> The query succeeds but returns empty results with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -120,7 +120,7 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer is setting up Lake Formation for the first time. They need to register an S3 bucket (s3://company-data-lake/) as a data location. The bucket contains sensitive data encrypted with a customer-managed KMS key. What must be configured for Lake Formation to successfully manage permissions on this data?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Only register the S3 path in Lake Formation — KMS permissions are handled automatically</li>
+                <li><span class="option-label">A.</span> Only register the S3 path in Lake Formation — KMS permissions are handled automatically with fully managed infrastructure and automatic scaling</li>
                 <li><span class="option-label">B.</span> Register the S3 location in Lake Formation, specifying the IAM role that Lake Formation uses to access the data. This role must have: s3:GetObject/PutObject/ListBucket on the S3 path AND kms:Decrypt/kms:GenerateDataKey on the customer-managed KMS key. The KMS key policy must also allow this role to use the key</li>
                 <li><span class="option-label">C.</span> Disable KMS encryption before registering with Lake Formation since they are incompatible</li>
                 <li><span class="option-label">D.</span> Use the root account credentials to register the S3 location</li>
@@ -139,7 +139,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> All databases use Lake Formation permissions regardless of the hybrid mode setting</li>
                 <li><span class="option-label">B.</span> In hybrid mode: databases opted-in to Lake Formation require BOTH Lake Formation grants AND IAM permissions; databases NOT opted-in (legacy) continue using IAM permissions only (with IAMAllowedPrincipals granting Super). This allows gradual migration without breaking existing access patterns</li>
-                <li><span class="option-label">C.</span> Hybrid mode means Lake Formation is disabled and only IAM policies apply</li>
+                <li><span class="option-label">C.</span> Hybrid mode means Lake Formation is disabled and only IAM policies apply configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> In hybrid mode, permissions are randomly applied from either Lake Formation or IAM depending on the query engine</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer grants Lake Formation permissions: GRANT SELECT ON TABLE "sales" TO ROLE "analyst_role" WITH GRANT OPTION. An analyst with this role then tries to grant SELECT on "sales" to another role "intern_role". What happens and what are the implications of WITH GRANT OPTION?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The grant fails because only Lake Formation Admins can grant permissions</li>
+                <li><span class="option-label">A.</span> The grant fails because only Lake Formation Admins can grant permissions with GRANT OPTION delegates granting authority — the analyst becomes a data steward for this table and can further distribute access</li>
                 <li><span class="option-label">B.</span> The analyst can successfully grant SELECT on "sales" to "intern_role" because WITH GRANT OPTION delegates granting authority — the analyst becomes a data steward for this table and can further distribute access. However, they can only grant permissions they themselves possess and cannot grant higher-level permissions (like ALTER or DROP)</li>
                 <li><span class="option-label">C.</span> WITH GRANT OPTION means the permission will automatically expire after a set time</li>
                 <li><span class="option-label">D.</span> The analyst can grant ANY permission on any table because WITH GRANT OPTION provides administrative access</li>
@@ -171,7 +171,7 @@
             <div class="question-number">9</div>
             <div class="question-text">An EMR cluster needs to query Lake Formation-governed tables. The cluster uses instance profiles for IAM authentication. The data engineer discovers that EMR jobs fail with permission errors even though the instance profile has Lake Formation grants. What additional configuration is required for EMR to work with Lake Formation?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> EMR does not support Lake Formation integration</li>
+                <li><span class="option-label">A.</span> EMR does not support Lake Formation integration with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> Enable Lake Formation integration for the EMR cluster by specifying a "Runtime Role" or configuring the EMR security configuration to use Lake Formation session-level credentials; the EMR cluster must use credential vending through Lake Formation's GetDataAccess API rather than direct S3 access via the instance profile</li>
                 <li><span class="option-label">C.</span> Grant the EMR instance profile s3:* permissions on all data lake buckets</li>
                 <li><span class="option-label">D.</span> Run EMR jobs only during Lake Formation's scheduled permission evaluation window</li>
@@ -190,7 +190,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Access is allowed because Lake Formation GRANT and S3 Allow combine to override the IAM Deny</li>
                 <li><span class="option-label">B.</span> Access is DENIED — IAM explicit Deny ALWAYS takes precedence over everything else. Even though Lake Formation grants SELECT and S3 allows the path, the IAM Deny on glue:GetTable prevents the query engine from reading table metadata, which blocks the entire query. Lake Formation permissions cannot override IAM explicit Deny</li>
-                <li><span class="option-label">C.</span> Access is allowed because Lake Formation permissions have higher priority than IAM policies</li>
+                <li><span class="option-label">C.</span> Access is allowed because Lake Formation permissions have higher priority than IAM policies with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> The request enters an infinite evaluation loop and times out</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
