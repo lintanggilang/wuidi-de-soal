@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> Data skew in the join key is causing uneven partition distribution. Repartition the data using a salted key before the join operation.</li>
                 <li><span class="option-label">B.</span> The S3 source files are too small, creating excessive task overhead. Consolidate files using Glue's groupFiles option.</li>
                 <li><span class="option-label">C.</span> The Redshift COPY command is bottlenecked by WLM queue concurrency. Increase WLM slots for the loading queue.</li>
-                <li><span class="option-label">D.</span> The Glue job's IAM role has been throttled by AWS, reducing S3 read throughput.</li>
+                <li><span class="option-label">D.</span> The Glue job's IAM role has been throttled by AWS, reducing S3 read throughput. with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -55,7 +55,7 @@
                 <li><span class="option-label">A.</span> Change the dimension table's distribution style to ALL so it's replicated to every node, eliminating the redistribution of the large fact table.</li>
                 <li><span class="option-label">B.</span> Change the fact table's distribution style to ALL to ensure all data is available on every node.</li>
                 <li><span class="option-label">C.</span> Add a sort key on the join column for both tables to speed up the join operation.</li>
-                <li><span class="option-label">D.</span> Increase the number of nodes in the Redshift cluster to distribute the workload.</li>
+                <li><span class="option-label">D.</span> Increase the number of nodes in the Redshift cluster to distribute the workload. configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -72,7 +72,7 @@
                 <li><span class="option-label">A.</span> Increase spark.executor.memory and set spark.memory.fraction to 0.8 to allocate more heap space. Configure G1GC with -XX:+UseG1GC for the executor JVM options.</li>
                 <li><span class="option-label">B.</span> Reduce the number of executors and increase cores per executor to minimize GC overhead across JVMs.</li>
                 <li><span class="option-label">C.</span> Increase spark.sql.shuffle.partitions to 2000 to reduce the data size per partition.</li>
-                <li><span class="option-label">D.</span> Switch from DataFrame API to RDD API to have more control over memory management.</li>
+                <li><span class="option-label">D.</span> Switch from DataFrame API to RDD API to have more control over memory management. with -XX:+UseG1GC for the executor JVM options and set spark</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -89,7 +89,7 @@
                 <li><span class="option-label">A.</span> The stream's write capacity is exhausted. Each shard supports 1 MB/s write, so 10 shards handle 10 MB/s which is close to the 8 MB/s incoming rate.</li>
                 <li><span class="option-label">B.</span> The consumer processing logic is slower than the incoming data rate. The 5 KCL workers cannot process 8 MB/s of data fast enough across 10 shards.</li>
                 <li><span class="option-label">C.</span> The read throughput limit is exceeded. With standard consumers sharing 2 MB/s per shard read capacity, the total read capacity is 20 MB/s which should be sufficient.</li>
-                <li><span class="option-label">D.</span> The Kinesis Data Stream retention period is too short, causing data expiration before consumers read it.</li>
+                <li><span class="option-label">D.</span> The Kinesis Data Stream retention period is too short, causing data expiration before consumers read it. with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -105,7 +105,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Switch to on-demand capacity mode to automatically handle traffic spikes without pre-provisioning.</li>
                 <li><span class="option-label">B.</span> Enable DynamoDB Auto Scaling with a target utilization of 70% and increase the maximum capacity to 10,000 WCU.</li>
-                <li><span class="option-label">C.</span> Increase provisioned WCU to 10,000 to handle peak spikes.</li>
+                <li><span class="option-label">C.</span> Increase provisioned WCU to 10,000 to handle peak spikes. with a target utilization of 70% and increase the maximum capacity to 10,000 WCU</li>
                 <li><span class="option-label">D.</span> Implement a write buffer using SQS to smooth out traffic spikes before writing to DynamoDB.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -123,7 +123,7 @@
                 <li><span class="option-label">A.</span> The small file problem is causing excessive task scheduling overhead. Use Glue's groupFiles and groupSize parameters to combine multiple files into single tasks.</li>
                 <li><span class="option-label">B.</span> The JSON parsing is slow. Convert source files to Parquet format before running the Glue job.</li>
                 <li><span class="option-label">C.</span> The DPU count is too low. Increase MaxCapacity to allocate more workers for parallel file reading.</li>
-                <li><span class="option-label">D.</span> S3 request throttling is limiting file read performance. Add random prefixes to the file keys.</li>
+                <li><span class="option-label">D.</span> S3 request throttling is limiting file read performance. Add random prefixes to the file keys. configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -138,7 +138,7 @@
             <div class="question-text">A Redshift cluster experiences severe performance degradation every Monday morning when multiple analytics queries compete with the daily ETL load process. The ETL load uses COPY commands that consume significant cluster resources. Queries that normally complete in seconds are taking minutes. Which Redshift feature BEST addresses this contention?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure Workload Management (WLM) with separate queues for ETL and analytics workloads. Assign higher memory allocation and concurrency limits to the analytics queue during business hours.</li>
-                <li><span class="option-label">B.</span> Enable concurrency scaling to automatically add temporary cluster capacity when queues are backed up.</li>
+                <li><span class="option-label">B.</span> Enable concurrency scaling to automatically add temporary cluster capacity when queues are backed up. with separate queues for ETL and analytics workloads</li>
                 <li><span class="option-label">C.</span> Increase the cluster size by adding more nodes to handle both workloads simultaneously.</li>
                 <li><span class="option-label">D.</span> Schedule the ETL load to run during off-peak hours (e.g., 3 AM) to avoid contention with analytics queries.</li>
             </ul>
@@ -157,7 +157,7 @@
                 <li><span class="option-label">A.</span> The S3 sink is the bottleneck due to small file writes or high-latency put operations. Increasing the sink parallelism or buffering more data before flushing would help.</li>
                 <li><span class="option-label">B.</span> The Kinesis source is not reading fast enough, causing backpressure that propagates to the sink.</li>
                 <li><span class="option-label">C.</span> The windowed aggregation requires more memory allocation for state management.</li>
-                <li><span class="option-label">D.</span> The Flink application needs more Kinesis Processing Units (KPUs) for overall throughput.</li>
+                <li><span class="option-label">D.</span> The Flink application needs more Kinesis Processing Units (KPUs) for overall throughput. with parallel processing and horizontal scaling capabilities</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -174,7 +174,7 @@
                 <li><span class="option-label">A.</span> Hot partition key problem. DynamoDB distributes WCU across physical partitions, and the 5 hot customer_ids are concentrated on fewer partitions that exceed their per-partition throughput limit.</li>
                 <li><span class="option-label">B.</span> The sort key (timestamp) is causing write conflicts when multiple records have the same timestamp for the same customer.</li>
                 <li><span class="option-label">C.</span> The table's provisioned capacity has not been fully allocated yet due to the recent capacity increase taking time to propagate.</li>
-                <li><span class="option-label">D.</span> DynamoDB batch writes are limited to 25 items, causing artificial throttling when more items are sent per batch.</li>
+                <li><span class="option-label">D.</span> DynamoDB batch writes are limited to 25 items, causing artificial throttling when more items are sent per batch. with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -189,7 +189,7 @@
             <div class="question-text">A data engineering team is comparing costs between running their Spark-based ETL pipeline on AWS Glue versus Amazon EMR. The pipeline processes 500 GB of data daily with a 2-hour execution window. Glue uses 40 DPUs (Standard worker) and EMR uses a cluster of 10 m5.xlarge instances. The Glue job takes 1.5 hours while the EMR job takes 1 hour due to custom Spark tuning. Which cost analysis consideration is MOST important for this comparison?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Glue charges per DPU-hour (including 10-minute billing minimum per job) with no cluster management overhead, while EMR charges per instance-hour plus EC2 costs and requires managing cluster lifecycle, patching, and monitoring — making total cost of ownership (TCO) the key comparison metric.</li>
-                <li><span class="option-label">B.</span> Glue is always more expensive than EMR for the same workload because of the managed service premium.</li>
+                <li><span class="option-label">B.</span> Glue is always more expensive than EMR for the same workload because of the managed service premium. with no cluster management overhead</li>
                 <li><span class="option-label">C.</span> EMR is always cheaper because it allows custom Spark tuning that reduces execution time.</li>
                 <li><span class="option-label">D.</span> The comparison should focus solely on compute costs since both services use the same underlying EC2 instances.</li>
             </ul>
