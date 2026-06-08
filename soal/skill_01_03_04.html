@@ -37,7 +37,7 @@
                 <li><span class="option-label">A.</span> Create an EventBridge rule matching Glue Job State Change events with state "FAILED", targeting an SNS topic that sends emails to the on-call team with input transformation to format the message</li>
                 <li><span class="option-label">B.</span> Create a CloudWatch alarm on Glue job metrics that triggers SNS</li>
                 <li><span class="option-label">C.</span> Add error notification code at the end of the Glue job script</li>
-                <li><span class="option-label">D.</span> Use a Lambda function that polls Glue job status every minute</li>
+                <li><span class="option-label">D.</span> Use a Lambda function that polls Glue job status every minute with state "FAILED"</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement tiered alerting: use SNS filter policies to route only CRITICAL alerts (failures, SLA breaches) to the pager/email topic, and INFO alerts to a separate low-priority topic or CloudWatch logs only</li>
                 <li><span class="option-label">B.</span> Unsubscribe the team from all SNS notifications</li>
-                <li><span class="option-label">C.</span> Set up email rules to filter out non-critical alerts</li>
+                <li><span class="option-label">C.</span> Set up email rules to filter out non-critical alerts configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Reduce pipeline monitoring to check only once per day</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use two EventBridge scheduled rules: one at 5:30 AM checks if processing is complete (via Lambda checking status) and sends warning via SNS, another at 6:00 AM sends critical alert if still incomplete</li>
                 <li><span class="option-label">B.</span> Set the pipeline timeout to 6:00 AM and alert on timeout</li>
-                <li><span class="option-label">C.</span> Use a CloudWatch alarm with two thresholds</li>
+                <li><span class="option-label">C.</span> Use a CloudWatch alarm with two thresholds configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Have the pipeline send a "completion" event and alert if not received</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> Create a CloudWatch alarm on the ApproximateNumberOfMessagesVisible metric with threshold > 10,000, with the alarm action publishing to an SNS topic</li>
                 <li><span class="option-label">B.</span> Create a Lambda function polling the queue depth via GetQueueAttributes every minute</li>
                 <li><span class="option-label">C.</span> Configure SQS to send notifications when the queue is full</li>
-                <li><span class="option-label">D.</span> Use EventBridge to detect SQS queue depth changes</li>
+                <li><span class="option-label">D.</span> Use EventBridge to detect SQS queue depth changes with threshold > 10</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -99,7 +99,7 @@
             <div class="question-text">A Step Functions workflow has an on-failure SNS notification. When the workflow fails, the SNS notification is sent but only contains the execution ARN, not the actual error details. How can the notification include meaningful error information?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use an EventBridge rule matching Step Functions execution status change to FAILED, with input transformation to extract the error and cause fields from the event detail, and target the SNS topic with the formatted message</li>
-                <li><span class="option-label">B.</span> Configure SNS to automatically fetch details from Step Functions</li>
+                <li><span class="option-label">B.</span> Configure SNS to automatically fetch details from Step Functions and sends the error to SNS directly</li>
                 <li><span class="option-label">C.</span> Add a Catch state in Step Functions that formats and sends the error to SNS directly</li>
                 <li><span class="option-label">D.</span> Increase the SNS message size limit to include full execution history</li>
             </ul>
@@ -115,7 +115,7 @@
             <div class="question-text">A company wants to integrate pipeline alerts with their Slack channel and PagerDuty for incident management. The alerts originate from an SNS topic. Which architecture enables multi-channel notification delivery?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> SNS topic with multiple subscriptions: Lambda function for Slack (calling Slack webhook API) and HTTPS endpoint subscription for PagerDuty's Events API</li>
-                <li><span class="option-label">B.</span> Create separate EventBridge rules for each destination</li>
+                <li><span class="option-label">B.</span> Create separate EventBridge rules for each destination and a separate SNS subscription for PagerDuty</li>
                 <li><span class="option-label">C.</span> Use AWS Chatbot for Slack integration and a separate SNS subscription for PagerDuty</li>
                 <li><span class="option-label">D.</span> Send all alerts to email and let team members forward to Slack/PagerDuty manually</li>
             </ul>
@@ -131,7 +131,7 @@
             <div class="question-text">A data pipeline publishes processing metrics to SNS after each run. Downstream consumers (dashboard, alerting, auditing) subscribe to this topic. One consumer (the auditing system) must receive EVERY message without loss, even during outages. Which SNS subscription type guarantees this?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Subscribe an SQS queue to the SNS topic for the auditing system — SQS retains messages during consumer outages and provides at-least-once delivery guarantee</li>
-                <li><span class="option-label">B.</span> Use an email subscription for the auditing system</li>
+                <li><span class="option-label">B.</span> Use an email subscription for the auditing system and provides at-least-once delivery guarantee</li>
                 <li><span class="option-label">C.</span> Use an HTTP endpoint subscription with retry enabled</li>
                 <li><span class="option-label">D.</span> Subscribe a Lambda function for the auditing system</li>
             </ul>
@@ -147,7 +147,7 @@
             <div class="question-text">A data engineer needs to send different types of alerts from a single SNS topic: "pipeline-alerts". Some subscribers only want failure alerts, others want all alerts including success notifications. How can subscribers selectively receive messages?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use SNS message attributes (e.g., "alertType": "FAILURE") and configure subscription filter policies on each subscriber to match only their desired alertType values</li>
-                <li><span class="option-label">B.</span> Create separate SNS topics for each alert type</li>
+                <li><span class="option-label">B.</span> Create separate SNS topics for each alert type configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Include filter instructions in the message body</li>
                 <li><span class="option-label">D.</span> Let subscribers discard unwanted messages after receiving them</li>
             </ul>
@@ -165,7 +165,7 @@
                 <li><span class="option-label">A.</span> CloudWatch alarm on GetRecords.IteratorAgeMilliseconds metric (Maximum statistic) with threshold > 300000, alarm action targeting SNS topic</li>
                 <li><span class="option-label">B.</span> CloudWatch alarm on IncomingRecords metric exceeding a threshold</li>
                 <li><span class="option-label">C.</span> Lambda CloudWatch Logs metric filter for "IteratorAge" text</li>
-                <li><span class="option-label">D.</span> EventBridge rule matching Kinesis stream events</li>
+                <li><span class="option-label">D.</span> EventBridge rule matching Kinesis stream events with threshold > 300000</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -179,7 +179,7 @@
             <div class="question-text">A data pipeline processes sensitive financial data. Compliance requires that alert notifications (sent via SNS) must NOT contain actual data values — only metadata like job name, status, and timestamp. A developer accidentally publishes customer account numbers in SNS messages. How can this be prevented architecturally?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a Lambda function between the pipeline and SNS that sanitizes messages — removing or masking any PII/sensitive data before publishing to SNS, using a predefined allow-list of safe fields</li>
-                <li><span class="option-label">B.</span> Enable SNS encryption at rest</li>
+                <li><span class="option-label">B.</span> Enable SNS encryption at rest configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Use SNS message filtering to block messages containing numbers</li>
                 <li><span class="option-label">D.</span> Add an IAM policy preventing certain data from being published</li>
             </ul>
