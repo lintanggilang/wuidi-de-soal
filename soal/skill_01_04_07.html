@@ -35,7 +35,7 @@
             <div class="question-text">A data engineer has a Lambda function that processes large ML model files (3GB) to generate predictions on incoming data. The model file must be loaded into memory for inference. The Lambda function's /tmp storage is insufficient for this use case. Which storage solution allows the Lambda function to access the 3GB model file with the LOWEST latency on subsequent invocations?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Mount an Amazon EFS file system to the Lambda function, store the model on EFS, and access it via the local mount point — subsequent invocations on warm containers access the model with local filesystem read speeds since EFS is already mounted</li>
-                <li><span class="option-label">B.</span> Download the model from S3 to /tmp on every invocation and delete it after processing</li>
+                <li><span class="option-label">B.</span> Download the model from S3 to /tmp on every invocation and delete it after processing with local filesystem read speeds since EFS is already mounted</li>
                 <li><span class="option-label">C.</span> Increase the Lambda ephemeral storage (/tmp) to 10GB and download the model from S3 on cold starts only</li>
                 <li><span class="option-label">D.</span> Store the model as a Lambda Layer to make it available in the function's runtime environment</li>
             </ul>
@@ -51,7 +51,7 @@
             <div class="question-text">A Lambda function processes CSV files uploaded to S3. Each file is approximately 200MB. The function needs to download the file, parse it, apply transformations, and write the result back to S3. The engineer configured the Lambda function with 512MB /tmp storage (default), but the function fails with a "No space left on device" error. What is the MOST cost-effective solution?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase the Lambda ephemeral storage (/tmp) from the default 512MB to a sufficient size (up to 10,240MB maximum) using the EphemeralStorage configuration — this allows the function to store the 200MB input plus the transformed output without requiring EFS or VPC configuration</li>
-                <li><span class="option-label">B.</span> Mount an EFS file system and use it as the working directory for file processing</li>
+                <li><span class="option-label">B.</span> Mount an EFS file system and use it as the working directory for file processing configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Process the file in S3 directly without downloading using S3 Select</li>
                 <li><span class="option-label">D.</span> Split the input file into 100 smaller files before triggering the Lambda function</li>
             </ul>
@@ -69,7 +69,7 @@
                 <li><span class="option-label">A.</span> Mount a shared EFS file system on both Lambda functions. Function A writes intermediate data to EFS, and Function B reads it from the same mount point. EFS provides a shared persistent filesystem accessible by both functions with POSIX file semantics</li>
                 <li><span class="option-label">B.</span> Store intermediate data in Lambda's /tmp directory and rely on the next invocation using the same container</li>
                 <li><span class="option-label">C.</span> Pass the 500MB dataset as the payload in the Step Functions state machine between states</li>
-                <li><span class="option-label">D.</span> Store the data in a DynamoDB table with 500MB record items</li>
+                <li><span class="option-label">D.</span> Store the data in a DynamoDB table with 500MB record items and Function B reads it from the same mount point</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -83,7 +83,7 @@
             <div class="question-text">A company deploys a Lambda function with an EFS mount for a data processing pipeline. After deployment, the Lambda function times out during cold starts, taking over 30 seconds before processing begins. The function previously completed in 5 seconds without EFS. What is the MOST likely cause of the cold start performance degradation?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Lambda functions with EFS require VPC configuration, and the cold start includes creating an Elastic Network Interface (ENI) in the VPC. If the subnets don't have sufficient available IP addresses or the security groups are misconfigured, ENI creation takes significantly longer</li>
-                <li><span class="option-label">B.</span> EFS is replicating data across Availability Zones during Lambda initialization</li>
+                <li><span class="option-label">B.</span> EFS is replicating data across Availability Zones during Lambda initialization with EFS require VPC configuration</li>
                 <li><span class="option-label">C.</span> The Lambda function is downloading the entire EFS file system content during cold start</li>
                 <li><span class="option-label">D.</span> EFS throughput mode is set to Provisioned and the function exceeds its allocated throughput</li>
             </ul>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Use Lambda ephemeral storage (/tmp) configured to 3GB — since the data is transient (downloaded from S3, processed, then uploaded back), there's no need for persistent storage. /tmp is automatically cleaned between invocations, and the cost is minimal (charged per GB-second only for storage above 512MB)</li>
                 <li><span class="option-label">B.</span> Mount EFS to store the downloaded data and generated report permanently</li>
                 <li><span class="option-label">C.</span> Use both EFS for the download and /tmp for the report generation simultaneously</li>
-                <li><span class="option-label">D.</span> Stream the data directly from S3 without any local storage using S3 Select</li>
+                <li><span class="option-label">D.</span> Stream the data directly from S3 without any local storage using S3 Select for persistent storage</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -116,7 +116,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Mount EFS with an access point configured for read-only access. All 50 Lambda invocations share the same EFS mount and can concurrently read different portions of the dataset. Configure EFS with Elastic throughput mode to automatically scale read throughput based on demand</li>
                 <li><span class="option-label">B.</span> Have each of the 50 Lambda invocations independently download the 5GB dataset from S3 to their own /tmp storage</li>
-                <li><span class="option-label">C.</span> Package the 5GB dataset as a Lambda Layer shared across all functions</li>
+                <li><span class="option-label">C.</span> Package the 5GB dataset as a Lambda Layer shared across all functions with an access point configured for read-only access and can concurrently read different portions of the dataset</li>
                 <li><span class="option-label">D.</span> Store the dataset in DynamoDB and have each function query its relevant partition</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -133,7 +133,7 @@
                 <li><span class="option-label">A.</span> The EFS access point's POSIX user configuration (UID/GID) doesn't match the permissions on the /output directory, or the CreationInfo for the access point root directory was configured with restrictive permissions (e.g., 0755 instead of 0777) that prevent the Lambda function's mapped UID from writing</li>
                 <li><span class="option-label">B.</span> Lambda functions cannot write to EFS; they only support read operations</li>
                 <li><span class="option-label">C.</span> The security group attached to the Lambda function is blocking outbound NFS traffic on port 2049</li>
-                <li><span class="option-label">D.</span> The EFS file system has reached its maximum storage capacity</li>
+                <li><span class="option-label">D.</span> The EFS file system has reached its maximum storage capacity with restrictive permissions (e</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use EFS as the shared cache. A separate scheduled Lambda function updates the reference data on EFS hourly. All 100+ concurrent execution instances read from the same EFS mount point, seeing the updated data immediately after the refresh Lambda completes its write</li>
                 <li><span class="option-label">B.</span> Store cache in each Lambda's /tmp and trigger a deployment to clear all containers when cache needs refreshing</li>
-                <li><span class="option-label">C.</span> Use Lambda environment variables to store the 500MB cache data</li>
+                <li><span class="option-label">C.</span> Use Lambda environment variables to store the 500MB cache data configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Implement a custom cache invalidation protocol using SNS to notify each Lambda instance to download fresh data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -165,7 +165,7 @@
                 <li><span class="option-label">A.</span> Mount EFS with sufficient throughput provisioned for the expected I/O pattern. Stream the video file from S3 to EFS on first access, then perform random-access reads directly from the EFS mount. EFS has no practical size limit and supports random read/write operations like a traditional filesystem</li>
                 <li><span class="option-label">B.</span> Use S3 byte-range requests to read only the specific portions of the video file needed, eliminating the need for local storage entirely</li>
                 <li><span class="option-label">C.</span> Split the video into 512MB chunks in S3 and process each chunk in a separate Lambda invocation</li>
-                <li><span class="option-label">D.</span> Request a service limit increase for Lambda /tmp storage beyond 10GB</li>
+                <li><span class="option-label">D.</span> Request a service limit increase for Lambda /tmp storage beyond 10GB with sufficient throughput provisioned for the expected I/O pattern</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -180,7 +180,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Package the 50MB lookup table as a Lambda Layer. The layer is loaded into the Lambda execution environment on cold starts and cached across warm invocations. No VPC, no EFS configuration, no download step — the data is simply available as a file in /opt at function start</li>
                 <li><span class="option-label">B.</span> Mount EFS and store the lookup table on the shared filesystem</li>
-                <li><span class="option-label">C.</span> Download the lookup table from S3 to /tmp on every cold start</li>
+                <li><span class="option-label">C.</span> Download the lookup table from S3 to /tmp on every cold start and cached across warm invocations</li>
                 <li><span class="option-label">D.</span> Store the lookup table in a DynamoDB table and query it for each enrichment lookup</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
