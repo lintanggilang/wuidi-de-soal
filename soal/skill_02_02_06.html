@@ -36,7 +36,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon DataZone (now Amazon SageMaker Catalog). Create a DataZone domain spanning all 15 accounts. Each business unit creates a DataZone project and publishes their datasets as data assets to the catalog. Business analysts browse the catalog, subscribe to datasets they need, and an approval workflow routes the request to the data owner. Upon approval, DataZone automatically provisions the necessary access (Lake Formation grants, Redshift data sharing, or S3 access) without manual IAM configuration</li>
                 <li><span class="option-label">B.</span> AWS Glue Data Catalog with Lake Formation cross-account sharing. Configure Lake Formation to share databases across all 15 accounts and let analysts query via Athena</li>
-                <li><span class="option-label">C.</span> AWS RAM (Resource Access Manager) to share Glue Data Catalog databases across accounts, combined with a custom approval workflow built on Step Functions</li>
+                <li><span class="option-label">C.</span> AWS RAM (Resource Access Manager) to share Glue Data Catalog databases across accounts, combined with a custom approval workflow built on Step Functions and publishes their datasets as data assets to the catalog</li>
                 <li><span class="option-label">D.</span> Amazon QuickSight with dataset sharing enabled across accounts — analysts access data through QuickSight's built-in data discovery interface</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a Business Glossary within the DataZone domain. Define glossary terms (Customer, Transaction, Risk Score) with descriptions, owners, and relationships between terms. When data producers publish assets, they associate relevant glossary terms with datasets and columns. Data consumers can search and filter the catalog by glossary terms, ensuring everyone uses consistent business language regardless of underlying technical column names</li>
                 <li><span class="option-label">B.</span> Create tags in AWS Glue Data Catalog and apply them to tables and columns — DataZone inherits these tags automatically as business terms</li>
-                <li><span class="option-label">C.</span> Define a JSON schema file with term definitions and upload it to DataZone as a metadata attachment on the domain</li>
+                <li><span class="option-label">C.</span> Define a JSON schema file with term definitions and upload it to DataZone as a metadata attachment on the domain and relationships between terms</li>
                 <li><span class="option-label">D.</span> Use AWS Lake Formation Tag-Based Access Control (LF-TBAC) to create business term tags that serve as both vocabulary and access control</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -69,7 +69,7 @@
                 <li><span class="option-label">A.</span> Configure the DataZone environment's subscription approval settings to require manual approval. Set up metadata forms on the data asset that specify required approvers (data owner + compliance). When a subscription request is submitted, DataZone routes notifications to the designated approvers. Both must approve before access is granted. Custom metadata forms can capture justification fields that approvers review</li>
                 <li><span class="option-label">B.</span> DataZone only supports single-level approval (data owner only). To add compliance approval, create a Step Functions workflow triggered by DataZone subscription events that adds a second approval gate</li>
                 <li><span class="option-label">C.</span> Configure the asset with auto-approval disabled and add the compliance team as co-owners of the project. All project owners receive approval notifications</li>
-                <li><span class="option-label">D.</span> Create two separate DataZone domains — one for data owners and one for compliance — requiring subscription approval from both domains independently</li>
+                <li><span class="option-label">D.</span> Create two separate DataZone domains — one for data owners and one for compliance — requiring subscription approval from both domains independently configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -83,7 +83,7 @@
             <div class="question-text">A company's DataZone domain has 200 published data assets across 8 projects. A new data analyst joins the Sales team and needs to quickly find all datasets related to "customer purchase history" for a churn prediction project. The analyst doesn't know which technical databases or tables contain this information. How does DataZone's self-service discovery help this analyst find relevant data?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The analyst uses the DataZone data portal to search for "customer purchase history" using natural language. DataZone's search indexes asset names, descriptions, column descriptions, glossary terms, and metadata forms. Results show matching assets with business descriptions, data quality scores, ownership information, and sample data previews. The analyst can filter by project, glossary term, data freshness, or asset type. After identifying relevant datasets, they subscribe with a single click to request access</li>
-                <li><span class="option-label">B.</span> The analyst must browse through all 8 projects manually, examining each asset's technical schema to determine if it contains purchase history data</li>
+                <li><span class="option-label">B.</span> The analyst must browse through all 8 projects manually, examining each asset's technical schema to determine if it contains purchase history data with business descriptions and metadata forms</li>
                 <li><span class="option-label">C.</span> The analyst queries the Glue Data Catalog directly using the GetTables API with a filter expression matching column names like "purchase" or "history"</li>
                 <li><span class="option-label">D.</span> The analyst asks their manager to provide a list of relevant table names, then searches DataZone by exact table name</li>
             </ul>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> When the subscription is approved, DataZone provisions access based on the consumer's environment. For a consumer in a SageMaker/Athena environment accessing a Redshift source, DataZone can create a Redshift data share (for Redshift-to-Redshift) or configure Redshift Spectrum/federated query access. DataZone's environment profiles define how access is provisioned — the same logical dataset can be made accessible through multiple compute engines depending on the consumer's environment</li>
                 <li><span class="option-label">B.</span> DataZone automatically copies the Redshift data to S3 so that the SageMaker environment can access it as files without needing Redshift connectivity</li>
                 <li><span class="option-label">C.</span> The data scientist must switch to a Redshift-compatible environment or request the data producer to export the data to S3 separately</li>
-                <li><span class="option-label">D.</span> DataZone creates a materialized view in the consumer's Redshift cluster that mirrors the producer's data, refreshed on a configurable schedule</li>
+                <li><span class="option-label">D.</span> DataZone creates a materialized view in the consumer's Redshift cluster that mirrors the producer's data, refreshed on a configurable schedule configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -116,7 +116,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure DataZone governance policies that restrict asset visibility based on project attributes. Create a metadata form on sensitive assets marking them as "PHI" and configure domain-level policies that only projects tagged as "HIPAA-certified" can discover (view in search results) and subscribe to PHI-marked assets. Uncertified projects cannot see these assets in the catalog, providing visibility-level governance beyond just access control</li>
                 <li><span class="option-label">B.</span> Create a separate DataZone domain exclusively for PHI data and only invite HIPAA-certified projects to that domain. Non-certified projects exist in a different domain and cannot cross-domain search</li>
-                <li><span class="option-label">C.</span> Publish PHI datasets without descriptions or searchable metadata so they don't appear in natural language searches by unauthorized projects</li>
+                <li><span class="option-label">C.</span> Publish PHI datasets without descriptions or searchable metadata so they don't appear in natural language searches by unauthorized projects configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Use IAM policies on the DataZone API to prevent uncertified project members from calling the SearchAssets API for PHI-tagged resources</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Publish a new version of the data asset with the updated schema. DataZone maintains asset versions, allowing existing subscribers to continue using the current version while being notified of the new version. Subscribers can review the schema change and migrate to the new version on their own timeline. The old version remains accessible until all subscribers have migrated or until the producer formally deprecates it after a defined transition period</li>
                 <li><span class="option-label">B.</span> Modify the existing published asset's schema directly — DataZone automatically propagates the column rename to all subscriber environments</li>
-                <li><span class="option-label">C.</span> Unpublish the current dataset, make the schema change, and republish it. All existing subscriptions automatically reconnect to the updated asset</li>
+                <li><span class="option-label">C.</span> Unpublish the current dataset, make the schema change, and republish it. All existing subscriptions automatically reconnect to the updated asset with the updated schema and migrate to the new version on their own timeline</li>
                 <li><span class="option-label">D.</span> Create a completely new data asset with a different name ("Daily Sales Transactions V2") and notify subscribers manually to switch their subscriptions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Define custom metadata forms with required fields and attach them to the DataZone domain or specific projects as publishing requirements. When a data producer attempts to publish an asset, DataZone validates that all required metadata form fields are populated (e.g., business description, data classification, update frequency, data owner, glossary terms). Publishing is blocked until the form is complete, ensuring consistent minimum metadata quality across all catalog assets</li>
                 <li><span class="option-label">B.</span> Create a Lambda function triggered by DataZone publish events that checks metadata completeness and automatically unpublishes assets that don't meet standards</li>
-                <li><span class="option-label">C.</span> Configure DataZone to run a Glue Data Quality check on each asset before publishing, blocking publication if quality scores are below threshold</li>
+                <li><span class="option-label">C.</span> Configure DataZone to run a Glue Data Quality check on each asset before publishing, blocking publication if quality scores are below threshold with required fields</li>
                 <li><span class="option-label">D.</span> Send weekly reports to project owners listing assets with incomplete metadata and rely on manual compliance</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -163,7 +163,7 @@
             <div class="question-text">An organization has both a technical data catalog (AWS Glue Data Catalog with 500 tables) and wants to create a business data catalog (DataZone) for non-technical stakeholders. The technical catalog contains database names, table schemas, partition information, and ETL metadata. The business catalog should present a curated subset (100 key business datasets) with business-friendly names, descriptions, and ownership. How should the technical and business catalogs be integrated?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Connect DataZone to the Glue Data Catalog as a data source. DataZone imports technical metadata (schema, location, format) from Glue tables, then data producers enrich selected assets with business metadata (descriptions, glossary terms, ownership) and publish them to the business catalog. The 100 key datasets are curated by publishing only the relevant Glue tables with business context. The technical catalog remains the source of truth for schemas while the business catalog adds the discovery and governance layer</li>
-                <li><span class="option-label">B.</span> Export all 500 Glue Data Catalog tables to DataZone automatically and let business users filter to the 100 they need</li>
+                <li><span class="option-label">B.</span> Export all 500 Glue Data Catalog tables to DataZone automatically and let business users filter to the 100 they need with business metadata (descriptions and publish them to the business catalog</li>
                 <li><span class="option-label">C.</span> Maintain two completely separate catalogs with no integration — manually keep schemas in sync between Glue and DataZone</li>
                 <li><span class="option-label">D.</span> Replace the Glue Data Catalog entirely with DataZone — migrate all 500 tables to DataZone and use it as both the technical and business catalog</li>
             </ul>
@@ -180,7 +180,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create DataZone projects in each region with environments configured for local data access (EU project with eu-west-1 Redshift/Athena environments, US project with us-east-1 environments). The DataZone domain provides unified catalog search across both regions — analysts can discover data globally. However, access provisioning respects data residency: EU data subscriptions grant access only through eu-west-1 compute environments, and policies prevent cross-region data movement. The catalog is global but access is regional</li>
                 <li><span class="option-label">B.</span> Create two separate DataZone domains (one in eu-west-1, one in us-east-1) with no connection between them, ensuring complete data isolation per region</li>
-                <li><span class="option-label">C.</span> Create a single DataZone domain in us-east-1 and replicate EU data to us-east-1 for the catalog — DataZone only stores metadata, not actual data</li>
+                <li><span class="option-label">C.</span> Create a single DataZone domain in us-east-1 and replicate EU data to us-east-1 for the catalog — DataZone only stores metadata, not actual data with environments configured for local data access (EU project with eu-west-1 Redshift/Athena environments and policies prevent cross-region data movement</li>
                 <li><span class="option-label">D.</span> Use AWS Organizations SCPs to prevent DataZone from creating cross-region data shares, while maintaining a single global domain for catalog purposes</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
