@@ -35,7 +35,7 @@
             <div class="question-text">A data engineering team runs an EMR cluster with Hadoop MapReduce to process 10TB of web server logs daily. The MapReduce job counts unique visitors per page. The Map phase emits (page_url, visitor_id) pairs, and the Reduce phase counts distinct visitor_ids per page_url. The job takes 4 hours and the Reduce phase accounts for 80% of the runtime due to data skew — one page receives 90% of all traffic. Which optimization MOST reduces the processing time?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a combiner function that performs partial aggregation on each Mapper before the shuffle phase. Use a salted key approach: append a random suffix to the hot page_url key during Map (e.g., page_url_0, page_url_1), distribute the Reduce work across multiple reducers, then add a second Reduce stage to merge the partial results</li>
-                <li><span class="option-label">B.</span> Increase the number of Reduce tasks from the default to 500</li>
+                <li><span class="option-label">B.</span> Increase the number of Reduce tasks from the default to 500 configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Add more Map tasks by splitting input into smaller HDFS blocks</li>
                 <li><span class="option-label">D.</span> Sort the input data by page_url before running the MapReduce job</li>
             </ul>
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Replace groupByKey with reduceByKey or aggregateByKey, which performs map-side (local) aggregation before the shuffle. Instead of shuffling all individual records to reducers, each executor first combines records locally, then shuffles only the aggregated results — dramatically reducing shuffle data from 500GB to a fraction of that size</li>
                 <li><span class="option-label">B.</span> Increase spark.sql.shuffle.partitions to 2000 to distribute shuffle data across more partitions</li>
-                <li><span class="option-label">C.</span> Add .cache() before the groupByKey to store the dataset in memory</li>
+                <li><span class="option-label">C.</span> Add .cache() before the groupByKey to store the dataset in memory with reduceByKey or aggregateByKey</li>
                 <li><span class="option-label">D.</span> Increase executor memory from 4GB to 16GB to handle the shuffle data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Spark uses its lineage-based fault tolerance: each RDD/DataFrame records the sequence of transformations (lineage) used to create it. When executors fail, Spark recomputes only the lost partitions by replaying the lineage on other available executors. The driver reassigns the failed tasks to healthy executors, and the overall job continues without restarting from the beginning</li>
                 <li><span class="option-label">B.</span> Spark replicates all data across three nodes (like HDFS), so when two nodes fail, the data is still available on the third copy</li>
-                <li><span class="option-label">C.</span> The entire Spark application fails and must be restarted from the beginning by the user</li>
+                <li><span class="option-label">C.</span> The entire Spark application fails and must be restarted from the beginning by the user with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> Spark writes checkpoints to disk after every transformation, and recovery reads from the last checkpoint</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -83,7 +83,7 @@
             <div class="question-text">A data engineer processes a 5TB dataset on EMR Spark with 100 executors. The dataset is stored in S3 as Parquet files and contains a timestamp column used in most WHERE clauses. Currently, the data is not partitioned, and every query reads all 5TB. The engineer needs to optimize the data layout for query performance. Which partitioning strategy is MOST effective?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Partition the data by date (year/month/day) derived from the timestamp column. When Spark reads with a filter on the timestamp, partition pruning eliminates reading irrelevant partitions entirely. For a query filtering one day of data, Spark reads ~14GB (1/365th) instead of 5TB. Store as Parquet with the partition scheme: s3://bucket/data/year=2024/month=01/day=15/</li>
-                <li><span class="option-label">B.</span> Partition by a random hash to ensure all partitions are equal size</li>
+                <li><span class="option-label">B.</span> Partition by a random hash to ensure all partitions are equal size with a filter on the timestamp for a query filtering one day of data</li>
                 <li><span class="option-label">C.</span> Create one partition per record (5 billion partitions) for maximum parallelism</li>
                 <li><span class="option-label">D.</span> Store all data in a single large Parquet file to minimize S3 API calls</li>
             </ul>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Use bucketing: write both tables as bucketed tables on customer_id with the same number of buckets. When Spark detects that both sides of a join are bucketed on the join key with matching bucket counts, it performs a sort-merge join WITHOUT shuffle — each executor joins its local bucket pair directly since matching customer_ids are co-located</li>
                 <li><span class="option-label">B.</span> Broadcast the 200GB customers table to all executors using broadcast join</li>
                 <li><span class="option-label">C.</span> Increase the number of shuffle partitions to 4000 to spread the 700GB across more tasks</li>
-                <li><span class="option-label">D.</span> Repartition both DataFrames by customer_id immediately before the join</li>
+                <li><span class="option-label">D.</span> Repartition both DataFrames by customer_id immediately before the join with the same number of buckets</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -115,7 +115,7 @@
             <div class="question-text">A data engineering team designs a distributed data processing system on AWS that must handle both real-time analytics queries (requiring immediate consistency) and batch processing (requiring high availability). According to the CAP theorem, they must make trade-offs. Their streaming pipeline uses Kinesis for ingestion and needs to serve real-time dashboards while remaining available during network partitions between Availability Zones. Which architectural trade-off is MOST appropriate?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Choose AP (Availability + Partition tolerance) for the streaming layer: use DynamoDB with eventual consistency reads for the real-time dashboards, accepting that during network partitions, dashboards may show slightly stale data (seconds behind). For the batch analytics layer requiring accuracy, use Amazon Redshift with strong consistency for the source-of-truth reporting</li>
-                <li><span class="option-label">B.</span> Choose CA (Consistency + Availability) by deploying everything in a single AZ to avoid network partitions</li>
+                <li><span class="option-label">B.</span> Choose CA (Consistency + Availability) by deploying everything in a single AZ to avoid network partitions with eventual consistency reads for the real-time dashboards</li>
                 <li><span class="option-label">C.</span> Ignore CAP theorem since AWS managed services handle these trade-offs automatically</li>
                 <li><span class="option-label">D.</span> Choose CP (Consistency + Partition tolerance) for all systems, accepting that dashboards may become unavailable during AZ issues</li>
             </ul>
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a broadcast join by either hinting (broadcast(dim_df)) or setting spark.sql.autoBroadcastJoinThreshold to at least 50MB. Spark serializes the small dimension table and broadcasts it to every executor. Each executor joins its local fact table partitions with the in-memory dimension table — eliminating the 2TB shuffle entirely</li>
                 <li><span class="option-label">B.</span> Repartition both tables by the join key to ensure co-location before joining</li>
-                <li><span class="option-label">C.</span> Cache both tables in memory before the join to speed up the SortMergeJoin</li>
+                <li><span class="option-label">C.</span> Cache both tables in memory before the join to speed up the SortMergeJoin with the in-memory dimension table — eliminating the 2TB shuffle entirely and broadcasts it to every executor</li>
                 <li><span class="option-label">D.</span> Increase executor memory to handle the full 2TB dataset in memory per executor</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Horizontal scaling: replace the single large instance with a cluster of 20 smaller instances (r5.2xlarge). Distribute the 10TB across all nodes using Spark's parallel processing. Each node processes its partition simultaneously, achieving near-linear speedup. Total cost is similar (20 × r5.2xlarge ≈ 1 × r5.24xlarge) but processing completes in approximately 30 minutes instead of 10 hours</li>
                 <li><span class="option-label">B.</span> Vertical scaling: upgrade to an even larger instance type (r5.metal with 96 vCPUs and 768GB RAM) to handle the 10TB dataset faster on a single machine</li>
-                <li><span class="option-label">C.</span> Process the data in 10 sequential 1TB batches on the existing instance</li>
+                <li><span class="option-label">C.</span> Process the data in 10 sequential 1TB batches on the existing instance with a cluster of 20 smaller instances (r5</li>
                 <li><span class="option-label">D.</span> Compress the data to reduce volume rather than scaling compute</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Apply data locality: move the EMR cluster to us-east-1 (same region as the S3 data) or replicate the S3 data to us-west-2. In distributed computing, moving computation to where data resides is always cheaper and faster than moving large datasets to where computation happens. Cross-region transfer adds latency and cost per GB</li>
                 <li><span class="option-label">B.</span> Increase the EMR cluster size to add more network bandwidth for faster cross-region downloads</li>
-                <li><span class="option-label">C.</span> Compress the S3 data to reduce the bytes transferred cross-region</li>
+                <li><span class="option-label">C.</span> Compress the S3 data to reduce the bytes transferred cross-region with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Use S3 Transfer Acceleration to speed up cross-region reads</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -181,7 +181,7 @@
                 <li><span class="option-label">A.</span> Insert checkpoint() calls at strategic points in the transformation chain (e.g., after transformation 7). Checkpointing materializes the DataFrame to HDFS/S3 and truncates the lineage at that point. If a failure occurs after the checkpoint, Spark only needs to recompute from the checkpoint forward (transformations 8-14) rather than from the beginning (transformations 1-14)</li>
                 <li><span class="option-label">B.</span> Use cache() or persist() to store intermediate results in executor memory</li>
                 <li><span class="option-label">C.</span> Increase the number of executors to reduce the probability of any single executor failing</li>
-                <li><span class="option-label">D.</span> Rewrite the 15 transformations as a single complex transformation to shorten the lineage</li>
+                <li><span class="option-label">D.</span> Rewrite the 15 transformations as a single complex transformation to shorten the lineage and truncates the lineage at that point</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
