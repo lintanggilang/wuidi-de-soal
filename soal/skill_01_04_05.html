@@ -36,7 +36,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS CloudFormation templates with parameterized values for region-specific settings (bucket names, VPC IDs), organize resources into nested stacks by logical grouping (networking, storage, compute, ETL), and use CloudFormation StackSets to deploy across multiple regions simultaneously</li>
                 <li><span class="option-label">B.</span> Document all console steps in a wiki and have engineers follow the guide manually in the DR region</li>
-                <li><span class="option-label">C.</span> Export the existing resources using AWS Config rules and import them into the DR region</li>
+                <li><span class="option-label">C.</span> Export the existing resources using AWS Config rules and import them into the DR region with parameterized values for region-specific settings (bucket names for region-specific settings (bucket names</li>
                 <li><span class="option-label">D.</span> Create shell scripts that call AWS CLI commands to create each resource sequentially</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -52,7 +52,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a custom L3 construct class that accepts configuration parameters (job name, script path, worker count, timeout, alarm threshold) and encapsulates the Glue job, IAM role, S3 bucket, and CloudWatch alarm as a single reusable unit that other stacks can instantiate multiple times</li>
                 <li><span class="option-label">B.</span> Copy and paste the CDK code 12 times, changing the configuration values in each copy</li>
-                <li><span class="option-label">C.</span> Create 12 separate CDK apps, each with its own stack definition</li>
+                <li><span class="option-label">C.</span> Create 12 separate CDK apps, each with its own stack definition with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Use CloudFormation directly instead of CDK since CDK doesn't support reusability</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -69,7 +69,7 @@
                 <li><span class="option-label">A.</span> Use CloudFormation drift detection to identify resources whose actual configuration differs from the template definition, review the drift results, and either update the template to incorporate desired changes or re-deploy the template to revert undesired manual modifications</li>
                 <li><span class="option-label">B.</span> Delete the entire stack and redeploy from the template to ensure consistency</li>
                 <li><span class="option-label">C.</span> Manually update the template to match whatever is currently deployed without verification</li>
-                <li><span class="option-label">D.</span> Ignore the differences since the pipeline is working correctly</li>
+                <li><span class="option-label">D.</span> Ignore the differences since the pipeline is working correctly configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -83,7 +83,7 @@
             <div class="question-text">A company needs to deploy identical data pipeline infrastructure across development, staging, and production accounts. Each environment has different VPC configurations, instance sizes for EMR clusters, and number of Glue DPUs. The team wants a single IaC codebase that works across all environments. Which approach is MOST maintainable?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use CloudFormation parameters with environment-specific parameter files (dev-params.json, staging-params.json, prod-params.json), combined with Conditions to include or exclude resources based on environment (e.g., only deploy monitoring alarms in production), and Mappings for fixed environment-specific values like instance types</li>
-                <li><span class="option-label">B.</span> Maintain three completely separate CloudFormation templates, one per environment</li>
+                <li><span class="option-label">B.</span> Maintain three completely separate CloudFormation templates, one per environment with environment-specific parameter files (dev-params</li>
                 <li><span class="option-label">C.</span> Use a single template with hardcoded production values and manually override them for other environments</li>
                 <li><span class="option-label">D.</span> Deploy only to production and use IAM roles to simulate different environments</li>
             </ul>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Store the database password in AWS Secrets Manager, reference it in CloudFormation using dynamic references ({{resolve:secretsmanager:secret-name:SecretString:password}}), and configure the Glue connection to retrieve the credential at runtime from Secrets Manager</li>
                 <li><span class="option-label">B.</span> Pass the password as a CloudFormation parameter with NoEcho set to true and store it directly in the Glue connection properties</li>
                 <li><span class="option-label">C.</span> Encrypt the password with Base64 encoding and embed it in the template</li>
-                <li><span class="option-label">D.</span> Store the password in an S3 bucket with restricted access and have the Glue job read it at startup</li>
+                <li><span class="option-label">D.</span> Store the password in an S3 bucket with restricted access and have the Glue job read it at startup configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Split into separate CDK stacks: a Foundation stack (VPC, Redshift cluster) and a Pipeline stack (Glue jobs, crawlers). Use cross-stack references via CfnOutput and Fn.importValue to share the Redshift endpoint and VPC subnet IDs from Foundation to Pipeline stack, allowing independent deployment lifecycles</li>
                 <li><span class="option-label">B.</span> Keep everything in one stack but add comments to mark sections that shouldn't be changed</li>
                 <li><span class="option-label">C.</span> Create a single stack with all resources and use CloudFormation resource-level policies to prevent modifications to Redshift</li>
-                <li><span class="option-label">D.</span> Deploy Redshift manually through the console and only manage Glue jobs with CDK</li>
+                <li><span class="option-label">D.</span> Deploy Redshift manually through the console and only manage Glue jobs with CDK and a Pipeline stack (Glue jobs, crawlers)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -133,7 +133,7 @@
                 <li><span class="option-label">A.</span> The S3 bucket's logical name or a property that requires replacement (like BucketName) was changed. Prevent this by using CloudFormation change sets to preview all changes before execution, applying DeletionPolicy: Retain on critical resources, and enabling stack termination protection</li>
                 <li><span class="option-label">B.</span> CloudFormation randomly replaces resources during updates as part of its optimization strategy</li>
                 <li><span class="option-label">C.</span> The Glue job modification triggered a cascade replacement of all resources in the stack</li>
-                <li><span class="option-label">D.</span> Roll back the update immediately and never modify the stack again</li>
+                <li><span class="option-label">D.</span> Roll back the update immediately and never modify the stack again and enabling stack termination protection</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS CDK with Python, using L2 constructs that provide sensible defaults and reduce boilerplate — for example, a single line creates a Kinesis stream with default settings, and grant methods simplify IAM permissions (stream.grant_read(lambda_function))</li>
                 <li><span class="option-label">B.</span> Write raw CloudFormation YAML templates from scratch, manually defining every property including IAM policies</li>
-                <li><span class="option-label">C.</span> Use Terraform with HCL since it's the industry standard regardless of team expertise</li>
+                <li><span class="option-label">C.</span> Use Terraform with HCL since it's the industry standard regardless of team expertise for example</li>
                 <li><span class="option-label">D.</span> Create all resources through the AWS Console and export them to CloudFormation later</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -165,7 +165,7 @@
                 <li><span class="option-label">A.</span> Define the EMR cluster with Ref and Fn::GetAtt to reference security groups and subnets from the same template, use the Configurations property for application settings, define BootstrapActions inline, and set the InstanceCount as a parameter so updates only modify the instance group without cluster replacement</li>
                 <li><span class="option-label">B.</span> Create the EMR cluster outside CloudFormation and reference it using a hardcoded cluster ID in the template</li>
                 <li><span class="option-label">C.</span> Define all EMR configurations in a separate JSON file on S3 and reference it via a custom resource Lambda</li>
-                <li><span class="option-label">D.</span> Use a single monolithic parameter for all EMR settings as a comma-separated string</li>
+                <li><span class="option-label">D.</span> Use a single monolithic parameter for all EMR settings as a comma-separated string with Ref</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -180,7 +180,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a CI/CD pipeline where development deploys execute automatically after tests pass, but production deploys require a manual approval action in CodePipeline. Use CloudFormation change sets that generate a detailed diff for reviewers, and enable CloudTrail logging for all CloudFormation API calls to maintain an audit trail</li>
                 <li><span class="option-label">B.</span> Require manual approval for all deployments including development to maintain consistency</li>
-                <li><span class="option-label">C.</span> Allow automatic deployment to all environments and rely on rollback if issues are detected</li>
+                <li><span class="option-label">C.</span> Allow automatic deployment to all environments and rely on rollback if issues are detected for reviewers</li>
                 <li><span class="option-label">D.</span> Restrict CloudFormation access to a single administrator who performs all deployments manually</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
