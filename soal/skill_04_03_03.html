@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> Only the S3 bucket policy in Account A needs to allow Account B — KMS access is inherited automatically</li>
                 <li><span class="option-label">B.</span> Both S3 AND KMS cross-account access must be configured: (1) Account A's S3 bucket policy must Allow s3:GetObject for Account B's Glue role, (2) Account A's KMS key policy must Allow kms:Decrypt for Account B's Glue role (or the entire Account B), AND (3) Account B's Glue role IAM policy must Allow both s3:GetObject on the bucket AND kms:Decrypt on Account A's KMS key ARN. All three policies must align — missing any one causes AccessDenied</li>
                 <li><span class="option-label">C.</span> Create a VPC peering connection between accounts and KMS access flows through the peering</li>
-                <li><span class="option-label">D.</span> Copy the KMS key to Account B — KMS keys can be replicated across accounts</li>
+                <li><span class="option-label">D.</span> Copy the KMS key to Account B — KMS keys can be replicated across accounts for Account B's Glue role</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -55,7 +55,7 @@
                 <li><span class="option-label">A.</span> Create 50 separate KMS keys, one for each consumer account</li>
                 <li><span class="option-label">B.</span> Use Organization-level access in the KMS key policy: allow access using aws:PrincipalOrgID condition instead of listing individual account IDs. The key policy grants kms:Decrypt to Principal "*" WITH a Condition that aws:PrincipalOrgID equals the Organization ID — any principal in ANY account within the Organization can decrypt, while principals outside the organization are denied</li>
                 <li><span class="option-label">C.</span> Share the KMS key credentials with all 50 accounts through Secrets Manager</li>
-                <li><span class="option-label">D.</span> Disable encryption when sharing data across multiple accounts</li>
+                <li><span class="option-label">D.</span> Disable encryption when sharing data across multiple accounts with a Condition that aws:PrincipalOrgID equals the Organization ID — any principal in ANY account within the Organization can decrypt</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -71,7 +71,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> S3 copy automatically re-encrypts with the destination bucket's key — no special permissions needed</li>
                 <li><span class="option-label">B.</span> The principal performing the copy must have: kms:Decrypt permission on Account A's source KMS key (to decrypt the source object) AND kms:GenerateDataKey permission on Account B's destination KMS key (to re-encrypt with the new key). The copy operation is actually a decrypt-then-re-encrypt operation — the object is decrypted using the source key and immediately re-encrypted with the destination key during the copy process</li>
-                <li><span class="option-label">C.</span> Both KMS keys must have the same key material for cross-account copy to work</li>
+                <li><span class="option-label">C.</span> Both KMS keys must have the same key material for cross-account copy to work with the new key)</li>
                 <li><span class="option-label">D.</span> The object must be decrypted to plaintext in an intermediate S3 bucket before re-encrypting</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -86,7 +86,7 @@
             <div class="question-number">4</div>
             <div class="question-text">A company uses Redshift data sharing to share production data from a producer cluster (Account A, us-east-1) to a consumer cluster (Account B, us-east-1). Both clusters are encrypted with different KMS keys. How does encryption work with Redshift cross-account data sharing?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Both clusters must use the same KMS key for data sharing to work</li>
+                <li><span class="option-label">A.</span> Both clusters must use the same KMS key for data sharing to work with its key</li>
                 <li><span class="option-label">B.</span> Redshift data sharing handles encryption transparently — the consumer cluster does NOT need access to the producer's KMS key. Redshift internally manages the data sharing encryption: the producer's data remains encrypted with its key, and the consumer accesses shared data through Redshift's internal data sharing protocol which handles decryption/re-encryption. The consumer's queries are authorized through the datashare grant, not through direct KMS key access</li>
                 <li><span class="option-label">C.</span> Data sharing only works between unencrypted Redshift clusters</li>
                 <li><span class="option-label">D.</span> The consumer must manually decrypt and re-encrypt the shared data in their cluster</li>
@@ -103,7 +103,7 @@
             <div class="question-number">5</div>
             <div class="question-text">A company operates in us-east-1 (primary) and eu-west-1 (DR region). Their data lake in us-east-1 uses a KMS CMK for S3 encryption. They need to replicate encrypted data to eu-west-1 for disaster recovery using S3 Cross-Region Replication (CRR). What KMS configuration is required for CRR of encrypted objects?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The same KMS key works in both regions — just enable CRR and it works automatically</li>
+                <li><span class="option-label">A.</span> The same KMS key works in both regions — just enable CRR and it works automatically with the source key</li>
                 <li><span class="option-label">B.</span> Create a KMS multi-region key: replicate the primary key from us-east-1 to eu-west-1 as a replica key. Configure S3 CRR to use the replica key in the destination region. Alternatively, specify a different destination KMS key in the CRR rule configuration. The replication role must have kms:Decrypt on the source key AND kms:Encrypt on the destination key — CRR decrypts with the source key and re-encrypts with the destination key during replication</li>
                 <li><span class="option-label">C.</span> Disable encryption on the destination bucket — CRR cannot work with encrypted destination buckets</li>
                 <li><span class="option-label">D.</span> Export the source KMS key material and import it into a new key in the destination region</li>
@@ -123,7 +123,7 @@
                 <li><span class="option-label">A.</span> Account B must have direct kms:Decrypt access to Account A's KMS key for Athena queries to work</li>
                 <li><span class="option-label">B.</span> Lake Formation handles cross-account encryption transparently through its credential vending mechanism — when Account B queries shared data, Lake Formation in Account A vends temporary credentials from Account A's registered data access role (which has KMS decrypt permissions). The query engine uses these vended credentials to access S3 and decrypt data. Account B never directly interacts with Account A's KMS key</li>
                 <li><span class="option-label">C.</span> Encrypted data cannot be shared through Lake Formation cross-account sharing</li>
-                <li><span class="option-label">D.</span> Account B must create a copy of Account A's KMS key before querying shared data</li>
+                <li><span class="option-label">D.</span> Account B must create a copy of Account A's KMS key before querying shared data with Account A's KMS key and decrypt data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -137,7 +137,7 @@
             <div class="question-number">7</div>
             <div class="question-text">An organization mandates that ALL S3 buckets across ALL accounts in the Organization must use a specific centrally-managed KMS key for encryption (not account-level keys). How can they enforce this organization-wide encryption standard?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create the same KMS key independently in each account with the same alias</li>
+                <li><span class="option-label">A.</span> Create the same KMS key independently in each account with the same alias with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> Use a combination: (1) Create the KMS key in a central security account and grant cross-account access to all Organization accounts via key policy with aws:PrincipalOrgID condition, (2) Deploy an SCP that denies s3:PutObject unless the request specifies the central KMS key ARN in the encryption header, (3) Use AWS Config organization-wide rules to detect non-compliant bucket encryption configurations. This ensures ALL data across ALL accounts is encrypted with the centrally governed key</li>
                 <li><span class="option-label">C.</span> Enable default S3 encryption with SSE-S3 in each account — this satisfies the central key requirement</li>
                 <li><span class="option-label">D.</span> KMS keys cannot be shared across accounts so this requirement is impossible to implement</li>
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer in Account B attempts to use aws s3 cp to copy an encrypted object from Account A's bucket to a local file. The copy fails with "An error occurred (AccessDenied) when calling the GetObject operation". The S3 bucket policy allows Account B's role for s3:GetObject. What is the MOST likely missing piece?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The S3 bucket doesn't support cross-account downloads</li>
+                <li><span class="option-label">A.</span> The S3 bucket doesn't support cross-account downloads with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> The bucket uses SSE-KMS encryption and Account A's KMS key policy does NOT include Account B's role as an allowed principal for kms:Decrypt — even though S3 bucket policy allows GetObject, the actual object decryption requires a separate KMS Decrypt call that fails without key policy permission. The error manifests as S3 AccessDenied (not a KMS error) because S3 wraps the KMS failure into its own error response</li>
                 <li><span class="option-label">C.</span> Account B needs to enable S3 Transfer Acceleration for cross-account downloads</li>
                 <li><span class="option-label">D.</span> The aws s3 cp command doesn't support cross-account operations</li>
@@ -174,7 +174,7 @@
                 <li><span class="option-label">A.</span> Use KMS ReEncrypt API to change the key in-place without decrypting the data</li>
                 <li><span class="option-label">B.</span> The copying principal (or service) must perform a decrypt-then-re-encrypt operation: decrypt using Account A's us-east-1 KMS key (requires kms:Decrypt cross-account and cross-region access to Account A's key in us-east-1), then re-encrypt using Account B's eu-west-1 KMS key (requires kms:GenerateDataKey on Account B's key in eu-west-1). This can be automated using S3 CRR rules with destination encryption configuration, or a Glue/Lambda job that explicitly handles the key transition</li>
                 <li><span class="option-label">C.</span> Transfer the KMS key from us-east-1 to eu-west-1 and the encryption automatically follows</li>
-                <li><span class="option-label">D.</span> Encrypt the data with both keys simultaneously during the copy operation</li>
+                <li><span class="option-label">D.</span> Encrypt the data with both keys simultaneously during the copy operation with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -188,7 +188,7 @@
             <div class="question-number">10</div>
             <div class="question-text">A company grants cross-account KMS access using KMS Grants instead of key policies. A data pipeline in Account B uses a Grant to access Account A's KMS key for decrypting shared data. What are KMS Grants and when are they preferred over key policy statements for cross-account scenarios?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> KMS Grants are permanent permissions that cannot be revoked once created</li>
+                <li><span class="option-label">A.</span> KMS Grants are permanent permissions that cannot be revoked once created and optional constraints (encryption context) for each new consumer</li>
                 <li><span class="option-label">B.</span> KMS Grants are temporary, delegatable permissions attached to a specific KMS key. They are preferred over key policy modifications when: (1) access needs to be temporary or programmatically managed (create/retire grants dynamically), (2) you want to avoid modifying the 32KB key policy document for each new consumer, (3) services like EBS, RDS, Redshift automatically use grants when they need to encrypt/decrypt on your behalf. Grants specify: grantee principal, allowed operations (Decrypt, GenerateDataKey), and optional constraints (encryption context). They can be retired (revoked) when access is no longer needed</li>
                 <li><span class="option-label">C.</span> KMS Grants provide read-only access to view the key metadata but cannot be used for encryption/decryption</li>
                 <li><span class="option-label">D.</span> Grants are only used within the same account and cannot enable cross-account access</li>
