@@ -36,7 +36,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a trunk-based development model with short-lived feature branches, requiring pull requests with at least one approval before merging to main, combined with automated CI tests that run Glue job unit tests on every PR</li>
                 <li><span class="option-label">B.</span> Have all engineers commit directly to the main branch with no reviews</li>
-                <li><span class="option-label">C.</span> Use long-lived feature branches (lasting weeks) that are merged monthly</li>
+                <li><span class="option-label">C.</span> Use long-lived feature branches (lasting weeks) that are merged monthly with short-lived feature branches</li>
                 <li><span class="option-label">D.</span> Maintain separate repositories for each engineer's work and manually copy code to production</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -51,7 +51,7 @@
             <div class="question-text">A data engineer writes an AWS Glue ETL job that reads CSV files from S3, applies data type conversions, filters invalid records, and writes Parquet to a target bucket. The engineer wants to write unit tests for the transformation logic WITHOUT requiring an actual Spark cluster or AWS resources. Which testing approach is MOST effective?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use pytest with a local SparkSession (spark-testing-base or pyspark local mode), create small in-memory DataFrames as test inputs, apply the transformation functions, and assert expected outputs using DataFrame comparisons</li>
-                <li><span class="option-label">B.</span> Deploy the job to a Glue development endpoint and manually verify output files in S3</li>
+                <li><span class="option-label">B.</span> Deploy the job to a Glue development endpoint and manually verify output files in S3 with a local SparkSession (spark-testing-base or pyspark local mode) and assert expected outputs using DataFrame comparisons</li>
                 <li><span class="option-label">C.</span> Write integration tests that run the full Glue job against production data</li>
                 <li><span class="option-label">D.</span> Test by reading the output Parquet files after a production run and checking data quality</li>
             </ul>
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement integration tests that run the full pipeline against a dedicated test environment with known seed data, then validate row counts, schema conformity, data types, and sample record values in the target Redshift cluster</li>
                 <li><span class="option-label">B.</span> Add more unit tests for individual transformation functions</li>
-                <li><span class="option-label">C.</span> Perform manual spot-checks on production data weekly</li>
+                <li><span class="option-label">C.</span> Perform manual spot-checks on production data weekly with known seed data and sample record values in the target Redshift cluster</li>
                 <li><span class="option-label">D.</span> Run the same unit tests multiple times to increase confidence</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -84,7 +84,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement structured logging (JSON format) with correlation IDs, log at key checkpoints (records read, records filtered, records written), capture failed record details in a dead-letter location, and use different log levels (INFO for progress, WARN for data quality issues, ERROR for failures)</li>
                 <li><span class="option-label">B.</span> Add print statements throughout the code to output record counts</li>
-                <li><span class="option-label">C.</span> Enable Glue continuous logging and rely solely on the default Glue metrics</li>
+                <li><span class="option-label">C.</span> Enable Glue continuous logging and rely solely on the default Glue metrics with correlation IDs for progress</li>
                 <li><span class="option-label">D.</span> Write all records to a debug S3 bucket for manual inspection after failures</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Create CloudWatch custom metrics for each pipeline (records_processed, processing_duration, error_count), set CloudWatch Alarms with appropriate thresholds for SLA breach detection, configure SNS notifications to the on-call team, and build a CloudWatch Dashboard showing all pipeline health metrics</li>
                 <li><span class="option-label">B.</span> Check the Glue console manually each morning for failed jobs</li>
                 <li><span class="option-label">C.</span> Set up email notifications only for job failures via Glue job bookmarks</li>
-                <li><span class="option-label">D.</span> Rely on downstream consumers to report when they notice missing data</li>
+                <li><span class="option-label">D.</span> Rely on downstream consumers to report when they notice missing data with appropriate thresholds for SLA breach detection for each pipeline (records_processed</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -116,7 +116,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Externalize configuration (S3 paths, database names) to Glue job parameters or AWS Systems Manager Parameter Store, add input validation with descriptive error messages, extract duplicated logic into reusable functions, and move SQL to separate files or use parameterized templates</li>
                 <li><span class="option-label">B.</span> The code works correctly, so approve the PR without changes</li>
-                <li><span class="option-label">C.</span> Only fix the hardcoded paths and approve the rest</li>
+                <li><span class="option-label">C.</span> Only fix the hardcoded paths and approve the rest with descriptive error messages and move SQL to separate files or use parameterized templates</li>
                 <li><span class="option-label">D.</span> Rewrite the entire job from scratch following a different design pattern</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a tiered error handling strategy: retry transient errors (network timeouts, throttling) with exponential backoff, route malformed records to a dead-letter queue for later investigation, use checkpointing to enable resumption from the last successful point, and alert on non-retryable errors (disk full, permission denied)</li>
                 <li><span class="option-label">B.</span> Wrap the entire pipeline in a single try-except block that catches all exceptions and retries from the beginning</li>
-                <li><span class="option-label">C.</span> Ignore errors and continue processing, logging them for later review</li>
+                <li><span class="option-label">C.</span> Ignore errors and continue processing, logging them for later review with exponential backoff</li>
                 <li><span class="option-label">D.</span> Add a 5-minute sleep between operations to avoid all errors</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -147,7 +147,7 @@
             <div class="question-text">A data engineering team needs to deploy AWS Glue jobs across development, staging, and production environments. Each environment has different S3 buckets, database endpoints, IAM roles, and Glue job configurations (number of workers, timeout values). Deployments are currently manual and error-prone. Which CI/CD approach is MOST appropriate?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS CodePipeline with CodeBuild stages: source from CodeCommit/GitHub triggers the pipeline, CodeBuild runs unit tests, then deploys via CloudFormation/CDK with environment-specific parameter files (dev.json, staging.json, prod.json) that contain S3 paths, IAM roles, and worker counts for each environment</li>
-                <li><span class="option-label">B.</span> Manually upload Glue scripts to S3 and update job configurations through the AWS Console for each environment</li>
+                <li><span class="option-label">B.</span> Manually upload Glue scripts to S3 and update job configurations through the AWS Console for each environment with CodeBuild stages: source from CodeCommit/GitHub triggers the pipeline and worker counts for each environment</li>
                 <li><span class="option-label">C.</span> Use a single Glue job configuration across all environments with if/else statements in the code to switch behavior</li>
                 <li><span class="option-label">D.</span> Deploy only to production and use production as the test environment</li>
             </ul>
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Store sensitive values (connection strings, API keys) in AWS Secrets Manager with environment-specific secret names, store non-sensitive configuration (feature flags, batch sizes) in AWS Systems Manager Parameter Store with hierarchical paths (/app/prod/glue/batch-size), and have Glue jobs retrieve configurations at runtime based on an environment parameter</li>
                 <li><span class="option-label">B.</span> Store all configurations in a config.py file committed to the Git repository</li>
-                <li><span class="option-label">C.</span> Use environment variables hardcoded in each Glue job definition</li>
+                <li><span class="option-label">C.</span> Use environment variables hardcoded in each Glue job definition with environment-specific secret names</li>
                 <li><span class="option-label">D.</span> Maintain a shared spreadsheet with all configuration values that engineers reference during deployment</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -181,7 +181,7 @@
                 <li><span class="option-label">A.</span> Create a runbook containing: architecture diagram showing data flow between components, SLA requirements per pipeline stage, common failure scenarios with remediation steps, escalation procedures, monitoring dashboard locations, and a data dictionary describing input/output schemas at each stage</li>
                 <li><span class="option-label">B.</span> Write inline code comments explaining every line of code in all 25 components</li>
                 <li><span class="option-label">C.</span> Create a single README.md with a high-level description of the project</li>
-                <li><span class="option-label">D.</span> Record a video walkthrough of the AWS Console showing each resource</li>
+                <li><span class="option-label">D.</span> Record a video walkthrough of the AWS Console showing each resource with remediation steps</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
