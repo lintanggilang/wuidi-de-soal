@@ -54,13 +54,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Athena partition projection to eliminate the need for partition metadata lookups in Glue Data Catalog</li>
                 <li><span class="option-label">B.</span> Reduce the number of partitions by repartitioning data to year/month granularity</li>
-                <li><span class="option-label">C.</span> Create an Athena view with a WHERE clause that limits to the last 7 days</li>
+                <li><span class="option-label">C.</span> Create an Athena view with a WHERE clause that limits to the last 7 days for partition metadata lookups in Glue Data Catalog</li>
                 <li><span class="option-label">D.</span> Increase the Athena DPU allocation for faster query planning</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Partition projection memungkinkan Athena menghitung partisi secara in-memory berdasarkan pola yang didefinisikan (misalnya date range), tanpa perlu melakukan GetPartitions call ke Glue Data Catalog. Ini secara drastis mengurangi query planning time untuk tabel dengan banyak partisi. Opsi B menghilangkan granularitas partitioning harian yang berguna untuk filter 7 hari terakhir. Opsi C (view) tetap memerlukan partition lookup. Opsi D (DPU) tidak berlaku untuk Athena standar yang serverless (tidak ada DPU configuration untuk query planning).</div>
+                <div class="explanation">Partition projection memungkinkan Athena menghitung partisi secara in-memory berdasarkan pola yang didefinisikan (misalnya date range), tanpa perlu melakukan GetPartitions call ke Glue Data Catalog. Ini secara drastis mengurangi query planning time untuk tabel dengan banyak partisi. Opsi B menghilangkan granularitas partitioning harian yang berguna untuk filter 7 hari terakhir. Opsi C (view) tetap memerlukan partition lookup — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (DPU) tidak berlaku untuk Athena standar yang serverless (tidak ada DPU configuration untuk query planning).</div>
             </div>
         </div>
 
@@ -71,13 +71,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> CREATE VIEW that applies transformation logic</li>
                 <li><span class="option-label">B.</span> CREATE TABLE AS SELECT (CTAS) with format and partitioning specified</li>
-                <li><span class="option-label">C.</span> INSERT INTO from a SELECT statement on the raw table</li>
+                <li><span class="option-label">C.</span> INSERT INTO from a SELECT statement on the raw table with format</li>
                 <li><span class="option-label">D.</span> CREATE EXTERNAL TABLE pointing to the same S3 location with a Glue ETL job for transformation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">CTAS di Athena memungkinkan pembuatan tabel baru dari hasil query SELECT. Anda bisa menentukan format output (Parquet), lokasi S3 tujuan, dan strategi partitioning. Data secara fisik ditulis ke S3 dalam format yang ditentukan. Ini ideal untuk membuat layer data yang ditransformasi. Opsi A (VIEW) hanya menyimpan definisi query tanpa materialisasi data. Opsi C (INSERT INTO) memerlukan tabel target yang sudah ada. Opsi D menambah kompleksitas yang tidak perlu dengan Glue ETL job terpisah.</div>
+                <div class="explanation">CTAS di Athena memungkinkan pembuatan tabel baru dari hasil query SELECT. Anda bisa menentukan format output (Parquet), lokasi S3 tujuan, dan strategi partitioning. Data secara fisik ditulis ke S3 dalam format yang ditentukan. Ini ideal untuk membuat layer data yang ditransformasi. Opsi A (VIEW) hanya menyimpan definisi query tanpa materialisasi data. Opsi C (INSERT INTO) memerlukan tabel target yang sudah ada — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D menambah kompleksitas yang tidak perlu dengan Glue ETL job terpisah.</div>
             </div>
         </div>
 
@@ -105,13 +105,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use SUM(daily_sales) OVER (PARTITION BY month ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) for running total and RANK() OVER (PARTITION BY month ORDER BY daily_sales DESC) for rank</li>
                 <li><span class="option-label">B.</span> Use a self-join of the table on month with a GROUP BY to calculate cumulative sum and a subquery for rank</li>
-                <li><span class="option-label">C.</span> Use SUM(daily_sales) OVER (ORDER BY date) for running total and ROW_NUMBER() OVER (ORDER BY date) for rank</li>
+                <li><span class="option-label">C.</span> Use SUM(daily_sales) OVER (ORDER BY date) for running total and ROW_NUMBER() OVER (ORDER BY date) for rank with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> Use a recursive CTE to iterate through dates and accumulate the running total with a separate query for rank</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Window functions dengan PARTITION BY month membatasi kalkulasi dalam setiap bulan. SUM() OVER dengan ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW memberikan running total yang benar dalam bulan. RANK() OVER dengan ORDER BY daily_sales DESC memberikan ranking berdasarkan nilai sales dalam bulan. Opsi B (self-join) tidak efisien dan lebih kompleks. Opsi C kehilangan PARTITION BY month sehingga running total lintas bulan dan rank tidak per-bulan. Opsi D (recursive CTE) sangat tidak efisien untuk masalah yang bisa diselesaikan dengan window functions.</div>
+                <div class="explanation">Window functions dengan PARTITION BY month membatasi kalkulasi dalam setiap bulan. SUM() OVER dengan ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW memberikan running total yang benar dalam bulan. RANK() OVER dengan ORDER BY daily_sales DESC memberikan ranking berdasarkan nilai sales dalam bulan. Opsi B (self-join) tidak efisien dan lebih kompleks. Opsi C kehilangan PARTITION BY month sehingga running total lintas bulan dan rank tidak per-bulan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (recursive CTE) sangat tidak efisien untuk masalah yang bisa diselesaikan dengan window functions.</div>
             </div>
         </div>
 

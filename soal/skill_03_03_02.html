@@ -38,12 +38,12 @@
                 <li><span class="option-label">A.</span> Configure Glue jobs to write logs to CloudWatch Logs with continuous logging enabled. Set the log group retention to 730 days. Use CloudWatch Logs Insights for audit queries.</li>
                 <li><span class="option-label">B.</span> Configure Glue jobs to write custom logs to an S3 bucket. Create an Athena table for querying.</li>
                 <li><span class="option-label">C.</span> Configure Glue jobs to write logs to CloudWatch Logs. Create a subscription filter to stream logs to Amazon OpenSearch Service for analysis.</li>
-                <li><span class="option-label">D.</span> Configure Glue jobs to write logs to CloudWatch Logs with a 7-day retention. Export logs nightly to S3 using CreateExportTask.</li>
+                <li><span class="option-label">D.</span> Configure Glue jobs to write logs to CloudWatch Logs with a 7-day retention. Export logs nightly to S3 using CreateExportTask. for audit queries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue continuous logging delivers real-time logs to CloudWatch Logs with minimal latency. Setting retention to 730 days (2 years) ensures compliance without manual management. CloudWatch Logs Insights provides serverless SQL-like querying for audit investigations. Option B: Custom S3 logging requires additional code and doesn't capture Glue's native driver/executor logs. Option C: OpenSearch adds significant cost and operational overhead for infrequent audit queries. Option D: Nightly exports create operational complexity and potential data loss if exports fail.</div>
+                <div class="explanation">AWS Glue continuous logging delivers real-time logs to CloudWatch Logs with minimal latency. Setting retention to 730 days (2 years) ensures compliance without manual management. CloudWatch Logs Insights provides serverless SQL-like querying for audit investigations. Option B: Custom S3 logging requires additional code and doesn't capture Glue's native driver/executor logs. Option C: OpenSearch adds significant cost and operational overhead for infrequent audit queries. Option D: Nightly exports create operational complexity and potential data loss if exports fail. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -71,13 +71,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS X-Ray with active tracing enabled on Lambda. Embed the trace ID in log messages using structured JSON logging with the trace_id field.</li>
                 <li><span class="option-label">B.</span> Generate a UUID in the first Lambda invocation and pass it through SQS message attributes to downstream services for logging.</li>
-                <li><span class="option-label">C.</span> Use the Lambda request ID as the correlation ID and include it in all log messages.</li>
+                <li><span class="option-label">C.</span> Use the Lambda request ID as the correlation ID and include it in all log messages, with active tracing enabled on Lambda</li>
                 <li><span class="option-label">D.</span> Configure CloudWatch Logs to automatically correlate logs from multiple Lambda functions using log group prefixes.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS X-Ray with active tracing provides a distributed trace ID that spans multiple services. Embedding this trace ID in structured JSON logs creates end-to-end traceability that correlates log entries across Lambda invocations and downstream services. CloudWatch Logs Insights can then query by trace_id to reconstruct the full processing path. Option B: Manual UUID passing works but requires custom implementation in every service and doesn't integrate with AWS tracing tools. Option C: Lambda request ID is unique per invocation and cannot trace across multiple invocations. Option D: CloudWatch Logs has no automatic correlation capability based on log group prefixes.</div>
+                <div class="explanation">AWS X-Ray with active tracing provides a distributed trace ID that spans multiple services. Embedding this trace ID in structured JSON logs creates end-to-end traceability that correlates log entries across Lambda invocations and downstream services. CloudWatch Logs Insights can then query by trace_id to reconstruct the full processing path. Option B: Manual UUID passing works but requires custom implementation in every service and doesn't integrate with AWS tracing tools. Option C: Lambda request ID is unique per invocation and cannot trace across multiple invocations. Option D: CloudWatch Logs has no automatic correlation capability based on log group prefixes. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -89,12 +89,12 @@
                 <li><span class="option-label">A.</span> Create a CloudWatch Logs data protection policy that detects and masks sensitive data patterns (credentials, API keys) in the log group.</li>
                 <li><span class="option-label">B.</span> Create a subscription filter that sends logs to a Lambda function for redaction before storing in a separate clean log group.</li>
                 <li><span class="option-label">C.</span> Configure IAM policies to restrict access to specific log streams that contain sensitive data.</li>
-                <li><span class="option-label">D.</span> Enable CloudWatch Logs encryption with KMS and restrict key access to authorized personnel only.</li>
+                <li><span class="option-label">D.</span> Enable CloudWatch Logs encryption with KMS and restrict key access to authorized personnel only. configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudWatch Logs data protection policies automatically detect and mask sensitive data (like credentials, credit card numbers, API keys) using managed data identifiers. Masked data appears as asterisks to unauthorized viewers while maintaining audit trails for authorized users. Option B: Lambda-based redaction is complex, adds latency, and requires maintaining custom regex patterns. Option C: IAM restrictions don't mask the sensitive data; anyone with access still sees it. Option D: Encryption protects data at rest but doesn't mask sensitive content from authorized viewers of the logs.</div>
+                <div class="explanation">CloudWatch Logs data protection policies automatically detect and mask sensitive data (like credentials, credit card numbers, API keys) using managed data identifiers. Masked data appears as asterisks to unauthorized viewers while maintaining audit trails for authorized users. Option B: Lambda-based redaction is complex, adds latency, and requires maintaining custom regex patterns. Option C: IAM restrictions don't mask the sensitive data; anyone with access still sees it. Option D: Encryption protects data at rest but doesn't mask sensitive content from authorized viewers of the logs. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -139,13 +139,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> fields @timestamp, @message | filter @message like /ERROR/ | filter @logStream like /job-name/ | sort @timestamp desc | limit 100</li>
                 <li><span class="option-label">B.</span> SELECT timestamp, message FROM logs WHERE level = 'ERROR' AND job_name = 'my-job' ORDER BY timestamp DESC LIMIT 100</li>
-                <li><span class="option-label">C.</span> stats count(*) by @message | filter @message like /ERROR/</li>
+                <li><span class="option-label">C.</span> stats count(*) by @message | filter @message like /ERROR/ with real-time processing and low-latency data delivery</li>
                 <li><span class="option-label">D.</span> fields @timestamp, @message | parse @message "* ERROR *" as timestamp, errorDetail | display @timestamp, errorDetail</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">This CloudWatch Logs Insights query correctly uses the supported syntax: fields to select displayed columns, filter with like and regex to narrow results by ERROR level and specific job log stream, sort by timestamp descending, and limit for manageable output. Option B: SQL syntax is not supported in CloudWatch Logs Insights (it uses its own query language). Option C: stats provides aggregated counts, not individual log entries needed for investigation. Option D: The parse command syntax is incorrect and the display command doesn't exist in Logs Insights.</div>
+                <div class="explanation">This CloudWatch Logs Insights query correctly uses the supported syntax: fields to select displayed columns, filter with like and regex to narrow results by ERROR level and specific job log stream, sort by timestamp descending, and limit for manageable output. Option B: SQL syntax is not supported in CloudWatch Logs Insights (it uses its own query language). Option C: stats provides aggregated counts, not individual log entries needed for investigation. Option D: The parse command syntax is incorrect and the display command doesn't exist in Logs Insights. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -156,13 +156,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Associate a KMS key with each CloudWatch Logs log group using the associate-kms-key API. Update the KMS key policy to grant the CloudWatch Logs service principal encrypt/decrypt permissions.</li>
                 <li><span class="option-label">B.</span> Configure the Glue jobs, Lambda functions, and Step Functions to encrypt log output before sending to CloudWatch Logs.</li>
-                <li><span class="option-label">C.</span> Enable default encryption on the AWS account level for all CloudWatch Logs using AWS Config.</li>
+                <li><span class="option-label">C.</span> Enable default encryption on the AWS account level for all CloudWatch Logs using AWS Config, with each CloudWatch Logs log group using the associate-kms-key API</li>
                 <li><span class="option-label">D.</span> Create an S3 bucket with KMS encryption and redirect all CloudWatch Logs to S3 using subscription filters.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudWatch Logs encryption is configured at the log group level using associate-kms-key. The KMS key policy must grant the logs.{region}.amazonaws.com service principal permissions to generate data keys and decrypt. This encrypts all log data at rest in that log group. Option B: Services send logs to CloudWatch Logs in plaintext; encryption is handled by the CloudWatch Logs service, not the producing services. Option C: There is no account-level default encryption setting for CloudWatch Logs via AWS Config. Option D: Redirecting to S3 changes the storage location entirely and doesn't encrypt CloudWatch Logs in place.</div>
+                <div class="explanation">CloudWatch Logs encryption is configured at the log group level using associate-kms-key. The KMS key policy must grant the logs.{region}.amazonaws.com service principal permissions to generate data keys and decrypt. This encrypts all log data at rest in that log group. Option B: Services send logs to CloudWatch Logs in plaintext; encryption is handled by the CloudWatch Logs service, not the producing services. Option C: There is no account-level default encryption setting for CloudWatch Logs via AWS Config. Option D: Redirecting to S3 changes the storage location entirely and doesn't encrypt CloudWatch Logs in place. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -173,13 +173,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable AWS X-Ray tracing on Step Functions and Lambda. Use X-Ray service map to visualize the execution flow and identify latency bottlenecks.</li>
                 <li><span class="option-label">B.</span> Enable Step Functions execution history logging to CloudWatch Logs. Cross-reference with Lambda and Glue CloudWatch log groups manually.</li>
-                <li><span class="option-label">C.</span> Use CloudWatch ServiceLens to automatically correlate Step Functions, Lambda, and Glue execution traces.</li>
+                <li><span class="option-label">C.</span> Use CloudWatch ServiceLens to automatically correlate Step Functions, Lambda, and Glue execution traces. and Lambda</li>
                 <li><span class="option-label">D.</span> Create a custom DynamoDB table to record each processing step with timestamps and record IDs for manual tracing.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS X-Ray integrates with Step Functions and Lambda to provide distributed tracing. When X-Ray tracing is enabled, trace IDs propagate through the entire execution, and the service map visualizes the complete flow including latency at each step. This provides true end-to-end traceability. Option B: Manual cross-referencing of separate log groups is time-consuming and error-prone without correlation IDs. Option C: CloudWatch ServiceLens works with X-Ray traces but doesn't automatically correlate without X-Ray being enabled first. Option D: Custom DynamoDB tracking adds code complexity and still requires custom tooling to visualize.</div>
+                <div class="explanation">AWS X-Ray integrates with Step Functions and Lambda to provide distributed tracing. When X-Ray tracing is enabled, trace IDs propagate through the entire execution, and the service map visualizes the complete flow including latency at each step. This provides true end-to-end traceability. Option B: Manual cross-referencing of separate log groups is time-consuming and error-prone without correlation IDs. Option C: CloudWatch ServiceLens works with X-Ray traces but doesn't automatically correlate without X-Ray being enabled first. Option D: Custom DynamoDB tracking adds code complexity and still requires custom tooling to visualize. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -191,12 +191,12 @@
                 <li><span class="option-label">A.</span> Set the multi_line_start_pattern parameter in the agent configuration to a regex matching the start of each log entry (e.g., timestamp pattern).</li>
                 <li><span class="option-label">B.</span> Set the max_event_size parameter to accommodate the maximum expected stack trace length.</li>
                 <li><span class="option-label">C.</span> Configure the log_group_name with a separate group for multi-line events to avoid mixing with single-line logs.</li>
-                <li><span class="option-label">D.</span> Set the encoding parameter to "utf-8-multi" to enable multi-line event detection.</li>
+                <li><span class="option-label">D.</span> Set the encoding parameter to "utf-8-multi" to enable multi-line event detection. configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">The multi_line_start_pattern parameter in the CloudWatch agent configuration defines a regex pattern that identifies the beginning of a new log event. Lines not matching this pattern are appended to the previous event. For Java logs, a common pattern is the timestamp (e.g., "^\\d{4}-\\d{2}-\\d{2}") which ensures stack traces are grouped with their originating error line. Option B: max_event_size limits event size but doesn't handle multi-line detection. Option C: Separate log groups don't solve the multi-line parsing problem. Option D: "utf-8-multi" is not a valid encoding option for the CloudWatch agent.</div>
+                <div class="explanation">The multi_line_start_pattern parameter in the CloudWatch agent configuration defines a regex pattern that identifies the beginning of a new log event. Lines not matching this pattern are appended to the previous event. For Java logs, a common pattern is the timestamp (e.g., "^\\d{4}-\\d{2}-\\d{2}") which ensures stack traces are grouped with their originating error line. Option B: max_event_size limits event size but doesn't handle multi-line detection. Option C: Separate log groups don't solve the multi-line parsing problem. Option D: "utf-8-multi" is not a valid encoding option for the CloudWatch agent. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
         

@@ -38,12 +38,12 @@
                 <li><span class="option-label">A.</span> Enable AWS CloudTrail and deliver logs to an S3 bucket with a 12-month retention lifecycle policy. Use Amazon Athena with partition projection to query logs.</li>
                 <li><span class="option-label">B.</span> Enable AWS CloudTrail and stream logs to Amazon CloudWatch Logs. Use CloudWatch Logs Insights to query events.</li>
                 <li><span class="option-label">C.</span> Enable AWS CloudTrail and deliver logs to Amazon Redshift using Amazon Data Firehose. Query logs using Redshift SQL.</li>
-                <li><span class="option-label">D.</span> Enable AWS CloudTrail and store logs in Amazon DynamoDB with a TTL of 365 days. Use PartiQL to query events.</li>
+                <li><span class="option-label">D.</span> Enable AWS CloudTrail and store logs in Amazon DynamoDB with a TTL of 365 days. Use PartiQL to query events, with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudTrail logs delivered to S3 with Athena queries is the most cost-effective solution for long-term audit log storage and SQL-based analysis. Partition projection enables efficient querying by date without running MSCK REPAIR TABLE. Option B: CloudWatch Logs is more expensive for 12-month retention and Logs Insights has query limitations for large volumes. Option C: Redshift is over-engineered and expensive for infrequent audit queries. Option D: DynamoDB is not optimized for complex analytical queries on log data and would be prohibitively expensive at scale.</div>
+                <div class="explanation">CloudTrail logs delivered to S3 with Athena queries is the most cost-effective solution for long-term audit log storage and SQL-based analysis. Partition projection enables efficient querying by date without running MSCK REPAIR TABLE. Option B: CloudWatch Logs is more expensive for 12-month retention and Logs Insights has query limitations for large volumes. Option C: Redshift is over-engineered and expensive for infrequent audit queries. Option D: DynamoDB is not optimized for complex analytical queries on log data and would be prohibitively expensive at scale. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -89,12 +89,12 @@
                 <li><span class="option-label">A.</span> Publish VPC Flow Logs to S3 in Parquet format with Hive-compatible prefixes. Query using Athena with partition projection on date.</li>
                 <li><span class="option-label">B.</span> Publish VPC Flow Logs to CloudWatch Logs. Export the log group to S3, then query with Athena.</li>
                 <li><span class="option-label">C.</span> Publish VPC Flow Logs to S3 in default text format. Load into Amazon Redshift using COPY command for analysis.</li>
-                <li><span class="option-label">D.</span> Publish VPC Flow Logs to CloudWatch Logs. Use CloudWatch Logs Insights for all queries.</li>
+                <li><span class="option-label">D.</span> Publish VPC Flow Logs to CloudWatch Logs. Use CloudWatch Logs Insights for all queries, with Hive-compatible prefixes</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">VPC Flow Logs can be published directly to S3 in Parquet format with Hive-compatible partition prefixes (per-hour). This is the most efficient for Athena queries because Parquet enables columnar scanning and partition projection eliminates the need for partition maintenance. Option B adds unnecessary complexity with CloudWatch as an intermediary. Option C: Loading into Redshift is expensive for periodic audit queries. Option D: CloudWatch Logs Insights has a 10,000 result limit per query and is less cost-effective for large-volume analysis compared to S3 + Athena.</div>
+                <div class="explanation">VPC Flow Logs can be published directly to S3 in Parquet format with Hive-compatible partition prefixes (per-hour). This is the most efficient for Athena queries because Parquet enables columnar scanning and partition projection eliminates the need for partition maintenance. Option B adds unnecessary complexity with CloudWatch as an intermediary. Option C: Loading into Redshift is expensive for periodic audit queries. Option D: CloudWatch Logs Insights has a 10,000 result limit per query and is less cost-effective for large-volume analysis compared to S3 + Athena. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -105,13 +105,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create an organization trail in the AWS Organizations management account with the target S3 bucket in the security account.</li>
                 <li><span class="option-label">B.</span> Create individual trails in each account and configure S3 cross-region replication to the security account bucket.</li>
-                <li><span class="option-label">C.</span> Use AWS Config to aggregate CloudTrail events from all accounts into the security account.</li>
+                <li><span class="option-label">C.</span> Use AWS Config to aggregate CloudTrail events from all accounts into the security account, with the target S3 bucket in the security account</li>
                 <li><span class="option-label">D.</span> Create an EventBridge rule in each account to forward CloudTrail events to the security account's S3 bucket.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">An organization trail in AWS Organizations automatically captures events from all member accounts and delivers them to a centralized S3 bucket. This is the simplest, most scalable solution for multi-account centralized audit logging. Option B: Cross-region replication is for S3 buckets across regions, not for aggregating trails from multiple accounts (and adds management overhead). Option C: AWS Config tracks resource configuration changes, not CloudTrail API events. Option D: While technically possible, this requires maintaining EventBridge rules in every account and doesn't capture all event types reliably.</div>
+                <div class="explanation">An organization trail in AWS Organizations automatically captures events from all member accounts and delivers them to a centralized S3 bucket. This is the simplest, most scalable solution for multi-account centralized audit logging. Option B: Cross-region replication is for S3 buckets across regions, not for aggregating trails from multiple accounts (and adds management overhead). Option C: AWS Config tracks resource configuration changes, not CloudTrail API events. Option D: While technically possible, this requires maintaining EventBridge rules in every account and doesn't capture all event types reliably. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -122,13 +122,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use S3 Select to filter individual log files for the target object key, then aggregate results.</li>
                 <li><span class="option-label">B.</span> Create an Athena table over the S3 access log bucket using a regex SerDe, then query by object key and requester.</li>
-                <li><span class="option-label">C.</span> Use Amazon Macie to scan the access log bucket and identify access patterns.</li>
+                <li><span class="option-label">C.</span> Use Amazon Macie to scan the access log bucket and identify access patterns. and requester</li>
                 <li><span class="option-label">D.</span> Configure S3 Inventory to report on object access patterns for the target objects.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Amazon Athena with a regex SerDe can parse S3 server access log format efficiently, enabling SQL queries to filter by object key, requester (IAM principal), operation type, and time range across millions of log files. This is the standard approach for large-scale S3 access log analysis. Option A: S3 Select works on individual files and would require processing millions of files sequentially, which is impractical. Option C: Macie is for discovering sensitive data (PII), not for analyzing access patterns. Option D: S3 Inventory reports on object metadata (size, storage class), not access patterns.</div>
+                <div class="explanation">Amazon Athena with a regex SerDe can parse S3 server access log format efficiently, enabling SQL queries to filter by object key, requester (IAM principal), operation type, and time range across millions of log files. This is the standard approach for large-scale S3 access log analysis. Option A: S3 Select works on individual files and would require processing millions of files sequentially, which is impractical. Option C: Macie is for discovering sensitive data (PII), not for analyzing access patterns. Option D: S3 Inventory reports on object metadata (size, storage class), not access patterns. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -140,12 +140,12 @@
                 <li><span class="option-label">A.</span> Store logs in S3 Standard. Transition to S3 Glacier Flexible Retrieval after 90 days. Delete after 7 years.</li>
                 <li><span class="option-label">B.</span> Store logs in S3 Standard. Transition to S3 Standard-IA after 90 days. Delete after 7 years.</li>
                 <li><span class="option-label">C.</span> Store logs in S3 Standard. Transition to S3 Glacier Deep Archive after 90 days. Delete after 7 years.</li>
-                <li><span class="option-label">D.</span> Store logs in S3 Intelligent-Tiering for the entire 7-year period.</li>
+                <li><span class="option-label">D.</span> Store logs in S3 Intelligent-Tiering for the entire 7-year period, with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">S3 Glacier Flexible Retrieval provides the best cost optimization for logs that are rarely accessed but must be retrievable within 12 hours (standard retrieval is 3-5 hours, which satisfies the 12-hour requirement). Option B: Standard-IA is more expensive than Glacier for 7-year retention with rare access. Option C: Glacier Deep Archive has a minimum retrieval time of 12 hours (standard) and can take up to 48 hours, which may not reliably meet the 12-hour SLA. Option D: Intelligent-Tiering has monitoring fees per object that add up at scale, and the archive tiers require configuration that doesn't guarantee the 12-hour retrieval SLA.</div>
+                <div class="explanation">S3 Glacier Flexible Retrieval provides the best cost optimization for logs that are rarely accessed but must be retrievable within 12 hours (standard retrieval is 3-5 hours, which satisfies the 12-hour requirement). Option B: Standard-IA is more expensive than Glacier for 7-year retention with rare access. Option C: Glacier Deep Archive has a minimum retrieval time of 12 hours (standard) and can take up to 48 hours, which may not reliably meet the 12-hour SLA. Option D: Intelligent-Tiering has monitoring fees per object that add up at scale, and the archive tiers require configuration that doesn't guarantee the 12-hour retrieval SLA. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer needs to extract Redshift user activity logs to identify all SQL queries that accessed a specific sensitive table during a data breach investigation. The user activity logs are delivered to S3. The logs contain thousands of SQL statements per hour. Which approach efficiently filters the relevant audit events?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Download the user activity log files and use grep to search for the table name.</li>
+                <li><span class="option-label">A.</span> Download the user activity log files and use grep to search for the table name. and use SQL to filter by table name in the query text</li>
                 <li><span class="option-label">B.</span> Create an Athena table over the Redshift user activity log files in S3 and use SQL to filter by table name in the query text.</li>
                 <li><span class="option-label">C.</span> Query the SVL_STATEMENTTEXT system view in Redshift filtered by the table name.</li>
                 <li><span class="option-label">D.</span> Use Amazon Redshift Spectrum to query the audit log files directly from Redshift.</li>
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Creating an Athena table over the Redshift user activity logs in S3 enables efficient SQL-based filtering across large volumes of log data. You can use WHERE clauses with LIKE to filter by table name in the query text. Option A: Manual grep is not scalable and not suitable for production audit workflows. Option C: SVL_STATEMENTTEXT has limited retention on the cluster (typically 2-5 days) and may not cover the investigation timeframe. Option D: While Redshift Spectrum could work, it requires the Redshift cluster to be running and available, adding unnecessary cost for a one-time investigation that Athena handles serverlessly.</div>
+                <div class="explanation">Creating an Athena table over the Redshift user activity logs in S3 enables efficient SQL-based filtering across large volumes of log data. You can use WHERE clauses with LIKE to filter by table name in the query text. Option A: Manual grep is not scalable and not suitable for production audit workflows. Option C: SVL_STATEMENTTEXT has limited retention on the cluster (typically 2-5 days) and may not cover the investigation timeframe. Option D: While Redshift Spectrum could work, it requires the Redshift cluster to be running and available, adding unnecessary cost for a one-time investigation that Athena handles serverlessly. Opsi A meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -173,13 +173,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> CloudTrail data events for Kinesis, filtering for GetRecords and GetShardIterator API calls on the target stream.</li>
                 <li><span class="option-label">B.</span> Kinesis Data Streams enhanced monitoring metrics showing consumer application names.</li>
-                <li><span class="option-label">C.</span> CloudTrail management events, filtering for Kinesis DescribeStream calls.</li>
+                <li><span class="option-label">C.</span> CloudTrail management events, filtering for Kinesis DescribeStream calls. and GetShardIterator API calls on the target stream</li>
                 <li><span class="option-label">D.</span> VPC Flow Logs for the subnet where the Kinesis endpoint resides.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudTrail data events for Kinesis capture GetRecords and GetShardIterator API calls, which show exactly which IAM principal consumed data from a specific stream and when. This provides definitive evidence of who accessed the data. Option B: Enhanced monitoring shows metrics like IteratorAge but doesn't provide IAM identity of consumers. Option C: Management events capture control-plane operations (CreateStream, DescribeStream) but not data-plane operations (GetRecords). Option D: VPC Flow Logs show network connections but not the identity of the API caller or which stream was accessed.</div>
+                <div class="explanation">CloudTrail data events for Kinesis capture GetRecords and GetShardIterator API calls, which show exactly which IAM principal consumed data from a specific stream and when. This provides definitive evidence of who accessed the data. Option B: Enhanced monitoring shows metrics like IteratorAge but doesn't provide IAM identity of consumers. Option C: Management events capture control-plane operations (CreateStream, DescribeStream) but not data-plane operations (GetRecords). Option D: VPC Flow Logs show network connections but not the identity of the API caller or which stream was accessed. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -191,12 +191,12 @@
                 <li><span class="option-label">A.</span> Enable CloudTrail log file integrity validation to generate digest files with hash values for verification.</li>
                 <li><span class="option-label">B.</span> Enable S3 Object Lock in governance mode on the CloudTrail log bucket.</li>
                 <li><span class="option-label">C.</span> Enable S3 versioning on the CloudTrail log bucket to track all modifications.</li>
-                <li><span class="option-label">D.</span> Enable CloudTrail Insights to detect unusual log deletion patterns.</li>
+                <li><span class="option-label">D.</span> Enable CloudTrail Insights to detect unusual log deletion patterns, with hash values for verification for verification</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudTrail log file integrity validation generates SHA-256 hash digest files every hour. These digest files are signed and can be used to programmatically verify that no log files have been modified, deleted, or forged after delivery. This is the purpose-built feature for log integrity verification. Option B: S3 Object Lock prevents deletion but doesn't provide cryptographic verification of integrity. Option C: S3 versioning preserves old versions but doesn't prove logs haven't been tampered with. Option D: CloudTrail Insights detects unusual API activity patterns, not log file tampering.</div>
+                <div class="explanation">CloudTrail log file integrity validation generates SHA-256 hash digest files every hour. These digest files are signed and can be used to programmatically verify that no log files have been modified, deleted, or forged after delivery. This is the purpose-built feature for log integrity verification. Option B: S3 Object Lock prevents deletion but doesn't provide cryptographic verification of integrity. Option C: S3 versioning preserves old versions but doesn't prove logs haven't been tampered with. Option D: CloudTrail Insights detects unusual API activity patterns, not log file tampering. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
         

@@ -37,12 +37,12 @@
                 <li><span class="option-label">A.</span> Create an EventBridge rule matching Glue Job State Change events with state "FAILED", targeting an SNS topic that sends emails to the on-call team with input transformation to format the message</li>
                 <li><span class="option-label">B.</span> Create a CloudWatch alarm on Glue job metrics that triggers SNS</li>
                 <li><span class="option-label">C.</span> Add error notification code at the end of the Glue job script</li>
-                <li><span class="option-label">D.</span> Use a Lambda function that polls Glue job status every minute</li>
+                <li><span class="option-label">D.</span> Use a Lambda function that polls Glue job status every minute with state "FAILED"</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge captures Glue job state change events natively. Rule filters for FAILED state dan input transformation extracts jobName, message, timestamp into a readable email format. SNS topic delivers to email subscribers. All configuration, no code needed. Opsi B (CloudWatch alarm) doesn't capture error details like job name and error message in the alert. Opsi C (code in job) doesn't execute if job crashes unexpectedly. Opsi D (polling Lambda) adds unnecessary cost and latency.</div>
+                <div class="explanation">EventBridge captures Glue job state change events natively. Rule filters for FAILED state dan input transformation extracts jobName, message, timestamp into a readable email format. SNS topic delivers to email subscribers. All configuration, no code needed. Opsi B (CloudWatch alarm) doesn't capture error details like job name and error message in the alert. Opsi C (code in job) doesn't execute if job crashes unexpectedly. Opsi D (polling Lambda) adds unnecessary cost and latency — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -52,13 +52,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement tiered alerting: use SNS filter policies to route only CRITICAL alerts (failures, SLA breaches) to the pager/email topic, and INFO alerts to a separate low-priority topic or CloudWatch logs only</li>
                 <li><span class="option-label">B.</span> Unsubscribe the team from all SNS notifications</li>
-                <li><span class="option-label">C.</span> Set up email rules to filter out non-critical alerts</li>
+                <li><span class="option-label">C.</span> Set up email rules to filter out non-critical alerts configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Reduce pipeline monitoring to check only once per day</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SNS filter policies allow subscribers to receive only messages matching certain criteria (e.g., severity=CRITICAL). Tiered approach: critical alerts → pager/email, informational → log archive or dashboard. This reduces noise while maintaining visibility. Opsi B (unsubscribe) loses all visibility. Opsi C (email rules) — still generates notifications, just hides them client-side. Opsi D (daily check) misses real-time failures requiring immediate action.</div>
+                <div class="explanation">SNS filter policies allow subscribers to receive only messages matching certain criteria (e.g., severity=CRITICAL). Tiered approach: critical alerts → pager/email, informational → log archive or dashboard. This reduces noise while maintaining visibility. Opsi B (unsubscribe) loses all visibility. Opsi C (email rules) — still generates notifications, just hides them client-side — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (daily check) misses real-time failures requiring immediate action.</div>
             </div>
         </div>
 
@@ -68,13 +68,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use two EventBridge scheduled rules: one at 5:30 AM checks if processing is complete (via Lambda checking status) and sends warning via SNS, another at 6:00 AM sends critical alert if still incomplete</li>
                 <li><span class="option-label">B.</span> Set the pipeline timeout to 6:00 AM and alert on timeout</li>
-                <li><span class="option-label">C.</span> Use a CloudWatch alarm with two thresholds</li>
+                <li><span class="option-label">C.</span> Use a CloudWatch alarm with two thresholds configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Have the pipeline send a "completion" event and alert if not received</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Two scheduled checks implement the escalating alert pattern: 5:30 AM Lambda checks pipeline status → if incomplete, publishes WARNING to SNS topic 1 (team email). 6:00 AM check → if still incomplete, publishes CRITICAL to SNS topic 2 (manager pager + team). This provides early warning for proactive intervention before SLA breach. Opsi B (single timeout) only alerts after SLA already breached. Opsi C (CloudWatch) can't check "not completed by time X." Opsi D (missing event) — complex to implement reliably.</div>
+                <div class="explanation">Two scheduled checks implement the escalating alert pattern: 5:30 AM Lambda checks pipeline status → if incomplete, publishes WARNING to SNS topic 1 (team email). 6:00 AM check → if still incomplete, publishes CRITICAL to SNS topic 2 (manager pager + team). This provides early warning for proactive intervention before SLA breach. Opsi B (single timeout) only alerts after SLA already breached. Opsi C (CloudWatch) can't check "not completed by time X — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini." Opsi D (missing event) — complex to implement reliably.</div>
             </div>
         </div>
 
@@ -85,12 +85,12 @@
                 <li><span class="option-label">A.</span> Create a CloudWatch alarm on the ApproximateNumberOfMessagesVisible metric with threshold > 10,000, with the alarm action publishing to an SNS topic</li>
                 <li><span class="option-label">B.</span> Create a Lambda function polling the queue depth via GetQueueAttributes every minute</li>
                 <li><span class="option-label">C.</span> Configure SQS to send notifications when the queue is full</li>
-                <li><span class="option-label">D.</span> Use EventBridge to detect SQS queue depth changes</li>
+                <li><span class="option-label">D.</span> Use EventBridge to detect SQS queue depth changes with threshold > 10</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SQS natively publishes ApproximateNumberOfMessagesVisible metric to CloudWatch. CloudWatch alarm monitors this metric and triggers when threshold is breached. Alarm action sends to SNS topic for team notification. This is the standard AWS pattern for queue depth monitoring — no custom code needed. Opsi B (Lambda polling) reinvents CloudWatch's built-in capability. Opsi C — SQS doesn't have built-in "queue full" notifications. Opsi D — EventBridge doesn't monitor SQS queue depth natively.</div>
+                <div class="explanation">SQS natively publishes ApproximateNumberOfMessagesVisible metric to CloudWatch. CloudWatch alarm monitors this metric and triggers when threshold is breached. Alarm action sends to SNS topic for team notification. This is the standard AWS pattern for queue depth monitoring — no custom code needed. Opsi B (Lambda polling) reinvents CloudWatch's built-in capability. Opsi C — SQS doesn't have built-in "queue full" notifications. Opsi D — EventBridge doesn't monitor SQS queue depth natively — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -99,14 +99,14 @@
             <div class="question-text">A Step Functions workflow has an on-failure SNS notification. When the workflow fails, the SNS notification is sent but only contains the execution ARN, not the actual error details. How can the notification include meaningful error information?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use an EventBridge rule matching Step Functions execution status change to FAILED, with input transformation to extract the error and cause fields from the event detail, and target the SNS topic with the formatted message</li>
-                <li><span class="option-label">B.</span> Configure SNS to automatically fetch details from Step Functions</li>
+                <li><span class="option-label">B.</span> Configure SNS to automatically fetch details from Step Functions and sends the error to SNS directly</li>
                 <li><span class="option-label">C.</span> Add a Catch state in Step Functions that formats and sends the error to SNS directly</li>
                 <li><span class="option-label">D.</span> Increase the SNS message size limit to include full execution history</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Adding a Catch block (global or per-state) that catches errors and transitions to a "NotifyFailure" state allows formatting the error details (Error, Cause fields) and publishing to SNS with full context. The Catch state receives the error information which can be included in the SNS message. Opsi A (EventBridge) works too but Catch is more direct and captures error details within the workflow. Opsi B — SNS cannot fetch external data. Opsi D — message size not the issue; content is.</div>
+                <div class="explanation">Adding a Catch block (global or per-state) that catches errors and transitions to a "NotifyFailure" state allows formatting the error details (Error, Cause fields) and publishing to SNS with full context. The Catch state receives the error information which can be included in the SNS message. Opsi A (EventBridge) works too but Catch is more direct and captures error details within the workflow. Opsi B — SNS cannot fetch external data — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — message size not the issue; content is.</div>
             </div>
         </div>
 
@@ -115,14 +115,14 @@
             <div class="question-text">A company wants to integrate pipeline alerts with their Slack channel and PagerDuty for incident management. The alerts originate from an SNS topic. Which architecture enables multi-channel notification delivery?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> SNS topic with multiple subscriptions: Lambda function for Slack (calling Slack webhook API) and HTTPS endpoint subscription for PagerDuty's Events API</li>
-                <li><span class="option-label">B.</span> Create separate EventBridge rules for each destination</li>
+                <li><span class="option-label">B.</span> Create separate EventBridge rules for each destination and a separate SNS subscription for PagerDuty</li>
                 <li><span class="option-label">C.</span> Use AWS Chatbot for Slack integration and a separate SNS subscription for PagerDuty</li>
                 <li><span class="option-label">D.</span> Send all alerts to email and let team members forward to Slack/PagerDuty manually</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">AWS Chatbot is the native AWS service for Slack integration — it subscribes to SNS topics and formats alerts nicely in Slack channels. For PagerDuty, HTTPS endpoint subscription or Lambda subscriber calls PagerDuty's API. This is the AWS-recommended approach. Opsi A (custom Lambda for Slack) works but AWS Chatbot is simpler. Opsi B (EventBridge) could work but adds complexity if SNS is already the alert source. Opsi D (manual) defeats automation purpose.</div>
+                <div class="explanation">AWS Chatbot is the native AWS service for Slack integration — it subscribes to SNS topics and formats alerts nicely in Slack channels. For PagerDuty, HTTPS endpoint subscription or Lambda subscriber calls PagerDuty's API. This is the AWS-recommended approach. Opsi A (custom Lambda for Slack) works but AWS Chatbot is simpler. Opsi B (EventBridge) could work but adds complexity if SNS is already the alert source — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (manual) defeats automation purpose.</div>
             </div>
         </div>
 
@@ -131,14 +131,14 @@
             <div class="question-text">A data pipeline publishes processing metrics to SNS after each run. Downstream consumers (dashboard, alerting, auditing) subscribe to this topic. One consumer (the auditing system) must receive EVERY message without loss, even during outages. Which SNS subscription type guarantees this?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Subscribe an SQS queue to the SNS topic for the auditing system — SQS retains messages during consumer outages and provides at-least-once delivery guarantee</li>
-                <li><span class="option-label">B.</span> Use an email subscription for the auditing system</li>
+                <li><span class="option-label">B.</span> Use an email subscription for the auditing system and provides at-least-once delivery guarantee</li>
                 <li><span class="option-label">C.</span> Use an HTTP endpoint subscription with retry enabled</li>
                 <li><span class="option-label">D.</span> Subscribe a Lambda function for the auditing system</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SQS subscription provides durability — messages persist in the queue (up to 14 days) even if the auditing consumer is down. When the consumer recovers, it processes queued messages. SNS → SQS is the standard pattern for guaranteed delivery to asynchronous consumers. Opsi B (email) — emails can be lost, no acknowledgment mechanism. Opsi C (HTTP endpoint) — if endpoint is down, SNS retries for limited time then gives up. Opsi D (Lambda) — if Lambda fails/throttles, message could be lost without DLQ configuration.</div>
+                <div class="explanation">SQS subscription provides durability — messages persist in the queue (up to 14 days) even if the auditing consumer is down. When the consumer recovers, it processes queued messages. SNS → SQS is the standard pattern for guaranteed delivery to asynchronous consumers. Opsi B (email) — emails can be lost, no acknowledgment mechanism — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (HTTP endpoint) — if endpoint is down, SNS retries for limited time then gives up. Opsi D (Lambda) — if Lambda fails/throttles, message could be lost without DLQ configuration.</div>
             </div>
         </div>
 
@@ -147,14 +147,14 @@
             <div class="question-text">A data engineer needs to send different types of alerts from a single SNS topic: "pipeline-alerts". Some subscribers only want failure alerts, others want all alerts including success notifications. How can subscribers selectively receive messages?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use SNS message attributes (e.g., "alertType": "FAILURE") and configure subscription filter policies on each subscriber to match only their desired alertType values</li>
-                <li><span class="option-label">B.</span> Create separate SNS topics for each alert type</li>
+                <li><span class="option-label">B.</span> Create separate SNS topics for each alert type configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Include filter instructions in the message body</li>
                 <li><span class="option-label">D.</span> Let subscribers discard unwanted messages after receiving them</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SNS subscription filter policies allow subscribers to receive only messages with matching attributes. Publisher sets MessageAttributes (alertType=FAILURE, SUCCESS, etc.). Subscriber A's filter: {"alertType": ["FAILURE"]}. Subscriber B's filter: {"alertType": ["FAILURE", "SUCCESS"]}. Messages not matching a subscriber's filter are not delivered to that subscriber. Opsi B (separate topics) increases publisher complexity. Opsi C (body instructions) SNS doesn't filter on body. Opsi D (discard after receipt) wastes resources.</div>
+                <div class="explanation">SNS subscription filter policies allow subscribers to receive only messages with matching attributes. Publisher sets MessageAttributes (alertType=FAILURE, SUCCESS, etc.). Subscriber A's filter: {"alertType": ["FAILURE"]}. Subscriber B's filter: {"alertType": ["FAILURE", "SUCCESS"]}. Messages not matching a subscriber's filter are not delivered to that subscriber. Opsi B (separate topics) increases publisher complexity — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (body instructions) SNS doesn't filter on body. Opsi D (discard after receipt) wastes resources.</div>
             </div>
         </div>
 
@@ -165,12 +165,12 @@
                 <li><span class="option-label">A.</span> CloudWatch alarm on GetRecords.IteratorAgeMilliseconds metric (Maximum statistic) with threshold > 300000, alarm action targeting SNS topic</li>
                 <li><span class="option-label">B.</span> CloudWatch alarm on IncomingRecords metric exceeding a threshold</li>
                 <li><span class="option-label">C.</span> Lambda CloudWatch Logs metric filter for "IteratorAge" text</li>
-                <li><span class="option-label">D.</span> EventBridge rule matching Kinesis stream events</li>
+                <li><span class="option-label">D.</span> EventBridge rule matching Kinesis stream events with threshold > 300000</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">GetRecords.IteratorAgeMilliseconds is the Kinesis metric showing how far behind the consumer is. Maximum statistic captures the worst-case lag. Alarm threshold 300,000 ms = 5 minutes. When breached, alarm publishes to SNS. This directly monitors consumer lag. Opsi B (IncomingRecords) shows ingestion rate, not consumer lag. Opsi C (log filter) requires the Lambda to explicitly log iterator age. Opsi D — Kinesis doesn't emit EventBridge events for consumer lag.</div>
+                <div class="explanation">GetRecords.IteratorAgeMilliseconds is the Kinesis metric showing how far behind the consumer is. Maximum statistic captures the worst-case lag. Alarm threshold 300,000 ms = 5 minutes. When breached, alarm publishes to SNS. This directly monitors consumer lag. Opsi B (IncomingRecords) shows ingestion rate, not consumer lag. Opsi C (log filter) requires the Lambda to explicitly log iterator age. Opsi D — Kinesis doesn't emit EventBridge events for consumer lag — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -179,14 +179,14 @@
             <div class="question-text">A data pipeline processes sensitive financial data. Compliance requires that alert notifications (sent via SNS) must NOT contain actual data values — only metadata like job name, status, and timestamp. A developer accidentally publishes customer account numbers in SNS messages. How can this be prevented architecturally?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a Lambda function between the pipeline and SNS that sanitizes messages — removing or masking any PII/sensitive data before publishing to SNS, using a predefined allow-list of safe fields</li>
-                <li><span class="option-label">B.</span> Enable SNS encryption at rest</li>
+                <li><span class="option-label">B.</span> Enable SNS encryption at rest configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Use SNS message filtering to block messages containing numbers</li>
                 <li><span class="option-label">D.</span> Add an IAM policy preventing certain data from being published</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">A sanitization Lambda acts as a gatekeeper between the pipeline and SNS. It validates that only allowed fields (job_name, status, timestamp) are present, strips or masks anything else. This enforces the compliance policy regardless of what the pipeline code sends. Allow-list approach is more secure than deny-list. Opsi B (encryption at rest) protects stored data, doesn't prevent sensitive data in message content. Opsi C (filtering) blocks entire messages, doesn't sanitize content. Opsi D (IAM) cannot inspect message content.</div>
+                <div class="explanation">A sanitization Lambda acts as a gatekeeper between the pipeline and SNS. It validates that only allowed fields (job_name, status, timestamp) are present, strips or masks anything else. This enforces the compliance policy regardless of what the pipeline code sends. Allow-list approach is more secure than deny-list. Opsi B (encryption at rest) protects stored data, doesn't prevent sensitive data in message content — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (filtering) blocks entire messages, doesn't sanitize content. Opsi D (IAM) cannot inspect message content.</div>
             </div>
         </div>
         

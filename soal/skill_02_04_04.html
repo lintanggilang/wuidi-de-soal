@@ -35,7 +35,7 @@
             <div class="question-number">1</div>
             <div class="question-text">A machine learning team at a pharmaceutical company trains multiple models using datasets sourced from various S3 buckets and transformed through several preprocessing steps. A compliance audit requires them to prove which exact dataset version was used to train a specific model that is currently in production. Which AWS service provides the MOST comprehensive solution for this requirement?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> AWS CloudTrail to track S3 API calls and correlate timestamps with model training jobs</li>
+                <li><span class="option-label">A.</span> AWS CloudTrail to track S3 API calls and correlate timestamps with model training jobs and model artifacts</li>
                 <li><span class="option-label">B.</span> Amazon SageMaker ML Lineage Tracking to automatically capture relationships between datasets, processing steps, and model artifacts</li>
                 <li><span class="option-label">C.</span> AWS Glue Data Catalog version history to identify which table version was active during training</li>
                 <li><span class="option-label">D.</span> Amazon S3 versioning combined with manual tagging of objects used in each training run</li>
@@ -43,7 +43,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Amazon SageMaker ML Lineage Tracking secara otomatis mencatat hubungan antara datasets, processing steps, training jobs, dan model artifacts dalam bentuk grafik lineage. Ini menciptakan record end-to-end dari data source hingga model deployment. Opsi A (CloudTrail) hanya mencatat API calls tanpa konteks ML pipeline. Opsi C (Glue Catalog versions) hanya melacak perubahan schema, bukan hubungan data-to-model. Opsi D (S3 versioning + tagging) memerlukan effort manual dan tidak memberikan visualisasi lineage otomatis.</div>
+                <div class="explanation">Amazon SageMaker ML Lineage Tracking secara otomatis mencatat hubungan antara datasets, processing steps, training jobs, dan model artifacts dalam bentuk grafik lineage. Ini menciptakan record end-to-end dari data source hingga model deployment. Opsi A (CloudTrail) hanya mencatat API calls tanpa konteks ML pipeline — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Glue Catalog versions) hanya melacak perubahan schema, bukan hubungan data-to-model. Opsi D (S3 versioning + tagging) memerlukan effort manual dan tidak memberikan visualisasi lineage otomatis.</div>
             </div>
         </div>
 
@@ -122,13 +122,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement row-level logging in each transformation job and audit the logs periodically</li>
                 <li><span class="option-label">B.</span> Use data lineage with transformation metadata to verify that required processing steps exist in the lineage path between raw PII data and analytics outputs</li>
-                <li><span class="option-label">C.</span> Run data quality checks on the final output to verify that PII patterns are not present</li>
+                <li><span class="option-label">C.</span> Run data quality checks on the final output to verify that PII patterns are not present with transformation metadata and analytics outputs</li>
                 <li><span class="option-label">D.</span> Use AWS Config rules to verify that all Glue jobs have the anonymization code in their scripts</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Data lineage dengan transformation metadata memungkinkan verifikasi bahwa langkah-langkah pemrosesan yang diperlukan (anonymization, pseudonymization) ada dalam jalur lineage antara data PII mentah dan output analytics. Ini memberikan bukti proses yang bisa diaudit. Opsi A (row-level logging) sangat mahal dan tidak scalable untuk 15 transformasi. Opsi C (quality checks di output) adalah reactive, bukan preventive, dan tidak membuktikan proses yang benar dijalankan. Opsi D (AWS Config) memeriksa konfigurasi job tapi tidak membuktikan bahwa job tersebut benar-benar dieksekusi pada data tertentu.</div>
+                <div class="explanation">Data lineage dengan transformation metadata memungkinkan verifikasi bahwa langkah-langkah pemrosesan yang diperlukan (anonymization, pseudonymization) ada dalam jalur lineage antara data PII mentah dan output analytics. Ini memberikan bukti proses yang bisa diaudit. Opsi A (row-level logging) sangat mahal dan tidak scalable untuk 15 transformasi. Opsi C (quality checks di output) adalah reactive, bukan preventive, dan tidak membuktikan proses yang benar dijalankan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (AWS Config) memeriksa konfigurasi job tapi tidak membuktikan bahwa job tersebut benar-benar dieksekusi pada data tertentu.</div>
             </div>
         </div>
 
@@ -137,7 +137,7 @@
             <div class="question-number">7</div>
             <div class="question-text">A data science team uses Amazon SageMaker Pipelines to automate their ML workflow. They notice that a model's prediction accuracy dropped after a recent pipeline execution. They need to compare the lineage of the current underperforming model with the previous well-performing model to identify what changed. Which SageMaker ML Lineage Tracking approach helps them identify the root cause?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Compare the Model Package versions in the SageMaker Model Registry</li>
+                <li><span class="option-label">A.</span> Compare the Model Package versions in the SageMaker Model Registry configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> Query and compare the lineage graphs of both model artifacts to identify differences in input data, processing steps, or hyperparameters</li>
                 <li><span class="option-label">C.</span> Review CloudWatch metrics for both training jobs to compare resource utilization</li>
                 <li><span class="option-label">D.</span> Use SageMaker Debugger to compare tensor outputs between the two training runs</li>
@@ -145,7 +145,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Dengan membandingkan lineage graphs dari kedua model artifacts, tim dapat mengidentifikasi perbedaan spesifik — apakah input dataset berubah, apakah ada processing step baru, atau apakah hyperparameters berbeda. Ini memberikan root cause analysis yang komprehensif. Opsi A (Model Registry) menunjukkan versi model tapi tidak detail tentang apa yang berubah di pipeline. Opsi C (CloudWatch) menunjukkan resource usage bukan data/pipeline changes. Opsi D (Debugger) membantu debug training issues tapi tidak menunjukkan perubahan di input data atau preprocessing.</div>
+                <div class="explanation">Dengan membandingkan lineage graphs dari kedua model artifacts, tim dapat mengidentifikasi perbedaan spesifik — apakah input dataset berubah, apakah ada processing step baru, atau apakah hyperparameters berbeda. Ini memberikan root cause analysis yang komprehensif. Opsi A (Model Registry) menunjukkan versi model tapi tidak detail tentang apa yang berubah di pipeline — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (CloudWatch) menunjukkan resource usage bukan data/pipeline changes. Opsi D (Debugger) membantu debug training issues tapi tidak menunjukkan perubahan di input data atau preprocessing.</div>
             </div>
         </div>
 
@@ -156,13 +156,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable AWS Glue Data Catalog replication across accounts and track lineage in each account's catalog independently</li>
                 <li><span class="option-label">B.</span> Use Amazon DataZone with cross-account enrollment to provide unified lineage visualization across all participating accounts</li>
-                <li><span class="option-label">C.</span> Consolidate all AWS Glue jobs into a single account to simplify lineage tracking</li>
+                <li><span class="option-label">C.</span> Consolidate all AWS Glue jobs into a single account to simplify lineage tracking with cross-account enrollment</li>
                 <li><span class="option-label">D.</span> Use AWS RAM (Resource Access Manager) to share Glue Data Catalog resources and enable cross-account lineage queries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Amazon DataZone mendukung cross-account enrollment yang memungkinkan visualisasi lineage terpusat across multiple AWS accounts. Ini memberikan single-pane-of-glass view untuk memahami bagaimana data mengalir lintas account boundaries. Opsi A (independent tracking per account) tidak memberikan unified view. Opsi C (consolidate to one account) tidak praktis dan melanggar best practices multi-account. Opsi D (AWS RAM) memungkinkan sharing catalog resources tapi tidak memberikan unified lineage visualization.</div>
+                <div class="explanation">Amazon DataZone mendukung cross-account enrollment yang memungkinkan visualisasi lineage terpusat across multiple AWS accounts. Ini memberikan single-pane-of-glass view untuk memahami bagaimana data mengalir lintas account boundaries. Opsi A (independent tracking per account) tidak memberikan unified view. Opsi C (consolidate to one account) tidak praktis dan melanggar best practices multi-account — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (AWS RAM) memungkinkan sharing catalog resources tapi tidak memberikan unified lineage visualization.</div>
             </div>
         </div>
 
@@ -172,14 +172,14 @@
             <div class="question-text">A data engineering team is building a feature store for their ML platform. They need to track lineage for each feature, including which raw data sources contribute to each feature, what transformations are applied, and which models consume each feature. They want this lineage to be automatically captured without requiring developers to manually instrument their code. Which combination of AWS services provides automatic lineage capture for this use case?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> SageMaker Feature Store with SageMaker ML Lineage Tracking, using SageMaker Pipelines for feature computation</li>
-                <li><span class="option-label">B.</span> AWS Glue Data Catalog with manual lineage annotations added via custom classifiers</li>
+                <li><span class="option-label">B.</span> AWS Glue Data Catalog with manual lineage annotations added via custom classifiers for feature computation</li>
                 <li><span class="option-label">C.</span> Amazon Neptune to build a custom lineage graph with Lambda functions triggered by CloudTrail events</li>
                 <li><span class="option-label">D.</span> DynamoDB to store lineage metadata with streams triggering Lambda for graph construction</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SageMaker Feature Store terintegrasi dengan SageMaker ML Lineage Tracking, dan ketika feature computation dijalankan melalui SageMaker Pipelines, lineage secara otomatis di-capture termasuk input data, transformasi, dan output features. Tidak diperlukan instrumentasi manual. Opsi B memerlukan manual annotations. Opsi C dan D memerlukan custom development yang signifikan dan tidak otomatis — keduanya memerlukan effort engineering untuk membangun dan memaintain.</div>
+                <div class="explanation">SageMaker Feature Store terintegrasi dengan SageMaker ML Lineage Tracking, dan ketika feature computation dijalankan melalui SageMaker Pipelines, lineage secara otomatis di-capture termasuk input data, transformasi, dan output features. Tidak diperlukan instrumentasi manual. Opsi B memerlukan manual annotations — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C dan D memerlukan custom development yang signifikan dan tidak otomatis — keduanya memerlukan effort engineering untuk membangun dan memaintain.</div>
             </div>
         </div>
 
@@ -190,13 +190,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Require all domain teams to use AWS Glue exclusively so that lineage is tracked in a single Glue Data Catalog</li>
                 <li><span class="option-label">B.</span> Use Amazon SageMaker Catalog (formerly Amazon DataZone) as a centralized business catalog where each domain publishes data products with lineage metadata attached</li>
-                <li><span class="option-label">C.</span> Build a custom lineage aggregation service using AWS Lambda that reads CloudTrail logs from all accounts</li>
+                <li><span class="option-label">C.</span> Build a custom lineage aggregation service using AWS Lambda that reads CloudTrail logs from all accounts with lineage metadata attached</li>
                 <li><span class="option-label">D.</span> Use AWS Lake Formation cross-account permissions to create a unified view of all data assets</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Amazon SageMaker Catalog (sebelumnya Amazon DataZone) dirancang untuk data mesh architecture, memungkinkan domain teams mempublikasikan data products ke katalog bisnis terpusat dengan lineage metadata. Ini mendukung berbagai compute engines dan memberikan organization-wide lineage visibility tanpa memaksa standarisasi tools. Opsi A tidak praktis karena memaksa semua tim menggunakan satu service. Opsi C memerlukan custom development dan CloudTrail tidak memberikan transformation-level lineage. Opsi D (Lake Formation) fokus pada access control, bukan lineage tracking lintas heterogeneous tools.</div>
+                <div class="explanation">Amazon SageMaker Catalog (sebelumnya Amazon DataZone) dirancang untuk data mesh architecture, memungkinkan domain teams mempublikasikan data products ke katalog bisnis terpusat dengan lineage metadata. Ini mendukung berbagai compute engines dan memberikan organization-wide lineage visibility tanpa memaksa standarisasi tools. Opsi A tidak praktis karena memaksa semua tim menggunakan satu service. Opsi C memerlukan custom development dan CloudTrail tidak memberikan transformation-level lineage — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Lake Formation) fokus pada access control, bukan lineage tracking lintas heterogeneous tools.</div>
             </div>
         </div>
         

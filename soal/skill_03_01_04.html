@@ -38,12 +38,12 @@
                 <li><span class="option-label">A.</span> Use Glue DynamicFrames with the Relationalize transform to flatten nested structures and handle schema variations</li>
                 <li><span class="option-label">B.</span> Convert to a Spark DataFrame immediately and use explicit schema casting on all columns</li>
                 <li><span class="option-label">C.</span> Create a Glue crawler to infer the schema and use the resulting table definition to force a fixed schema</li>
-                <li><span class="option-label">D.</span> Use AWS Glue DataBrew to manually define transformations for each nested field</li>
+                <li><span class="option-label">D.</span> Use AWS Glue DataBrew to manually define transformations for each nested field with the Relationalize transform and handle schema variations</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue DynamicFrames dirancang khusus untuk menangani data semi-structured dengan schema yang tidak konsisten. DynamicFrame memiliki fitur "choice type" yang mendeteksi ketika field memiliki tipe data berbeda di record yang berbeda, dan transform Relationalize secara otomatis memecah nested arrays menjadi tabel relasional terpisah. Opsi B (Spark DataFrame) akan gagal jika ada type mismatch karena memerlukan schema tetap. Opsi C (crawler) hanya menginfer schema tetapi tidak menangani inkonsistensi saat processing. Opsi D (DataBrew) cocok untuk data preparation visual tetapi bukan solusi optimal untuk ETL pipeline otomatis dengan nested structures kompleks.</div>
+                <div class="explanation">AWS Glue DynamicFrames dirancang khusus untuk menangani data semi-structured dengan schema yang tidak konsisten. DynamicFrame memiliki fitur "choice type" yang mendeteksi ketika field memiliki tipe data berbeda di record yang berbeda, dan transform Relationalize secara otomatis memecah nested arrays menjadi tabel relasional terpisah. Opsi B (Spark DataFrame) akan gagal jika ada type mismatch karena memerlukan schema tetap. Opsi C (crawler) hanya menginfer schema tetapi tidak menangani inkonsistensi saat processing. Opsi D (DataBrew) cocok untuk data preparation visual tetapi bukan solusi optimal untuk ETL pipeline otomatis dengan nested structures kompleks — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -54,13 +54,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use EMR instance fleets with allocation strategy set to capacity-optimized and configure multiple instance types</li>
                 <li><span class="option-label">B.</span> Use uniform instance groups with a single large instance type and increase the On-Demand percentage to 100%</li>
-                <li><span class="option-label">C.</span> Enable EMR managed scaling with only On-Demand instances in the core node group</li>
+                <li><span class="option-label">C.</span> Enable EMR managed scaling with only On-Demand instances in the core node group and configure multiple instance types</li>
                 <li><span class="option-label">D.</span> Configure a single instance fleet with one Spot Instance type and enable automatic failover to On-Demand</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EMR instance fleets dengan allocation strategy "capacity-optimized" memilih instance types dari Spot capacity pools yang paling tersedia, mengurangi kemungkinan interruption. Dengan mengonfigurasi multiple instance types, EMR memiliki lebih banyak opsi untuk mendapatkan kapasitas Spot yang stabil. Opsi B (100% On-Demand) menghilangkan cost optimization sepenuhnya. Opsi C (managed scaling On-Demand only) juga menghilangkan keuntungan Spot pricing. Opsi D (single Spot type) justru meningkatkan risiko interruption karena bergantung pada satu capacity pool saja.</div>
+                <div class="explanation">EMR instance fleets dengan allocation strategy "capacity-optimized" memilih instance types dari Spot capacity pools yang paling tersedia, mengurangi kemungkinan interruption. Dengan mengonfigurasi multiple instance types, EMR memiliki lebih banyak opsi untuk mendapatkan kapasitas Spot yang stabil. Opsi B (100% On-Demand) menghilangkan cost optimization sepenuhnya. Opsi C (managed scaling On-Demand only) juga menghilangkan keuntungan Spot pricing — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (single Spot type) justru meningkatkan risiko interruption karena bergantung pada satu capacity pool saja.</div>
             </div>
         </div>
 
@@ -89,12 +89,12 @@
                 <li><span class="option-label">A.</span> Configure AWS Glue crawlers with a schedule and enable schema change detection with the "Update the table definition in the Data Catalog" option</li>
                 <li><span class="option-label">B.</span> Write a Lambda function triggered by S3 events to parse file headers and update the Glue Data Catalog using the AWS SDK</li>
                 <li><span class="option-label">C.</span> Use Amazon Athena CREATE TABLE statements with explicit schemas for each data source</li>
-                <li><span class="option-label">D.</span> Deploy an AWS Glue ETL job that reads each source and writes schema metadata to a DynamoDB table for lookup</li>
+                <li><span class="option-label">D.</span> Deploy an AWS Glue ETL job that reads each source and writes schema metadata to a DynamoDB table for lookup with a schedule</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue crawlers dirancang untuk otomatisasi schema discovery. Dengan jadwal crawl dan opsi "Update the table definition in the Data Catalog", crawler akan mendeteksi perubahan schema (kolom baru, tipe data berubah) dan memperbarui Data Catalog secara otomatis. Ini mendukung berbagai format file dan tidak memerlukan kode kustom. Opsi B (Lambda) memerlukan maintenance kode parsing untuk setiap format. Opsi C (Athena CREATE TABLE) memerlukan update manual setiap kali schema berubah. Opsi D (ETL job + DynamoDB) terlalu kompleks dan tidak terintegrasi langsung dengan Athena.</div>
+                <div class="explanation">AWS Glue crawlers dirancang untuk otomatisasi schema discovery. Dengan jadwal crawl dan opsi "Update the table definition in the Data Catalog", crawler akan mendeteksi perubahan schema (kolom baru, tipe data berubah) dan memperbarui Data Catalog secara otomatis. Ini mendukung berbagai format file dan tidak memerlukan kode kustom. Opsi B (Lambda) memerlukan maintenance kode parsing untuk setiap format. Opsi C (Athena CREATE TABLE) memerlukan update manual setiap kali schema berubah. Opsi D (ETL job + DynamoDB) terlalu kompleks dan tidak terintegrasi langsung dengan Athena — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -104,14 +104,14 @@
             <div class="question-text">A data engineer has an Amazon EMR cluster running batch processing jobs that complete within 2-3 hours each day. The cluster currently stays running 24/7, resulting in unnecessary costs. The engineer wants to optimize costs while ensuring jobs complete reliably without data loss. Which EMR feature should be implemented?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable EMR auto-termination policy to automatically shut down the cluster after a specified idle period</li>
-                <li><span class="option-label">B.</span> Use EMR on EKS to run jobs on a shared Kubernetes cluster</li>
+                <li><span class="option-label">B.</span> Use EMR on EKS to run jobs on a shared Kubernetes cluster configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Schedule manual cluster termination using a CloudWatch alarm based on CPU utilization</li>
                 <li><span class="option-label">D.</span> Convert all nodes to Spot Instances with a maximum bid price of 50% of On-Demand price</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EMR auto-termination policy secara otomatis menghentikan cluster setelah tidak ada pekerjaan yang berjalan selama periode idle yang ditentukan. Ini memastikan cluster hanya aktif saat diperlukan tanpa risiko kehilangan data karena termination hanya terjadi saat idle. Opsi B (EKS) memerlukan redesign arsitektur yang signifikan. Opsi C (CloudWatch alarm) bisa salah mentrigger termination saat CPU rendah tapi job masih berjalan (misalnya I/O intensive). Opsi D (Spot 50% bid) tidak mengatasi masalah cluster berjalan 24/7 dan bisa menyebabkan interruption saat job berjalan.</div>
+                <div class="explanation">EMR auto-termination policy secara otomatis menghentikan cluster setelah tidak ada pekerjaan yang berjalan selama periode idle yang ditentukan. Ini memastikan cluster hanya aktif saat diperlukan tanpa risiko kehilangan data karena termination hanya terjadi saat idle. Opsi B (EKS) memerlukan redesign arsitektur yang signifikan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (CloudWatch alarm) bisa salah mentrigger termination saat CPU rendah tapi job masih berjalan (misalnya I/O intensive). Opsi D (Spot 50% bid) tidak mengatasi masalah cluster berjalan 24/7 dan bisa menyebabkan interruption saat job berjalan.</div>
             </div>
         </div>
 
@@ -138,14 +138,14 @@
             <div class="question-text">A data engineer is developing and testing a new AWS Glue ETL script that processes complex transformations on a large dataset. The engineer needs an interactive development environment to iteratively test code, inspect intermediate DataFrames, and debug issues without waiting for full job deployments. Which AWS Glue feature provides the MOST efficient development experience?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue interactive sessions to run code snippets with immediate feedback and inspect data at each step</li>
-                <li><span class="option-label">B.</span> Deploy the Glue job with a small subset of data and review CloudWatch Logs for output</li>
+                <li><span class="option-label">B.</span> Deploy the Glue job with a small subset of data and review CloudWatch Logs for output and inspect data at each step</li>
                 <li><span class="option-label">C.</span> Use a local development endpoint with a Zeppelin notebook connected to a long-running Glue dev environment</li>
                 <li><span class="option-label">D.</span> Write unit tests for each transformation and run them in a CI/CD pipeline before deployment</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue interactive sessions menyediakan environment serverless on-demand untuk development interaktif. Engineer dapat menjalankan code snippets, melihat hasil intermediate, dan melakukan iterasi cepat tanpa provisioning infrastructure. Sessions dimulai dalam hitungan detik dan hanya dikenakan biaya saat digunakan. Opsi B (deploy + CloudWatch) memerlukan cycle deploy-run-check yang lambat. Opsi C (development endpoints) sudah deprecated dan mahal karena berjalan terus. Opsi D (unit tests) penting untuk production tetapi tidak menyediakan interactive debugging capability.</div>
+                <div class="explanation">AWS Glue interactive sessions menyediakan environment serverless on-demand untuk development interaktif. Engineer dapat menjalankan code snippets, melihat hasil intermediate, dan melakukan iterasi cepat tanpa provisioning infrastructure. Sessions dimulai dalam hitungan detik dan hanya dikenakan biaya saat digunakan. Opsi B (deploy + CloudWatch) memerlukan cycle deploy-run-check yang lambat — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (development endpoints) sudah deprecated dan mahal karena berjalan terus. Opsi D (unit tests) penting untuk production tetapi tidak menyediakan interactive debugging capability.</div>
             </div>
         </div>
 
@@ -157,12 +157,12 @@
                 <li><span class="option-label">A.</span> Amazon EMR Serverless for on-demand Spark job execution without cluster provisioning</li>
                 <li><span class="option-label">B.</span> Amazon EMR on EC2 with managed scaling enabled and minimum node count set to zero</li>
                 <li><span class="option-label">C.</span> AWS Glue ETL jobs with auto-scaling DPUs configured at maximum capacity</li>
-                <li><span class="option-label">D.</span> Amazon EMR on EKS with Kubernetes Cluster Autoscaler</li>
+                <li><span class="option-label">D.</span> Amazon EMR on EKS with Kubernetes Cluster Autoscaler with fully managed infrastructure and automatic scaling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon EMR Serverless menghilangkan kebutuhan provisioning dan pengelolaan cluster sepenuhnya. Job berjalan on-demand dengan auto-scaling otomatis, dan perusahaan hanya membayar untuk compute resources yang digunakan selama job execution. Ini ideal untuk workloads yang tidak terprediksi. Opsi B (EMR on EC2) tidak bisa scale to zero — minimum satu master node harus berjalan. Opsi C (Glue) memiliki batasan pada custom Spark configurations dan libraries. Opsi D (EMR on EKS) masih memerlukan pengelolaan Kubernetes cluster yang menambah overhead operasional.</div>
+                <div class="explanation">Amazon EMR Serverless menghilangkan kebutuhan provisioning dan pengelolaan cluster sepenuhnya. Job berjalan on-demand dengan auto-scaling otomatis, dan perusahaan hanya membayar untuk compute resources yang digunakan selama job execution. Ini ideal untuk workloads yang tidak terprediksi. Opsi B (EMR on EC2) tidak bisa scale to zero — minimum satu master node harus berjalan. Opsi C (Glue) memiliki batasan pada custom Spark configurations dan libraries. Opsi D (EMR on EKS) masih memerlukan pengelolaan Kubernetes cluster yang menambah overhead operasional — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -173,13 +173,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Convert DynamicFrames to Spark DataFrames for complex operations using .toDF(), then convert back to DynamicFrames using fromDF() when needed for Glue-specific features</li>
                 <li><span class="option-label">B.</span> Rewrite all transformations using only DynamicFrame APIs and avoid Spark DataFrame operations entirely</li>
-                <li><span class="option-label">C.</span> Use AWS Glue DataBrew instead, which supports all Spark DataFrame operations natively</li>
+                <li><span class="option-label">C.</span> Use AWS Glue DataBrew instead, which supports all Spark DataFrame operations natively for complex operations</li>
                 <li><span class="option-label">D.</span> Run the existing Spark code on Amazon EMR instead of migrating to AWS Glue</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue mendukung interoperabilitas antara DynamicFrames dan Spark DataFrames. Menggunakan .toDF() untuk konversi ke DataFrame memungkinkan penggunaan seluruh Spark API (UDFs, broadcast joins, window functions), sementara fromDF() memungkinkan konversi kembali ke DynamicFrame untuk memanfaatkan fitur Glue seperti bookmarks dan error handling. Opsi B membatasi fungsionalitas karena DynamicFrame API lebih terbatas. Opsi C salah karena DataBrew adalah tool visual yang tidak mendukung Spark operations. Opsi D menghindari migrasi sepenuhnya tanpa mendapatkan keuntungan Glue (serverless, bookmarks, catalog integration).</div>
+                <div class="explanation">AWS Glue mendukung interoperabilitas antara DynamicFrames dan Spark DataFrames. Menggunakan .toDF() untuk konversi ke DataFrame memungkinkan penggunaan seluruh Spark API (UDFs, broadcast joins, window functions), sementara fromDF() memungkinkan konversi kembali ke DynamicFrame untuk memanfaatkan fitur Glue seperti bookmarks dan error handling. Opsi B membatasi fungsionalitas karena DynamicFrame API lebih terbatas. Opsi C salah karena DataBrew adalah tool visual yang tidak mendukung Spark operations — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D menghindari migrasi sepenuhnya tanpa mendapatkan keuntungan Glue (serverless, bookmarks, catalog integration).</div>
             </div>
         </div>
 
@@ -190,13 +190,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Stored procedures with exception handling (BEGIN...EXCEPTION...END) combined with system tables (STL_LOAD_ERRORS, SVL_QLOG) for logging</li>
                 <li><span class="option-label">B.</span> Materialized views with AUTO REFRESH combined with Amazon CloudWatch alarms for error detection</li>
-                <li><span class="option-label">C.</span> Redshift Spectrum external tables combined with Lambda functions for error handling</li>
+                <li><span class="option-label">C.</span> Redshift Spectrum external tables combined with Lambda functions for error handling configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Scheduled queries with SNS notifications combined with Redshift audit logging</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Redshift stored procedures mendukung exception handling (BEGIN...EXCEPTION...END blocks), conditional logic (IF/ELSE), loops, variabel, CTEs, dan temporary tables — semua dalam satu procedural unit. System tables seperti STL_LOAD_ERRORS dan SVL_QLOG menyediakan detailed logging native di Redshift. Ini memenuhi semua kebutuhan tanpa keluar dari Redshift. Opsi B (materialized views) tidak mendukung procedural logic atau error handling. Opsi C (Spectrum + Lambda) membawa processing ke luar Redshift. Opsi D (scheduled queries) tidak memiliki exception handling atau conditional logic yang diperlukan.</div>
+                <div class="explanation">Redshift stored procedures mendukung exception handling (BEGIN...EXCEPTION...END blocks), conditional logic (IF/ELSE), loops, variabel, CTEs, dan temporary tables — semua dalam satu procedural unit. System tables seperti STL_LOAD_ERRORS dan SVL_QLOG menyediakan detailed logging native di Redshift. Ini memenuhi semua kebutuhan tanpa keluar dari Redshift. Opsi B (materialized views) tidak mendukung procedural logic atau error handling. Opsi C (Spectrum + Lambda) membawa processing ke luar Redshift — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (scheduled queries) tidak memiliki exception handling atau conditional logic yang diperlukan.</div>
             </div>
         </div>
         

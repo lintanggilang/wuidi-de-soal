@@ -36,14 +36,14 @@
             <div class="question-text">A data engineer stores Amazon RDS PostgreSQL credentials in AWS Secrets Manager with automatic rotation enabled every 30 days. After a rotation occurs, an AWS Glue ETL job fails to connect to the database with "authentication failed" errors, but recovers after being restarted. What is the MOST likely cause of this issue?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The Glue job caches the database credentials at startup and does not refresh them when rotation occurs during a long-running job</li>
-                <li><span class="option-label">B.</span> The rotation Lambda function failed to update the password in the RDS database</li>
+                <li><span class="option-label">B.</span> The rotation Lambda function failed to update the password in the RDS database configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> The Glue job's IAM role does not have permission to access the rotated secret version</li>
                 <li><span class="option-label">D.</span> Secrets Manager requires a manual approval step after rotation before the new credentials become active</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue jobs yang long-running mengambil credentials saat startup dan menyimpannya di memory. Jika rotasi terjadi selama job berjalan, job masih menggunakan credentials lama yang sudah tidak valid. Setelah restart, job mengambil credentials baru dan berhasil. Solusinya adalah implement credential refresh logic dalam job atau menggunakan connection yang mengambil dari Secrets Manager secara periodik. Opsi B (rotation Lambda gagal) kurang kemungkinan karena job berhasil setelah restart — berarti credentials baru valid. Opsi C (IAM permission) — permission berlaku untuk semua secret versions. Opsi D salah — Secrets Manager tidak memerlukan manual approval, rotasi otomatis langsung aktif.</div>
+                <div class="explanation">Glue jobs yang long-running mengambil credentials saat startup dan menyimpannya di memory. Jika rotasi terjadi selama job berjalan, job masih menggunakan credentials lama yang sudah tidak valid. Setelah restart, job mengambil credentials baru dan berhasil. Solusinya adalah implement credential refresh logic dalam job atau menggunakan connection yang mengambil dari Secrets Manager secara periodik. Opsi B (rotation Lambda gagal) kurang kemungkinan karena job berhasil setelah restart — berarti credentials baru valid — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (IAM permission) — permission berlaku untuk semua secret versions. Opsi D salah — Secrets Manager tidak memerlukan manual approval, rotasi otomatis langsung aktif.</div>
             </div>
         </div>
 
@@ -72,7 +72,7 @@
                 <li><span class="option-label">A.</span> Secrets Manager supports encryption with KMS keys while Parameter Store does not</li>
                 <li><span class="option-label">B.</span> Secrets Manager provides built-in automatic rotation with Lambda integration, which Parameter Store does not natively support</li>
                 <li><span class="option-label">C.</span> Secrets Manager can store larger values (up to 64 KB) compared to Parameter Store (4 KB limit)</li>
-                <li><span class="option-label">D.</span> Secrets Manager supports cross-region replication while Parameter Store is single-region only</li>
+                <li><span class="option-label">D.</span> Secrets Manager supports cross-region replication while Parameter Store is single-region only with Lambda integration</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -87,14 +87,14 @@
             <div class="question-text">A data engineer configures automatic rotation for an Amazon Redshift cluster password stored in AWS Secrets Manager. The rotation Lambda function needs network access to both the Secrets Manager API and the Redshift cluster in a private VPC subnet. How should the engineer configure the rotation Lambda function's network access?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Deploy the Lambda function in the VPC with a Secrets Manager VPC Interface Endpoint and ensure the security group allows outbound HTTPS to the endpoint and port 5439 to Redshift</li>
-                <li><span class="option-label">B.</span> Deploy the Lambda function outside the VPC with a Redshift public endpoint enabled</li>
+                <li><span class="option-label">B.</span> Deploy the Lambda function outside the VPC with a Redshift public endpoint enabled configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Deploy the Lambda function in the VPC with a NAT Gateway for Secrets Manager API access and direct VPC connectivity to Redshift</li>
                 <li><span class="option-label">D.</span> Deploy the Lambda function outside the VPC and use VPC peering to reach the Redshift cluster</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda rotation function harus di-deploy dalam VPC yang sama dengan Redshift (untuk direct network access ke port 5439). Untuk mengakses Secrets Manager API (yang merupakan public service), diperlukan VPC Interface Endpoint untuk Secrets Manager (secretsmanager.region.amazonaws.com). Ini memungkinkan Lambda mengakses Secrets Manager API tanpa internet access. Opsi B (Lambda di luar VPC) tidak bisa mengakses Redshift di private subnet. Opsi C (NAT Gateway) berfungsi tetapi menambah biaya dan memerlukan internet gateway — kurang secure dibanding VPC endpoint. Opsi D (VPC peering dari luar VPC) tidak possible — Lambda di luar VPC tidak memiliki VPC attachment untuk peering.</div>
+                <div class="explanation">Lambda rotation function harus di-deploy dalam VPC yang sama dengan Redshift (untuk direct network access ke port 5439). Untuk mengakses Secrets Manager API (yang merupakan public service), diperlukan VPC Interface Endpoint untuk Secrets Manager (secretsmanager.region.amazonaws.com). Ini memungkinkan Lambda mengakses Secrets Manager API tanpa internet access. Opsi B (Lambda di luar VPC) tidak bisa mengakses Redshift di private subnet — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (NAT Gateway) berfungsi tetapi menambah biaya dan memerlukan internet gateway — kurang secure dibanding VPC endpoint. Opsi D (VPC peering dari luar VPC) tidak possible — Lambda di luar VPC tidak memiliki VPC attachment untuk peering.</div>
             </div>
         </div>
 
@@ -106,12 +106,12 @@
                 <li><span class="option-label">A.</span> AWSCURRENT (active credentials), AWSPENDING (new credentials being tested), and AWSPREVIOUS (last known good credentials)</li>
                 <li><span class="option-label">B.</span> AWSCURRENT (active credentials), AWSNEXT (scheduled future credentials), and AWSARCHIVED (historical credentials)</li>
                 <li><span class="option-label">C.</span> PRIMARY (active credentials), SECONDARY (backup credentials), and TERTIARY (historical credentials)</li>
-                <li><span class="option-label">D.</span> AWSCURRENT (active credentials) and AWSBACKUP (rollback credentials) only</li>
+                <li><span class="option-label">D.</span> AWSCURRENT (active credentials) and AWSBACKUP (rollback credentials) only and AWSPREVIOUS (last known good credentials)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Secrets Manager menggunakan tiga version stages selama rotation: (1) AWSCURRENT — credentials yang aktif saat ini, dikembalikan secara default saat GetSecretValue dipanggil. (2) AWSPENDING — credentials baru yang sedang dibuat dan ditest oleh rotation Lambda selama rotation process. (3) AWSPREVIOUS — credentials sebelumnya yang masih valid, berguna untuk services yang masih menggunakan credentials lama. Rotation Lambda melewati 4 steps: createSecret (buat AWSPENDING), setSecret (set di database), testSecret (validasi AWSPENDING works), finishSecret (promosikan AWSPENDING menjadi AWSCURRENT). Opsi lain menggunakan label yang tidak exist di Secrets Manager.</div>
+                <div class="explanation">Secrets Manager menggunakan tiga version stages selama rotation: (1) AWSCURRENT — credentials yang aktif saat ini, dikembalikan secara default saat GetSecretValue dipanggil. (2) AWSPENDING — credentials baru yang sedang dibuat dan ditest oleh rotation Lambda selama rotation process. (3) AWSPREVIOUS — credentials sebelumnya yang masih valid, berguna untuk services yang masih menggunakan credentials lama. Rotation Lambda melewati 4 steps: createSecret (buat AWSPENDING), setSecret (set di database), testSecret (validasi AWSPENDING works), finishSecret (promosikan AWSPENDING menjadi AWSCURRENT). Opsi lain menggunakan label yang tidak exist di Secrets Manager. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -123,12 +123,12 @@
                 <li><span class="option-label">A.</span> In Account B: Add a resource-based policy on the secret allowing Account A's Glue role to perform secretsmanager:GetSecretValue. In Account A: Grant the Glue role permission to call secretsmanager:GetSecretValue on the Account B secret ARN.</li>
                 <li><span class="option-label">B.</span> Replicate the secret from Account B to Account A using Secrets Manager cross-region replication</li>
                 <li><span class="option-label">C.</span> Create an IAM user in Account B with access to the secret, and store those access keys in Account A's Secrets Manager</li>
-                <li><span class="option-label">D.</span> Share the secret through AWS Resource Access Manager (RAM) to Account A</li>
+                <li><span class="option-label">D.</span> Share the secret through AWS Resource Access Manager (RAM) to Account A configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Cross-account secret access memerlukan konfigurasi di kedua akun: (1) Account B (resource owner): Resource-based policy pada secret yang mengizinkan Account A's role ARN untuk GetSecretValue. Jika secret encrypted dengan CMK, KMS key policy juga harus allow Account A. (2) Account A (requester): IAM policy pada Glue role yang mengizinkan secretsmanager:GetSecretValue pada ARN secret di Account B. Opsi B (cross-region replication) bukan cross-account — ini untuk DR antar regions. Opsi C (IAM user + access keys) melanggar best practice dan menimbulkan credential management recursion. Opsi D (RAM) tidak mendukung sharing Secrets Manager secrets.</div>
+                <div class="explanation">Cross-account secret access memerlukan konfigurasi di kedua akun: (1) Account B (resource owner): Resource-based policy pada secret yang mengizinkan Account A's role ARN untuk GetSecretValue. Jika secret encrypted dengan CMK, KMS key policy juga harus allow Account A. (2) Account A (requester): IAM policy pada Glue role yang mengizinkan secretsmanager:GetSecretValue pada ARN secret di Account B. Opsi B (cross-region replication) bukan cross-account — ini untuk DR antar regions. Opsi C (IAM user + access keys) melanggar best practice dan menimbulkan credential management recursion. Opsi D (RAM) tidak mendukung sharing Secrets Manager secrets — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -140,12 +140,12 @@
                 <li><span class="option-label">A.</span> Native Redshift rotation uses a Secrets Manager-managed Lambda function that directly connects to Redshift to change the master user password without requiring custom code</li>
                 <li><span class="option-label">B.</span> Native Redshift rotation requires the engineer to write a custom Lambda function that uses the Redshift Data API to change the password</li>
                 <li><span class="option-label">C.</span> Native Redshift rotation is only available for Redshift Serverless, not provisioned Redshift clusters</li>
-                <li><span class="option-label">D.</span> Native Redshift rotation changes the password in Secrets Manager but requires manual execution of ALTER USER on the Redshift cluster</li>
+                <li><span class="option-label">D.</span> Native Redshift rotation changes the password in Secrets Manager but requires manual execution of ALTER USER on the Redshift cluster with fully managed infrastructure and automatic scaling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Secrets Manager menyediakan managed rotation untuk Amazon Redshift (baik provisioned maupun Serverless). Saat native rotation dikonfigurasi, Secrets Manager membuat dan mengelola Lambda function yang secara otomatis: (1) Generates password baru. (2) Connects ke Redshift cluster. (3) Menjalankan ALTER USER untuk mengubah password. (4) Updates secret value. Tidak perlu custom code — cukup konfigurasi rotation schedule dan network access (Lambda harus bisa reach Redshift dan Secrets Manager). Opsi B salah — custom Lambda tidak diperlukan untuk database yang supported. Opsi C salah — tersedia untuk keduanya. Opsi D salah — rotation mengubah password di Redshift dan Secrets Manager secara otomatis.</div>
+                <div class="explanation">AWS Secrets Manager menyediakan managed rotation untuk Amazon Redshift (baik provisioned maupun Serverless). Saat native rotation dikonfigurasi, Secrets Manager membuat dan mengelola Lambda function yang secara otomatis: (1) Generates password baru. (2) Connects ke Redshift cluster. (3) Menjalankan ALTER USER untuk mengubah password. (4) Updates secret value. Tidak perlu custom code — cukup konfigurasi rotation schedule dan network access (Lambda harus bisa reach Redshift dan Secrets Manager). Opsi B salah — custom Lambda tidak diperlukan untuk database yang supported. Opsi C salah — tersedia untuk keduanya. Opsi D salah — rotation mengubah password di Redshift dan Secrets Manager secara otomatis — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -156,13 +156,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Cache the secret value in a DynamoDB table and read from DynamoDB instead</li>
                 <li><span class="option-label">B.</span> Use the AWS Secrets Manager caching library (client-side caching) with a configurable TTL in the Lambda function</li>
-                <li><span class="option-label">C.</span> Store the credentials in Lambda environment variables encrypted with KMS</li>
+                <li><span class="option-label">C.</span> Store the credentials in Lambda environment variables encrypted with KMS configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Use Parameter Store instead of Secrets Manager as it has higher API rate limits</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS menyediakan Secrets Manager Caching Library (tersedia untuk Python, Java, .NET, Go) yang melakukan client-side caching dengan configurable TTL. Library ini menyimpan secret value di memory Lambda execution environment dan hanya memanggil Secrets Manager API saat cache expired. Ini secara drastis mengurangi API calls (dari 10,000/menit menjadi beberapa calls per cache TTL period). Opsi A (DynamoDB cache) menambahkan service dependency dan risiko keamanan — credentials tersimpan di persistent store. Opsi C (environment variables) tidak mendukung automatic rotation — harus redeploy Lambda setiap kali password berubah. Opsi D (Parameter Store) memiliki throughput limit yang sama dan tidak menyelesaikan masalah caching.</div>
+                <div class="explanation">AWS menyediakan Secrets Manager Caching Library (tersedia untuk Python, Java, .NET, Go) yang melakukan client-side caching dengan configurable TTL. Library ini menyimpan secret value di memory Lambda execution environment dan hanya memanggil Secrets Manager API saat cache expired. Ini secara drastis mengurangi API calls (dari 10,000/menit menjadi beberapa calls per cache TTL period). Opsi A (DynamoDB cache) menambahkan service dependency dan risiko keamanan — credentials tersimpan di persistent store. Opsi C (environment variables) tidak mendukung automatic rotation — harus redeploy Lambda setiap kali password berubah — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Parameter Store) memiliki throughput limit yang sama dan tidak menyelesaikan masalah caching.</div>
             </div>
         </div>
 
@@ -172,14 +172,14 @@
             <div class="question-text">A company's compliance policy requires that all database credentials must be rotated every 14 days. A data engineer configures Secrets Manager rotation for an RDS MySQL database. Two weeks after initial setup, the rotation fails. CloudWatch Logs from the rotation Lambda show "Access denied connecting to RDS instance." The rotation was working initially. What is the MOST likely cause?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The rotation Lambda function's security group was modified, removing access to the RDS instance on port 3306</li>
-                <li><span class="option-label">B.</span> The RDS instance was moved to a different subnet since initial configuration</li>
+                <li><span class="option-label">B.</span> The RDS instance was moved to a different subnet since initial configuration configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> The Secrets Manager VPC endpoint was deleted, preventing the Lambda function from communicating with Secrets Manager API</li>
                 <li><span class="option-label">D.</span> The master user credentials stored in a separate admin secret (used by the rotation function) have expired or been manually changed outside of Secrets Manager</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">Untuk multi-user rotation strategy, rotation Lambda memerlukan "master secret" — credentials admin/master user yang digunakan untuk membuat dan mengubah password user lain. Jika master credentials diubah secara manual (di luar Secrets Manager) atau expired, rotation Lambda tidak bisa login ke database untuk melakukan perubahan password, menghasilkan "Access denied connecting to RDS." Error ini spesifik menunjukkan masalah database authentication, bukan network. Opsi A (security group) akan menghasilkan "connection timeout," bukan "access denied." Opsi B (subnet change) juga menghasilkan connectivity error, bukan auth error. Opsi C (VPC endpoint deleted) akan menghasilkan error pada Secrets Manager API calls, bukan RDS connection.</div>
+                <div class="explanation">Untuk multi-user rotation strategy, rotation Lambda memerlukan "master secret" — credentials admin/master user yang digunakan untuk membuat dan mengubah password user lain. Jika master credentials diubah secara manual (di luar Secrets Manager) atau expired, rotation Lambda tidak bisa login ke database untuk melakukan perubahan password, menghasilkan "Access denied connecting to RDS." Error ini spesifik menunjukkan masalah database authentication, bukan network. Opsi A (security group) akan menghasilkan "connection timeout," bukan "access denied." Opsi B (subnet change) juga menghasilkan connectivity error, bukan auth error — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (VPC endpoint deleted) akan menghasilkan error pada Secrets Manager API calls, bukan RDS connection.</div>
             </div>
         </div>
 
@@ -191,12 +191,12 @@
                 <li><span class="option-label">A.</span> Store all credentials in EMR cluster configuration properties at launch time and reference them as Spark configuration parameters</li>
                 <li><span class="option-label">B.</span> Use the AWS SDK (boto3) within the Spark job code to call Secrets Manager GetSecretValue at runtime, with the EMR EC2 instance profile role providing access</li>
                 <li><span class="option-label">C.</span> Create a bootstrap action that writes all secrets to a file on the master node, then distribute the file to all workers via HDFS</li>
-                <li><span class="option-label">D.</span> Use EMR's native Secrets Manager integration to automatically inject secrets as environment variables on all nodes</li>
+                <li><span class="option-label">D.</span> Use EMR's native Secrets Manager integration to automatically inject secrets as environment variables on all nodes with the EMR EC2 instance profile role providing access</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Best practice adalah menggunakan AWS SDK (boto3 untuk Python) di dalam Spark job code untuk memanggil Secrets Manager GetSecretValue API saat runtime. EMR EC2 instances menggunakan instance profile role yang harus memiliki permission secretsmanager:GetSecretValue. Credentials diambil saat dibutuhkan dan tidak disimpan secara persistent. Opsi A (cluster config at launch) — credentials menjadi visible di EMR configuration dan tidak mendukung rotation setelah cluster launch. Opsi C (bootstrap + HDFS) sangat tidak aman — credentials tersimpan plaintext di filesystem yang accessible oleh semua users. Opsi D salah — EMR tidak memiliki native integration untuk auto-inject Secrets Manager secrets sebagai environment variables.</div>
+                <div class="explanation">Best practice adalah menggunakan AWS SDK (boto3 untuk Python) di dalam Spark job code untuk memanggil Secrets Manager GetSecretValue API saat runtime. EMR EC2 instances menggunakan instance profile role yang harus memiliki permission secretsmanager:GetSecretValue. Credentials diambil saat dibutuhkan dan tidak disimpan secara persistent. Opsi A (cluster config at launch) — credentials menjadi visible di EMR configuration dan tidak mendukung rotation setelah cluster launch. Opsi C (bootstrap + HDFS) sangat tidak aman — credentials tersimpan plaintext di filesystem yang accessible oleh semua users. Opsi D salah — EMR tidak memiliki native integration untuk auto-inject Secrets Manager secrets sebagai environment variables — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

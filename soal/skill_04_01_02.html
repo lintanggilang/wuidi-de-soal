@@ -37,13 +37,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create individual IAM users with inline policies tailored to each engineer's specific needs</li>
                 <li><span class="option-label">B.</span> Create an IAM group "DataEngineers" with the common permissions attached as managed policies, and a second group "SeniorDataEngineers" with EMR management policies. Add engineers to appropriate groups.</li>
-                <li><span class="option-label">C.</span> Create a single IAM role "DataEngineerRole" with all permissions and have all engineers assume the role when needed</li>
+                <li><span class="option-label">C.</span> Create a single IAM role "DataEngineerRole" with all permissions and have all engineers assume the role when needed with fully managed infrastructure and automatic scaling</li>
                 <li><span class="option-label">D.</span> Create one IAM group with full administrator access and use AWS Organizations SCPs to restrict permissions at the account level</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS best practice adalah menggunakan IAM Groups untuk mengelola permissions berdasarkan job function. Group "DataEngineers" berisi common policies (S3 read prod, S3 write dev, Glue job run) yang berlaku untuk semua 15 engineer. Group "SeniorDataEngineers" menambahkan EMR management policies. Senior engineers menjadi member di kedua groups dan mewarisi semua permissions. Opsi A (inline policies per user) tidak scalable dan sulit di-maintain. Opsi C (satu role) memberikan semua orang permissions yang sama termasuk EMR — melanggar least privilege. Opsi D (admin access + SCP) terlalu permissive dan SCP tidak dimaksudkan untuk granular user permissions.</div>
+                <div class="explanation">AWS best practice adalah menggunakan IAM Groups untuk mengelola permissions berdasarkan job function. Group "DataEngineers" berisi common policies (S3 read prod, S3 write dev, Glue job run) yang berlaku untuk semua 15 engineer. Group "SeniorDataEngineers" menambahkan EMR management policies. Senior engineers menjadi member di kedua groups dan mewarisi semua permissions. Opsi A (inline policies per user) tidak scalable dan sulit di-maintain. Opsi C (satu role) memberikan semua orang permissions yang sama termasuk EMR — melanggar least privilege — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (admin access + SCP) terlalu permissive dan SCP tidak dimaksudkan untuk granular user permissions.</div>
             </div>
         </div>
 
@@ -55,12 +55,12 @@
                 <li><span class="option-label">A.</span> In Account A: Create IAM role with trust policy for glue.amazonaws.com and a policy allowing s3:GetObject on Account B's bucket. In Account B: Add a bucket policy allowing the Account A Glue role to access the bucket.</li>
                 <li><span class="option-label">B.</span> In Account A: Create IAM role with trust policy for s3.amazonaws.com. In Account B: Create an IAM user with access keys and store them in Secrets Manager for Glue to use.</li>
                 <li><span class="option-label">C.</span> In Account A: Create IAM role with AdministratorAccess. In Account B: Disable S3 Block Public Access on the bucket.</li>
-                <li><span class="option-label">D.</span> In Account A: Create a VPC endpoint for S3 pointing to Account B. In Account B: Allow access from Account A's VPC endpoint in the bucket policy.</li>
+                <li><span class="option-label">D.</span> In Account A: Create a VPC endpoint for S3 pointing to Account B. In Account B: Allow access from Account A's VPC endpoint in the bucket policy, with trust policy for glue and a policy allowing s3:GetObject on Account B's bucket</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Cross-account S3 access memerlukan konfigurasi di kedua akun: (1) Account A: IAM role untuk Glue dengan trust policy yang mengizinkan glue.amazonaws.com sebagai principal, plus IAM policy dengan permission s3:GetObject pada ARN bucket Account B. (2) Account B: Bucket policy yang mengizinkan Account A's Glue role ARN untuk mengakses bucket. Kedua sisi harus explicitly mengizinkan. Opsi B (IAM user + access keys) melanggar best practice — gunakan roles, bukan long-term credentials. Opsi C (admin + disable block public access) sangat tidak aman. Opsi D (VPC endpoint) tidak memberikan cross-account access — VPC endpoint hanya route traffic, tidak memberikan permission.</div>
+                <div class="explanation">Cross-account S3 access memerlukan konfigurasi di kedua akun: (1) Account A: IAM role untuk Glue dengan trust policy yang mengizinkan glue.amazonaws.com sebagai principal, plus IAM policy dengan permission s3:GetObject pada ARN bucket Account B. (2) Account B: Bucket policy yang mengizinkan Account A's Glue role ARN untuk mengakses bucket. Kedua sisi harus explicitly mengizinkan. Opsi B (IAM user + access keys) melanggar best practice — gunakan roles, bukan long-term credentials. Opsi C (admin + disable block public access) sangat tidak aman. Opsi D (VPC endpoint) tidak memberikan cross-account access — VPC endpoint hanya route traffic, tidak memberikan permission — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -69,7 +69,7 @@
             <div class="question-number">3</div>
             <div class="question-text">A data engineer needs to allow an Amazon Redshift cluster to access data in Amazon S3 and also to call AWS Lambda UDFs (User-Defined Functions). The engineer creates an IAM role for Redshift. Which trust policy configuration is correct for this IAM role?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Trust policy with Principal: {"Service": ["redshift.amazonaws.com", "lambda.amazonaws.com"]}</li>
+                <li><span class="option-label">A.</span> Trust policy with Principal: {"Service": ["redshift.amazonaws.com", "lambda.amazonaws.com"]} and permission policy allowing s3:* and lambda:InvokeFunction</li>
                 <li><span class="option-label">B.</span> Trust policy with Principal: {"Service": "redshift.amazonaws.com"} and permission policy allowing s3:* and lambda:InvokeFunction</li>
                 <li><span class="option-label">C.</span> Trust policy with Principal: {"Service": "s3.amazonaws.com"} and separate trust for lambda.amazonaws.com</li>
                 <li><span class="option-label">D.</span> Trust policy with Principal: {"AWS": "arn:aws:iam::ACCOUNT_ID:root"} allowing any service in the account to assume the role</li>
@@ -77,7 +77,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Trust policy menentukan SIAPA yang boleh assume role (Principal), sedangkan permission policy menentukan APA yang boleh dilakukan setelah assuming role. Redshift yang akan assume role, jadi trust policy harus memiliki Principal: redshift.amazonaws.com. Permission policy kemudian memberikan akses ke S3 dan izin lambda:InvokeFunction. Opsi A salah karena Lambda tidak perlu assume role ini — Redshift yang memanggil Lambda menggunakan role Redshift sendiri. Opsi C salah karena S3 tidak assume role. Opsi D (account root) terlalu permissive dan tidak mengikuti service-specific trust.</div>
+                <div class="explanation">Trust policy menentukan SIAPA yang boleh assume role (Principal), sedangkan permission policy menentukan APA yang boleh dilakukan setelah assuming role. Redshift yang akan assume role, jadi trust policy harus memiliki Principal: redshift.amazonaws.com. Permission policy kemudian memberikan akses ke S3 dan izin lambda:InvokeFunction. Opsi A salah karena Lambda tidak perlu assume role ini — Redshift yang memanggil Lambda menggunakan role Redshift sendiri — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah karena S3 tidak assume role. Opsi D (account root) terlalu permissive dan tidak mengikuti service-specific trust.</div>
             </div>
         </div>
 
@@ -89,7 +89,7 @@
                 <li><span class="option-label">A.</span> EMR requires two separate roles — a service role (for elasticmapreduce.amazonaws.com) and an EC2 instance profile role (for ec2.amazonaws.com). The DynamoDB permissions should be on the instance profile role.</li>
                 <li><span class="option-label">B.</span> The trust policy should include both elasticmapreduce.amazonaws.com and dynamodb.amazonaws.com as principals</li>
                 <li><span class="option-label">C.</span> DynamoDB access requires a service-linked role that must be created separately</li>
-                <li><span class="option-label">D.</span> The EMR cluster must be launched in a VPC with a DynamoDB VPC endpoint before IAM permissions take effect</li>
+                <li><span class="option-label">D.</span> The EMR cluster must be launched in a VPC with a DynamoDB VPC endpoint before IAM permissions take effect and an EC2 instance profile role (for ec2</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -106,12 +106,12 @@
                 <li><span class="option-label">A.</span> Gateway Endpoints support S3 and DynamoDB only, are free, and use route table entries. Interface Endpoints support most AWS services, incur hourly and data processing charges, and use private IP addresses via ENIs.</li>
                 <li><span class="option-label">B.</span> Gateway Endpoints use ENIs and support all AWS services. Interface Endpoints use route tables and only support S3 and DynamoDB.</li>
                 <li><span class="option-label">C.</span> Gateway Endpoints require security groups for access control. Interface Endpoints use route table entries and VPC endpoint policies only.</li>
-                <li><span class="option-label">D.</span> Both endpoint types are functionally identical but Gateway Endpoints have higher throughput limits than Interface Endpoints.</li>
+                <li><span class="option-label">D.</span> Both endpoint types are functionally identical but Gateway Endpoints have higher throughput limits than Interface Endpoints. and DynamoDB only, are free, and use route table entries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Gateway Endpoints hanya tersedia untuk S3 dan DynamoDB, gratis, dan bekerja melalui route table entries — traffic diarahkan melalui gateway tanpa ENI. Interface Endpoints (powered by AWS PrivateLink) mendukung sebagian besar AWS services (termasuk SageMaker, Glue, Athena), menggunakan ENI dengan private IP di subnet, dan memiliki biaya per jam plus data processing. Interface Endpoints juga memerlukan security group pada ENI untuk access control. Opsi B membalikkan definisi keduanya. Opsi C salah — Gateway Endpoints tidak memerlukan security group, dan Interface Endpoints yang memerlukan security group. Opsi D salah — keduanya berbeda secara fundamental dalam arsitektur.</div>
+                <div class="explanation">Gateway Endpoints hanya tersedia untuk S3 dan DynamoDB, gratis, dan bekerja melalui route table entries — traffic diarahkan melalui gateway tanpa ENI. Interface Endpoints (powered by AWS PrivateLink) mendukung sebagian besar AWS services (termasuk SageMaker, Glue, Athena), menggunakan ENI dengan private IP di subnet, dan memiliki biaya per jam plus data processing. Interface Endpoints juga memerlukan security group pada ENI untuk access control. Opsi B membalikkan definisi keduanya. Opsi C salah — Gateway Endpoints tidak memerlukan security group, dan Interface Endpoints yang memerlukan security group. Opsi D salah — keduanya berbeda secara fundamental dalam arsitektur — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -121,14 +121,14 @@
             <div class="question-text">A data engineer attempts to configure role chaining where an AWS Glue job assumes Role A, which then assumes Role B to access resources in a different account. The role chaining fails with an AccessDenied error. All IAM policies and trust policies appear correct. What is the MOST likely limitation causing this failure?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Role chaining has a maximum session duration of 1 hour regardless of the individual role's maximum session duration settings</li>
-                <li><span class="option-label">B.</span> AWS Glue does not support role chaining — it can only use the directly assigned IAM role</li>
+                <li><span class="option-label">B.</span> AWS Glue does not support role chaining — it can only use the directly assigned IAM role configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Role chaining is limited to a maximum of 2 roles in a single chain</li>
                 <li><span class="option-label">D.</span> The intermediate Role A must have sts:AssumeRole permission and its trust policy must allow the Glue service role as a principal, which is often missed</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Role chaining di AWS memiliki limitasi penting: session duration maximum dibatasi 1 jam (3600 detik) terlepas dari MaxSessionDuration yang dikonfigurasi pada role individual. Jika Glue job berjalan lebih dari 1 jam, temporary credentials dari role chain akan expire dan menyebabkan AccessDenied. Ini adalah limitasi yang sering tidak diketahui. Opsi B salah — Glue dapat melakukan role chaining melalui boto3 STS calls dalam job script. Opsi C salah — AWS mengizinkan chaining lebih dari 2 roles. Opsi D bisa jadi masalah tapi soal menyebutkan "all policies appear correct" — limitasi 1 jam session duration adalah penyebab paling umum yang terlewat.</div>
+                <div class="explanation">Role chaining di AWS memiliki limitasi penting: session duration maximum dibatasi 1 jam (3600 detik) terlepas dari MaxSessionDuration yang dikonfigurasi pada role individual. Jika Glue job berjalan lebih dari 1 jam, temporary credentials dari role chain akan expire dan menyebabkan AccessDenied. Ini adalah limitasi yang sering tidak diketahui. Opsi B salah — Glue dapat melakukan role chaining melalui boto3 STS calls dalam job script — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah — AWS mengizinkan chaining lebih dari 2 roles. Opsi D bisa jadi masalah tapi soal menyebutkan "all policies appear correct" — limitasi 1 jam session duration adalah penyebab paling umum yang terlewat.</div>
             </div>
         </div>
 
@@ -139,13 +139,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create role with trust policy allowing Account 222222222222 to assume role, with permission policy granting s3:GetObject on specific prefixes, and a Condition block using aws:CurrentTime for time restriction</li>
                 <li><span class="option-label">B.</span> Create an IAM user in Account 111111111111 for the partner with time-based MFA requirement</li>
-                <li><span class="option-label">C.</span> Use S3 Access Points with a bucket policy that restricts access to business hours only</li>
+                <li><span class="option-label">C.</span> Use S3 Access Points with a bucket policy that restricts access to business hours only for time restriction</li>
                 <li><span class="option-label">D.</span> Create a Lambda function that generates pre-signed URLs only during business hours and share the function endpoint</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Cross-account IAM role dengan: (1) Trust policy yang mengizinkan Account 222222222222 sebagai Principal untuk AssumeRole. (2) Permission policy dengan s3:GetObject pada resource ARN spesifik (arn:aws:s3:::bucket/prefix/*). (3) Condition menggunakan "aws:CurrentTime" dengan StringGreaterThanEquals dan StringLessThanEquals untuk membatasi waktu akses. Ini memenuhi semua requirement secara native IAM. Opsi B (IAM user untuk partner) melanggar best practice — selalu gunakan roles untuk cross-account access. Opsi C (S3 Access Points) bagus untuk access management tapi tidak memiliki native time-based condition. Opsi D (pre-signed URLs) tidak scalable dan sulit di-audit.</div>
+                <div class="explanation">Cross-account IAM role dengan: (1) Trust policy yang mengizinkan Account 222222222222 sebagai Principal untuk AssumeRole. (2) Permission policy dengan s3:GetObject pada resource ARN spesifik (arn:aws:s3:::bucket/prefix/*). (3) Condition menggunakan "aws:CurrentTime" dengan StringGreaterThanEquals dan StringLessThanEquals untuk membatasi waktu akses. Ini memenuhi semua requirement secara native IAM. Opsi B (IAM user untuk partner) melanggar best practice — selalu gunakan roles untuk cross-account access. Opsi C (S3 Access Points) bagus untuk access management tapi tidak memiliki native time-based condition — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (pre-signed URLs) tidak scalable dan sulit di-audit.</div>
             </div>
         </div>
 
@@ -156,13 +156,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Access is allowed because identity-based policies (IAM group) take precedence over resource-based policies (bucket policy)</li>
                 <li><span class="option-label">B.</span> Access is denied because an explicit Deny in any policy always overrides an Allow in any other policy</li>
-                <li><span class="option-label">C.</span> Access depends on which policy was created most recently</li>
+                <li><span class="option-label">C.</span> Access depends on which policy was created most recently configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Access is allowed because resource-based policies and identity-based policies are evaluated independently, and one Allow is sufficient</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">IAM policy evaluation logic mengikuti aturan: Explicit Deny selalu menang. Urutan evaluasi: (1) Jika ada explicit Deny di policy manapun → DENY. (2) Jika ada explicit Allow → ALLOW. (3) Jika tidak ada explicit Allow → implicit DENY. Karena ada explicit Deny di bucket policy, akses akan ditolak meskipun IAM group policy mengizinkan. Ini berlaku terlepas dari jenis policy (identity-based, resource-based, SCP, permission boundary). Opsi A salah — tidak ada hirarki prioritas antara identity dan resource-based policies untuk Deny. Opsi C salah — waktu pembuatan tidak mempengaruhi evaluasi. Opsi D salah — ini hanya berlaku untuk cross-account access dimana kedua sisi harus Allow.</div>
+                <div class="explanation">IAM policy evaluation logic mengikuti aturan: Explicit Deny selalu menang. Urutan evaluasi: (1) Jika ada explicit Deny di policy manapun → DENY. (2) Jika ada explicit Allow → ALLOW. (3) Jika tidak ada explicit Allow → implicit DENY. Karena ada explicit Deny di bucket policy, akses akan ditolak meskipun IAM group policy mengizinkan. Ini berlaku terlepas dari jenis policy (identity-based, resource-based, SCP, permission boundary). Opsi A salah — tidak ada hirarki prioritas antara identity dan resource-based policies untuk Deny. Opsi C salah — waktu pembuatan tidak mempengaruhi evaluasi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D salah — ini hanya berlaku untuk cross-account access dimana kedua sisi harus Allow.</div>
             </div>
         </div>
 
@@ -171,7 +171,7 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer discovers that the AWS Glue service-linked role (AWSServiceRoleForGlue) does not have sufficient permissions for a specific use case — the Glue crawler needs to access a KMS-encrypted S3 bucket with a customer-managed key. What should the engineer do?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Modify the AWSServiceRoleForGlue by attaching an additional IAM policy with KMS decrypt permissions</li>
+                <li><span class="option-label">A.</span> Modify the AWSServiceRoleForGlue by attaching an additional IAM policy with KMS decrypt permissions configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> Delete the service-linked role and recreate it with additional KMS permissions in the trust policy</li>
                 <li><span class="option-label">C.</span> Service-linked roles cannot be modified. Instead, add the Glue service-linked role's ARN to the KMS key policy as an authorized principal.</li>
                 <li><span class="option-label">D.</span> Create a custom IAM role for the Glue crawler with both the required S3 and KMS permissions, and use that instead of the service-linked role</li>
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Service-linked roles adalah pre-defined oleh AWS dan tidak bisa dimodifikasi — Anda tidak bisa menambah atau mengubah permission policies-nya. Untuk KMS customer-managed keys, solusinya adalah menambahkan ARN service-linked role ke KMS key policy sebagai authorized principal untuk kms:Decrypt dan kms:GenerateDataKey. KMS key policy memberikan akses dari sisi resource. Opsi A salah — service-linked roles tidak bisa dimodifikasi. Opsi B salah — service-linked roles tidak bisa di-custom saat creation. Opsi D bisa bekerja tetapi bukan solusi yang tepat jika Anda sudah menggunakan service-linked role dan hanya perlu akses KMS — lebih baik update KMS key policy.</div>
+                <div class="explanation">Service-linked roles adalah pre-defined oleh AWS dan tidak bisa dimodifikasi — Anda tidak bisa menambah atau mengubah permission policies-nya. Untuk KMS customer-managed keys, solusinya adalah menambahkan ARN service-linked role ke KMS key policy sebagai authorized principal untuk kms:Decrypt dan kms:GenerateDataKey. KMS key policy memberikan akses dari sisi resource. Opsi A salah — service-linked roles tidak bisa dimodifikasi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi B salah — service-linked roles tidak bisa di-custom saat creation. Opsi D bisa bekerja tetapi bukan solusi yang tepat jika Anda sudah menggunakan service-linked role dan hanya perlu akses KMS — lebih baik update KMS key policy.</div>
             </div>
         </div>
 
@@ -190,13 +190,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Account B bucket policy allows Account A Glue role to PutObject and Account C EMR role to GetObject. Account A has Glue role with s3:PutObject permission. Account C EMR instance profile has s3:GetObject permission.</li>
                 <li><span class="option-label">B.</span> Create a single cross-account role in Account B that both Account A and Account C assume to access the bucket</li>
-                <li><span class="option-label">C.</span> Use S3 replication to copy data from Account A to Account C, avoiding cross-account access entirely</li>
+                <li><span class="option-label">C.</span> Use S3 replication to copy data from Account A to Account C, avoiding cross-account access entirely with s3:PutObject permission and Account C EMR role to GetObject</li>
                 <li><span class="option-label">D.</span> Grant Account A and Account C full administrator access to Account B using AWS Organizations trusted access</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk cross-account S3 access, diperlukan permission di kedua sisi: (1) Identity-based policy di source account (IAM role permission) — Account A Glue role perlu s3:PutObject, Account C EMR role perlu s3:GetObject. (2) Resource-based policy di destination account (S3 bucket policy) — explicitly allow Account A's Glue role ARN untuk PutObject dan Account C's EMR role ARN untuk GetObject. Ini mengikuti principle of least privilege. Opsi B (single shared role) kurang secure — kedua account mendapat permissions yang sama. Opsi C (replication) menambah biaya dan complexity. Opsi D (admin access) sangat tidak aman dan melanggar least privilege.</div>
+                <div class="explanation">Untuk cross-account S3 access, diperlukan permission di kedua sisi: (1) Identity-based policy di source account (IAM role permission) — Account A Glue role perlu s3:PutObject, Account C EMR role perlu s3:GetObject. (2) Resource-based policy di destination account (S3 bucket policy) — explicitly allow Account A's Glue role ARN untuk PutObject dan Account C's EMR role ARN untuk GetObject. Ini mengikuti principle of least privilege. Opsi B (single shared role) kurang secure — kedua account mendapat permissions yang sama. Opsi C (replication) menambah biaya dan complexity — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (admin access) sangat tidak aman dan melanggar least privilege.</div>
             </div>
         </div>
         

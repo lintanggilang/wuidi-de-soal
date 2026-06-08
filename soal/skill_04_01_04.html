@@ -38,12 +38,12 @@
                 <li><span class="option-label">A.</span> Attach the AWS managed policy AmazonKinesisFullAccess, AmazonDynamoDBFullAccess, and AmazonSNSFullAccess</li>
                 <li><span class="option-label">B.</span> Create a custom policy allowing kinesis:GetRecords, kinesis:GetShardIterator, kinesis:DescribeStream, kinesis:ListShards on the specific stream ARN; dynamodb:PutItem, dynamodb:BatchWriteItem on the specific table ARN; and sns:Publish on the specific topic ARN</li>
                 <li><span class="option-label">C.</span> Attach the PowerUserAccess managed policy which covers all services except IAM</li>
-                <li><span class="option-label">D.</span> Create a custom policy with kinesis:*, dynamodb:*, and sns:* on resource "*"</li>
+                <li><span class="option-label">D.</span> Create a custom policy with kinesis:*, dynamodb:*, and sns:* on resource "*" and sns:Publish on the specific topic ARN</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Least privilege berarti memberikan hanya permissions yang benar-benar diperlukan pada resource yang spesifik. Custom policy dengan: (1) Kinesis read permissions (GetRecords, GetShardIterator, DescribeStream, ListShards) — hanya actions untuk consume data. (2) DynamoDB write permissions (PutItem, BatchWriteItem) — hanya actions untuk menulis. (3) SNS publish permission — hanya action untuk mengirim notifikasi. Semua terbatas pada ARN spesifik. Opsi A (FullAccess policies) memberikan permissions berlebihan (termasuk Delete, Create). Opsi C (PowerUserAccess) memberikan hampir semua permissions. Opsi D (wildcard actions dan resources) terlalu broad.</div>
+                <div class="explanation">Least privilege berarti memberikan hanya permissions yang benar-benar diperlukan pada resource yang spesifik. Custom policy dengan: (1) Kinesis read permissions (GetRecords, GetShardIterator, DescribeStream, ListShards) — hanya actions untuk consume data. (2) DynamoDB write permissions (PutItem, BatchWriteItem) — hanya actions untuk menulis. (3) SNS publish permission — hanya action untuk mengirim notifikasi. Semua terbatas pada ARN spesifik. Opsi A (FullAccess policies) memberikan permissions berlebihan (termasuk Delete, Create). Opsi C (PowerUserAccess) memberikan hampir semua permissions. Opsi D (wildcard actions dan resources) terlalu broad — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -55,12 +55,12 @@
                 <li><span class="option-label">A.</span> The engineer's IAM user needs direct glue:CreateJob permission in addition to CloudFormation permissions</li>
                 <li><span class="option-label">B.</span> CloudFormation needs a service role with permissions to create the Glue job, S3 bucket, and Lambda function. The engineer should create and assign a CloudFormation service role with appropriate permissions.</li>
                 <li><span class="option-label">C.</span> The Glue job definition in the template has a syntax error causing CloudFormation to report it as an access issue</li>
-                <li><span class="option-label">D.</span> CloudFormation stacks can only be created from the AWS Management Console, not from the CLI</li>
+                <li><span class="option-label">D.</span> CloudFormation stacks can only be created from the AWS Management Console, not from the CLI with permissions and Lambda function</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">CloudFormation service role is a best practice yang memisahkan "who can create stacks" dari "what resources stacks can create." Tanpa service role, CloudFormation menggunakan permissions dari calling user — jika user tidak memiliki glue:CreateJob, stack creation gagal. Solusinya: buat IAM role yang dipercaya oleh cloudformation.amazonaws.com dengan permissions untuk semua resources yang akan dibuat, lalu assign role tersebut ke stack. Opsi A bisa bekerja tapi bukan best practice — memberikan user permission langsung ke semua services kurang secure. Opsi C salah — syntax error menghasilkan error berbeda. Opsi D salah — CloudFormation bisa dipanggil dari CLI, SDK, dan Console.</div>
+                <div class="explanation">CloudFormation service role is a best practice yang memisahkan "who can create stacks" dari "what resources stacks can create." Tanpa service role, CloudFormation menggunakan permissions dari calling user — jika user tidak memiliki glue:CreateJob, stack creation gagal. Solusinya: buat IAM role yang dipercaya oleh cloudformation.amazonaws.com dengan permissions untuk semua resources yang akan dibuat, lalu assign role tersebut ke stack. Opsi A bisa bekerja tapi bukan best practice — memberikan user permission langsung ke semua services kurang secure. Opsi C salah — syntax error menghasilkan error berbeda. Opsi D salah — CloudFormation bisa dipanggil dari CLI, SDK, dan Console — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -70,14 +70,14 @@
             <div class="question-text">A data engineer needs to allow a third-party SaaS application to write data to an S3 bucket in their AWS account. The SaaS provider gives their AWS Account ID and an External ID. Which IAM role configuration securely enables this access?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a role with trust policy allowing the SaaS provider's account as Principal, include an sts:ExternalId condition matching the provided External ID, and attach a policy allowing s3:PutObject on the target bucket</li>
-                <li><span class="option-label">B.</span> Create an IAM user with access keys and share the credentials with the SaaS provider</li>
+                <li><span class="option-label">B.</span> Create an IAM user with access keys and share the credentials with the SaaS provider and attach a policy allowing s3:PutObject on the target bucket</li>
                 <li><span class="option-label">C.</span> Create a role with trust policy allowing "*" as Principal and use the External ID in the permission policy's Condition block</li>
                 <li><span class="option-label">D.</span> Make the S3 bucket public and restrict access using bucket policy conditions based on the source IP of the SaaS provider</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk third-party cross-account access, best practice adalah: (1) Trust policy dengan Principal: {"AWS": "arn:aws:iam::SAAS_ACCOUNT_ID:root"}. (2) Condition: {"StringEquals": {"sts:ExternalId": "provided-external-id"}}. External ID melindungi dari "confused deputy" attacks — tanpa External ID yang benar, bahkan jika seseorang mengetahui role ARN, mereka tidak bisa assume role. (3) Permission policy hanya memberikan s3:PutObject pada bucket spesifik. Opsi B (access keys) — long-term credentials tidak aman untuk third-party. Opsi C (Principal "*") memungkinkan siapa saja mencoba assume role. Opsi D (public bucket) sangat tidak aman.</div>
+                <div class="explanation">Untuk third-party cross-account access, best practice adalah: (1) Trust policy dengan Principal: {"AWS": "arn:aws:iam::SAAS_ACCOUNT_ID:root"}. (2) Condition: {"StringEquals": {"sts:ExternalId": "provided-external-id"}}. External ID melindungi dari "confused deputy" attacks — tanpa External ID yang benar, bahkan jika seseorang mengetahui role ARN, mereka tidak bisa assume role. (3) Permission policy hanya memberikan s3:PutObject pada bucket spesifik. Opsi B (access keys) — long-term credentials tidak aman untuk third-party — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Principal "*") memungkinkan siapa saja mencoba assume role. Opsi D (public bucket) sangat tidak aman.</div>
             </div>
         </div>
 
@@ -87,14 +87,14 @@
             <div class="question-text">A data engineer needs to configure an API Gateway REST API that triggers a Lambda function for a data ingestion endpoint. The API should accept requests only from authenticated IAM users and roles. Which authorization mechanism should be configured on the API Gateway method?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Set the authorization type to AWS_IAM on the API method. Callers must sign requests with SigV4 credentials of an IAM entity that has execute-api:Invoke permission on the API resource.</li>
-                <li><span class="option-label">B.</span> Create a Cognito User Pool and configure it as the authorizer for the API method</li>
+                <li><span class="option-label">B.</span> Create a Cognito User Pool and configure it as the authorizer for the API method with SigV4 credentials of an IAM entity that has execute-api:Invoke permission on the API resource</li>
                 <li><span class="option-label">C.</span> Create a Lambda authorizer that validates IAM access keys in the request headers</li>
                 <li><span class="option-label">D.</span> Set the authorization type to NONE and use a WAF rule to filter requests by IAM source</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS_IAM authorization pada API Gateway mengharuskan semua request di-sign menggunakan Signature Version 4 (SigV4) dengan credentials IAM entity (user atau role). API Gateway memverifikasi signature dan memeriksa apakah caller memiliki execute-api:Invoke permission pada API resource ARN. Ini adalah mekanisme native dan paling secure untuk IAM-based authentication. Opsi B (Cognito) dimaksudkan untuk end-user authentication, bukan IAM-based service-to-service. Opsi C (Lambda authorizer) menambahkan complexity yang tidak perlu jika IAM auth sudah cukup. Opsi D (NONE + WAF) tidak aman — WAF tidak bisa memvalidasi IAM identity.</div>
+                <div class="explanation">AWS_IAM authorization pada API Gateway mengharuskan semua request di-sign menggunakan Signature Version 4 (SigV4) dengan credentials IAM entity (user atau role). API Gateway memverifikasi signature dan memeriksa apakah caller memiliki execute-api:Invoke permission pada API resource ARN. Ini adalah mekanisme native dan paling secure untuk IAM-based authentication. Opsi B (Cognito) dimaksudkan untuk end-user authentication, bukan IAM-based service-to-service — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Lambda authorizer) menambahkan complexity yang tidak perlu jika IAM auth sudah cukup. Opsi D (NONE + WAF) tidak aman — WAF tidak bisa memvalidasi IAM identity.</div>
             </div>
         </div>
 
@@ -106,12 +106,12 @@
                 <li><span class="option-label">A.</span> Create IAM users with access keys in each account and configure three named profiles with static credentials</li>
                 <li><span class="option-label">B.</span> Configure named profiles in ~/.aws/config with role_arn and source_profile settings, allowing the CLI to automatically assume roles in each account using temporary credentials</li>
                 <li><span class="option-label">C.</span> Use a single set of administrator credentials that has cross-account access to all three accounts</li>
-                <li><span class="option-label">D.</span> Store access keys for all accounts in environment variables and switch between them using shell scripts</li>
+                <li><span class="option-label">D.</span> Store access keys for all accounts in environment variables and switch between them using shell scripts with role_arn</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS CLI named profiles dengan role_arn dan source_profile adalah best practice untuk multi-account access. Konfigurasi: [profile dev] role_arn = arn:aws:iam::DEV_ACCOUNT:role/DataEngineerRole, source_profile = default. CLI secara otomatis memanggil sts:AssumeRole dan menggunakan temporary credentials (expire setelah 1 jam). Ini aman karena menggunakan temporary credentials, audit-friendly (AssumeRole events tercatat di CloudTrail), dan tidak menyimpan long-term credentials per account. Opsi A (static keys per account) menggunakan long-term credentials. Opsi C (single admin) melanggar least privilege. Opsi D (env variables) rawan error dan security risk.</div>
+                <div class="explanation">AWS CLI named profiles dengan role_arn dan source_profile adalah best practice untuk multi-account access. Konfigurasi: [profile dev] role_arn = arn:aws:iam::DEV_ACCOUNT:role/DataEngineerRole, source_profile = default. CLI secara otomatis memanggil sts:AssumeRole dan menggunakan temporary credentials (expire setelah 1 jam). Ini aman karena menggunakan temporary credentials, audit-friendly (AssumeRole events tercatat di CloudTrail), dan tidak menyimpan long-term credentials per account. Opsi A (static keys per account) menggunakan long-term credentials. Opsi C (single admin) melanggar least privilege. Opsi D (env variables) rawan error dan security risk — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -123,12 +123,12 @@
                 <li><span class="option-label">A.</span> The engineer's IAM user/role needs an iam:PassRole permission with the resource set to the GlueETLRole ARN and a condition restricting it to the glue.amazonaws.com service</li>
                 <li><span class="option-label">B.</span> The GlueETLRole needs an iam:PassRole permission in its own policy to allow itself to be passed</li>
                 <li><span class="option-label">C.</span> The engineer needs full IAM administrator access to assign any role to any service</li>
-                <li><span class="option-label">D.</span> The GlueETLRole trust policy must include the engineer's IAM user ARN as a trusted principal</li>
+                <li><span class="option-label">D.</span> The GlueETLRole trust policy must include the engineer's IAM user ARN as a trusted principal with the resource set and a condition restricting it to the glue</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">iam:PassRole adalah permission yang mengontrol siapa yang boleh meng-assign (pass) IAM role ke AWS service. Ini adalah security control yang mencegah privilege escalation — tanpa batasan ini, user bisa membuat service dengan admin role dan mendapat permissions lebih dari yang mereka miliki. Engineer memerlukan policy: {"Effect": "Allow", "Action": "iam:PassRole", "Resource": "arn:aws:iam::ACCOUNT:role/GlueETLRole", "Condition": {"StringEquals": {"iam:PassedToService": "glue.amazonaws.com"}}}. Opsi B salah — role tidak perlu permission untuk di-pass. Opsi C salah — full admin berlebihan. Opsi D salah — trust policy mengontrol siapa yang boleh assume role, bukan siapa yang boleh pass role.</div>
+                <div class="explanation">iam:PassRole adalah permission yang mengontrol siapa yang boleh meng-assign (pass) IAM role ke AWS service. Ini adalah security control yang mencegah privilege escalation — tanpa batasan ini, user bisa membuat service dengan admin role dan mendapat permissions lebih dari yang mereka miliki. Engineer memerlukan policy: {"Effect": "Allow", "Action": "iam:PassRole", "Resource": "arn:aws:iam::ACCOUNT:role/GlueETLRole", "Condition": {"StringEquals": {"iam:PassedToService": "glue.amazonaws.com"}}}. Opsi B salah — role tidak perlu permission untuk di-pass. Opsi C salah — full admin berlebihan. Opsi D salah — trust policy mengontrol siapa yang boleh assume role, bukan siapa yang boleh pass role — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -139,13 +139,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create an IAM role with the required permissions, create an instance profile containing that role, and specify the instance profile when launching the EMR cluster</li>
                 <li><span class="option-label">B.</span> Create an IAM user with the required permissions and pass the access keys to EMR through cluster configuration</li>
-                <li><span class="option-label">C.</span> Attach the permissions directly to the EMR service role (EMR_DefaultRole)</li>
+                <li><span class="option-label">C.</span> Attach the permissions directly to the EMR service role (EMR_DefaultRole) with the required permissions and specify the instance profile when launching the EMR cluster</li>
                 <li><span class="option-label">D.</span> Create an IAM group with the required permissions and add the EMR cluster to the group</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EMR EC2 instances mendapatkan permissions melalui instance profile. Instance profile berisi IAM role yang mendefinisikan permissions untuk aplikasi yang berjalan di cluster (Spark, Hive, etc.). Role ini memerlukan: s3:GetObject/PutObject untuk data access, glue:GetDatabase/GetTable untuk Catalog access, dan cloudwatch:PutMetricData untuk metrics. Secara default, AWS membuat EMR_EC2_DefaultRole untuk ini, tetapi custom instance profile lebih baik untuk least privilege. Opsi B (IAM user + access keys) — kurang secure, credentials bisa bocor. Opsi C — EMR service role untuk cluster management, bukan untuk EC2 instances. Opsi D — IAM groups hanya untuk IAM users, bukan services.</div>
+                <div class="explanation">EMR EC2 instances mendapatkan permissions melalui instance profile. Instance profile berisi IAM role yang mendefinisikan permissions untuk aplikasi yang berjalan di cluster (Spark, Hive, etc.). Role ini memerlukan: s3:GetObject/PutObject untuk data access, glue:GetDatabase/GetTable untuk Catalog access, dan cloudwatch:PutMetricData untuk metrics. Secara default, AWS membuat EMR_EC2_DefaultRole untuk ini, tetapi custom instance profile lebih baik untuk least privilege. Opsi B (IAM user + access keys) — kurang secure, credentials bisa bocor. Opsi C — EMR service role untuk cluster management, bukan untuk EC2 instances — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — IAM groups hanya untuk IAM users, bukan services.</div>
             </div>
         </div>
 
@@ -155,8 +155,8 @@
             <div class="question-text">A data engineer creates an AWS Glue job that needs to assume a cross-account role to read data from Account B's S3 bucket. The Glue job uses a service role (GlueServiceRole) in Account A. The engineer writes code in the Glue job to call sts:AssumeRole for the cross-account role. However, the AssumeRole call fails. The cross-account role's trust policy allows Account A. What permission is MOST likely missing?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The GlueServiceRole in Account A needs sts:AssumeRole permission with the cross-account role ARN as the resource</li>
-                <li><span class="option-label">B.</span> The cross-account role in Account B needs to trust the GlueServiceRole ARN specifically, not just Account A</li>
-                <li><span class="option-label">C.</span> Account A needs to be part of the same AWS Organization as Account B</li>
+                <li><span class="option-label">B.</span> The cross-account role in Account B needs to trust the GlueServiceRole ARN specifically, not just Account</li>
+                <li><span class="option-label">C.</span> Account A needs to be part of the same AWS Organization as Account B with the cross-account role ARN as the resource</li>
                 <li><span class="option-label">D.</span> The Glue job needs a VPC endpoint to reach the STS service endpoint</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -190,13 +190,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Add iam:PassRole permission for the LambdaExecRole ARN with a condition that restricts iam:PassedToService to lambda.amazonaws.com</li>
                 <li><span class="option-label">B.</span> Add iam:CreateRole and iam:AttachRolePolicy permissions to allow CloudFormation to create the role</li>
-                <li><span class="option-label">C.</span> Add sts:AssumeRole permission for the LambdaExecRole ARN</li>
+                <li><span class="option-label">C.</span> Add sts:AssumeRole permission for the LambdaExecRole ARN with a condition that restricts iam:PassedToService</li>
                 <li><span class="option-label">D.</span> Add administrator access to the CloudFormation service role to avoid permission issues</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudFormation service role memerlukan iam:PassRole permission ketika template meng-assign role ke service (misalnya assigning LambdaExecRole ke Lambda function). Permission yang diperlukan: {"Effect": "Allow", "Action": "iam:PassRole", "Resource": "arn:aws:iam::123456789012:role/LambdaExecRole", "Condition": {"StringEquals": {"iam:PassedToService": "lambda.amazonaws.com"}}}. Condition memastikan role hanya bisa di-pass ke Lambda service. Opsi B (CreateRole) — error bukan tentang membuat role, tapi meng-assign role ke Lambda. Opsi C (AssumeRole) — CloudFormation tidak perlu assume LambdaExecRole. Opsi D (admin access) melanggar least privilege dan merupakan security risk.</div>
+                <div class="explanation">CloudFormation service role memerlukan iam:PassRole permission ketika template meng-assign role ke service (misalnya assigning LambdaExecRole ke Lambda function). Permission yang diperlukan: {"Effect": "Allow", "Action": "iam:PassRole", "Resource": "arn:aws:iam::123456789012:role/LambdaExecRole", "Condition": {"StringEquals": {"iam:PassedToService": "lambda.amazonaws.com"}}}. Condition memastikan role hanya bisa di-pass ke Lambda service. Opsi B (CreateRole) — error bukan tentang membuat role, tapi meng-assign role ke Lambda. Opsi C (AssumeRole) — CloudFormation tidak perlu assume LambdaExecRole — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (admin access) melanggar least privilege dan merupakan security risk.</div>
             </div>
         </div>
         

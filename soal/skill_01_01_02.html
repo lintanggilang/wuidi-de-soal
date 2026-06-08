@@ -37,12 +37,12 @@
                 <li><span class="option-label">A.</span> Use an AWS Glue crawler to catalog the data and define the table schema automatically</li>
                 <li><span class="option-label">B.</span> Manually create an Athena table with a fixed schema pointing to the S3 prefix</li>
                 <li><span class="option-label">C.</span> Use Amazon Redshift Spectrum to query the S3 data directly</li>
-                <li><span class="option-label">D.</span> Copy the data to DynamoDB and create a secondary index for queries</li>
+                <li><span class="option-label">D.</span> Copy the data to DynamoDB and create a secondary index for queries and define the table schema automatically</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue crawler secara otomatis mendeteksi schema dari data di S3 dan membuat/memperbarui tabel di Glue Data Catalog. Ketika schema berubah, crawler akan mendeteksi perubahan tersebut. Opsi B tidak menangani perubahan schema. Opsi C (Redshift Spectrum) membutuhkan Redshift cluster yang mahal untuk use case ini. Opsi D (DynamoDB) bukan solusi untuk analitik batch data.</div>
+                <div class="explanation">AWS Glue crawler secara otomatis mendeteksi schema dari data di S3 dan membuat/memperbarui tabel di Glue Data Catalog. Ketika schema berubah, crawler akan mendeteksi perubahan tersebut. Opsi B tidak menangani perubahan schema. Opsi C (Redshift Spectrum) membutuhkan Redshift cluster yang mahal untuk use case ini. Opsi D (DynamoDB) bukan solusi untuk analitik batch data — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -53,12 +53,12 @@
                 <li><span class="option-label">A.</span> Amazon AppFlow with a scheduled flow and incremental transfer</li>
                 <li><span class="option-label">B.</span> AWS Glue with a custom PySpark script using Salesforce JDBC connector</li>
                 <li><span class="option-label">C.</span> AWS Lambda with a custom Python script calling Salesforce REST API</li>
-                <li><span class="option-label">D.</span> AWS DMS with Salesforce as a source endpoint</li>
+                <li><span class="option-label">D.</span> AWS DMS with Salesforce as a source endpoint and incremental transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon AppFlow dirancang khusus untuk integrasi data dari SaaS applications seperti Salesforce ke AWS services. AppFlow mendukung scheduled flows dan incremental data transfer berdasarkan field filter (seperti last modified date), tanpa kode custom. Opsi B membutuhkan custom code dan konfigurasi JDBC. Opsi C membutuhkan banyak custom code untuk pagination, error handling, dll. Opsi D (DMS) tidak mendukung Salesforce sebagai source natively.</div>
+                <div class="explanation">Amazon AppFlow dirancang khusus untuk integrasi data dari SaaS applications seperti Salesforce ke AWS services. AppFlow mendukung scheduled flows dan incremental data transfer berdasarkan field filter (seperti last modified date), tanpa kode custom. Opsi B membutuhkan custom code dan konfigurasi JDBC. Opsi C membutuhkan banyak custom code untuk pagination, error handling, dll. Opsi D (DMS) tidak mendukung Salesforce sebagai source natively — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -101,12 +101,12 @@
                 <li><span class="option-label">A.</span> Use the COPY command with a manifest file specifying the exact files to load</li>
                 <li><span class="option-label">B.</span> Use INSERT INTO...SELECT from an external table using Redshift Spectrum</li>
                 <li><span class="option-label">C.</span> Use AWS Glue to read from S3 and write to Redshift using a JDBC connection</li>
-                <li><span class="option-label">D.</span> Use the Redshift Data API to execute batch INSERT statements</li>
+                <li><span class="option-label">D.</span> Use the Redshift Data API to execute batch INSERT statements with a manifest file</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">COPY command adalah metode paling efisien untuk loading data ke Redshift dari S3. Dengan manifest file, Anda dapat mengontrol file mana yang dimuat, mencegah duplikasi, dan memastikan semua file yang diperlukan ada. COPY membaca Parquet natively dan melakukan parallel loading dari semua file. Opsi B (Spectrum) bagus untuk query tapi INSERT INTO dari external table lebih lambat dari COPY langsung. Opsi C (Glue JDBC) jauh lebih lambat karena single-connection writing. Opsi D (INSERT statements) adalah metode paling lambat.</div>
+                <div class="explanation">COPY command adalah metode paling efisien untuk loading data ke Redshift dari S3. Dengan manifest file, Anda dapat mengontrol file mana yang dimuat, mencegah duplikasi, dan memastikan semua file yang diperlukan ada. COPY membaca Parquet natively dan melakukan parallel loading dari semua file. Opsi B (Spectrum) bagus untuk query tapi INSERT INTO dari external table lebih lambat dari COPY langsung. Opsi C (Glue JDBC) jauh lebih lambat karena single-connection writing. Opsi D (INSERT statements) adalah metode paling lambat — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -116,13 +116,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue with a JDBC connection and configure hashexpression or hashfield for parallel reads from a read replica</li>
                 <li><span class="option-label">B.</span> Use mysqldump to export the data and upload to S3</li>
-                <li><span class="option-label">C.</span> Use AWS DMS full load task pointing to the primary instance</li>
+                <li><span class="option-label">C.</span> Use AWS DMS full load task pointing to the primary instance with a JDBC connection for parallel reads from a read replica</li>
                 <li><span class="option-label">D.</span> Use Amazon EMR with a single Spark executor reading via JDBC</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue mendukung parallel reads dari JDBC sources menggunakan hashexpression atau hashfield, yang membagi tabel menjadi beberapa partisi yang dibaca secara paralel. Menggunakan read replica memastikan produksi tidak terganggu. Opsi B (mysqldump) adalah single-threaded dan mempengaruhi database. Opsi C (DMS ke primary) membebani instance produksi. Opsi D (single executor) tidak memanfaatkan paralelisme.</div>
+                <div class="explanation">AWS Glue mendukung parallel reads dari JDBC sources menggunakan hashexpression atau hashfield, yang membagi tabel menjadi beberapa partisi yang dibaca secara paralel. Menggunakan read replica memastikan produksi tidak terganggu. Opsi B (mysqldump) adalah single-threaded dan mempengaruhi database. Opsi C (DMS ke primary) membebani instance produksi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (single executor) tidak memanfaatkan paralelisme.</div>
             </div>
         </div>
 
@@ -131,14 +131,14 @@
             <div class="question-text">A retail company receives product catalog updates from 50 suppliers daily via different file formats (CSV, JSON, XML) dropped into separate S3 prefixes. The data engineer needs to create a unified pipeline that reads all formats and loads them into a single normalized table. Which service provides the MOST efficient solution?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS Glue ETL with multiple crawlers for each format and a unified ETL job with dynamic frames</li>
-                <li><span class="option-label">B.</span> Amazon EMR with custom Spark code for each file format</li>
+                <li><span class="option-label">B.</span> Amazon EMR with custom Spark code for each file format and a unified ETL job with dynamic frames</li>
                 <li><span class="option-label">C.</span> AWS Lambda functions triggered by S3 events for each prefix</li>
                 <li><span class="option-label">D.</span> Amazon Athena CTAS queries for each format</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue crawler mendeteksi schema berbagai format (CSV, JSON, dll.) dan membuat tabel di Glue Data Catalog. Glue ETL dengan DynamicFrames dapat membaca dari berbagai format, menerapkan mapping dan transformasi, lalu menulis ke output yang terstandarisasi. Ini solusi paling efisien karena fully managed. Opsi B membutuhkan banyak custom code. Opsi C (Lambda) sulit untuk handling XML parsing dan normalisasi kompleks dalam batas 15 menit. Opsi D (Athena CTAS) tidak mendukung XML natively.</div>
+                <div class="explanation">AWS Glue crawler mendeteksi schema berbagai format (CSV, JSON, dll.) dan membuat tabel di Glue Data Catalog. Glue ETL dengan DynamicFrames dapat membaca dari berbagai format, menerapkan mapping dan transformasi, lalu menulis ke output yang terstandarisasi. Ini solusi paling efisien karena fully managed. Opsi B membutuhkan banyak custom code — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Lambda) sulit untuk handling XML parsing dan normalisasi kompleks dalam batas 15 menit. Opsi D (Athena CTAS) tidak mendukung XML natively.</div>
             </div>
         </div>
 
@@ -165,12 +165,12 @@
                 <li><span class="option-label">A.</span> AWS Glue ETL job with a Glue connection configured to use a VPC with VPN connectivity to the on-premises network</li>
                 <li><span class="option-label">B.</span> Amazon AppFlow with a custom connector for the PostgreSQL database</li>
                 <li><span class="option-label">C.</span> AWS Lambda in a VPC with NAT Gateway connecting through AWS Site-to-Site VPN</li>
-                <li><span class="option-label">D.</span> AWS DMS with a replication instance in a public subnet</li>
+                <li><span class="option-label">D.</span> AWS DMS with a replication instance in a public subnet configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue connections dapat dikonfigurasi untuk berjalan dalam VPC yang memiliki koneksi VPN ke jaringan on-premises/third-party. Glue ETL job akan menggunakan ENI di subnet VPC tersebut dan bisa mengakses database melalui VPN tunnel. Opsi B (AppFlow) tidak mendukung koneksi ke PostgreSQL on-premises melalui VPN. Opsi C (Lambda) bisa bekerja tapi memiliki batas timeout 15 menit untuk data besar. Opsi D (DMS public subnet) tidak bisa mengakses database private tanpa VPN connectivity yang tepat.</div>
+                <div class="explanation">AWS Glue connections dapat dikonfigurasi untuk berjalan dalam VPC yang memiliki koneksi VPN ke jaringan on-premises/third-party. Glue ETL job akan menggunakan ENI di subnet VPC tersebut dan bisa mengakses database melalui VPN tunnel. Opsi B (AppFlow) tidak mendukung koneksi ke PostgreSQL on-premises melalui VPN. Opsi C (Lambda) bisa bekerja tapi memiliki batas timeout 15 menit untuk data besar. Opsi D (DMS public subnet) tidak bisa mengakses database private tanpa VPN connectivity yang tepat — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -179,14 +179,14 @@
             <div class="question-text">A media company stores video metadata in Amazon S3 across multiple AWS accounts. A central data engineering team needs to read data from S3 buckets in 10 different accounts and consolidate it into a single data lake account. What is the MOST scalable approach to manage cross-account S3 access?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure S3 bucket policies in each account granting access to an IAM role in the central account, and use AWS Glue with an assumed role</li>
-                <li><span class="option-label">B.</span> Copy all data to the central account using S3 Replication rules</li>
+                <li><span class="option-label">B.</span> Copy all data to the central account using S3 Replication rules with an assumed role and use AWS Glue with an assumed role</li>
                 <li><span class="option-label">C.</span> Use AWS Organizations with Service Control Policies to grant blanket access</li>
                 <li><span class="option-label">D.</span> Create IAM users with access keys in each account and store credentials in Secrets Manager</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Cross-account S3 access paling scalable menggunakan bucket policies yang mengizinkan IAM role dari central account. AWS Glue dapat assume role ini untuk membaca data langsung dari bucket di akun lain tanpa copying data. Opsi B (S3 Replication) menduplikasi data dan menambah biaya storage. Opsi C (SCPs) hanya untuk membatasi/deny permissions, bukan grant access. Opsi D (IAM users + access keys) tidak scalable dan merupakan anti-pattern keamanan.</div>
+                <div class="explanation">Cross-account S3 access paling scalable menggunakan bucket policies yang mengizinkan IAM role dari central account. AWS Glue dapat assume role ini untuk membaca data langsung dari bucket di akun lain tanpa copying data. Opsi B (S3 Replication) menduplikasi data dan menambah biaya storage — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (SCPs) hanya untuk membatasi/deny permissions, bukan grant access. Opsi D (IAM users + access keys) tidak scalable dan merupakan anti-pattern keamanan.</div>
             </div>
         </div>
         

@@ -35,14 +35,14 @@
             <div class="question-text">A Spark ETL job in AWS Glue performs a join between a 500 GB fact table and a 50 MB dimension table. The job takes 45 minutes. The Spark UI shows a large shuffle during the join. Which code optimization MOST reduces runtime?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use broadcast join by broadcasting the small dimension table: df_fact.join(broadcast(df_dimension), "key") — eliminates the expensive shuffle of the large fact table</li>
-                <li><span class="option-label">B.</span> Increase spark.sql.shuffle.partitions from 200 to 2000</li>
+                <li><span class="option-label">B.</span> Increase spark.sql.shuffle.partitions from 200 to 2000 configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Cache both DataFrames before the join</li>
                 <li><span class="option-label">D.</span> Repartition the fact table by the join key before joining</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Broadcast join sends the small table (50 MB easily fits in memory) to all executors. The join happens locally on each executor without shuffling the 500 GB fact table across the network. This eliminates the most expensive operation (shuffle). Opsi B (more partitions) still requires shuffle, just into more smaller partitions. Opsi C (cache) helps for repeated use, not single-join performance. Opsi D (repartition) itself requires a full shuffle of 500 GB — adds cost before the join.</div>
+                <div class="explanation">Broadcast join sends the small table (50 MB easily fits in memory) to all executors. The join happens locally on each executor without shuffling the 500 GB fact table across the network. This eliminates the most expensive operation (shuffle). Opsi B (more partitions) still requires shuffle, just into more smaller partitions — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (cache) helps for repeated use, not single-join performance. Opsi D (repartition) itself requires a full shuffle of 500 GB — adds cost before the join.</div>
             </div>
         </div>
 
@@ -51,14 +51,14 @@
             <div class="question-text">A Lambda function processes S3 files and makes API calls to enrich each record. The function handles 10,000 records per invocation. Currently it makes sequential HTTP calls (one at a time), taking 8 minutes. Each API call takes 50ms. How can the code be optimized to reduce runtime?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Python's asyncio with aiohttp to make concurrent HTTP calls, processing multiple API requests simultaneously instead of sequentially</li>
-                <li><span class="option-label">B.</span> Increase Lambda memory to get faster CPU</li>
+                <li><span class="option-label">B.</span> Increase Lambda memory to get faster CPU with aiohttp</li>
                 <li><span class="option-label">C.</span> Use a connection pool with the requests library</li>
                 <li><span class="option-label">D.</span> Batch all records into a single API call</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Sequential: 10,000 × 50ms = 500 seconds (8.3 minutes). With asyncio/aiohttp making 100 concurrent calls: 10,000/100 × 50ms = 5 seconds. Concurrency eliminates the I/O wait time bottleneck. This is the biggest optimization for I/O-bound workloads. Opsi B (more memory/CPU) doesn't help I/O-bound tasks — CPU is idle while waiting for responses. Opsi C (connection pool) reduces connection overhead but calls are still sequential. Opsi D (single batch) depends on API supporting batch — many don't.</div>
+                <div class="explanation">Sequential: 10,000 × 50ms = 500 seconds (8.3 minutes). With asyncio/aiohttp making 100 concurrent calls: 10,000/100 × 50ms = 5 seconds. Concurrency eliminates the I/O wait time bottleneck. This is the biggest optimization for I/O-bound workloads. Opsi B (more memory/CPU) doesn't help I/O-bound tasks — CPU is idle while waiting for responses — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (connection pool) reduces connection overhead but calls are still sequential. Opsi D (single batch) depends on API supporting batch — many don't.</div>
             </div>
         </div>
 
@@ -69,12 +69,12 @@
                 <li><span class="option-label">A.</span> Move the filter operation BEFORE the groupBy — "filter early, aggregate late" principle reduces the data volume from 1 TB to 50 GB before the expensive groupBy operation</li>
                 <li><span class="option-label">B.</span> Add more DPUs to process the groupBy faster</li>
                 <li><span class="option-label">C.</span> Cache the filtered results</li>
-                <li><span class="option-label">D.</span> Switch from groupBy to reduceByKey</li>
+                <li><span class="option-label">D.</span> Switch from groupBy to reduceByKey configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">"Filter early, aggregate late" (predicate pushdown principle) — filtering first reduces the dataset from 1 TB to ~50 GB (5%). The subsequent groupBy only processes 50 GB instead of 1 TB, reducing shuffle volume by 95% and dramatically cutting runtime. This is one of the most impactful code optimizations. Opsi B (more DPUs) scales the problem rather than eliminating it. Opsi C (cache) helps for repeated reads, not for single-pass processing. Opsi D (reduceByKey) is RDD API, not applicable to DataFrames/DynamicFrames.</div>
+                <div class="explanation">"Filter early, aggregate late" (predicate pushdown principle) — filtering first reduces the dataset from 1 TB to ~50 GB (5%). The subsequent groupBy only processes 50 GB instead of 1 TB, reducing shuffle volume by 95% and dramatically cutting runtime. This is one of the most impactful code optimizations. Opsi B (more DPUs) scales the problem rather than eliminating it. Opsi C (cache) helps for repeated reads, not for single-pass processing. Opsi D (reduceByKey) is RDD API, not applicable to DataFrames/DynamicFrames — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -84,13 +84,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Replace json.loads() with orjson or ujson library which provides C-optimized JSON parsing, often 3-10x faster than the standard library</li>
                 <li><span class="option-label">B.</span> Parse JSON in a separate thread</li>
-                <li><span class="option-label">C.</span> Increase Lambda memory allocation</li>
+                <li><span class="option-label">C.</span> Increase Lambda memory allocation with orjson or ujson library which provides C-optimized JSON parsing</li>
                 <li><span class="option-label">D.</span> Use eval() instead of json.loads()</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">orjson dan ujson are C-extension libraries optimized for JSON parsing speed. orjson is typically 3-10x faster than stdlib json for both parsing and serialization. For 50K records where parsing dominates, this translates directly to 60% × (1 - 1/5) = 48% total time reduction. Opsi B (threading) — Python GIL prevents true parallel CPU work; JSON parsing is CPU-bound. Opsi C (more memory) — parsing is CPU-bound, and Lambda memory increase provides proportional CPU but orjson is more efficient. Opsi D (eval()) — severe security vulnerability, never use on external data.</div>
+                <div class="explanation">orjson dan ujson are C-extension libraries optimized for JSON parsing speed. orjson is typically 3-10x faster than stdlib json for both parsing and serialization. For 50K records where parsing dominates, this translates directly to 60% × (1 - 1/5) = 48% total time reduction. Opsi B (threading) — Python GIL prevents true parallel CPU work; JSON parsing is CPU-bound. Opsi C (more memory) — parsing is CPU-bound, and Lambda memory increase provides proportional CPU but orjson is more efficient — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (eval()) — severe security vulnerability, never use on external data.</div>
             </div>
         </div>
 
@@ -115,14 +115,14 @@
             <div class="question-text">A Glue ETL job reads data from S3 and the code performs a collect() operation to bring all data to the driver for custom Python processing. The dataset is 10 GB. The job fails with driver OOM. Besides increasing driver memory, which code change avoids this pattern?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Replace collect() with distributed processing using Spark UDFs (User Defined Functions) or mapPartitions that processes data on executors without bringing it to the driver</li>
-                <li><span class="option-label">B.</span> Use toPandas() instead of collect()</li>
+                <li><span class="option-label">B.</span> Use toPandas() instead of collect() with distributed processing using Spark UDFs (User Defined Functions) or mapPartitions that processes data on executors without bringing it</li>
                 <li><span class="option-label">C.</span> Write to S3 first then read with pandas in a separate step</li>
                 <li><span class="option-label">D.</span> Add more executor nodes</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">collect() brings entire dataset to driver memory — anti-pattern for large datasets. UDFs and mapPartitions execute custom logic on executors where data already resides, distributed across the cluster. This keeps 10 GB distributed across many executors (each handling a portion) instead of all on one driver. Opsi B (toPandas()) also brings all data to driver — same OOM risk. Opsi C (S3 + pandas) still single-node processing of 10 GB. Opsi D (more executors) doesn't help — problem is on driver, not executors.</div>
+                <div class="explanation">collect() brings entire dataset to driver memory — anti-pattern for large datasets. UDFs and mapPartitions execute custom logic on executors where data already resides, distributed across the cluster. This keeps 10 GB distributed across many executors (each handling a portion) instead of all on one driver. Opsi B (toPandas()) also brings all data to driver — same OOM risk — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (S3 + pandas) still single-node processing of 10 GB. Opsi D (more executors) doesn't help — problem is on driver, not executors.</div>
             </div>
         </div>
 
@@ -131,14 +131,14 @@
             <div class="question-text">A data engineer optimizes a Spark SQL query that reads a partitioned Parquet table in S3. The query filters on column 'region' which is the partition key, and column 'amount > 1000' which is stored within the Parquet files. Which optimization leverages both partition pruning AND predicate pushdown?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Write the query with both filters in the WHERE clause: WHERE region = 'US' AND amount > 1000 — Spark automatically applies partition pruning for 'region' and predicate pushdown for 'amount' to Parquet</li>
-                <li><span class="option-label">B.</span> Read all data first, then filter in Python code after collecting</li>
+                <li><span class="option-label">B.</span> Read all data first, then filter in Python code after collecting with both filters in the WHERE clause: WHERE region = 'US'</li>
                 <li><span class="option-label">C.</span> Apply filters in separate sequential operations: first filter region, then filter amount</li>
                 <li><span class="option-label">D.</span> Create a secondary index on the 'amount' column in S3</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Spark SQL optimizer automatically handles both: (1) Partition pruning — only reads S3 prefixes matching region='US', skipping all other region partitions. (2) Predicate pushdown to Parquet — uses Parquet's column statistics (min/max) to skip row groups where amount is entirely ≤ 1000. Both happen at read time, minimizing I/O. Opsi B (collect then filter) reads everything — worst performance. Opsi C (sequential filters) — Spark optimizer combines them anyway, but explicit combined WHERE is clearer. Opsi D — S3/Parquet don't support secondary indexes.</div>
+                <div class="explanation">Spark SQL optimizer automatically handles both: (1) Partition pruning — only reads S3 prefixes matching region='US', skipping all other region partitions. (2) Predicate pushdown to Parquet — uses Parquet's column statistics (min/max) to skip row groups where amount is entirely ≤ 1000. Both happen at read time, minimizing I/O. Opsi B (collect then filter) reads everything — worst performance — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (sequential filters) — Spark optimizer combines them anyway, but explicit combined WHERE is clearer. Opsi D — S3/Parquet don't support secondary indexes.</div>
             </div>
         </div>
 
@@ -149,12 +149,12 @@
                 <li><span class="option-label">A.</span> Use BatchWriteItem to write up to 25 items per API call, reducing the number of API calls from 100 to 4 and leveraging parallelism within each batch call</li>
                 <li><span class="option-label">B.</span> Use TransactWriteItems for all 100 records in one transaction</li>
                 <li><span class="option-label">C.</span> Increase Lambda timeout to accommodate sequential writes</li>
-                <li><span class="option-label">D.</span> Write to S3 instead of DynamoDB for better throughput</li>
+                <li><span class="option-label">D.</span> Write to S3 instead of DynamoDB for better throughput and leveraging parallelism within each batch call</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">BatchWriteItem sends up to 25 items per API call, reducing network round-trips from 100 to 4 (100/25). Each batch is processed in parallel by DynamoDB internally. This significantly reduces Lambda execution time. Opsi B (TransactWriteItems) limited to 100 items per transaction tapi much slower karena transaction overhead dan all-or-nothing semantics. Opsi C (longer timeout) doesn't optimize, just accommodates slow code. Opsi D changes architecture unnecessarily.</div>
+                <div class="explanation">BatchWriteItem sends up to 25 items per API call, reducing network round-trips from 100 to 4 (100/25). Each batch is processed in parallel by DynamoDB internally. This significantly reduces Lambda execution time. Opsi B (TransactWriteItems) limited to 100 items per transaction tapi much slower karena transaction overhead dan all-or-nothing semantics. Opsi C (longer timeout) doesn't optimize, just accommodates slow code. Opsi D changes architecture unnecessarily — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -165,12 +165,12 @@
                 <li><span class="option-label">A.</span> Replace the Python UDF with Spark built-in functions (pyspark.sql.functions) or Pandas UDFs (vectorized UDFs) that minimize JVM-Python serialization</li>
                 <li><span class="option-label">B.</span> Increase the number of Glue DPUs</li>
                 <li><span class="option-label">C.</span> Cache the DataFrame before applying the UDF</li>
-                <li><span class="option-label">D.</span> Process fewer rows per partition</li>
+                <li><span class="option-label">D.</span> Process fewer rows per partition with Spark built-in functions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Python UDFs serialize data row-by-row between JVM and Python interpreter — extremely slow. Built-in Spark functions execute natively in JVM (no serialization). Pandas UDFs (vectorized) process data in Arrow batches — much less serialization overhead than row-by-row UDFs. Can be 10-100x faster. Opsi B (more DPUs) — each DPU still has the same serialization overhead per row. Opsi C (cache) helps repeated reads, not processing speed. Opsi D (fewer rows per partition) doesn't reduce total serialization cost.</div>
+                <div class="explanation">Python UDFs serialize data row-by-row between JVM and Python interpreter — extremely slow. Built-in Spark functions execute natively in JVM (no serialization). Pandas UDFs (vectorized) process data in Arrow batches — much less serialization overhead than row-by-row UDFs. Can be 10-100x faster. Opsi B (more DPUs) — each DPU still has the same serialization overhead per row. Opsi C (cache) helps repeated reads, not processing speed. Opsi D (fewer rows per partition) doesn't reduce total serialization cost — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -181,12 +181,12 @@
                 <li><span class="option-label">A.</span> Review and optimize the table distribution keys (DISTKEY) to co-locate joined data on the same nodes, and ensure sort keys (SORTKEY) align with the WHERE/JOIN conditions to enable zone-map pruning</li>
                 <li><span class="option-label">B.</span> Add indexes to the join columns</li>
                 <li><span class="option-label">C.</span> Rewrite the query to use subqueries instead of JOINs</li>
-                <li><span class="option-label">D.</span> Run VACUUM and ANALYZE on all tables</li>
+                <li><span class="option-label">D.</span> Run VACUUM and ANALYZE on all tables with the WHERE/JOIN conditions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Redshift's columnar MPP architecture relies heavily on distribution and sort keys for performance. Proper DISTKEY on join columns eliminates network redistribution (data already co-located). SORTKEY enables zone-map pruning (skipping entire 1MB blocks that don't match predicates). These together can turn sequential scans into targeted reads. Opsi B — Redshift doesn't have traditional indexes. Opsi C (subqueries) — optimizer usually handles this, may not improve. Opsi D (VACUUM/ANALYZE) helps maintenance but DISTKEY/SORTKEY design is fundamental.</div>
+                <div class="explanation">Redshift's columnar MPP architecture relies heavily on distribution and sort keys for performance. Proper DISTKEY on join columns eliminates network redistribution (data already co-located). SORTKEY enables zone-map pruning (skipping entire 1MB blocks that don't match predicates). These together can turn sequential scans into targeted reads. Opsi B — Redshift doesn't have traditional indexes. Opsi C (subqueries) — optimizer usually handles this, may not improve. Opsi D (VACUUM/ANALYZE) helps maintenance but DISTKEY/SORTKEY design is fundamental — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

@@ -54,13 +54,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create one organization event data store with both management and data events enabled, set retention to 2555 days with one-year extendable pricing</li>
                 <li><span class="option-label">B.</span> Create separate event data stores for management events (7-year retention) and data events (1-year retention) to optimize costs</li>
-                <li><span class="option-label">C.</span> Create individual event data stores in each account and query them separately from the management account</li>
+                <li><span class="option-label">C.</span> Create individual event data stores in each account and query them separately from the management account with 2555-day retention using seven-year extendable pricing</li>
                 <li><span class="option-label">D.</span> Create one organization event data store for management events with 2555-day retention using seven-year extendable pricing, and a separate one for S3 data events</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">Memisahkan management events dan data events ke event data stores yang berbeda adalah best practice karena: (1) data events biasanya menghasilkan volume jauh lebih tinggi dengan biaya yang signifikan, (2) retention requirements mungkin berbeda, (3) seven-year extendable pricing lebih cost-effective untuk retention 2555 hari dibanding one-year extendable pricing. Organization event data store secara otomatis mengumpulkan events dari semua member accounts. Opsi A menggabungkan semuanya yang kurang optimal dari segi biaya dan management. Opsi B memiliki retention terlalu pendek untuk data events jika compliance memerlukan 7 tahun. Opsi C (individual per account) tidak scalable untuk 100 accounts dan tidak bisa cross-account query.</div>
+                <div class="explanation">Memisahkan management events dan data events ke event data stores yang berbeda adalah best practice karena: (1) data events biasanya menghasilkan volume jauh lebih tinggi dengan biaya yang signifikan, (2) retention requirements mungkin berbeda, (3) seven-year extendable pricing lebih cost-effective untuk retention 2555 hari dibanding one-year extendable pricing. Organization event data store secara otomatis mengumpulkan events dari semua member accounts. Opsi A menggabungkan semuanya yang kurang optimal dari segi biaya dan management. Opsi B memiliki retention terlalu pendek untuk data events jika compliance memerlukan 7 tahun. Opsi C (individual per account) tidak scalable untuk 100 accounts dan tidak bisa cross-account query — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -71,13 +71,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> SELECT eventTime, userIdentity.arn, sourceIPAddress FROM event_data_store_id WHERE eventName = 'AssumeRole' AND sourceIPAddress NOT LIKE '10.%' AND sourceIPAddress NOT LIKE '172.16.%' AND eventTime > date_add('hour', -24, now())</li>
                 <li><span class="option-label">B.</span> SELECT eventTime, userIdentity.arn, sourceIPAddress FROM $EDS_ID WHERE eventName = 'AssumeRole' AND sourceIPAddress NOT LIKE '10.%' AND sourceIPAddress NOT LIKE '172.16.%' AND eventTime > dateadd('hour', -24, current_timestamp)</li>
-                <li><span class="option-label">C.</span> SELECT eventTime, userIdentity, sourceIPAddress FROM event_data_store WHERE eventName = 'AssumeRole' AND eventTime BETWEEN now() - INTERVAL '24' HOUR AND now()</li>
+                <li><span class="option-label">C.</span> SELECT eventTime, userIdentity, sourceIPAddress FROM event_data_store WHERE eventName = 'AssumeRole' AND eventTime BETWEEN now() - INTERVAL '24' HOUR AND now() and sourceIPAddress NOT LIKE '10</li>
                 <li><span class="option-label">D.</span> SELECT eventTime, element_at(userIdentity, 'arn') as user_arn, sourceIPAddress FROM $EDS_ID WHERE eventName = 'AssumeRole' AND sourceIPAddress NOT LIKE '10.%' AND sourceIPAddress NOT LIKE '172.16.%' AND eventTime > '2024-01-01'</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudTrail Lake menggunakan SQL syntax di mana event data store direferensikan oleh ID-nya. Field userIdentity.arn mengakses nested field menggunakan dot notation. Fungsi date_add dan now() digunakan untuk time-based filtering. NOT LIKE digunakan untuk filtering IP ranges. Opsi B menggunakan $EDS_ID yang bukan syntax valid — CloudTrail Lake menggunakan event data store ID langsung. Opsi C tidak memfilter IP addresses sesuai requirement dan INTERVAL syntax tidak didukung di CloudTrail Lake. Opsi D menggunakan element_at yang merupakan fungsi Athena/Presto, bukan CloudTrail Lake SQL, dan memiliki hardcoded date bukan relative time.</div>
+                <div class="explanation">CloudTrail Lake menggunakan SQL syntax di mana event data store direferensikan oleh ID-nya. Field userIdentity.arn mengakses nested field menggunakan dot notation. Fungsi date_add dan now() digunakan untuk time-based filtering. NOT LIKE digunakan untuk filtering IP ranges. Opsi B menggunakan $EDS_ID yang bukan syntax valid — CloudTrail Lake menggunakan event data store ID langsung. Opsi C tidak memfilter IP addresses sesuai requirement dan INTERVAL syntax tidak didukung di CloudTrail Lake — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D menggunakan element_at yang merupakan fungsi Athena/Presto, bukan CloudTrail Lake SQL, dan memiliki hardcoded date bukan relative time.</div>
             </div>
         </div>
 
@@ -88,13 +88,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> CloudTrail Lake is more cost-effective because it charges per query and has built-in retention, while Athena requires separate S3 storage management</li>
                 <li><span class="option-label">B.</span> Athena is more cost-effective because it only charges for data scanned per query, while CloudTrail Lake charges for both ingestion and retention regardless of query volume</li>
-                <li><span class="option-label">C.</span> CloudTrail Lake and Athena have identical pricing models — the choice should be based on query syntax preference only</li>
+                <li><span class="option-label">C.</span> CloudTrail Lake and Athena have identical pricing models — the choice should be based on query syntax preference only and retention regardless of query volume for data scanned per query</li>
                 <li><span class="option-label">D.</span> Athena is preferred because it supports federated queries across multiple data sources, while CloudTrail Lake only queries CloudTrail events</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Untuk low query frequency (5/day), Athena lebih cost-effective karena biaya hanya berdasarkan data yang di-scan per query ($5/TB scanned). CloudTrail Lake memiliki biaya ingestion ($2.50 per 100K events ingested) dan retention storage charges yang berlaku terus-menerus terlepas dari apakah data di-query atau tidak. Untuk 3 tahun retention dengan volume tinggi events, biaya CloudTrail Lake bisa sangat signifikan. Athena + S3 dengan lifecycle rules ke Glacier memberikan storage costs yang jauh lebih rendah. Opsi A salah karena CloudTrail Lake tidak charge per query — biaya utamanya adalah ingestion dan retention. Opsi C salah karena pricing models sangat berbeda. Opsi D benar tentang Athena federated queries tapi bukan faktor utama untuk use case ini.</div>
+                <div class="explanation">Untuk low query frequency (5/day), Athena lebih cost-effective karena biaya hanya berdasarkan data yang di-scan per query ($5/TB scanned). CloudTrail Lake memiliki biaya ingestion ($2.50 per 100K events ingested) dan retention storage charges yang berlaku terus-menerus terlepas dari apakah data di-query atau tidak. Untuk 3 tahun retention dengan volume tinggi events, biaya CloudTrail Lake bisa sangat signifikan. Athena + S3 dengan lifecycle rules ke Glacier memberikan storage costs yang jauh lebih rendah. Opsi A salah karena CloudTrail Lake tidak charge per query — biaya utamanya adalah ingestion dan retention. Opsi C salah karena pricing models sangat berbeda — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D benar tentang Athena federated queries tapi bukan faktor utama untuk use case ini.</div>
             </div>
         </div>
 
@@ -120,7 +120,7 @@
             <div class="question-number">6</div>
             <div class="question-text">A company creates a CloudTrail Lake event data store configured to collect management events from their organization. After 30 days, they realize they also need to capture S3 data events for compliance. What is the correct approach to add S3 data events to their existing setup?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Update the existing event data store to add S3 data events using advanced event selectors</li>
+                <li><span class="option-label">A.</span> Update the existing event data store to add S3 data events using advanced event selectors for S3 data events</li>
                 <li><span class="option-label">B.</span> Delete the existing event data store and create a new one that includes both management and S3 data events</li>
                 <li><span class="option-label">C.</span> Create a new separate event data store configured for S3 data events, keeping the existing one for management events</li>
                 <li><span class="option-label">D.</span> Add S3 data events to the existing organization trail — they will automatically appear in the event data store</li>
@@ -128,7 +128,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Best practice adalah membuat event data stores terpisah untuk management events dan data events karena mereka memiliki volume, cost profiles, dan potentially different retention periods. Event data store configuration (event types) tidak bisa diubah setelah creation untuk beberapa settings. Membuat event data store terpisah juga memungkinkan query yang lebih targeted dan cost management yang lebih baik. Opsi A - beberapa konfigurasi event data store bisa diupdate tapi memisahkan tetap best practice. Opsi B menghapus 30 hari data yang sudah ada. Opsi D salah karena trail dan event data store adalah entities terpisah — menambahkan data events ke trail tidak otomatis memasukkannya ke existing event data store.</div>
+                <div class="explanation">Best practice adalah membuat event data stores terpisah untuk management events dan data events karena mereka memiliki volume, cost profiles, dan potentially different retention periods. Event data store configuration (event types) tidak bisa diubah setelah creation untuk beberapa settings. Membuat event data store terpisah juga memungkinkan query yang lebih targeted dan cost management yang lebih baik. Opsi A - beberapa konfigurasi event data store bisa diupdate tapi memisahkan tetap best practice — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi B menghapus 30 hari data yang sudah ada. Opsi D salah karena trail dan event data store adalah entities terpisah — menambahkan data events ke trail tidak otomatis memasukkannya ke existing event data store.</div>
             </div>
         </div>
 
@@ -139,13 +139,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> SELECT eventTime, userIdentity.principalId, userIdentity.arn, sourceIPAddress, requestParameters FROM eds_id WHERE eventName = 'DeleteTable' AND eventSource = 'dynamodb.amazonaws.com' AND eventTime > date_add('day', -90, now())</li>
                 <li><span class="option-label">B.</span> SELECT eventTime, userIdentity.userName, requestParameters FROM eds_id WHERE eventName = 'DropTable' AND eventSource = 'dynamodb.amazonaws.com' AND eventTime > date_add('month', -3, now())</li>
-                <li><span class="option-label">C.</span> SELECT * FROM eds_id WHERE resourceType = 'AWS::DynamoDB::Table' AND eventCategory = 'Delete' AND eventTime > date_add('day', -90, now())</li>
+                <li><span class="option-label">C.</span> SELECT * FROM eds_id WHERE resourceType = 'AWS::DynamoDB::Table' AND eventCategory = 'Delete' AND eventTime > date_add('day', -90, now()) and eventSource = 'dynamodb</li>
                 <li><span class="option-label">D.</span> SELECT eventTime, userIdentity.arn FROM eds_id WHERE eventName = 'DeleteTable' AND resources.type = 'AWS::DynamoDB::Table' AND eventTime BETWEEN date_add('month', -4, now()) AND date_add('month', -2, now())</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Query yang benar menggunakan eventName = 'DeleteTable' (nama API DynamoDB yang tepat), eventSource = 'dynamodb.amazonaws.com', dan mengambil userIdentity fields yang mengidentifikasi principal. sourceIPAddress membantu investigasi asal request. requestParameters berisi nama tabel yang dihapus. Opsi B menggunakan 'DropTable' yang bukan nama API DynamoDB yang benar (itu SQL terminology). Opsi C menggunakan field eventCategory = 'Delete' yang bukan field valid di CloudTrail events — eventCategory hanya berisi 'Management' atau 'Data'. Opsi D menggunakan resources.type yang bukan standard filtering approach dan time range terlalu spesifik jika tanggal persis tidak diketahui.</div>
+                <div class="explanation">Query yang benar menggunakan eventName = 'DeleteTable' (nama API DynamoDB yang tepat), eventSource = 'dynamodb.amazonaws.com', dan mengambil userIdentity fields yang mengidentifikasi principal. sourceIPAddress membantu investigasi asal request. requestParameters berisi nama tabel yang dihapus. Opsi B menggunakan 'DropTable' yang bukan nama API DynamoDB yang benar (itu SQL terminology). Opsi C menggunakan field eventCategory = 'Delete' yang bukan field valid di CloudTrail events — eventCategory hanya berisi 'Management' atau 'Data' — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D menggunakan resources.type yang bukan standard filtering approach dan time range terlalu spesifik jika tanggal persis tidak diketahui.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A company is evaluating CloudTrail Lake pricing for their organization with 50 accounts. They estimate 500 million management events and 2 billion data events per month. They need 7-year retention. Which pricing consideration is MOST critical for their cost estimation?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> CloudTrail Lake charges per query executed, so the number of analysts running queries will be the primary cost driver</li>
+                <li><span class="option-label">A.</span> CloudTrail Lake charges per query executed, so the number of analysts running queries will be the primary cost driver with 2 billion data events monthly at 7-year retention</li>
                 <li><span class="option-label">B.</span> CloudTrail Lake charges for ingestion and retention — with 2 billion data events monthly at 7-year retention, the cumulative storage cost will be the primary cost driver</li>
                 <li><span class="option-label">C.</span> The first copy of management events is free in CloudTrail Lake, so only the 2 billion data events incur ingestion charges</li>
                 <li><span class="option-label">D.</span> CloudTrail Lake has a flat monthly fee per organization regardless of event volume, making it predictable for budgeting</li>
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">CloudTrail Lake pricing memiliki dua komponen utama: ingestion (per event) dan retention (per GB stored per month). Dengan 2 billion data events per bulan yang diakumulasi selama 7 tahun, total stored data akan sangat besar dan biaya retention menjadi primary cost driver. Ini bisa mencapai puluhan ribu dollar per bulan. Opsi A salah karena CloudTrail Lake tidak charge per query — queries included tanpa biaya tambahan. Opsi C salah karena "first copy free" berlaku untuk CloudTrail trail delivery ke S3, bukan untuk CloudTrail Lake ingestion — Lake memiliki pricing terpisah. Opsi D salah karena tidak ada flat fee — pricing sepenuhnya usage-based.</div>
+                <div class="explanation">CloudTrail Lake pricing memiliki dua komponen utama: ingestion (per event) dan retention (per GB stored per month). Dengan 2 billion data events per bulan yang diakumulasi selama 7 tahun, total stored data akan sangat besar dan biaya retention menjadi primary cost driver. Ini bisa mencapai puluhan ribu dollar per bulan. Opsi A salah karena CloudTrail Lake tidak charge per query — queries included tanpa biaya tambahan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah karena "first copy free" berlaku untuk CloudTrail trail delivery ke S3, bukan untuk CloudTrail Lake ingestion — Lake memiliki pricing terpisah. Opsi D salah karena tidak ada flat fee — pricing sepenuhnya usage-based.</div>
             </div>
         </div>
 
@@ -173,13 +173,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Schedule CloudTrail Lake queries using Amazon EventBridge Scheduler to run StartQuery API, then use Lambda to check results and send SNS notifications</li>
                 <li><span class="option-label">B.</span> Use CloudTrail Lake's built-in scheduled query feature with automatic email notifications</li>
-                <li><span class="option-label">C.</span> Export CloudTrail Lake data to S3 and use Athena scheduled queries with SNS notifications</li>
+                <li><span class="option-label">C.</span> Export CloudTrail Lake data to S3 and use Athena scheduled queries with SNS notifications and send SNS notifications</li>
                 <li><span class="option-label">D.</span> Use CloudTrail Insights instead, which automatically detects anomalies without requiring custom queries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudTrail Lake menyediakan StartQuery API yang bisa dipanggil secara programmatic. Menggunakan EventBridge Scheduler untuk memicu Lambda yang menjalankan StartQuery, kemudian GetQueryResults untuk mengecek hasilnya, dan SNS untuk notifikasi jika ditemukan anomali, adalah pendekatan yang paling terintegrasi dan flexible. Opsi B salah karena CloudTrail Lake tidak memiliki built-in scheduled query feature dengan email notifications pada saat ini. Opsi C menambah kompleksitas dan biaya yang tidak perlu. Opsi D (CloudTrail Insights) hanya mendeteksi anomali volume API calls, bukan pattern matching kustom seperti privilege escalation patterns yang memerlukan query spesifik.</div>
+                <div class="explanation">CloudTrail Lake menyediakan StartQuery API yang bisa dipanggil secara programmatic. Menggunakan EventBridge Scheduler untuk memicu Lambda yang menjalankan StartQuery, kemudian GetQueryResults untuk mengecek hasilnya, dan SNS untuk notifikasi jika ditemukan anomali, adalah pendekatan yang paling terintegrasi dan flexible. Opsi B salah karena CloudTrail Lake tidak memiliki built-in scheduled query feature dengan email notifications pada saat ini. Opsi C menambah kompleksitas dan biaya yang tidak perlu — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (CloudTrail Insights) hanya mendeteksi anomali volume API calls, bukan pattern matching kustom seperti privilege escalation patterns yang memerlukan query spesifik.</div>
             </div>
         </div>
 
@@ -190,13 +190,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a custom event data store that accepts events via the PutAuditEvents API from the custom application through a CloudTrail Lake channel</li>
                 <li><span class="option-label">B.</span> Write custom application events to CloudWatch Logs and configure a subscription filter to CloudTrail Lake</li>
-                <li><span class="option-label">C.</span> Send custom application events to Amazon EventBridge which automatically routes them to CloudTrail Lake</li>
+                <li><span class="option-label">C.</span> Send custom application events to Amazon EventBridge which automatically routes them to CloudTrail Lake configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Format custom application events as CloudTrail-compatible JSON and write them directly to the CloudTrail S3 bucket</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudTrail Lake mendukung integrations yang memungkinkan ingestion events dari sumber di luar AWS melalui channels. Aplikasi kustom dapat mengirim events menggunakan PutAuditEvents API ke channel yang terkait dengan event data store. Events ini kemudian queryable menggunakan SQL sama seperti CloudTrail events native. Opsi B salah karena tidak ada subscription filter dari CloudWatch Logs ke CloudTrail Lake. Opsi C salah karena EventBridge tidak memiliki routing otomatis ke CloudTrail Lake. Opsi D salah karena menulis ke S3 bucket CloudTrail tidak membuat events muncul di CloudTrail Lake — Lake memiliki storage terpisah dari S3 trail delivery.</div>
+                <div class="explanation">CloudTrail Lake mendukung integrations yang memungkinkan ingestion events dari sumber di luar AWS melalui channels. Aplikasi kustom dapat mengirim events menggunakan PutAuditEvents API ke channel yang terkait dengan event data store. Events ini kemudian queryable menggunakan SQL sama seperti CloudTrail events native. Opsi B salah karena tidak ada subscription filter dari CloudWatch Logs ke CloudTrail Lake. Opsi C salah karena EventBridge tidak memiliki routing otomatis ke CloudTrail Lake — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D salah karena menulis ke S3 bucket CloudTrail tidak membuat events muncul di CloudTrail Lake — Lake memiliki storage terpisah dari S3 trail delivery.</div>
             </div>
         </div>
         

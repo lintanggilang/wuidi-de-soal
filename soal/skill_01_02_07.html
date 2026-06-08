@@ -35,14 +35,14 @@
             <div class="question-text">An AWS Glue ETL job fails with "Container killed by YARN for exceeding memory limits" error. The job processes a 500 GB dataset with a join between two large tables. CloudWatch metrics show high memory usage during the shuffle phase. Which is the MOST effective fix?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Switch from G.1X to G.2X worker type for more memory per executor, and increase spark.sql.shuffle.partitions to distribute shuffle data across more partitions</li>
-                <li><span class="option-label">B.</span> Add more G.1X workers to the job</li>
+                <li><span class="option-label">B.</span> Add more G.1X workers to the job and increase spark for more memory per executor</li>
                 <li><span class="option-label">C.</span> Reduce the batch size by processing fewer records per run</li>
                 <li><span class="option-label">D.</span> Enable Glue job bookmarks to process less data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">OOM during shuffle indicates each executor's memory is insufficient for the shuffle data it receives. G.2X provides 32 GB memory per executor (vs 16 GB for G.1X). Increasing shuffle.partitions distributes data more evenly — each partition is smaller, reducing per-executor memory pressure. Opsi B (more workers) menambah parallelism tapi tidak menambah memory per executor. Opsi C mungkin bekerja tapi mengurangi throughput. Opsi D (bookmarks) tidak mengatasi join-related OOM.</div>
+                <div class="explanation">OOM during shuffle indicates each executor's memory is insufficient for the shuffle data it receives. G.2X provides 32 GB memory per executor (vs 16 GB for G.1X). Increasing shuffle.partitions distributes data more evenly — each partition is smaller, reducing per-executor memory pressure. Opsi B (more workers) menambah parallelism tapi tidak menambah memory per executor — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C mungkin bekerja tapi mengurangi throughput. Opsi D (bookmarks) tidak mengatasi join-related OOM.</div>
             </div>
         </div>
 
@@ -52,13 +52,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Data skew — some partitions have significantly more data than others. Use salting technique on the join key or repartition the data before the slow operation</li>
                 <li><span class="option-label">B.</span> Insufficient DPUs — add more workers to process faster</li>
-                <li><span class="option-label">C.</span> Network bottleneck — switch to a larger VPC subnet</li>
+                <li><span class="option-label">C.</span> Network bottleneck — switch to a larger VPC subnet with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> Disk I/O throttling — switch to SSD-backed instances</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Ini adalah classic data skew pattern — beberapa tasks memproses data yang jauh lebih banyak. "Long tail" tasks memblokir stage completion. Salting technique menambahkan random suffix ke skewed key untuk mendistribusikan data lebih merata. Repartitioning sebelum operasi yang skewed juga membantu. Opsi B (more workers) — tasks yang lambat tetap di satu partition/worker. Opsi C (network) — bukan pola network issue. Opsi D (disk) — bukan pola I/O bottleneck.</div>
+                <div class="explanation">Ini adalah classic data skew pattern — beberapa tasks memproses data yang jauh lebih banyak. "Long tail" tasks memblokir stage completion. Salting technique menambahkan random suffix ke skewed key untuk mendistribusikan data lebih merata. Repartitioning sebelum operasi yang skewed juga membantu. Opsi B (more workers) — tasks yang lambat tetap di satu partition/worker. Opsi C (network) — bukan pola network issue — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (disk) — bukan pola I/O bottleneck.</div>
             </div>
         </div>
 
@@ -68,13 +68,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> New files were added with a different schema (e.g., a column changed from integer to string). Check the Glue Data Catalog for schema version changes and run the crawler to update the schema</li>
                 <li><span class="option-label">B.</span> The Parquet files are corrupted</li>
-                <li><span class="option-label">C.</span> The Spark version was upgraded overnight</li>
+                <li><span class="option-label">C.</span> The Spark version was upgraded overnight with a different schema (e and run the crawler to update the schema</li>
                 <li><span class="option-label">D.</span> Network timeout caused partial file reads</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Schema incompatibility ("Cannot merge incompatible data types") biasanya terjadi ketika Spark membaca multiple Parquet files yang memiliki schema berbeda untuk kolom yang sama (misalnya file baru menulis integer sebagai string). Mengecek Data Catalog schema versions dan file terbaru mengidentifikasi perubahan. Crawler bisa mendeteksi dan update schema. Opsi B (corrupted) memberikan error berbeda. Opsi C (Spark upgrade) tidak terjadi secara otomatis di Glue. Opsi D (network) menyebabkan timeout error bukan schema error.</div>
+                <div class="explanation">Schema incompatibility ("Cannot merge incompatible data types") biasanya terjadi ketika Spark membaca multiple Parquet files yang memiliki schema berbeda untuk kolom yang sama (misalnya file baru menulis integer sebagai string). Mengecek Data Catalog schema versions dan file terbaru mengidentifikasi perubahan. Crawler bisa mendeteksi dan update schema. Opsi B (corrupted) memberikan error berbeda. Opsi C (Spark upgrade) tidak terjadi secara otomatis di Glue — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (network) menyebabkan timeout error bukan schema error.</div>
             </div>
         </div>
 
@@ -84,13 +84,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Shuffle data for specific partitions exceeds the local disk space on individual executor nodes. Increase spark.sql.shuffle.partitions to create smaller partitions, or add more local storage per node</li>
                 <li><span class="option-label">B.</span> The S3 bucket is full</li>
-                <li><span class="option-label">C.</span> The HDFS namenode ran out of metadata storage</li>
+                <li><span class="option-label">C.</span> The HDFS namenode ran out of metadata storage with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> The EMR master node disk is full from log accumulation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Sort-merge join menulis shuffle data ke local disk. Jika partisi terlalu besar dan executor memiliki limited local storage, disk penuh. Meningkatkan shuffle.partitions mengurangi ukuran setiap partisi. Alternatif: gunakan instances dengan lebih banyak local NVMe storage (i3, d2) atau configure spark.local.dir ke EBS volume yang lebih besar. Opsi B — S3 tidak memiliki capacity limit per bucket. Opsi C (namenode) memberikan different error message. Opsi D (master node) tidak menyebabkan executor shuffle failure.</div>
+                <div class="explanation">Sort-merge join menulis shuffle data ke local disk. Jika partisi terlalu besar dan executor memiliki limited local storage, disk penuh. Meningkatkan shuffle.partitions mengurangi ukuran setiap partisi. Alternatif: gunakan instances dengan lebih banyak local NVMe storage (i3, d2) atau configure spark.local.dir ke EBS volume yang lebih besar. Opsi B — S3 tidak memiliki capacity limit per bucket. Opsi C (namenode) memberikan different error message — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (master node) tidak menyebabkan executor shuffle failure.</div>
             </div>
         </div>
 
@@ -99,14 +99,14 @@
             <div class="question-text">A data engineer notices that an AWS Glue job processing S3 data has gradually slowed down over several weeks, from 20 minutes to 2 hours, without any code changes. The data volume has remained constant at 100 GB per day. What is the MOST likely cause?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Small file problem — many small files have accumulated in the S3 prefix, causing excessive task scheduling overhead. Each file creates a separate Spark task</li>
-                <li><span class="option-label">B.</span> AWS throttled the account</li>
+                <li><span class="option-label">B.</span> AWS throttled the account with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">C.</span> The Glue service has degraded performance in the region</li>
                 <li><span class="option-label">D.</span> The S3 bucket needs to be vacuumed</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Gradual degradation dengan constant data volume strongly indicates small file accumulation. Setiap hari file baru ditambahkan tanpa compaction/cleanup. Setelah beberapa minggu, prefix memiliki ribuan file kecil. Spark membuat task per file, increasing scheduling overhead. Solusi: enable Glue groupFiles, atau tambahkan compaction job. Opsi B (throttling) menyebabkan sudden degradation. Opsi C (regional issue) would affect all customers. Opsi D — S3 tidak membutuhkan VACUUM.</div>
+                <div class="explanation">Gradual degradation dengan constant data volume strongly indicates small file accumulation. Setiap hari file baru ditambahkan tanpa compaction/cleanup. Setelah beberapa minggu, prefix memiliki ribuan file kecil. Spark membuat task per file, increasing scheduling overhead. Solusi: enable Glue groupFiles, atau tambahkan compaction job. Opsi B (throttling) menyebabkan sudden degradation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (regional issue) would affect all customers. Opsi D — S3 tidak membutuhkan VACUUM.</div>
             </div>
         </div>
 
@@ -115,14 +115,14 @@
             <div class="question-text">A Glue ETL job reads from a MySQL database via JDBC and fails after 2 hours with "Communications link failure" error. The job processes data correctly for the first hour. The RDS instance shows no errors in its logs. What should the engineer check FIRST?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Check if the JDBC connection's idle timeout or wait_timeout on MySQL is closing long-running idle connections. Add connection keep-alive parameters to the JDBC URL</li>
-                <li><span class="option-label">B.</span> Check if the Glue job timeout is 2 hours</li>
+                <li><span class="option-label">B.</span> Check if the Glue job timeout is 2 hours configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Check if MySQL has a query execution time limit</li>
                 <li><span class="option-label">D.</span> Check if the VPC route table has changed</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">"Communications link failure" after extended time typically means idle connections were closed by the database. MySQL wait_timeout (default 28800s, but often reduced) closes idle connections. In parallel Glue processing, some JDBC connections become idle while others are active. After wait_timeout expires, idle connections are killed. Adding autoReconnect=true, tcpKeepAlive=true ke JDBC URL prevents this. Opsi B (job timeout) gives different error. Opsi C (query timeout) — queries were succeeding initially. Opsi D (route table) would cause immediate failure.</div>
+                <div class="explanation">"Communications link failure" after extended time typically means idle connections were closed by the database. MySQL wait_timeout (default 28800s, but often reduced) closes idle connections. In parallel Glue processing, some JDBC connections become idle while others are active. After wait_timeout expires, idle connections are killed. Adding autoReconnect=true, tcpKeepAlive=true ke JDBC URL prevents this. Opsi B (job timeout) gives different error — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (query timeout) — queries were succeeding initially. Opsi D (route table) would cause immediate failure.</div>
             </div>
         </div>
 
@@ -133,12 +133,12 @@
                 <li><span class="option-label">A.</span> The broadcast table exceeds the default broadcast threshold (10 MB). Either increase spark.sql.autoBroadcastJoinThreshold to accommodate the table size, or switch to a sort-merge join for the 10 GB table</li>
                 <li><span class="option-label">B.</span> The network bandwidth is insufficient for broadcasting</li>
                 <li><span class="option-label">C.</span> The driver node has insufficient memory — increase driver memory to hold the 10 GB table for broadcast</li>
-                <li><span class="option-label">D.</span> Enable data compression before broadcasting</li>
+                <li><span class="option-label">D.</span> Enable data compression before broadcasting for broadcast</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Broadcast join membutuhkan driver untuk mengumpulkan seluruh broadcast table dan mengirimkannya ke semua executors. Untuk 10 GB table, driver membutuhkan memory yang cukup (biasanya 2-3x table size untuk serialization overhead). Error "Could not execute broadcast in time" biasanya karena driver OOM atau timeout saat collecting data. Fix: increase driver memory, atau jangan broadcast table 10 GB — gunakan sort-merge join yang lebih scalable. Opsi A (threshold) — jika broadcast forced via hint, threshold tidak mencegah error. Opsi B (bandwidth) unlikely. Opsi D (compression) minimal impact.</div>
+                <div class="explanation">Broadcast join membutuhkan driver untuk mengumpulkan seluruh broadcast table dan mengirimkannya ke semua executors. Untuk 10 GB table, driver membutuhkan memory yang cukup (biasanya 2-3x table size untuk serialization overhead). Error "Could not execute broadcast in time" biasanya karena driver OOM atau timeout saat collecting data. Fix: increase driver memory, atau jangan broadcast table 10 GB — gunakan sort-merge join yang lebih scalable. Opsi A (threshold) — jika broadcast forced via hint, threshold tidak mencegah error. Opsi B (bandwidth) unlikely. Opsi D (compression) minimal impact — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -148,13 +148,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The number of output files equals the number of Spark partitions. Use coalesce(100) or repartition(100) before writing to reduce the number of output partitions to 100</li>
                 <li><span class="option-label">B.</span> S3 has a file size limit causing splits</li>
-                <li><span class="option-label">C.</span> Parquet format cannot produce large files</li>
+                <li><span class="option-label">C.</span> Parquet format cannot produce large files with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> The Glue worker type determines file size</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Spark writes one file per partition. Jika DataFrame memiliki 10,000 partitions (common setelah shuffle operations), output menghasilkan 10,000 files. coalesce(100) mengurangi partitions ke 100 tanpa shuffle (preferred jika mengurangi), atau repartition(100) jika perlu redistribute data evenly. Opsi B — S3 file size limit 5 TB, bukan 1 MB. Opsi C — Parquet files bisa berukuran GB. Opsi D — worker type mempengaruhi memory bukan file size.</div>
+                <div class="explanation">Spark writes one file per partition. Jika DataFrame memiliki 10,000 partitions (common setelah shuffle operations), output menghasilkan 10,000 files. coalesce(100) mengurangi partitions ke 100 tanpa shuffle (preferred jika mengurangi), atau repartition(100) jika perlu redistribute data evenly. Opsi B — S3 file size limit 5 TB, bukan 1 MB. Opsi C — Parquet files bisa berukuran GB — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — worker type mempengaruhi memory bukan file size.</div>
             </div>
         </div>
 
@@ -164,13 +164,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> S3 request rate limit per prefix (3,500 PUT/5,500 GET per second) is being exceeded. Distribute data across multiple prefixes using hashed key patterns to spread requests</li>
                 <li><span class="option-label">B.</span> The S3 bucket storage class doesn't support high throughput</li>
-                <li><span class="option-label">C.</span> The Glue job needs more DPUs</li>
+                <li><span class="option-label">C.</span> The Glue job needs more DPUs with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> The VPC endpoint for S3 is throttling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">S3 throttles at prefix level (3,500 PUT/COPY/POST/DELETE dan 5,500 GET/HEAD per second per prefix). Multiple pipelines hitting the same prefix simultaneously exceeds these limits. Solution: distribute objects across multiple prefixes (e.g., add hash-based prefixes like /data/a1/, /data/b2/) to multiply the available request rate. Opsi B — all standard storage classes support same rate. Opsi C — more DPUs means more concurrent S3 requests which worsens the problem. Opsi D — VPC gateway endpoints don't throttle at this level.</div>
+                <div class="explanation">S3 throttles at prefix level (3,500 PUT/COPY/POST/DELETE dan 5,500 GET/HEAD per second per prefix). Multiple pipelines hitting the same prefix simultaneously exceeds these limits. Solution: distribute objects across multiple prefixes (e.g., add hash-based prefixes like /data/a1/, /data/b2/) to multiply the available request rate. Opsi B — all standard storage classes support same rate. Opsi C — more DPUs means more concurrent S3 requests which worsens the problem — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — VPC gateway endpoints don't throttle at this level.</div>
             </div>
         </div>
 
@@ -181,12 +181,12 @@
                 <li><span class="option-label">A.</span> NULL = NULL evaluates differently in Spark — NULLs in join columns can cause unexpected join behavior. Filter out NULL values from join columns before the join, or use coalesce() to replace NULLs with a default value</li>
                 <li><span class="option-label">B.</span> The join type is wrong — switch from INNER to LEFT join</li>
                 <li><span class="option-label">C.</span> Spark has a bug with joins on large datasets</li>
-                <li><span class="option-label">D.</span> The Parquet files have duplicate row groups</li>
+                <li><span class="option-label">D.</span> The Parquet files have duplicate row groups with a default value</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Dalam Spark SQL, NULL == NULL menghasilkan NULL (not TRUE), sehingga rows dengan NULL join keys biasanya tidak match. Namun, jika menggunakan Spark's internal join optimization atau certain join conditions, NULLs dapat menyebabkan unexpected behavior. Lebih umum, jika join column seharusnya unique tapi ada NULL duplicates, join bisa menghasilkan cross-product dari NULL rows. Best practice: filter WHERE join_column IS NOT NULL sebelum join, atau gunakan coalesce(). Opsi B (join type) tidak menjelaskan row explosion. Opsi C bukan Spark bug. Opsi D unlikely.</div>
+                <div class="explanation">Dalam Spark SQL, NULL == NULL menghasilkan NULL (not TRUE), sehingga rows dengan NULL join keys biasanya tidak match. Namun, jika menggunakan Spark's internal join optimization atau certain join conditions, NULLs dapat menyebabkan unexpected behavior. Lebih umum, jika join column seharusnya unique tapi ada NULL duplicates, join bisa menghasilkan cross-product dari NULL rows. Best practice: filter WHERE join_column IS NOT NULL sebelum join, atau gunakan coalesce(). Opsi B (join type) tidak menjelaskan row explosion. Opsi C bukan Spark bug. Opsi D unlikely — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

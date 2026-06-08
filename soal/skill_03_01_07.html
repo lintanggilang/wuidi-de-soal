@@ -36,14 +36,14 @@
             <div class="question-text">A data engineer manages a data lake on Amazon S3 with 10 TB of event data stored in JSON format. Athena queries on this data are slow and expensive, scanning the entire dataset for most queries. The most common query pattern filters by event_date and event_type. Which combination of optimizations will provide the GREATEST reduction in query cost and execution time?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Convert data to Apache Parquet format with Snappy compression and partition by event_date and event_type</li>
-                <li><span class="option-label">B.</span> Enable S3 Intelligent-Tiering and use Athena query result caching</li>
+                <li><span class="option-label">B.</span> Enable S3 Intelligent-Tiering and use Athena query result caching with Snappy compression and partition by event_date and event_type</li>
                 <li><span class="option-label">C.</span> Add an S3 Lifecycle policy to compress old JSON files and increase Athena DPU allocation</li>
                 <li><span class="option-label">D.</span> Create Athena views that pre-filter data by event_date and use LIMIT clauses in all queries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Kombinasi konversi ke Parquet (columnar format — hanya kolom yang diquery di-scan), Snappy compression (mengurangi ukuran data yang di-scan), dan partitioning by event_date dan event_type (Athena hanya membaca partisi yang relevan) memberikan pengurangan drastis pada data scanned. Parquet sendiri bisa mengurangi scan 90%+ untuk query yang hanya memerlukan beberapa kolom. Partitioning menghindari full table scan. Opsi B (Intelligent-Tiering) tidak mengurangi scan size. Opsi C (compress JSON) tetap memerlukan parsing seluruh file karena JSON row-based. Opsi D (views + LIMIT) — views tidak menyimpan data dan LIMIT berjalan setelah full scan.</div>
+                <div class="explanation">Kombinasi konversi ke Parquet (columnar format — hanya kolom yang diquery di-scan), Snappy compression (mengurangi ukuran data yang di-scan), dan partitioning by event_date dan event_type (Athena hanya membaca partisi yang relevan) memberikan pengurangan drastis pada data scanned. Parquet sendiri bisa mengurangi scan 90%+ untuk query yang hanya memerlukan beberapa kolom. Partitioning menghindari full table scan. Opsi B (Intelligent-Tiering) tidak mengurangi scan size — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (compress JSON) tetap memerlukan parsing seluruh file karena JSON row-based. Opsi D (views + LIMIT) — views tidak menyimpan data dan LIMIT berjalan setelah full scan.</div>
             </div>
         </div>
 
@@ -54,13 +54,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure Athena workgroups — one per team — with per-query data scan limits and workgroup-level spending thresholds with CloudWatch metrics for tracking</li>
                 <li><span class="option-label">B.</span> Create separate AWS accounts for each team with AWS Budgets alerts</li>
-                <li><span class="option-label">C.</span> Use IAM policies to restrict the tables each team can query and set billing alarms</li>
+                <li><span class="option-label">C.</span> Use IAM policies to restrict the tables each team can query and set billing alarms with per-query data scan limits for tracking</li>
                 <li><span class="option-label">D.</span> Implement a Lambda-based query proxy that checks query cost estimates before execution</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena workgroups menyediakan: (1) per-query data usage control — membatasi maximum data yang boleh di-scan per query (100 GB limit), (2) workgroup-level data scan limits yang bisa dikonfigurasi per periode (equivalent spending control), (3) CloudWatch metrics per workgroup untuk tracking usage per team. Ini single feature yang memenuhi semua kebutuhan. Opsi B (separate accounts) berlebihan dan menambah complexity. Opsi C (IAM) mengontrol akses tabel bukan spending. Opsi D (Lambda proxy) memerlukan custom development dan tidak bisa akurat memperkirakan cost sebelum execution.</div>
+                <div class="explanation">Athena workgroups menyediakan: (1) per-query data usage control — membatasi maximum data yang boleh di-scan per query (100 GB limit), (2) workgroup-level data scan limits yang bisa dikonfigurasi per periode (equivalent spending control), (3) CloudWatch metrics per workgroup untuk tracking usage per team. Ini single feature yang memenuhi semua kebutuhan. Opsi B (separate accounts) berlebihan dan menambah complexity. Opsi C (IAM) mengontrol akses tabel bukan spending — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Lambda proxy) memerlukan custom development dan tidak bisa akurat memperkirakan cost sebelum execution.</div>
             </div>
         </div>
 
@@ -71,13 +71,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use CREATE TABLE AS SELECT (CTAS) with format='PARQUET', partitioned_by, and external_location properties</li>
                 <li><span class="option-label">B.</span> Create a VIEW on the aggregated query and export it using Athena's export to S3 feature</li>
-                <li><span class="option-label">C.</span> Use INSERT INTO with a pre-existing external table pointing to the new S3 location</li>
+                <li><span class="option-label">C.</span> Use INSERT INTO with a pre-existing external table pointing to the new S3 location and external_location properties</li>
                 <li><span class="option-label">D.</span> Run a SELECT query and configure the workgroup's query results location to the target S3 path</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CTAS (CREATE TABLE AS SELECT) di Athena memungkinkan transformasi data dan pembuatan tabel baru dalam satu operasi SQL. Properties yang bisa dikonfigurasi termasuk: format (PARQUET, ORC, JSON, etc.), compression, partitioned_by columns, external_location untuk S3 path, dan bucketing. Ini ideal untuk ETL operations. Opsi B (VIEW + export) — Athena views tidak menyimpan data dan tidak ada native "export" feature. Opsi C (INSERT INTO) bisa digunakan tetapi memerlukan tabel sudah dibuat sebelumnya — bukan single operation. Opsi D (workgroup results) menyimpan sebagai CSV query results, bukan partitioned Parquet table.</div>
+                <div class="explanation">CTAS (CREATE TABLE AS SELECT) di Athena memungkinkan transformasi data dan pembuatan tabel baru dalam satu operasi SQL. Properties yang bisa dikonfigurasi termasuk: format (PARQUET, ORC, JSON, etc.), compression, partitioned_by columns, external_location untuk S3 path, dan bucketing. Ini ideal untuk ETL operations. Opsi B (VIEW + export) — Athena views tidak menyimpan data dan tidak ada native "export" feature. Opsi C (INSERT INTO) bisa digunakan tetapi memerlukan tabel sudah dibuat sebelumnya — bukan single operation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (workgroup results) menyimpan sebagai CSV query results, bukan partitioned Parquet table.</div>
             </div>
         </div>
 
@@ -88,13 +88,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Athena prepared statements with parameterized queries to safely bind user-supplied values</li>
                 <li><span class="option-label">B.</span> Create Athena views that pre-filter data and restrict users to only query through views</li>
-                <li><span class="option-label">C.</span> Implement input validation in the application layer using regex patterns</li>
+                <li><span class="option-label">C.</span> Implement input validation in the application layer using regex patterns with parameterized queries</li>
                 <li><span class="option-label">D.</span> Use IAM policies to limit the SQL statements users can execute</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena prepared statements memungkinkan parameterized queries dimana user-supplied values di-bind sebagai parameter (menggunakan ?) dan tidak diinterpretasi sebagai SQL code. Ini adalah best practice keamanan standard untuk mencegah SQL injection. Opsi B (views) membatasi akses tetapi tidak menyelesaikan injection jika views menerima parameter. Opsi C (regex validation) adalah defense-in-depth yang baik tetapi rentan terhadap bypass dan tidak menyelesaikan root cause. Opsi D (IAM) mengontrol akses ke resources, bukan content dari SQL queries.</div>
+                <div class="explanation">Athena prepared statements memungkinkan parameterized queries dimana user-supplied values di-bind sebagai parameter (menggunakan ?) dan tidak diinterpretasi sebagai SQL code. Ini adalah best practice keamanan standard untuk mencegah SQL injection. Opsi B (views) membatasi akses tetapi tidak menyelesaikan injection jika views menerima parameter. Opsi C (regex validation) adalah defense-in-depth yang baik tetapi rentan terhadap bypass dan tidak menyelesaikan root cause — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (IAM) mengontrol akses ke resources, bukan content dari SQL queries.</div>
             </div>
         </div>
 
@@ -105,13 +105,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Athena Federated Query using data source connectors for RDS and DynamoDB, allowing cross-source JOINs in a single query</li>
                 <li><span class="option-label">B.</span> Export data from RDS and DynamoDB to S3 first, then query all data through standard Athena tables</li>
-                <li><span class="option-label">C.</span> Use Athena CTAS to materialize RDS and DynamoDB data into S3 tables before joining</li>
+                <li><span class="option-label">C.</span> Use Athena CTAS to materialize RDS and DynamoDB data into S3 tables before joining and DynamoDB, allowing cross-source JOINs in a single query</li>
                 <li><span class="option-label">D.</span> Create Glue ETL jobs to replicate all data into a single Redshift cluster, then use Athena to query Redshift</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena Federated Query memungkinkan eksekusi SQL queries terhadap berbagai data sources menggunakan Lambda-based data source connectors. Connectors tersedia untuk RDS (PostgreSQL, MySQL), DynamoDB, Redshift, CloudWatch Logs, dan lainnya. Ini memungkinkan JOIN lintas sumber dalam satu query tanpa memindahkan data. Opsi B dan C (export/materialize) memerlukan data movement dan tidak memberikan real-time access ke data terbaru. Opsi D (replicate to Redshift) berlebihan dan mahal untuk satu kebutuhan query.</div>
+                <div class="explanation">Athena Federated Query memungkinkan eksekusi SQL queries terhadap berbagai data sources menggunakan Lambda-based data source connectors. Connectors tersedia untuk RDS (PostgreSQL, MySQL), DynamoDB, Redshift, CloudWatch Logs, dan lainnya. Ini memungkinkan JOIN lintas sumber dalam satu query tanpa memindahkan data. Opsi B dan C (export/materialize) memerlukan data movement dan tidak memberikan real-time access ke data terbaru. Opsi D (replicate to Redshift) berlebihan dan mahal untuk satu kebutuhan query. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -121,14 +121,14 @@
             <div class="question-text">A data analytics team runs the same expensive aggregation query multiple times per hour across different dashboards. The underlying data only updates once every 6 hours. Each execution scans 500 GB and costs approximately $2.50. The team wants to reduce costs without modifying the dashboards. Which Athena feature directly addresses this?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable Athena query result reuse with appropriate max-age setting, so identical queries return cached results without re-scanning data</li>
-                <li><span class="option-label">B.</span> Create a materialized view in Athena that pre-computes the aggregation</li>
+                <li><span class="option-label">B.</span> Create a materialized view in Athena that pre-computes the aggregation with appropriate max-age setting</li>
                 <li><span class="option-label">C.</span> Schedule a Lambda function to run the query every 6 hours and store results in a separate S3 table</li>
                 <li><span class="option-label">D.</span> Increase the number of Athena DPUs to make queries run faster</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena query result reuse memungkinkan identical queries (same SQL) mengembalikan hasil yang sudah di-cache tanpa re-scanning data. Dengan max-age setting (misalnya 6 jam sesuai update frequency), queries berulang tidak dikenakan biaya scan tambahan. Ini transparan bagi dashboards — tidak perlu modifikasi. Opsi B salah karena Athena tidak mendukung materialized views (itu fitur Redshift). Opsi C (Lambda + separate table) memerlukan modifikasi dashboard untuk membaca dari tabel berbeda. Opsi D (DPUs) mempercepat execution tetapi tidak mengurangi biaya scan.</div>
+                <div class="explanation">Athena query result reuse memungkinkan identical queries (same SQL) mengembalikan hasil yang sudah di-cache tanpa re-scanning data. Dengan max-age setting (misalnya 6 jam sesuai update frequency), queries berulang tidak dikenakan biaya scan tambahan. Ini transparan bagi dashboards — tidak perlu modifikasi. Opsi B salah karena Athena tidak mendukung materialized views (itu fitur Redshift) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Lambda + separate table) memerlukan modifikasi dashboard untuk membaca dari tabel berbeda. Opsi D (DPUs) mempercepat execution tetapi tidak mengurangi biaya scan.</div>
             </div>
         </div>
 
@@ -140,12 +140,12 @@
                 <li><span class="option-label">A.</span> Create an Athena view with a WHERE clause limiting to the last 30 days as the default access point, and configure workgroup per-query data scan limits as a safety net</li>
                 <li><span class="option-label">B.</span> Move data older than 30 days to S3 Glacier and only keep recent data accessible</li>
                 <li><span class="option-label">C.</span> Split the table into "recent" and "archive" tables and only grant access to the recent table</li>
-                <li><span class="option-label">D.</span> Enable partition projection to make Athena automatically detect which partitions to scan</li>
+                <li><span class="option-label">D.</span> Enable partition projection to make Athena automatically detect which partitions to scan with a WHERE clause limiting</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena views dengan built-in WHERE clause pada partition column memastikan bahwa queries melalui view hanya scan 30 hari data secara default. Workgroup per-query data scan limits memberikan safety net — jika query melebihi threshold (misalnya 1 TB), query akan dibatalkan. Kombinasi ini mencegah accidental full scans. Opsi B (Glacier) membuat data historis tidak queryable jika diperlukan. Opsi C (split tables) memerlukan maintenance dua tabel dan logic pemisahan. Opsi D (partition projection) membantu performance metadata lookup tetapi tidak mencegah user dari scanning semua partisi.</div>
+                <div class="explanation">Athena views dengan built-in WHERE clause pada partition column memastikan bahwa queries melalui view hanya scan 30 hari data secara default. Workgroup per-query data scan limits memberikan safety net — jika query melebihi threshold (misalnya 1 TB), query akan dibatalkan. Kombinasi ini mencegah accidental full scans. Opsi B (Glacier) membuat data historis tidak queryable jika diperlukan. Opsi C (split tables) memerlukan maintenance dua tabel dan logic pemisahan. Opsi D (partition projection) membantu performance metadata lookup tetapi tidak mencegah user dari scanning semua partisi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -155,14 +155,14 @@
             <div class="question-text">A data lake contains millions of small files (average 1 MB each) generated by IoT devices. Athena queries on this data are extremely slow despite the total data volume being only 100 GB. The data is already in Parquet format and properly partitioned. What is the PRIMARY cause and the BEST solution?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The small file problem causes excessive S3 LIST and GET operations — use Athena CTAS or AWS Glue to compact files into larger sizes (128 MB - 512 MB optimal range)</li>
-                <li><span class="option-label">B.</span> Parquet format is not efficient for small files — convert to ORC format which handles small files better</li>
+                <li><span class="option-label">B.</span> Parquet format is not efficient for small files — convert to ORC format which handles small files better with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">C.</span> The partitioning scheme has too many partitions — reduce the number of partitions by using monthly instead of daily</li>
                 <li><span class="option-label">D.</span> Athena needs more compute resources — switch to Athena provisioned capacity for consistent performance</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Small file problem adalah masalah umum di data lakes. Setiap file memerlukan overhead: S3 LIST operations untuk menemukan file, GET requests untuk membuka file, dan Parquet footer reading per file. Dengan jutaan file kecil, overhead ini mendominasi query time. Solusinya adalah compaction — menggabungkan file kecil menjadi file berukuran 128-512 MB yang optimal untuk Athena/Presto. CTAS atau Glue job dapat melakukan compaction ini. Opsi B salah — ORC tidak menangani small files lebih baik dari Parquet. Opsi C (reduce partitions) tidak menyelesaikan masalah file per partition yang terlalu banyak. Opsi D (provisioned capacity) membantu throughput tetapi overhead per-file tetap ada.</div>
+                <div class="explanation">Small file problem adalah masalah umum di data lakes. Setiap file memerlukan overhead: S3 LIST operations untuk menemukan file, GET requests untuk membuka file, dan Parquet footer reading per file. Dengan jutaan file kecil, overhead ini mendominasi query time. Solusinya adalah compaction — menggabungkan file kecil menjadi file berukuran 128-512 MB yang optimal untuk Athena/Presto. CTAS atau Glue job dapat melakukan compaction ini. Opsi B salah — ORC tidak menangani small files lebih baik dari Parquet — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (reduce partitions) tidak menyelesaikan masalah file per partition yang terlalu banyak. Opsi D (provisioned capacity) membantu throughput tetapi overhead per-file tetap ada.</div>
             </div>
         </div>
 
@@ -173,13 +173,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create Athena views with aliased column names (business-friendly names), pre-built JOINs, and only expose relevant columns to simplify the schema for analysts</li>
                 <li><span class="option-label">B.</span> Create a Glue crawler to re-catalog the tables with new business-friendly column names</li>
-                <li><span class="option-label">C.</span> Build a CTAS that creates a denormalized copy of all tables with renamed columns</li>
+                <li><span class="option-label">C.</span> Build a CTAS that creates a denormalized copy of all tables with renamed columns for analysts</li>
                 <li><span class="option-label">D.</span> Use AWS Lake Formation to create virtual columns with business names on top of existing tables</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena views menyediakan abstraction layer yang ideal: column aliases memberikan business-friendly names, pre-built JOINs menyederhanakan access pattern, dan column selection menyembunyikan technical fields. Views tidak menyimpan data duplikat dan selalu reflect data terbaru. Opsi B (crawler rename) akan mengubah metadata yang bisa memecah pipeline lain yang menggunakan nama kolom asli. Opsi C (CTAS) membuat duplikat data yang perlu di-refresh — mahal dan not real-time. Opsi D salah — Lake Formation tidak memiliki fitur "virtual columns" untuk renaming.</div>
+                <div class="explanation">Athena views menyediakan abstraction layer yang ideal: column aliases memberikan business-friendly names, pre-built JOINs menyederhanakan access pattern, dan column selection menyembunyikan technical fields. Views tidak menyimpan data duplikat dan selalu reflect data terbaru. Opsi B (crawler rename) akan mengubah metadata yang bisa memecah pipeline lain yang menggunakan nama kolom asli. Opsi C (CTAS) membuat duplikat data yang perlu di-refresh — mahal dan not real-time — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D salah — Lake Formation tidak memiliki fitur "virtual columns" untuk renaming.</div>
             </div>
         </div>
 
@@ -190,13 +190,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Ensure Parquet files are written with row group statistics and page-level column indexes enabled, allowing predicate pushdown to skip irrelevant row groups within files</li>
                 <li><span class="option-label">B.</span> Add customer_segment as an additional partition column to enable partition pruning</li>
-                <li><span class="option-label">C.</span> Convert the data to CSV format which supports faster full-file scanning</li>
+                <li><span class="option-label">C.</span> Convert the data to CSV format which supports faster full-file scanning with row group statistics</li>
                 <li><span class="option-label">D.</span> Increase the Parquet file size to 1 GB to reduce the number of files to open</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Parquet row group statistics (min/max values) dan page-level column indexes memungkinkan predicate pushdown — Athena (Presto/Trino) dapat skip row groups dimana filter condition (customer_segment = 'enterprise') tidak bisa dipenuhi berdasarkan statistics, tanpa membaca actual data. Ini signifikan mengurangi I/O untuk non-partition column filters. Opsi B (add partition) bisa over-partition dan meningkatkan small file problem jika cardinality tinggi. Opsi C (CSV) kehilangan semua keuntungan columnar format. Opsi D (larger files) mengurangi open operations tetapi tidak membantu filtering within files tanpa statistics.</div>
+                <div class="explanation">Parquet row group statistics (min/max values) dan page-level column indexes memungkinkan predicate pushdown — Athena (Presto/Trino) dapat skip row groups dimana filter condition (customer_segment = 'enterprise') tidak bisa dipenuhi berdasarkan statistics, tanpa membaca actual data. Ini signifikan mengurangi I/O untuk non-partition column filters. Opsi B (add partition) bisa over-partition dan meningkatkan small file problem jika cardinality tinggi. Opsi C (CSV) kehilangan semua keuntungan columnar format — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (larger files) mengurangi open operations tetapi tidak membantu filtering within files tanpa statistics.</div>
             </div>
         </div>
         

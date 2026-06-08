@@ -37,13 +37,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS Step Functions with a Standard workflow</li>
                 <li><span class="option-label">B.</span> Amazon MWAA (Managed Workflows for Apache Airflow)</li>
-                <li><span class="option-label">C.</span> AWS Glue Workflows</li>
+                <li><span class="option-label">C.</span> AWS Glue Workflows for Apache Airflow)</li>
                 <li><span class="option-label">D.</span> Amazon EventBridge Scheduler with Lambda functions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Amazon MWAA adalah pilihan terbaik karena: (1) tim sudah berpengalaman dengan Apache Airflow, (2) Airflow memiliki sensors yang unggul untuk menunggu external events, (3) mendukung complex dependency management dengan DAG, dan (4) memiliki rich operator ecosystem untuk Glue, Redshift, dan service AWS lainnya. Opsi A (Step Functions) bisa melakukan ini tapi kurang intuitif untuk complex dependencies dan external event waiting dibandingkan Airflow sensors. Opsi C (Glue Workflows) terbatas pada Glue services saja. Opsi D (EventBridge + Lambda) terlalu sederhana untuk pipeline kompleks dengan dependencies.</div>
+                <div class="explanation">Amazon MWAA adalah pilihan terbaik karena: (1) tim sudah berpengalaman dengan Apache Airflow, (2) Airflow memiliki sensors yang unggul untuk menunggu external events, (3) mendukung complex dependency management dengan DAG, dan (4) memiliki rich operator ecosystem untuk Glue, Redshift, dan service AWS lainnya. Opsi A (Step Functions) bisa melakukan ini tapi kurang intuitif untuk complex dependencies dan external event waiting dibandingkan Airflow sensors. Opsi C (Glue Workflows) terbatas pada Glue services saja — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (EventBridge + Lambda) terlalu sederhana untuk pipeline kompleks dengan dependencies.</div>
             </div>
         </div>
 
@@ -89,12 +89,12 @@
                 <li><span class="option-label">A.</span> A single state machine with a Map state that processes all 200 feeds concurrently with configurable max concurrency</li>
                 <li><span class="option-label">B.</span> 200 separate state machine executions triggered by a parent state machine using nested workflows</li>
                 <li><span class="option-label">C.</span> A Choice state that routes each feed to a different branch based on feed type</li>
-                <li><span class="option-label">D.</span> A sequential loop using a Wait state between each feed processing iteration</li>
+                <li><span class="option-label">D.</span> A sequential loop using a Wait state between each feed processing iteration with a Map state that processes all 200 feeds concurrently</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Step Functions Map state (Distributed mode untuk large-scale) dirancang tepat untuk parallel processing of multiple items dengan logic yang sama tapi parameter berbeda. MaxConcurrency parameter memungkinkan kontrol berapa feeds diproses bersamaan, membantu manage resource limits downstream. Opsi B (200 nested workflows) lebih kompleks untuk di-manage dan monitor, serta memerlukan logic tambahan untuk aggregasi results. Opsi C (Choice state) untuk routing bukan parallel processing. Opsi D (sequential loop) akan sangat lambat — 200 feeds secara sequential tidak akan meet 2-hour SLA.</div>
+                <div class="explanation">Step Functions Map state (Distributed mode untuk large-scale) dirancang tepat untuk parallel processing of multiple items dengan logic yang sama tapi parameter berbeda. MaxConcurrency parameter memungkinkan kontrol berapa feeds diproses bersamaan, membantu manage resource limits downstream. Opsi B (200 nested workflows) lebih kompleks untuk di-manage dan monitor, serta memerlukan logic tambahan untuk aggregasi results. Opsi C (Choice state) untuk routing bukan parallel processing. Opsi D (sequential loop) akan sangat lambat — 200 feeds secara sequential tidak akan meet 2-hour SLA — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -106,12 +106,12 @@
                 <li><span class="option-label">A.</span> Set retries=5 and retry_delay=timedelta(minutes=2) with retry_exponential_backoff=True in the task's default_args</li>
                 <li><span class="option-label">B.</span> Implement a try-except block within the Python callable that retries the API call 5 times</li>
                 <li><span class="option-label">C.</span> Create 5 duplicate tasks in the DAG, each attempting the API call, with TriggerRule.ALL_FAILED dependencies</li>
-                <li><span class="option-label">D.</span> Configure an on_failure_callback that restarts the entire DAG up to 5 times</li>
+                <li><span class="option-label">D.</span> Configure an on_failure_callback that restarts the entire DAG up to 5 times with retry_exponential_backoff=True in the task's default_args</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Airflow memiliki built-in retry mechanism dengan parameter retries, retry_delay, dan retry_exponential_backoff. Setting retries=5 dengan exponential backoff memberikan 5 attempts dengan increasing delay antara retries, yang ideal untuk intermittent API failures. Ini adalah cara yang proper dan idiomatic di Airflow. Opsi B (try-except dalam callable) tidak memanfaatkan Airflow's built-in retry/logging/monitoring. Opsi C (duplicate tasks) sangat fragile dan tidak scalable. Opsi D (restart DAG) terlalu aggressive — me-restart seluruh DAG hanya karena satu task gagal.</div>
+                <div class="explanation">Airflow memiliki built-in retry mechanism dengan parameter retries, retry_delay, dan retry_exponential_backoff. Setting retries=5 dengan exponential backoff memberikan 5 attempts dengan increasing delay antara retries, yang ideal untuk intermittent API failures. Ini adalah cara yang proper dan idiomatic di Airflow. Opsi B (try-except dalam callable) tidak memanfaatkan Airflow's built-in retry/logging/monitoring. Opsi C (duplicate tasks) sangat fragile dan tidak scalable. Opsi D (restart DAG) terlalu aggressive — me-restart seluruh DAG hanya karena satu task gagal — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -121,14 +121,14 @@
             <div class="question-text">A company runs a nightly ETL pipeline that must complete by 6:00 AM. The pipeline involves: (1) extracting data from 3 source systems in parallel, (2) running a Glue job to join all extracted data, (3) loading results to Redshift, and (4) triggering a QuickSight dataset refresh. Step 2 cannot start until all 3 extractions in step 1 are complete. The team uses Amazon MWAA. Which DAG pattern correctly implements this dependency?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a TaskGroup with three parallel extraction tasks, then set downstream dependencies to the Glue job task</li>
-                <li><span class="option-label">B.</span> Use SubDAGs for each extraction, then chain them sequentially before the Glue job</li>
+                <li><span class="option-label">B.</span> Use SubDAGs for each extraction, then chain them sequentially before the Glue job with a dummy/empty task as a join point (using trigger_rule='all_success') and QuickSight tasks in sequence</li>
                 <li><span class="option-label">C.</span> Use three parallel extraction tasks with a dummy/empty task as a join point (using trigger_rule='all_success'), followed by Glue, Redshift, and QuickSight tasks in sequence</li>
                 <li><span class="option-label">D.</span> Use ExternalTaskSensor for each extraction and start the Glue job when all sensors pass</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Pattern fan-in menggunakan dummy/empty task sebagai join point dengan trigger_rule='all_success' memastikan bahwa semua 3 extraction tasks harus berhasil sebelum pipeline melanjutkan ke Glue job. Ini adalah pattern standard Airflow untuk synchronization. Opsi A (TaskGroup) hanya untuk visual grouping, tidak otomatis membuat join-point dependency. Opsi B (SubDAGs) sudah deprecated di Airflow modern dan menambah complexity. Opsi D (ExternalTaskSensor) digunakan untuk cross-DAG dependencies, bukan intra-DAG synchronization.</div>
+                <div class="explanation">Pattern fan-in menggunakan dummy/empty task sebagai join point dengan trigger_rule='all_success' memastikan bahwa semua 3 extraction tasks harus berhasil sebelum pipeline melanjutkan ke Glue job. Ini adalah pattern standard Airflow untuk synchronization. Opsi A (TaskGroup) hanya untuk visual grouping, tidak otomatis membuat join-point dependency. Opsi B (SubDAGs) sudah deprecated di Airflow modern dan menambah complexity — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (ExternalTaskSensor) digunakan untuk cross-DAG dependencies, bukan intra-DAG synchronization.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A Step Functions workflow for a data pipeline needs to handle the following error scenario: if a Glue job fails with a "ConcurrentRunsExceededException", the workflow should wait 10 minutes and retry up to 3 times. For any other error type, the workflow should immediately transition to a failure notification step. Which Step Functions error handling configuration achieves this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use a single Catch block with a Choice state that examines the error type</li>
+                <li><span class="option-label">A.</span> Use a single Catch block with a Choice state that examines the error type for the specific Glue exception</li>
                 <li><span class="option-label">B.</span> Use a Retry field with ErrorEquals for the specific Glue exception, and a Catch field for all other errors routing to the notification step</li>
                 <li><span class="option-label">C.</span> Implement the retry logic in a Lambda function wrapper that calls the Glue API</li>
                 <li><span class="option-label">D.</span> Use a Parallel state with one branch for the job and another for error monitoring</li>
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Step Functions Retry field dengan ErrorEquals memungkinkan retry selektif berdasarkan tipe error spesifik. Konfigurasi: Retry dengan ErrorEquals: ["Glue.ConcurrentRunsExceededException"], IntervalSeconds: 600, MaxAttempts: 3. Catch field kemudian menangkap semua error lain ("States.ALL") dan routes ke notification step. Ini adalah built-in pattern yang bersih dan deklaratif. Opsi A memerlukan logic tambahan yang tidak perlu. Opsi C (Lambda wrapper) menambah operational overhead dan kehilangan Step Functions' native error handling visibility. Opsi D (Parallel) tidak menyelesaikan masalah error handling.</div>
+                <div class="explanation">Step Functions Retry field dengan ErrorEquals memungkinkan retry selektif berdasarkan tipe error spesifik. Konfigurasi: Retry dengan ErrorEquals: ["Glue.ConcurrentRunsExceededException"], IntervalSeconds: 600, MaxAttempts: 3. Catch field kemudian menangkap semua error lain ("States.ALL") dan routes ke notification step. Ini adalah built-in pattern yang bersih dan deklaratif. Opsi A memerlukan logic tambahan yang tidak perlu — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Lambda wrapper) menambah operational overhead dan kehilangan Step Functions' native error handling visibility. Opsi D (Parallel) tidak menyelesaikan masalah error handling.</div>
             </div>
         </div>
 
@@ -171,7 +171,7 @@
             <div class="question-number">9</div>
             <div class="question-text">A data platform team wants to trigger their MWAA data pipeline every time new data arrives in a specific S3 prefix, but also needs to run the same pipeline on a daily schedule at midnight UTC as a catch-all. The pipeline should not run concurrently (only one execution at a time). Which configuration achieves this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create two separate DAGs — one with an S3KeySensor and one with a cron schedule — both with max_active_runs=1</li>
+                <li><span class="option-label">A.</span> Create two separate DAGs — one with an S3KeySensor and one with a cron schedule — both with max_active_runs=1 with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> Create one DAG with schedule_interval='0 0 * * *' and an EventBridge rule that triggers the DAG via MWAA CLI on S3 events, with max_active_runs=1 and catchup=False</li>
                 <li><span class="option-label">C.</span> Use EventBridge to trigger the same Lambda function from both S3 events and cron schedule, then Lambda triggers the DAG</li>
                 <li><span class="option-label">D.</span> Set the DAG schedule_interval to every minute and check for new S3 files within the first task</li>
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Satu DAG dengan schedule harian dan trigger external via EventBridge + MWAA REST API adalah pattern yang clean. max_active_runs=1 memastikan tidak ada concurrent execution. EventBridge rule pada S3 PutObject event memanggil MWAA CLI/API untuk trigger DAG run di luar schedule normal. catchup=False mencegah backfill runs. Opsi A (dua DAG terpisah) tidak mencegah concurrent execution antar kedua DAG. Opsi C bisa bekerja tapi menambah extra Lambda layer yang tidak perlu. Opsi D (every minute check) sangat wasteful dan tidak event-driven.</div>
+                <div class="explanation">Satu DAG dengan schedule harian dan trigger external via EventBridge + MWAA REST API adalah pattern yang clean. max_active_runs=1 memastikan tidak ada concurrent execution. EventBridge rule pada S3 PutObject event memanggil MWAA CLI/API untuk trigger DAG run di luar schedule normal. catchup=False mencegah backfill runs. Opsi A (dua DAG terpisah) tidak mencegah concurrent execution antar kedua DAG — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C bisa bekerja tapi menambah extra Lambda layer yang tidak perlu. Opsi D (every minute check) sangat wasteful dan tidak event-driven.</div>
             </div>
         </div>
 
@@ -191,12 +191,12 @@
                 <li><span class="option-label">A.</span> Use a Parallel state after EMR to run both Glue and Redshift load concurrently, reducing total time to approximately 35 minutes</li>
                 <li><span class="option-label">B.</span> Use a Map state to distribute EMR output to multiple processing targets simultaneously</li>
                 <li><span class="option-label">C.</span> Create two separate Step Functions workflows — one for Glue and one for Redshift — triggered by EMR completion event</li>
-                <li><span class="option-label">D.</span> Use Express Workflows for the Glue and Redshift steps to make them run faster</li>
+                <li><span class="option-label">D.</span> Use Express Workflows for the Glue and Redshift steps to make them run faster with parallel processing and horizontal scaling capabilities</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Parallel state di Step Functions menjalankan multiple branches secara concurrent. Karena Glue (15 min) dan Redshift load (5 min) keduanya hanya bergantung pada output EMR, mereka bisa berjalan bersamaan. Total time: EMR 30 min + max(Glue 15 min, Redshift 5 min) = 45 min → sebenarnya 35 min (30+15 dengan Redshift selesai lebih awal di dalam parallel). Opsi B (Map state) untuk processing multiple items dengan logic sama, bukan dua task berbeda. Opsi C (separate workflows) kehilangan centralized monitoring dan error handling. Opsi D (Express Workflows) tidak membuat jobs berjalan lebih cepat — hanya berbeda pricing model.</div>
+                <div class="explanation">Parallel state di Step Functions menjalankan multiple branches secara concurrent. Karena Glue (15 min) dan Redshift load (5 min) keduanya hanya bergantung pada output EMR, mereka bisa berjalan bersamaan. Total time: EMR 30 min + max(Glue 15 min, Redshift 5 min) = 45 min → sebenarnya 35 min (30+15 dengan Redshift selesai lebih awal di dalam parallel). Opsi B (Map state) untuk processing multiple items dengan logic sama, bukan dua task berbeda. Opsi C (separate workflows) kehilangan centralized monitoring dan error handling. Opsi D (Express Workflows) tidak membuat jobs berjalan lebih cepat — hanya berbeda pricing model — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

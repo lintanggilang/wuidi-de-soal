@@ -35,14 +35,14 @@
             <div class="question-text">A data engineer has a Lambda function that processes large ML model files (3GB) to generate predictions on incoming data. The model file must be loaded into memory for inference. The Lambda function's /tmp storage is insufficient for this use case. Which storage solution allows the Lambda function to access the 3GB model file with the LOWEST latency on subsequent invocations?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Mount an Amazon EFS file system to the Lambda function, store the model on EFS, and access it via the local mount point — subsequent invocations on warm containers access the model with local filesystem read speeds since EFS is already mounted</li>
-                <li><span class="option-label">B.</span> Download the model from S3 to /tmp on every invocation and delete it after processing</li>
+                <li><span class="option-label">B.</span> Download the model from S3 to /tmp on every invocation and delete it after processing with local filesystem read speeds since EFS is already mounted</li>
                 <li><span class="option-label">C.</span> Increase the Lambda ephemeral storage (/tmp) to 10GB and download the model from S3 on cold starts only</li>
                 <li><span class="option-label">D.</span> Store the model as a Lambda Layer to make it available in the function's runtime environment</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EFS provides a persistent, shared filesystem that Lambda accesses via NFS mount. Unlike /tmp, EFS data persists across invocations and is shared across all concurrent executions. The model is stored once on EFS and accessed directly — no download step on cold starts. After initial cache warming, EFS provides consistent low-latency reads. EFS supports up to petabyte-scale storage, easily handling 3GB models. Opsi B — downloading 3GB on every invocation adds 30+ seconds of latency, unacceptable for production. Opsi C — while /tmp can be configured up to 10GB, the model must still be downloaded from S3 on cold starts (significant latency). Opsi D — Lambda Layers have a 250MB unzipped limit, insufficient for a 3GB model.</div>
+                <div class="explanation">EFS provides a persistent, shared filesystem that Lambda accesses via NFS mount. Unlike /tmp, EFS data persists across invocations and is shared across all concurrent executions. The model is stored once on EFS and accessed directly — no download step on cold starts. After initial cache warming, EFS provides consistent low-latency reads. EFS supports up to petabyte-scale storage, easily handling 3GB models. Opsi B — downloading 3GB on every invocation adds 30+ seconds of latency, unacceptable for production — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — while /tmp can be configured up to 10GB, the model must still be downloaded from S3 on cold starts (significant latency). Opsi D — Lambda Layers have a 250MB unzipped limit, insufficient for a 3GB model.</div>
             </div>
         </div>
 
@@ -51,14 +51,14 @@
             <div class="question-text">A Lambda function processes CSV files uploaded to S3. Each file is approximately 200MB. The function needs to download the file, parse it, apply transformations, and write the result back to S3. The engineer configured the Lambda function with 512MB /tmp storage (default), but the function fails with a "No space left on device" error. What is the MOST cost-effective solution?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase the Lambda ephemeral storage (/tmp) from the default 512MB to a sufficient size (up to 10,240MB maximum) using the EphemeralStorage configuration — this allows the function to store the 200MB input plus the transformed output without requiring EFS or VPC configuration</li>
-                <li><span class="option-label">B.</span> Mount an EFS file system and use it as the working directory for file processing</li>
+                <li><span class="option-label">B.</span> Mount an EFS file system and use it as the working directory for file processing configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Process the file in S3 directly without downloading using S3 Select</li>
                 <li><span class="option-label">D.</span> Split the input file into 100 smaller files before triggering the Lambda function</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda ephemeral storage (/tmp) can be configured from 512MB to 10,240MB (10GB). For a 200MB file, increasing /tmp to 1-2GB provides sufficient space for input and output without the overhead of EFS (which requires VPC, ENI, and has per-GB-month storage costs plus data transfer costs). /tmp is included in Lambda pricing with a small additional cost only above 512MB. Opsi B — EFS requires VPC configuration, adds cold start latency (ENI attachment), and costs more for simple temporary file storage. Opsi C — S3 Select only supports limited query operations (SQL-like filtering), not complex transformations. Opsi D — splitting files adds complexity and requires an orchestration layer before Lambda.</div>
+                <div class="explanation">Lambda ephemeral storage (/tmp) can be configured from 512MB to 10,240MB (10GB). For a 200MB file, increasing /tmp to 1-2GB provides sufficient space for input and output without the overhead of EFS (which requires VPC, ENI, and has per-GB-month storage costs plus data transfer costs). /tmp is included in Lambda pricing with a small additional cost only above 512MB. Opsi B — EFS requires VPC configuration, adds cold start latency (ENI attachment), and costs more for simple temporary file storage — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — S3 Select only supports limited query operations (SQL-like filtering), not complex transformations. Opsi D — splitting files adds complexity and requires an orchestration layer before Lambda.</div>
             </div>
         </div>
 
@@ -69,12 +69,12 @@
                 <li><span class="option-label">A.</span> Mount a shared EFS file system on both Lambda functions. Function A writes intermediate data to EFS, and Function B reads it from the same mount point. EFS provides a shared persistent filesystem accessible by both functions with POSIX file semantics</li>
                 <li><span class="option-label">B.</span> Store intermediate data in Lambda's /tmp directory and rely on the next invocation using the same container</li>
                 <li><span class="option-label">C.</span> Pass the 500MB dataset as the payload in the Step Functions state machine between states</li>
-                <li><span class="option-label">D.</span> Store the data in a DynamoDB table with 500MB record items</li>
+                <li><span class="option-label">D.</span> Store the data in a DynamoDB table with 500MB record items and Function B reads it from the same mount point</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EFS provides a shared filesystem accessible by multiple Lambda functions simultaneously. Both functions mount the same EFS file system and can read/write to the same directories. This enables direct data sharing without object copies — Function B reads the same file Function A wrote. EFS supports concurrent access and provides file-level locking if needed. Opsi B — /tmp is ephemeral and local to a specific container instance. Different Lambda functions (or even different invocations of the same function) use different containers with isolated /tmp directories. Opsi C — Step Functions payload limit is 256KB, far too small for 500MB. Opsi D — DynamoDB item size limit is 400KB, and it's not designed for large binary data storage.</div>
+                <div class="explanation">EFS provides a shared filesystem accessible by multiple Lambda functions simultaneously. Both functions mount the same EFS file system and can read/write to the same directories. This enables direct data sharing without object copies — Function B reads the same file Function A wrote. EFS supports concurrent access and provides file-level locking if needed. Opsi B — /tmp is ephemeral and local to a specific container instance. Different Lambda functions (or even different invocations of the same function) use different containers with isolated /tmp directories. Opsi C — Step Functions payload limit is 256KB, far too small for 500MB. Opsi D — DynamoDB item size limit is 400KB, and it's not designed for large binary data storage — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -83,14 +83,14 @@
             <div class="question-text">A company deploys a Lambda function with an EFS mount for a data processing pipeline. After deployment, the Lambda function times out during cold starts, taking over 30 seconds before processing begins. The function previously completed in 5 seconds without EFS. What is the MOST likely cause of the cold start performance degradation?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Lambda functions with EFS require VPC configuration, and the cold start includes creating an Elastic Network Interface (ENI) in the VPC. If the subnets don't have sufficient available IP addresses or the security groups are misconfigured, ENI creation takes significantly longer</li>
-                <li><span class="option-label">B.</span> EFS is replicating data across Availability Zones during Lambda initialization</li>
+                <li><span class="option-label">B.</span> EFS is replicating data across Availability Zones during Lambda initialization with EFS require VPC configuration</li>
                 <li><span class="option-label">C.</span> The Lambda function is downloading the entire EFS file system content during cold start</li>
                 <li><span class="option-label">D.</span> EFS throughput mode is set to Provisioned and the function exceeds its allocated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EFS requires Lambda to be in a VPC (EFS access points are VPC-only resources). VPC-attached Lambda functions experience additional cold start latency due to ENI creation — historically 10-30+ seconds. While AWS has improved this with Hyperplane (reducing to 1-2 seconds in most cases), insufficient IP addresses in subnets or security group rule complexity can still cause delays. The fix includes ensuring subnets have ample IP space and using Provisioned Concurrency to eliminate cold starts. Opsi B — EFS replication is transparent to clients and doesn't affect mount time. Opsi C — EFS uses lazy loading; only accessed files are read, not the entire filesystem. Opsi D — throughput issues would cause I/O errors during file operations, not cold start delays.</div>
+                <div class="explanation">EFS requires Lambda to be in a VPC (EFS access points are VPC-only resources). VPC-attached Lambda functions experience additional cold start latency due to ENI creation — historically 10-30+ seconds. While AWS has improved this with Hyperplane (reducing to 1-2 seconds in most cases), insufficient IP addresses in subnets or security group rule complexity can still cause delays. The fix includes ensuring subnets have ample IP space and using Provisioned Concurrency to eliminate cold starts. Opsi B — EFS replication is transparent to clients and doesn't affect mount time — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — EFS uses lazy loading; only accessed files are read, not the entire filesystem. Opsi D — throughput issues would cause I/O errors during file operations, not cold start delays.</div>
             </div>
         </div>
 
@@ -101,12 +101,12 @@
                 <li><span class="option-label">A.</span> Use Lambda ephemeral storage (/tmp) configured to 3GB — since the data is transient (downloaded from S3, processed, then uploaded back), there's no need for persistent storage. /tmp is automatically cleaned between invocations, and the cost is minimal (charged per GB-second only for storage above 512MB)</li>
                 <li><span class="option-label">B.</span> Mount EFS to store the downloaded data and generated report permanently</li>
                 <li><span class="option-label">C.</span> Use both EFS for the download and /tmp for the report generation simultaneously</li>
-                <li><span class="option-label">D.</span> Stream the data directly from S3 without any local storage using S3 Select</li>
+                <li><span class="option-label">D.</span> Stream the data directly from S3 without any local storage using S3 Select for persistent storage</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">For transient workloads (download → process → upload), /tmp is ideal because data doesn't need to persist. Configuring /tmp to 3GB (within the 10GB limit) costs approximately $0.000000309 per GB-second above 512MB. For a 3-minute daily run using 2.5GB extra: ~$0.00014/day. EFS would cost $0.30/GB-month for storage PLUS data transfer costs, continuously. Since nothing needs to persist between daily runs, /tmp eliminates EFS's ongoing storage cost and VPC overhead. Opsi B — EFS costs are continuous (storage charged 24/7) even though data is needed only 3 minutes/day. Opsi C — combining both adds unnecessary complexity and cost. Opsi D — S3 Select supports limited operations and cannot generate PDF reports.</div>
+                <div class="explanation">For transient workloads (download → process → upload), /tmp is ideal because data doesn't need to persist. Configuring /tmp to 3GB (within the 10GB limit) costs approximately $0.000000309 per GB-second above 512MB. For a 3-minute daily run using 2.5GB extra: ~$0.00014/day. EFS would cost $0.30/GB-month for storage PLUS data transfer costs, continuously. Since nothing needs to persist between daily runs, /tmp eliminates EFS's ongoing storage cost and VPC overhead. Opsi B — EFS costs are continuous (storage charged 24/7) even though data is needed only 3 minutes/day. Opsi C — combining both adds unnecessary complexity and cost. Opsi D — S3 Select supports limited operations and cannot generate PDF reports — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -116,13 +116,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Mount EFS with an access point configured for read-only access. All 50 Lambda invocations share the same EFS mount and can concurrently read different portions of the dataset. Configure EFS with Elastic throughput mode to automatically scale read throughput based on demand</li>
                 <li><span class="option-label">B.</span> Have each of the 50 Lambda invocations independently download the 5GB dataset from S3 to their own /tmp storage</li>
-                <li><span class="option-label">C.</span> Package the 5GB dataset as a Lambda Layer shared across all functions</li>
+                <li><span class="option-label">C.</span> Package the 5GB dataset as a Lambda Layer shared across all functions with an access point configured for read-only access and can concurrently read different portions of the dataset</li>
                 <li><span class="option-label">D.</span> Store the dataset in DynamoDB and have each function query its relevant partition</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EFS supports thousands of concurrent NFS connections from Lambda. All 50 invocations access the same filesystem simultaneously without duplicating data. Read-only access points enforce security. Elastic throughput mode automatically scales to match read demand from concurrent Lambdas without pre-provisioning. Weekly updates simply overwrite files on EFS. Total storage cost: ~$1.50/month (5GB × $0.30/GB). Opsi B — 50 concurrent downloads of 5GB each = 250GB of S3 transfer, costing significantly more and adding 30+ seconds of download time to each invocation. Opsi C — Lambda Layers have a 250MB limit, cannot hold 5GB. Opsi D — DynamoDB is not optimized for large binary datasets; 5GB in DynamoDB would be extremely expensive and complex to partition.</div>
+                <div class="explanation">EFS supports thousands of concurrent NFS connections from Lambda. All 50 invocations access the same filesystem simultaneously without duplicating data. Read-only access points enforce security. Elastic throughput mode automatically scales to match read demand from concurrent Lambdas without pre-provisioning. Weekly updates simply overwrite files on EFS. Total storage cost: ~$1.50/month (5GB × $0.30/GB). Opsi B — 50 concurrent downloads of 5GB each = 250GB of S3 transfer, costing significantly more and adding 30+ seconds of download time to each invocation. Opsi C — Lambda Layers have a 250MB limit, cannot hold 5GB — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — DynamoDB is not optimized for large binary datasets; 5GB in DynamoDB would be extremely expensive and complex to partition.</div>
             </div>
         </div>
 
@@ -133,12 +133,12 @@
                 <li><span class="option-label">A.</span> The EFS access point's POSIX user configuration (UID/GID) doesn't match the permissions on the /output directory, or the CreationInfo for the access point root directory was configured with restrictive permissions (e.g., 0755 instead of 0777) that prevent the Lambda function's mapped UID from writing</li>
                 <li><span class="option-label">B.</span> Lambda functions cannot write to EFS; they only support read operations</li>
                 <li><span class="option-label">C.</span> The security group attached to the Lambda function is blocking outbound NFS traffic on port 2049</li>
-                <li><span class="option-label">D.</span> The EFS file system has reached its maximum storage capacity</li>
+                <li><span class="option-label">D.</span> The EFS file system has reached its maximum storage capacity with restrictive permissions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EFS access points map Lambda's execution identity to a POSIX user (UID/GID). If the access point specifies UID 1000 but the /output directory is owned by UID 0 (root) with permissions 0755, UID 1000 cannot write. Fix: either configure the access point's CreationInfo to create directories with appropriate permissions (e.g., 0777), or ensure the root directory path's ownership matches the access point's UID/GID. Opsi B — Lambda fully supports both read AND write operations on EFS mounts. Opsi C — if security groups blocked NFS traffic, the function would fail to mount entirely (connection timeout), not produce a permission denied error. Opsi D — EFS has no predefined storage capacity limit; it scales automatically to petabytes.</div>
+                <div class="explanation">EFS access points map Lambda's execution identity to a POSIX user (UID/GID). If the access point specifies UID 1000 but the /output directory is owned by UID 0 (root) with permissions 0755, UID 1000 cannot write. Fix: either configure the access point's CreationInfo to create directories with appropriate permissions (e.g., 0777), or ensure the root directory path's ownership matches the access point's UID/GID. Opsi B — Lambda fully supports both read AND write operations on EFS mounts. Opsi C — if security groups blocked NFS traffic, the function would fail to mount entirely (connection timeout), not produce a permission denied error. Opsi D — EFS has no predefined storage capacity limit; it scales automatically to petabytes — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -148,13 +148,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use EFS as the shared cache. A separate scheduled Lambda function updates the reference data on EFS hourly. All 100+ concurrent execution instances read from the same EFS mount point, seeing the updated data immediately after the refresh Lambda completes its write</li>
                 <li><span class="option-label">B.</span> Store cache in each Lambda's /tmp and trigger a deployment to clear all containers when cache needs refreshing</li>
-                <li><span class="option-label">C.</span> Use Lambda environment variables to store the 500MB cache data</li>
+                <li><span class="option-label">C.</span> Use Lambda environment variables to store the 500MB cache data configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Implement a custom cache invalidation protocol using SNS to notify each Lambda instance to download fresh data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EFS provides a single source of truth accessible by all concurrent Lambda instances. When the refresh Lambda updates files on EFS, all readers immediately see the new data (NFS strong consistency for close-to-open operations). No cache invalidation protocol needed — it's a shared filesystem. All 100+ instances read from the same mount point. Opsi B — /tmp is isolated per container; there's no mechanism to "clear all containers" without redeployment, and new containers would still need to populate their cache. Opsi C — Lambda environment variables have a 4KB total limit, far below 500MB. Opsi D — SNS can trigger notification but each instance still needs to download 500MB independently, causing thundering herd and S3 bandwidth spikes.</div>
+                <div class="explanation">EFS provides a single source of truth accessible by all concurrent Lambda instances. When the refresh Lambda updates files on EFS, all readers immediately see the new data (NFS strong consistency for close-to-open operations). No cache invalidation protocol needed — it's a shared filesystem. All 100+ instances read from the same mount point. Opsi B — /tmp is isolated per container; there's no mechanism to "clear all containers" without redeployment, and new containers would still need to populate their cache. Opsi C — Lambda environment variables have a 4KB total limit, far below 500MB — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — SNS can trigger notification but each instance still needs to download 500MB independently, causing thundering herd and S3 bandwidth spikes.</div>
             </div>
         </div>
 
@@ -165,12 +165,12 @@
                 <li><span class="option-label">A.</span> Mount EFS with sufficient throughput provisioned for the expected I/O pattern. Stream the video file from S3 to EFS on first access, then perform random-access reads directly from the EFS mount. EFS has no practical size limit and supports random read/write operations like a traditional filesystem</li>
                 <li><span class="option-label">B.</span> Use S3 byte-range requests to read only the specific portions of the video file needed, eliminating the need for local storage entirely</li>
                 <li><span class="option-label">C.</span> Split the video into 512MB chunks in S3 and process each chunk in a separate Lambda invocation</li>
-                <li><span class="option-label">D.</span> Request a service limit increase for Lambda /tmp storage beyond 10GB</li>
+                <li><span class="option-label">D.</span> Request a service limit increase for Lambda /tmp storage beyond 10GB with sufficient throughput provisioned for the expected I/O pattern</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EFS removes the /tmp size constraint entirely. The video file is stored on EFS and accessed with standard filesystem operations (seek, read) supporting the random access pattern required for video frame extraction. EFS scales to petabytes with no per-file size limits. Provisioned throughput ensures consistent I/O for large file operations. Opsi B — while byte-range requests work for simple reads, video processing often requires seeking to multiple non-contiguous positions rapidly; S3 round-trip latency per seek makes this impractical for frame-by-frame analysis. Opsi C — splitting videos breaks temporal continuity needed for multi-frame analysis and scene detection. Opsi D — 10GB is the hard maximum for Lambda /tmp; it cannot be increased via service quotas.</div>
+                <div class="explanation">EFS removes the /tmp size constraint entirely. The video file is stored on EFS and accessed with standard filesystem operations (seek, read) supporting the random access pattern required for video frame extraction. EFS scales to petabytes with no per-file size limits. Provisioned throughput ensures consistent I/O for large file operations. Opsi B — while byte-range requests work for simple reads, video processing often requires seeking to multiple non-contiguous positions rapidly; S3 round-trip latency per seek makes this impractical for frame-by-frame analysis. Opsi C — splitting videos breaks temporal continuity needed for multi-frame analysis and scene detection. Opsi D — 10GB is the hard maximum for Lambda /tmp; it cannot be increased via service quotas — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -180,13 +180,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Package the 50MB lookup table as a Lambda Layer. The layer is loaded into the Lambda execution environment on cold starts and cached across warm invocations. No VPC, no EFS configuration, no download step — the data is simply available as a file in /opt at function start</li>
                 <li><span class="option-label">B.</span> Mount EFS and store the lookup table on the shared filesystem</li>
-                <li><span class="option-label">C.</span> Download the lookup table from S3 to /tmp on every cold start</li>
+                <li><span class="option-label">C.</span> Download the lookup table from S3 to /tmp on every cold start and cached across warm invocations</li>
                 <li><span class="option-label">D.</span> Store the lookup table in a DynamoDB table and query it for each enrichment lookup</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">For a 50MB file that changes monthly, a Lambda Layer is optimal: it's deployed with the function (no download latency on cold start), cached in the execution environment (/opt), requires no VPC or EFS infrastructure, and costs nothing beyond standard Lambda pricing. Layers support up to 250MB unzipped, easily accommodating 50MB. Monthly updates only require publishing a new layer version. Opsi B — EFS adds VPC requirements, ENI cold start overhead, and ongoing storage/transfer costs — over-engineering for a 50MB static file. Opsi C — S3 download on cold start adds 2-5 seconds of latency and requires /tmp cleanup logic. Opsi D — DynamoDB adds per-query latency and read capacity costs; loading the entire table for in-memory lookups is faster than individual queries.</div>
+                <div class="explanation">For a 50MB file that changes monthly, a Lambda Layer is optimal: it's deployed with the function (no download latency on cold start), cached in the execution environment (/opt), requires no VPC or EFS infrastructure, and costs nothing beyond standard Lambda pricing. Layers support up to 250MB unzipped, easily accommodating 50MB. Monthly updates only require publishing a new layer version. Opsi B — EFS adds VPC requirements, ENI cold start overhead, and ongoing storage/transfer costs — over-engineering for a 50MB static file. Opsi C — S3 download on cold start adds 2-5 seconds of latency and requires /tmp cleanup logic — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — DynamoDB adds per-query latency and read capacity costs; loading the entire table for in-memory lookups is faster than individual queries.</div>
             </div>
         </div>
         

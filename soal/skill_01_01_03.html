@@ -34,7 +34,7 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer is configuring an AWS Glue ETL job to process 2 TB of raw CSV data from Amazon S3. The job keeps failing due to out-of-memory errors. The data has significant skew with some partitions being 100x larger than others. Which configuration changes will MOST effectively resolve this issue?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable Glue job bookmarks and increase the number of DPUs</li>
+                <li><span class="option-label">A.</span> Enable Glue job bookmarks and increase the number of DPUs and use groupFiles option</li>
                 <li><span class="option-label">B.</span> Enable Glue Auto Scaling, set --conf spark.sql.shuffle.partitions to a higher value, and use groupFiles option</li>
                 <li><span class="option-label">C.</span> Switch to Glue version 4.0 and enable serverless execution</li>
                 <li><span class="option-label">D.</span> Use a Glue Python Shell job instead of Spark ETL</li>
@@ -42,7 +42,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Auto Scaling memungkinkan Glue menyesuaikan worker secara dinamis. Meningkatkan spark.sql.shuffle.partitions mendistribusikan data skew ke lebih banyak partisi. groupFiles menggabungkan file-file kecil menjadi group yang lebih efisien sehingga mengurangi memory overhead. Opsi A (bookmarks + DPU) hanya menambah resources tapi tidak mengatasi data skew. Opsi C (versi baru) tidak langsung mengatasi OOM. Opsi D (Python Shell) tidak cocok untuk 2 TB data karena single-node processing.</div>
+                <div class="explanation">Auto Scaling memungkinkan Glue menyesuaikan worker secara dinamis. Meningkatkan spark.sql.shuffle.partitions mendistribusikan data skew ke lebih banyak partisi. groupFiles menggabungkan file-file kecil menjadi group yang lebih efisien sehingga mengurangi memory overhead. Opsi A (bookmarks + DPU) hanya menambah resources tapi tidak mengatasi data skew — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (versi baru) tidak langsung mengatasi OOM. Opsi D (Python Shell) tidak cocok untuk 2 TB data karena single-node processing.</div>
             </div>
         </div>
 
@@ -52,13 +52,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Split the files to match the number of slices in the Redshift cluster, and use COMPUPDATE OFF and STATUPDATE OFF</li>
                 <li><span class="option-label">B.</span> Change compression from gzip to LZO and increase the Redshift WLM queue timeout</li>
-                <li><span class="option-label">C.</span> Use MAXERROR 100 and ACCEPTINVCHARS to skip problematic records</li>
+                <li><span class="option-label">C.</span> Use MAXERROR 100 and ACCEPTINVCHARS to skip problematic records and use COMPUPDATE OFF and STATUPDATE OFF</li>
                 <li><span class="option-label">D.</span> Enable automatic table sorting and use FILLRECORD option</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Splitting files agar jumlahnya kelipatan dari jumlah slices memaksimalkan paralelisme COPY. Setiap slice membaca satu file secara independen. COMPUPDATE OFF melewati analisis kompresi otomatis yang memakan waktu, dan STATUPDATE OFF melewati update statistics otomatis. Keduanya bisa ditambahkan setelah initial load. Opsi B (LZO) kurang kompresi dibanding gzip tapi splitting lebih penting. Opsi C hanya error handling. Opsi D tidak mempengaruhi kecepatan loading.</div>
+                <div class="explanation">Splitting files agar jumlahnya kelipatan dari jumlah slices memaksimalkan paralelisme COPY. Setiap slice membaca satu file secara independen. COMPUPDATE OFF melewati analisis kompresi otomatis yang memakan waktu, dan STATUPDATE OFF melewati update statistics otomatis. Keduanya bisa ditambahkan setelah initial load. Opsi B (LZO) kurang kompresi dibanding gzip tapi splitting lebih penting. Opsi C hanya error handling — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D tidak mempengaruhi kecepatan loading.</div>
             </div>
         </div>
 
@@ -67,14 +67,14 @@
             <div class="question-text">A company runs a daily AWS Glue ETL job that reads from multiple S3 partitions. The job processes yesterday's data only, but the crawler detects 10,000 partitions in total. The job takes 20 minutes just to plan the query. How should the data engineer configure the job to reduce planning time?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use push-down predicates with partition filtering in the Glue DynamicFrame reader</li>
-                <li><span class="option-label">B.</span> Delete old partitions from the Glue Data Catalog</li>
+                <li><span class="option-label">B.</span> Delete old partitions from the Glue Data Catalog with partition filtering in the Glue DynamicFrame reader</li>
                 <li><span class="option-label">C.</span> Increase the number of Glue DPUs allocated to the job</li>
                 <li><span class="option-label">D.</span> Switch from DynamicFrame to native Spark DataFrame</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Push-down predicates memungkinkan Glue memfilter partisi di level Data Catalog sebelum membaca data. Dengan menentukan filter (misalnya partition_date = yesterday), Glue hanya merencanakan dan membaca partisi yang diperlukan, mengurangi planning time drastis. Opsi B menghapus metadata yang mungkin masih diperlukan. Opsi C (lebih banyak DPU) tidak mempercepat planning phase. Opsi D (Spark DataFrame) tidak menyelesaikan masalah partition pruning tanpa konfigurasi tambahan.</div>
+                <div class="explanation">Push-down predicates memungkinkan Glue memfilter partisi di level Data Catalog sebelum membaca data. Dengan menentukan filter (misalnya partition_date = yesterday), Glue hanya merencanakan dan membaca partisi yang diperlukan, mengurangi planning time drastis. Opsi B menghapus metadata yang mungkin masih diperlukan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (lebih banyak DPU) tidak mempercepat planning phase. Opsi D (Spark DataFrame) tidak menyelesaikan masalah partition pruning tanpa konfigurasi tambahan.</div>
             </div>
         </div>
 
@@ -84,13 +84,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase MaxFullLoadSubTasks to enable parallel table loading</li>
                 <li><span class="option-label">B.</span> Upgrade the replication instance to a larger instance type</li>
-                <li><span class="option-label">C.</span> Enable Multi-AZ on the replication instance</li>
+                <li><span class="option-label">C.</span> Enable Multi-AZ on the replication instance with parallel processing</li>
                 <li><span class="option-label">D.</span> Change the target endpoint from S3 to Redshift for better performance</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Karena CPU dan network utilization rendah, replication instance memiliki kapasitas tersisa. MaxFullLoadSubTasks mengontrol berapa banyak tabel yang dimuat secara paralel (default 8). Meningkatkan nilai ini akan memanfaatkan kapasitas yang tersisa untuk memuat lebih banyak tabel secara bersamaan. Opsi B (upgrade instance) tidak diperlukan karena resources belum penuh. Opsi C (Multi-AZ) untuk HA bukan performance. Opsi D mengubah arsitektur target.</div>
+                <div class="explanation">Karena CPU dan network utilization rendah, replication instance memiliki kapasitas tersisa. MaxFullLoadSubTasks mengontrol berapa banyak tabel yang dimuat secara paralel (default 8). Meningkatkan nilai ini akan memanfaatkan kapasitas yang tersisa untuk memuat lebih banyak tabel secara bersamaan. Opsi B (upgrade instance) tidak diperlukan karena resources belum penuh. Opsi C (Multi-AZ) untuk HA bukan performance — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D mengubah arsitektur target.</div>
             </div>
         </div>
 
@@ -99,14 +99,14 @@
             <div class="question-text">An analytics team runs an AWS Glue job that reads from an S3 data lake with thousands of small files (each under 1 MB). The job spends most of its time on task scheduling overhead rather than actual processing. Which Glue configuration BEST addresses this small files problem?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Set groupFiles = "inPartition" and groupSize to combine small files into larger groups</li>
-                <li><span class="option-label">B.</span> Enable job bookmarks to process only new files</li>
+                <li><span class="option-label">B.</span> Enable job bookmarks to process only new files and groupSize to combine small files into larger groups</li>
                 <li><span class="option-label">C.</span> Use recurse = True in the connection options</li>
                 <li><span class="option-label">D.</span> Set the Spark configuration spark.sql.files.maxPartitionBytes to 1 GB</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">groupFiles = "inPartition" menginstruksikan Glue untuk menggabungkan file-file kecil dalam satu partisi menjadi groups yang lebih besar sebelum memproses. groupSize menentukan ukuran target (bytes) per group. Ini mengurangi jumlah tasks yang perlu dijadwalkan secara dramatis. Opsi B (bookmarks) tidak mengatasi masalah file kecil. Opsi C (recurse) hanya untuk membaca subdirectory. Opsi D (maxPartitionBytes) adalah Spark native config yang kurang efektif dibanding Glue native groupFiles.</div>
+                <div class="explanation">groupFiles = "inPartition" menginstruksikan Glue untuk menggabungkan file-file kecil dalam satu partisi menjadi groups yang lebih besar sebelum memproses. groupSize menentukan ukuran target (bytes) per group. Ini mengurangi jumlah tasks yang perlu dijadwalkan secara dramatis. Opsi B (bookmarks) tidak mengatasi masalah file kecil — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (recurse) hanya untuk membaca subdirectory. Opsi D (maxPartitionBytes) adalah Spark native config yang kurang efektif dibanding Glue native groupFiles.</div>
             </div>
         </div>
 
@@ -132,13 +132,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Write as Parquet with Snappy compression, partitioned by region and date, with coalesce to control file sizes</li>
                 <li><span class="option-label">B.</span> Write as CSV with gzip compression, partitioned by date only</li>
-                <li><span class="option-label">C.</span> Write as JSON with no compression, partitioned by region</li>
+                <li><span class="option-label">C.</span> Write as JSON with no compression, partitioned by region and date, with coalesce to control file sizes</li>
                 <li><span class="option-label">D.</span> Write as ORC with zlib compression, no partitioning, with bucketing on region</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Parquet adalah columnar format yang optimal untuk analytical queries di Athena. Snappy compression memberikan keseimbangan baik antara rasio kompresi dan kecepatan dekompresi. Partitioning by region dan date sesuai dengan pola query yang menggunakan filter pada kolom tersebut. Coalesce mengontrol ukuran file output. Opsi B (CSV + gzip) tidak efisien untuk analytical queries. Opsi C (JSON tanpa kompresi) boros storage. Opsi D tanpa partitioning menyebabkan full scan setiap query.</div>
+                <div class="explanation">Parquet adalah columnar format yang optimal untuk analytical queries di Athena. Snappy compression memberikan keseimbangan baik antara rasio kompresi dan kecepatan dekompresi. Partitioning by region dan date sesuai dengan pola query yang menggunakan filter pada kolom tersebut. Coalesce mengontrol ukuran file output. Opsi B (CSV + gzip) tidak efisien untuk analytical queries. Opsi C (JSON tanpa kompresi) boros storage — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D tanpa partitioning menyebabkan full scan setiap query.</div>
             </div>
         </div>
 
@@ -148,13 +148,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use compute-optimized instances (c5) for core nodes with Spot Instances, memory-optimized (r5) for master node On-Demand</li>
                 <li><span class="option-label">B.</span> Use general-purpose instances (m5) On-Demand for all nodes</li>
-                <li><span class="option-label">C.</span> Use storage-optimized instances (d2) with local HDFS storage</li>
+                <li><span class="option-label">C.</span> Use storage-optimized instances (d2) with local HDFS storage for core nodes with Spot Instances</li>
                 <li><span class="option-label">D.</span> Use graviton instances (m6g) for all nodes with Reserved Instances</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk CPU-intensive transformations, compute-optimized (c5) instances memberikan performa terbaik per dollar. Menggunakan Spot Instances untuk core/task nodes mengurangi biaya hingga 90%. Master node harus On-Demand untuk stability. Opsi B (m5 On-Demand) lebih mahal tanpa keuntungan compute. Opsi C (d2 storage-optimized) untuk storage-heavy workloads, bukan CPU-intensive. Opsi D (Reserved Instances) tidak cocok untuk daily batch job yang bisa menggunakan transient cluster.</div>
+                <div class="explanation">Untuk CPU-intensive transformations, compute-optimized (c5) instances memberikan performa terbaik per dollar. Menggunakan Spot Instances untuk core/task nodes mengurangi biaya hingga 90%. Master node harus On-Demand untuk stability. Opsi B (m5 On-Demand) lebih mahal tanpa keuntungan compute. Opsi C (d2 storage-optimized) untuk storage-heavy workloads, bukan CPU-intensive — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Reserved Instances) tidak cocok untuk daily batch job yang bisa menggunakan transient cluster.</div>
             </div>
         </div>
 
@@ -163,14 +163,14 @@
             <div class="question-text">A data engineer needs to configure the Redshift COPY command to load data from S3 where some records have malformed fields. The business requires that the load job must not fail, but all error records should be logged for later investigation. Which COPY configuration achieves this?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use MAXERROR with a high value and query STL_LOAD_ERRORS after the load completes</li>
-                <li><span class="option-label">B.</span> Use IGNOREHEADER 1 and BLANKSASNULL to handle formatting issues</li>
+                <li><span class="option-label">B.</span> Use IGNOREHEADER 1 and BLANKSASNULL to handle formatting issues with a high value</li>
                 <li><span class="option-label">C.</span> Use NOLOAD option to validate records first, then load valid records only</li>
                 <li><span class="option-label">D.</span> Use ACCEPTANYDATE and TRUNCATECOLUMNS to force all records to load</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">MAXERROR menentukan jumlah error yang bisa ditoleransi sebelum COPY gagal. Dengan nilai tinggi, job akan berhasil bahkan jika ada banyak record bermasalah. STL_LOAD_ERRORS menyimpan detail setiap record yang gagal dimuat untuk investigasi. Opsi B hanya menangani format header dan null. Opsi C (NOLOAD) hanya validasi tanpa loading aktual. Opsi D memaksakan loading tapi mengubah data (truncate columns) yang bisa menyebabkan data loss tanpa logging yang jelas.</div>
+                <div class="explanation">MAXERROR menentukan jumlah error yang bisa ditoleransi sebelum COPY gagal. Dengan nilai tinggi, job akan berhasil bahkan jika ada banyak record bermasalah. STL_LOAD_ERRORS menyimpan detail setiap record yang gagal dimuat untuk investigasi. Opsi B hanya menangani format header dan null — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (NOLOAD) hanya validasi tanpa loading aktual. Opsi D memaksakan loading tapi mengubah data (truncate columns) yang bisa menyebabkan data loss tanpa logging yang jelas.</div>
             </div>
         </div>
 
@@ -179,14 +179,14 @@
             <div class="question-text">A data engineer is configuring an AWS Glue ETL job that reads from a JDBC source (Amazon RDS PostgreSQL). The source table has 1 billion rows. The default configuration reads all data through a single connection, which is too slow. Which combination of Glue JDBC configurations enables parallel reads?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Set hashfield (or hashexpression) and hashpartitions in the connection options</li>
-                <li><span class="option-label">B.</span> Set fetchsize to a larger value and enable connection pooling</li>
+                <li><span class="option-label">B.</span> Set fetchsize to a larger value and enable connection pooling and hashpartitions</li>
                 <li><span class="option-label">C.</span> Create multiple Glue jobs each reading a portion of the table using WHERE clauses</li>
                 <li><span class="option-label">D.</span> Enable Glue Auto Scaling and set worker type to G.2X</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">hashfield atau hashexpression menentukan kolom/ekspresi yang digunakan untuk mempartisi data secara paralel. hashpartitions menentukan jumlah partisi (koneksi paralel). Glue akan membuat N koneksi paralel ke database, masing-masing membaca subset data berdasarkan hash. Opsi B (fetchsize) mempercepat satu koneksi tapi tetap single-threaded. Opsi C membutuhkan manajemen manual multiple jobs. Opsi D (Auto Scaling + G.2X) menambah compute tapi tidak mengubah cara baca JDBC.</div>
+                <div class="explanation">hashfield atau hashexpression menentukan kolom/ekspresi yang digunakan untuk mempartisi data secara paralel. hashpartitions menentukan jumlah partisi (koneksi paralel). Glue akan membuat N koneksi paralel ke database, masing-masing membaca subset data berdasarkan hash. Opsi B (fetchsize) mempercepat satu koneksi tapi tetap single-threaded — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C membutuhkan manajemen manual multiple jobs. Opsi D (Auto Scaling + G.2X) menambah compute tapi tidak mengubah cara baca JDBC.</div>
             </div>
         </div>
         

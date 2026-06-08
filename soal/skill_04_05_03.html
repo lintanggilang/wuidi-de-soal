@@ -38,12 +38,12 @@
                 <li><span class="option-label">A.</span> Create IAM policies in each account that deny all actions when aws:RequestedRegion is not an EU region</li>
                 <li><span class="option-label">B.</span> Apply a Service Control Policy (SCP) at the organization root that denies all actions except for global services when aws:RequestedRegion is not in the approved EU region list</li>
                 <li><span class="option-label">C.</span> Use AWS Config rules to detect resources in non-EU regions and automatically terminate them</li>
-                <li><span class="option-label">D.</span> Disable non-EU regions in the AWS Organizations account settings for all member accounts</li>
+                <li><span class="option-label">D.</span> Disable non-EU regions in the AWS Organizations account settings for all member accounts configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">SCPs (Service Control Policies) adalah preventive controls yang berlaku untuk SEMUA principals dalam account (termasuk root user). SCP yang deny actions ketika aws:RequestedRegion tidak termasuk EU regions mencegah pembuatan resource di region yang tidak diizinkan. SCP harus mengecualikan global services (IAM, Route 53, CloudFront, dll) yang beroperasi dari us-east-1 tapi bersifat global. Opsi A (IAM policies per account) memerlukan management di setiap account dan bisa di-override oleh admin yang membuat new policies. Opsi C (Config + terminate) adalah detective control — resource sudah dibuat sebelum dihapus, menyebabkan brief data exposure. Opsi D — Anda bisa opt-in regions (yang non-default) tapi EU dan US regions adalah default regions yang tidak bisa di-disable melalui account settings.</div>
+                <div class="explanation">SCPs (Service Control Policies) adalah preventive controls yang berlaku untuk SEMUA principals dalam account (termasuk root user). SCP yang deny actions ketika aws:RequestedRegion tidak termasuk EU regions mencegah pembuatan resource di region yang tidak diizinkan. SCP harus mengecualikan global services (IAM, Route 53, CloudFront, dll) yang beroperasi dari us-east-1 tapi bersifat global. Opsi A (IAM policies per account) memerlukan management di setiap account dan bisa di-override oleh admin yang membuat new policies. Opsi C (Config + terminate) adalah detective control — resource sudah dibuat sebelum dihapus, menyebabkan brief data exposure. Opsi D — Anda bisa opt-in regions (yang non-default) tapi EU dan US regions adalah default regions yang tidak bisa di-disable melalui account settings — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -55,12 +55,12 @@
                 <li><span class="option-label">A.</span> Apply a bucket policy on the source bucket that denies s3:PutReplicationConfiguration unless the destination ARN contains an EU region</li>
                 <li><span class="option-label">B.</span> Use an SCP that denies s3:PutReplicationConfiguration when the s3:DestinationRegion condition key is not in the approved EU region list</li>
                 <li><span class="option-label">C.</span> Configure AWS Config rule s3-bucket-replication-enabled with a parameter restricting allowed destination regions</li>
-                <li><span class="option-label">D.</span> Use S3 Object Lock in Compliance mode to prevent any replication outside the current region</li>
+                <li><span class="option-label">D.</span> Use S3 Object Lock in Compliance mode to prevent any replication outside the current region with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Bucket policy dengan condition pada destination ARN adalah pendekatan paling tepat untuk mengontrol S3 replication destinations. Policy bisa menggunakan condition StringLike pada resource ARN atau StringEquals pada spesifik region identifier dalam ARN. Contoh: Deny s3:PutReplicationConfiguration kecuali arn:aws:s3:::*eu-central-1* atau *eu-west-1*. Ini mencegah konfigurasi replication ke non-EU regions. Opsi B — tidak ada condition key s3:DestinationRegion yang valid untuk SCPs terkait S3 replication. Opsi C — Config rule s3-bucket-replication-enabled memeriksa apakah replication enabled, bukan membatasi destination — ini detective bukan preventive. Opsi D — S3 Object Lock mencegah deletion/modification objek, tidak mengontrol kemana objek bisa direplikasi.</div>
+                <div class="explanation">Bucket policy dengan condition pada destination ARN adalah pendekatan paling tepat untuk mengontrol S3 replication destinations. Policy bisa menggunakan condition StringLike pada resource ARN atau StringEquals pada spesifik region identifier dalam ARN. Contoh: Deny s3:PutReplicationConfiguration kecuali arn:aws:s3:::*eu-central-1* atau *eu-west-1*. Ini mencegah konfigurasi replication ke non-EU regions. Opsi B — tidak ada condition key s3:DestinationRegion yang valid untuk SCPs terkait S3 replication. Opsi C — Config rule s3-bucket-replication-enabled memeriksa apakah replication enabled, bukan membatasi destination — ini detective bukan preventive. Opsi D — S3 Object Lock mencegah deletion/modification objek, tidak mengontrol kemana objek bisa direplikasi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -89,12 +89,12 @@
                 <li><span class="option-label">A.</span> Enable the built-in "Disallow cross-region data transfer" elective guardrail in Control Tower</li>
                 <li><span class="option-label">B.</span> Create a custom Control Tower guardrail using an SCP that denies redshift:CopyClusterSnapshot when aws:RequestedRegion is not in the approved region list</li>
                 <li><span class="option-label">C.</span> Configure the Control Tower Region deny setting to block all services in non-approved regions</li>
-                <li><span class="option-label">D.</span> Use Control Tower's detective guardrail to identify cross-region snapshots and send alerts</li>
+                <li><span class="option-label">D.</span> Use Control Tower's detective guardrail to identify cross-region snapshots and send alerts configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Control Tower mendukung custom SCPs sebagai preventive guardrails. Untuk granular control pada Redshift snapshot copying, custom SCP yang deny redshift:CopyClusterSnapshot ketika region bukan approved list memberikan precisely scoped control. Ini preventive — request akan ditolak sebelum snapshot copy dimulai. Opsi A — tidak ada built-in Control Tower guardrail dengan nama persis tersebut yang specifically covers Redshift snapshot copying. Opsi C — Region deny setting memblokir SEMUA services di non-approved regions; ini mungkin terlalu broad jika ada legitimate services yang perlu berjalan di region lain. Opsi D — detective guardrail hanya mendeteksi dan alert setelah violation terjadi, snapshot sudah ter-copy.</div>
+                <div class="explanation">Control Tower mendukung custom SCPs sebagai preventive guardrails. Untuk granular control pada Redshift snapshot copying, custom SCP yang deny redshift:CopyClusterSnapshot ketika region bukan approved list memberikan precisely scoped control. Ini preventive — request akan ditolak sebelum snapshot copy dimulai. Opsi A — tidak ada built-in Control Tower guardrail dengan nama persis tersebut yang specifically covers Redshift snapshot copying. Opsi C — Region deny setting memblokir SEMUA services di non-approved regions; ini mungkin terlalu broad jika ada legitimate services yang perlu berjalan di region lain. Opsi D — detective guardrail hanya mendeteksi dan alert setelah violation terjadi, snapshot sudah ter-copy — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -104,14 +104,14 @@
             <div class="question-text">A company uses AWS Backup to manage automated backups for their data infrastructure (RDS, DynamoDB, EFS) in eu-central-1. The compliance team discovers that AWS Backup has been configured to copy backups to us-east-1 as part of a cross-region backup strategy set up by a previous administrator. How should the data engineer prevent AWS Backup from creating copies in non-EU regions while maintaining the backup strategy for EU regions?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Modify the AWS Backup plan to remove the cross-region copy rule targeting us-east-1, and add copy rules only for eu-west-1</li>
-                <li><span class="option-label">B.</span> Apply an SCP that denies backup:CopyIntoRegion when the target region is not in the EU approved list</li>
+                <li><span class="option-label">B.</span> Apply an SCP that denies backup:CopyIntoRegion when the target region is not in the EU approved list with a condition that the destination vault ARN does not contain an EU region identifier</li>
                 <li><span class="option-label">C.</span> Modify the backup plan AND apply an SCP denying backup:StartCopyJob with a condition that the destination vault ARN does not contain an EU region identifier</li>
                 <li><span class="option-label">D.</span> Use AWS Backup Vault Lock to prevent any modification to backup copies and their destinations</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Pendekatan defense-in-depth adalah yang paling tepat: (1) Modifikasi backup plan untuk menghapus copy rule ke us-east-1 dan menambah EU destination — ini memperbaiki konfigurasi saat ini, (2) Apply SCP sebagai preventive guardrail agar tidak ada administrator yang bisa membuat cross-region copy ke non-EU di masa depan. Condition pada destination vault ARN memastikan backup copies hanya bisa dituju ke vaults di EU regions. Opsi A hanya memperbaiki konfigurasi current tapi tidak mencegah future misconfiguration. Opsi B — backup:CopyIntoRegion bukan IAM action yang valid. Opsi D — Vault Lock mencegah deletion/modification recovery points, bukan mengontrol kemana backups bisa di-copy.</div>
+                <div class="explanation">Pendekatan defense-in-depth adalah yang paling tepat: (1) Modifikasi backup plan untuk menghapus copy rule ke us-east-1 dan menambah EU destination — ini memperbaiki konfigurasi saat ini, (2) Apply SCP sebagai preventive guardrail agar tidak ada administrator yang bisa membuat cross-region copy ke non-EU di masa depan. Condition pada destination vault ARN memastikan backup copies hanya bisa dituju ke vaults di EU regions. Opsi A hanya memperbaiki konfigurasi current tapi tidak mencegah future misconfiguration. Opsi B — backup:CopyIntoRegion bukan IAM action yang valid — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Vault Lock mencegah deletion/modification recovery points, bukan mengontrol kemana backups bisa di-copy.</div>
             </div>
         </div>
 
@@ -122,13 +122,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use the managed Config rule dynamodb-table-encrypted-kms to check if tables are encrypted in approved regions only</li>
                 <li><span class="option-label">B.</span> Create a custom AWS Config rule using a Lambda function that evaluates DynamoDB table replica regions against an approved region list and marks tables with non-EU replicas as NON_COMPLIANT</li>
-                <li><span class="option-label">C.</span> Use CloudTrail to log CreateTable events and create a CloudWatch alarm for non-EU region activities</li>
+                <li><span class="option-label">C.</span> Use CloudTrail to log CreateTable events and create a CloudWatch alarm for non-EU region activities with non-EU replicas as NON_COMPLIANT and marks tables with non-EU replicas as NON_COMPLIANT</li>
                 <li><span class="option-label">D.</span> Use the managed Config rule dynamodb-autoscaling-enabled and check its regional configuration</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Custom AWS Config rule dengan Lambda function adalah solusi paling tepat untuk memeriksa DynamoDB Global Tables replica regions. Lambda function bisa menggunakan DynamoDB DescribeTable API untuk mendapatkan daftar replica regions, lalu membandingkan dengan approved region list. Jika ada replica di region yang tidak diizinkan, function mengembalikan NON_COMPLIANT. Config rule ini berjalan periodic atau saat configuration change terdeteksi. Opsi A — dynamodb-table-encrypted-kms memeriksa enkripsi, bukan replica regions. Opsi C — CloudTrail + CloudWatch bisa mendeteksi CreateTableReplica calls tapi tidak memberikan continuous compliance evaluation seperti Config; juga tidak memeriksa existing state. Opsi D — dynamodb-autoscaling-enabled tidak ada hubungannya dengan regional replication.</div>
+                <div class="explanation">Custom AWS Config rule dengan Lambda function adalah solusi paling tepat untuk memeriksa DynamoDB Global Tables replica regions. Lambda function bisa menggunakan DynamoDB DescribeTable API untuk mendapatkan daftar replica regions, lalu membandingkan dengan approved region list. Jika ada replica di region yang tidak diizinkan, function mengembalikan NON_COMPLIANT. Config rule ini berjalan periodic atau saat configuration change terdeteksi. Opsi A — dynamodb-table-encrypted-kms memeriksa enkripsi, bukan replica regions. Opsi C — CloudTrail + CloudWatch bisa mendeteksi CreateTableReplica calls tapi tidak memberikan continuous compliance evaluation seperti Config; juga tidak memeriksa existing state — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — dynamodb-autoscaling-enabled tidak ada hubungannya dengan regional replication.</div>
             </div>
         </div>
 
@@ -140,12 +140,12 @@
                 <li><span class="option-label">A.</span> Yes, S3 Object Lock Compliance mode prevents cross-region replication and movement of objects</li>
                 <li><span class="option-label">B.</span> No, S3 Object Lock protects against deletion/modification but does NOT prevent replication. Use SCPs to deny s3:ReplicateObject when the destination is not ap-southeast-2, combined with bucket policies restricting PutReplicationConfiguration</li>
                 <li><span class="option-label">C.</span> Yes, S3 Object Lock Legal Hold prevents any operation including replication on the objects</li>
-                <li><span class="option-label">D.</span> No, use S3 Glacier Vault Lock instead, which prevents cross-region movement of archived data</li>
+                <li><span class="option-label">D.</span> No, use S3 Glacier Vault Lock instead, which prevents cross-region movement of archived data with bucket policies restricting PutReplicationConfiguration</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">S3 Object Lock (baik Compliance maupun Governance mode) melindungi objects dari DELETION dan OVERWRITE selama retention period — BUKAN dari replication atau copying. Objects yang locked tetap bisa direplikasi ke region lain jika replication rule dikonfigurasi. Untuk mencegah cross-region replication, diperlukan: (1) SCP yang deny s3:ReplicateObject di region yang tidak diizinkan, (2) Bucket policy yang mencegah PutReplicationConfiguration ke non-approved destinations. Opsi A salah — Object Lock tidak mencegah replication. Opsi C salah — Legal Hold juga hanya mencegah deletion, bukan replication. Opsi D — Glacier Vault Lock juga tentang deletion protection untuk archive, bukan cross-region movement prevention.</div>
+                <div class="explanation">S3 Object Lock (baik Compliance maupun Governance mode) melindungi objects dari DELETION dan OVERWRITE selama retention period — BUKAN dari replication atau copying. Objects yang locked tetap bisa direplikasi ke region lain jika replication rule dikonfigurasi. Untuk mencegah cross-region replication, diperlukan: (1) SCP yang deny s3:ReplicateObject di region yang tidak diizinkan, (2) Bucket policy yang mencegah PutReplicationConfiguration ke non-approved destinations. Opsi A salah — Object Lock tidak mencegah replication. Opsi C salah — Legal Hold juga hanya mencegah deletion, bukan replication. Opsi D — Glacier Vault Lock juga tentang deletion protection untuk archive, bukan cross-region movement prevention — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -156,13 +156,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create the SCP with a Deny effect and add a NotAction list containing global service actions (iam:*, organizations:*, route53:*, cloudfront:*, etc.) so these services are excluded from the region restriction</li>
                 <li><span class="option-label">B.</span> Create two SCPs: one allowing all actions in EU regions, and another explicitly allowing global services in us-east-1</li>
-                <li><span class="option-label">C.</span> Add a condition to the SCP that checks if the service is a global service before applying the region restriction</li>
+                <li><span class="option-label">C.</span> Add a condition to the SCP that checks if the service is a global service before applying the region restriction with a Deny effect</li>
                 <li><span class="option-label">D.</span> Use StringNotEquals on aws:RequestedRegion with only the non-EU regions listed in the condition, rather than allowed regions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Pattern yang benar untuk region-restriction SCP adalah menggunakan NotAction (bukan Action) pada statement Deny. NotAction berisi daftar global service actions yang harus dikecualikan dari restriction. Statement menjadi: "Deny everything NOT in this list UNLESS region is in approved list." Global services yang perlu di-exclude: iam:*, sts:*, organizations:*, route53:*, cloudfront:*, support:*, budgets:*, waf:*, dll. Opsi B — SCPs are deny-only effective (Allow in SCP hanya membuka ceiling, tidak grant); dua SCP terpisah tidak akan menghasilkan efek yang diinginkan karena Deny tetap berlaku. Opsi C — tidak ada condition key yang mengidentifikasi apakah service "global" atau regional. Opsi D — pendekatan ini bisa bekerja tapi tidak menyelesaikan masalah global services karena mereka tetap di us-east-1.</div>
+                <div class="explanation">Pattern yang benar untuk region-restriction SCP adalah menggunakan NotAction (bukan Action) pada statement Deny. NotAction berisi daftar global service actions yang harus dikecualikan dari restriction. Statement menjadi: "Deny everything NOT in this list UNLESS region is in approved list." Global services yang perlu di-exclude: iam:*, sts:*, organizations:*, route53:*, cloudfront:*, support:*, budgets:*, waf:*, dll. Opsi B — SCPs are deny-only effective (Allow in SCP hanya membuka ceiling, tidak grant); dua SCP terpisah tidak akan menghasilkan efek yang diinginkan karena Deny tetap berlaku. Opsi C — tidak ada condition key yang mengidentifikasi apakah service "global" atau regional — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — pendekatan ini bisa bekerja tapi tidak menyelesaikan masalah global services karena mereka tetap di us-east-1.</div>
             </div>
         </div>
 
@@ -171,7 +171,7 @@
             <div class="question-number">9</div>
             <div class="question-text">An organization needs to implement a comprehensive data residency solution that prevents data from leaving the EU across ALL data services (S3, RDS, Redshift, DynamoDB, EBS, EFS). They are concerned about both explicit copying (replication, snapshots) and implicit data movement (Lambda processing in other regions accessing EU data). Which layered approach provides the MOST comprehensive protection?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Apply a single SCP restricting aws:RequestedRegion to EU regions for all services</li>
+                <li><span class="option-label">A.</span> Apply a single SCP restricting aws:RequestedRegion to EU regions for all services with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> SCP restricting aws:RequestedRegion to EU + VPC endpoint policies denying cross-region API calls + S3 bucket policies restricting replication destinations + AWS Config rules for continuous compliance monitoring</li>
                 <li><span class="option-label">C.</span> Use AWS Control Tower Region deny guardrail combined with detective Config rules</li>
                 <li><span class="option-label">D.</span> Enable AWS Artifact agreements for GDPR and rely on AWS's contractual guarantee that data stays in specified regions</li>
@@ -179,7 +179,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Defense-in-depth approach memerlukan multiple layers: (1) SCP sebagai organizational-wide preventive guardrail untuk region restriction, (2) VPC endpoint policies menambah network-level control — traffic ke AWS services bisa dibatasi hanya ke EU region endpoints, mencegah Lambda atau EC2 dari calling APIs di non-EU regions, (3) S3 bucket policies sebagai resource-level control spesifik untuk replication, (4) AWS Config rules sebagai detective control untuk continuous compliance verification. Setiap layer menangani attack vector berbeda. Opsi A — single SCP mencakup banyak tapi tidak menangani network-level implicit access atau resource-specific configurations. Opsi C — kurang granular dibanding opsi B karena tidak mencakup VPC endpoint policies. Opsi D — contractual agreement bukan technical control; tidak mencegah misconfiguration oleh users.</div>
+                <div class="explanation">Defense-in-depth approach memerlukan multiple layers: (1) SCP sebagai organizational-wide preventive guardrail untuk region restriction, (2) VPC endpoint policies menambah network-level control — traffic ke AWS services bisa dibatasi hanya ke EU region endpoints, mencegah Lambda atau EC2 dari calling APIs di non-EU regions, (3) S3 bucket policies sebagai resource-level control spesifik untuk replication, (4) AWS Config rules sebagai detective control untuk continuous compliance verification. Setiap layer menangani attack vector berbeda. Opsi A — single SCP mencakup banyak tapi tidak menangani network-level implicit access atau resource-specific configurations — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — kurang granular dibanding opsi B karena tidak mencakup VPC endpoint policies. Opsi D — contractual agreement bukan technical control; tidak mencegah misconfiguration oleh users.</div>
             </div>
         </div>
 
@@ -190,13 +190,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure AWS Config automatic remediation using SSM Automation document that calls S3 DeleteBucketReplication API and then deletes objects in the destination bucket</li>
                 <li><span class="option-label">B.</span> Configure AWS Config automatic remediation to disable the replication rule only, then use a separate scheduled Lambda to identify and delete already-replicated objects in the unauthorized region with appropriate approval workflow</li>
-                <li><span class="option-label">C.</span> Use Config manual remediation to prevent accidental deletion of 500 TB of potentially needed data</li>
+                <li><span class="option-label">C.</span> Use Config manual remediation to prevent accidental deletion of 500 TB of potentially needed data with appropriate approval workflow</li>
                 <li><span class="option-label">D.</span> Configure EventBridge to detect the Config NON_COMPLIANT finding and trigger Step Functions that handles both remediation steps with error handling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Remediation harus dilakukan secara bertahap dan dengan risk management: (1) Immediate automated remediation: disable replication rule untuk STOP ongoing data transfer ke unauthorized region — ini urgent dan low-risk. (2) Deleting 500 TB of already-replicated data memerlukan careful handling — approval workflow diperlukan karena: data mungkin masih diakses, deletion 500 TB memakan waktu, perlu confirm tidak ada dependencies. Automated deletion tanpa approval untuk data skala besar terlalu berisiko. Opsi A — automatically deleting 500 TB tanpa approval workflow terlalu dangerous. Opsi C — manual remediation untuk step 1 (disabling replication) terlalu lambat karena data terus ter-replicate selama menunggu manual action. Opsi D — bisa bekerja tapi over-engineering untuk step 1 dan tetap tidak seharusnya auto-delete tanpa approval.</div>
+                <div class="explanation">Remediation harus dilakukan secara bertahap dan dengan risk management: (1) Immediate automated remediation: disable replication rule untuk STOP ongoing data transfer ke unauthorized region — ini urgent dan low-risk. (2) Deleting 500 TB of already-replicated data memerlukan careful handling — approval workflow diperlukan karena: data mungkin masih diakses, deletion 500 TB memakan waktu, perlu confirm tidak ada dependencies. Automated deletion tanpa approval untuk data skala besar terlalu berisiko. Opsi A — automatically deleting 500 TB tanpa approval workflow terlalu dangerous. Opsi C — manual remediation untuk step 1 (disabling replication) terlalu lambat karena data terus ter-replicate selama menunggu manual action — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — bisa bekerja tapi over-engineering untuk step 1 dan tetap tidak seharusnya auto-delete tanpa approval.</div>
             </div>
         </div>
         

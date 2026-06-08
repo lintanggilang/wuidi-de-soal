@@ -36,14 +36,14 @@
             <div class="question-text">A data engineering team stores CloudTrail logs in S3 partitioned by year/month/day. They need to query these logs to investigate a security incident that occurred on a specific date. The CloudTrail log bucket contains 5 years of data totaling 50 TB. The team wants to minimize query costs. Which Athena configuration provides the MOST cost-effective querying?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create an Athena table with Hive-style partitioning matching the S3 path structure and use WHERE clauses on partition columns</li>
-                <li><span class="option-label">B.</span> Create an Athena table without partitions and use the built-in CloudTrail SerDe to filter by eventTime</li>
+                <li><span class="option-label">B.</span> Create an Athena table without partitions and use the built-in CloudTrail SerDe to filter by eventTime with date-type partition keys matching the S3 path pattern</li>
                 <li><span class="option-label">C.</span> Use Athena partition projection with date-type partition keys matching the S3 path pattern to avoid partition metadata management</li>
                 <li><span class="option-label">D.</span> Create a CTAS (Create Table As Select) query to copy the relevant day's data to a new table in Parquet format, then query that table</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Partition projection menghilangkan kebutuhan untuk menjalankan MSCK REPAIR TABLE atau menambah partisi secara manual, yang sangat penting untuk data yang terus bertambah setiap hari. Dengan date-type projection matching path pattern (s3://bucket/AWSLogs/account/CloudTrail/region/yyyy/mm/dd/), Athena secara otomatis menghitung partisi tanpa metadata calls ke Glue catalog. Query dengan WHERE date = '2024-03-15' hanya scan data hari itu (~27 GB vs 50 TB), sangat mengurangi biaya. Opsi A berfungsi tapi memerlukan maintenance partisi manual. Opsi B tanpa partisi akan scan seluruh 50 TB (sangat mahal). Opsi D (CTAS) memerlukan scan full data terlebih dahulu dan menambah biaya storage.</div>
+                <div class="explanation">Partition projection menghilangkan kebutuhan untuk menjalankan MSCK REPAIR TABLE atau menambah partisi secara manual, yang sangat penting untuk data yang terus bertambah setiap hari. Dengan date-type projection matching path pattern (s3://bucket/AWSLogs/account/CloudTrail/region/yyyy/mm/dd/), Athena secara otomatis menghitung partisi tanpa metadata calls ke Glue catalog. Query dengan WHERE date = '2024-03-15' hanya scan data hari itu (~27 GB vs 50 TB), sangat mengurangi biaya. Opsi A berfungsi tapi memerlukan maintenance partisi manual. Opsi B tanpa partisi akan scan seluruh 50 TB (sangat mahal) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (CTAS) memerlukan scan full data terlebih dahulu dan menambah biaya storage.</div>
             </div>
         </div>
 
@@ -55,12 +55,12 @@
                 <li><span class="option-label">A.</span> Use Amazon Athena to query exported Lambda logs in S3 with a GROUP BY function name</li>
                 <li><span class="option-label">B.</span> Use CloudWatch Logs Insights to query multiple log groups simultaneously with a stats command grouping by function name</li>
                 <li><span class="option-label">C.</span> Use Amazon OpenSearch Service with a pre-built Kibana dashboard showing Lambda error rates</li>
-                <li><span class="option-label">D.</span> Use CloudWatch Metrics to view the Errors metric filtered by FunctionName dimension</li>
+                <li><span class="option-label">D.</span> Use CloudWatch Metrics to view the Errors metric filtered by FunctionName dimension with a stats command grouping by function name</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">CloudWatch Logs Insights dapat query hingga 50 log groups secara bersamaan dan memberikan hasil dalam hitungan detik untuk data recent. Query: `filter @message like /ERROR/ | stats count(*) as errorCount by @logGroup | sort errorCount desc | limit 10` akan memberikan top 10 functions dengan error terbanyak. Mendukung wildcard pattern untuk log group selection. Opsi A (Athena) memerlukan export ke S3 terlebih dahulu dan tidak memberikan hasil real-time. Opsi C (OpenSearch) memerlukan setup dan ingestion pipeline yang sudah berjalan — bukan solusi "quick". Opsi D (CloudWatch Metrics) menunjukkan error count per function tapi tidak memberikan ranking top-N dalam satu query dan memerlukan navigasi manual.</div>
+                <div class="explanation">CloudWatch Logs Insights dapat query hingga 50 log groups secara bersamaan dan memberikan hasil dalam hitungan detik untuk data recent. Query: `filter @message like /ERROR/ | stats count(*) as errorCount by @logGroup | sort errorCount desc | limit 10` akan memberikan top 10 functions dengan error terbanyak. Mendukung wildcard pattern untuk log group selection. Opsi A (Athena) memerlukan export ke S3 terlebih dahulu dan tidak memberikan hasil real-time. Opsi C (OpenSearch) memerlukan setup dan ingestion pipeline yang sudah berjalan — bukan solusi "quick". Opsi D (CloudWatch Metrics) menunjukkan error count per function tapi tidak memberikan ranking top-N dalam satu query dan memerlukan navigasi manual — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -86,7 +86,7 @@
             <div class="question-number">4</div>
             <div class="question-text">A data engineer writes the following CloudWatch Logs Insights query to analyze API Gateway access logs but gets no results despite logs being present in the log group. What is the MOST likely issue?<br><br><code>fields @timestamp, @message | filter status >= 500 | stats count(*) by bin(5m)</code></div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The bin() function requires a time field parameter — it should be bin(@timestamp, 5m)</li>
+                <li><span class="option-label">A.</span> The bin() function requires a time field parameter — it should be bin(@timestamp, 5m) configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> The field "status" needs to be parsed from the log message first using the parse command since API Gateway logs store it as part of a JSON or text string</li>
                 <li><span class="option-label">C.</span> CloudWatch Logs Insights does not support the >= comparison operator for string fields</li>
                 <li><span class="option-label">D.</span> The stats command cannot be used after a filter command — the order must be reversed</li>
@@ -94,7 +94,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">API Gateway access logs, jika dalam format custom atau CLF, menyimpan status code sebagai bagian dari pesan log. CloudWatch Logs Insights memerlukan `parse` command untuk mengekstrak fields dari log messages yang tidak dalam format JSON yang otomatis di-discover. Contoh: `parse @message "* * * *" as ip, method, path, status | filter status >= 500`. Untuk JSON logs, fields otomatis tersedia tapi harus direferensikan dengan prefix yang benar. Opsi A salah — `bin(5m)` adalah syntax valid yang menggunakan @timestamp secara implisit. Opsi C salah — >= operator bekerja setelah field di-parse dengan benar. Opsi D salah — filter sebelum stats adalah urutan yang benar dan valid.</div>
+                <div class="explanation">API Gateway access logs, jika dalam format custom atau CLF, menyimpan status code sebagai bagian dari pesan log. CloudWatch Logs Insights memerlukan `parse` command untuk mengekstrak fields dari log messages yang tidak dalam format JSON yang otomatis di-discover. Contoh: `parse @message "* * * *" as ip, method, path, status | filter status >= 500`. Untuk JSON logs, fields otomatis tersedia tapi harus direferensikan dengan prefix yang benar. Opsi A salah — `bin(5m)` adalah syntax valid yang menggunakan @timestamp secara implisit — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah — >= operator bekerja setelah field di-parse dengan benar. Opsi D salah — filter sebelum stats adalah urutan yang benar dan valid.</div>
             </div>
         </div>
 
@@ -106,12 +106,12 @@
                 <li><span class="option-label">A.</span> Use Amazon OpenSearch Service for all three log types with index lifecycle management for cost optimization</li>
                 <li><span class="option-label">B.</span> VPC Flow Logs → Athena (S3 with Parquet), Application logs → CloudWatch Logs Insights, CloudTrail → CloudTrail Lake</li>
                 <li><span class="option-label">C.</span> VPC Flow Logs → Athena (S3 with partitioned Parquet), Application logs → OpenSearch Service, CloudTrail → Athena with partition projection</li>
-                <li><span class="option-label">D.</span> Use CloudWatch Logs Insights for all three log types since they all originate from AWS services</li>
+                <li><span class="option-label">D.</span> Use CloudWatch Logs Insights for all three log types since they all originate from AWS services with partitioned Parquet)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Solusi optimal memilih tool berdasarkan volume, frekuensi query, dan latency requirement: (1) VPC Flow Logs 500 GB/day yang di-query weekly cocok untuk Athena + S3 Parquet — biaya storage rendah dan bayar per query, partisi mengurangi scan. (2) Application logs 50 GB/day dengan interactive queries multiple times/day cocok untuk OpenSearch yang memberikan sub-second latency dan rich dashboards. (3) CloudTrail 10 GB/day yang jarang di-query cocok untuk Athena — biaya sangat rendah karena jarang query. Opsi A (OpenSearch untuk semua) sangat mahal untuk 500 GB/day VPC logs yang jarang diquery. Opsi B bisa bekerja tapi CloudWatch Logs Insights kurang ideal untuk 50 GB/day interactive analysis dan CloudTrail Lake mahal untuk occasional queries. Opsi D — CloudWatch Logs Insights memiliki biaya ingestion tinggi untuk 500 GB/day.</div>
+                <div class="explanation">Solusi optimal memilih tool berdasarkan volume, frekuensi query, dan latency requirement: (1) VPC Flow Logs 500 GB/day yang di-query weekly cocok untuk Athena + S3 Parquet — biaya storage rendah dan bayar per query, partisi mengurangi scan. (2) Application logs 50 GB/day dengan interactive queries multiple times/day cocok untuk OpenSearch yang memberikan sub-second latency dan rich dashboards. (3) CloudTrail 10 GB/day yang jarang di-query cocok untuk Athena — biaya sangat rendah karena jarang query. Opsi A (OpenSearch untuk semua) sangat mahal untuk 500 GB/day VPC logs yang jarang diquery. Opsi B bisa bekerja tapi CloudWatch Logs Insights kurang ideal untuk 50 GB/day interactive analysis dan CloudTrail Lake mahal untuk occasional queries. Opsi D — CloudWatch Logs Insights memiliki biaya ingestion tinggi untuk 500 GB/day — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -156,13 +156,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> CloudWatch Metrics with high-resolution custom metrics and dimension filtering</li>
                 <li><span class="option-label">B.</span> CloudWatch Contributor Insights with rules matching error status codes and grouping by endpoint, IP, and user agent</li>
-                <li><span class="option-label">C.</span> CloudWatch Logs Insights with stats command and sort by count descending</li>
+                <li><span class="option-label">C.</span> CloudWatch Logs Insights with stats command and sort by count descending and grouping by endpoint, IP, and user agent</li>
                 <li><span class="option-label">D.</span> CloudWatch Anomaly Detection to identify unusual patterns in error rates per dimension</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">CloudWatch Contributor Insights dirancang khusus untuk top-N analysis secara real-time. Rules dapat dikonfigurasi untuk memfilter log events (misalnya status >= 500) dan mengelompokkan berdasarkan field keys (endpoint, sourceIP, userAgent). Dashboard secara otomatis menampilkan top contributors yang berubah secara real-time. Opsi A (custom metrics) memerlukan pre-aggregation dan tidak memberikan dynamic top-N ranking. Opsi C (Logs Insights) bukan real-time — setiap query adalah point-in-time dan harus dijalankan ulang secara manual. Opsi D (Anomaly Detection) mendeteksi deviasi dari baseline tapi tidak dirancang untuk ranking top contributors.</div>
+                <div class="explanation">CloudWatch Contributor Insights dirancang khusus untuk top-N analysis secara real-time. Rules dapat dikonfigurasi untuk memfilter log events (misalnya status >= 500) dan mengelompokkan berdasarkan field keys (endpoint, sourceIP, userAgent). Dashboard secara otomatis menampilkan top contributors yang berubah secara real-time. Opsi A (custom metrics) memerlukan pre-aggregation dan tidak memberikan dynamic top-N ranking. Opsi C (Logs Insights) bukan real-time — setiap query adalah point-in-time dan harus dijalankan ulang secara manual — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Anomaly Detection) mendeteksi deviasi dari baseline tapi tidak dirancang untuk ranking top contributors.</div>
             </div>
         </div>
 
@@ -173,13 +173,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Migrate all logs from OpenSearch to CloudWatch Logs Insights to eliminate cluster management costs</li>
                 <li><span class="option-label">B.</span> Keep security and application logs in OpenSearch (3 TB), move infrastructure logs to S3 and query with Athena monthly</li>
-                <li><span class="option-label">C.</span> Reduce OpenSearch instance sizes and enable UltraWarm for all data older than 1 hour</li>
+                <li><span class="option-label">C.</span> Reduce OpenSearch instance sizes and enable UltraWarm for all data older than 1 hour with Athena monthly</li>
                 <li><span class="option-label">D.</span> Replace OpenSearch entirely with Amazon Managed Grafana querying CloudWatch metrics</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Infrastructure logs (7 TB) yang hanya di-query monthly merupakan 70% dari active data tapi jarang diakses. Memindahkannya ke S3 (biaya ~$0.023/GB/month) dan query dengan Athena ($5/TB scanned) monthly jauh lebih murah dari menyimpan di OpenSearch hot nodes. Mengecilkan OpenSearch cluster dari 10 TB ke 3 TB memberikan penghematan signifikan pada instance costs. Opsi A (CloudWatch Logs Insights) akan sangat mahal untuk 10 TB data ingestion. Opsi C (UltraWarm setelah 1 jam) terlalu agresif dan membuat interactive queries lambat untuk security investigation. Opsi D (Grafana + CloudWatch Metrics) kehilangan kemampuan full log analysis — metrics bukan pengganti log search.</div>
+                <div class="explanation">Infrastructure logs (7 TB) yang hanya di-query monthly merupakan 70% dari active data tapi jarang diakses. Memindahkannya ke S3 (biaya ~$0.023/GB/month) dan query dengan Athena ($5/TB scanned) monthly jauh lebih murah dari menyimpan di OpenSearch hot nodes. Mengecilkan OpenSearch cluster dari 10 TB ke 3 TB memberikan penghematan signifikan pada instance costs. Opsi A (CloudWatch Logs Insights) akan sangat mahal untuk 10 TB data ingestion. Opsi C (UltraWarm setelah 1 jam) terlalu agresif dan membuat interactive queries lambat untuk security investigation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Grafana + CloudWatch Metrics) kehilangan kemampuan full log analysis — metrics bukan pengganti log search.</div>
             </div>
         </div>
 

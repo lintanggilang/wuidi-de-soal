@@ -36,14 +36,14 @@
             <div class="question-text">A data engineering team stores 5 TB of sales transaction data in Amazon S3 as Parquet files. Analysts primarily query this data using Amazon Athena with filters on transaction_date and region. Current queries scan the entire dataset and take over 10 minutes. The team needs to reduce query time and cost. Which S3 partitioning strategy provides the MOST effective optimization?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Partition by s3://bucket/sales/year={yyyy}/month={MM}/day={dd}/region={region}/</li>
-                <li><span class="option-label">B.</span> Partition by s3://bucket/sales/region={region}/year={yyyy}/</li>
+                <li><span class="option-label">B.</span> Partition by s3://bucket/sales/region={region}/year={yyyy}/ with native S3 integration</li>
                 <li><span class="option-label">C.</span> Partition by s3://bucket/sales/transaction_id={id}/</li>
                 <li><span class="option-label">D.</span> Store all data in a single prefix with Parquet row group filtering</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Partitioning berdasarkan year/month/day/region adalah strategi optimal karena sesuai dengan pola query yang menggunakan filter transaction_date dan region. Hierarki date-first memungkinkan partition pruning yang efektif karena date range queries sangat umum. Opsi B menempatkan region di level pertama, yang kurang optimal jika date queries lebih sering. Opsi C (partition by transaction_id) menghasilkan terlalu banyak partisi kecil (high cardinality) yang justru menurunkan performa. Opsi D tanpa partitioning akan selalu melakukan full scan.</div>
+                <div class="explanation">Partitioning berdasarkan year/month/day/region adalah strategi optimal karena sesuai dengan pola query yang menggunakan filter transaction_date dan region. Hierarki date-first memungkinkan partition pruning yang efektif karena date range queries sangat umum. Opsi B menempatkan region di level pertama, yang kurang optimal jika date queries lebih sering — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (partition by transaction_id) menghasilkan terlalu banyak partisi kecil (high cardinality) yang justru menurunkan performa. Opsi D tanpa partitioning akan selalu melakukan full scan.</div>
             </div>
         </div>
 
@@ -70,14 +70,14 @@
             <div class="question-text">A data engineer is optimizing a DynamoDB table that stores IoT sensor readings. The table has a partition key of device_id and sort key of timestamp. Analysts frequently need to query readings by sensor_type across all devices for a specific time range. Current queries require full table scans. Which indexing strategy resolves this access pattern?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a Global Secondary Index (GSI) with sensor_type as partition key and timestamp as sort key</li>
-                <li><span class="option-label">B.</span> Create a Local Secondary Index (LSI) with sensor_type as the sort key</li>
+                <li><span class="option-label">B.</span> Create a Local Secondary Index (LSI) with sensor_type as the sort key and timestamp as sort key</li>
                 <li><span class="option-label">C.</span> Add a Global Secondary Index (GSI) with timestamp as partition key and sensor_type as sort key</li>
                 <li><span class="option-label">D.</span> Modify the base table's partition key to sensor_type</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">GSI dengan sensor_type sebagai partition key dan timestamp sebagai sort key memungkinkan query efisien berdasarkan sensor_type dengan time range filter tanpa scan seluruh tabel. GSI memberikan access pattern yang berbeda dari base table. Opsi B (LSI) tidak bisa digunakan karena LSI harus memiliki partition key yang sama dengan base table (device_id), sehingga tetap perlu query per device. Opsi C menggunakan timestamp sebagai partition key yang akan menghasilkan hot partitions. Opsi D mengubah base table akan merusak access pattern existing.</div>
+                <div class="explanation">GSI dengan sensor_type sebagai partition key dan timestamp sebagai sort key memungkinkan query efisien berdasarkan sensor_type dengan time range filter tanpa scan seluruh tabel. GSI memberikan access pattern yang berbeda dari base table. Opsi B (LSI) tidak bisa digunakan karena LSI harus memiliki partition key yang sama dengan base table (device_id), sehingga tetap perlu query per device — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C menggunakan timestamp sebagai partition key yang akan menghasilkan hot partitions. Opsi D mengubah base table akan merusak access pattern existing.</div>
             </div>
         </div>
 
@@ -86,7 +86,7 @@
             <div class="question-number">4</div>
             <div class="question-text">A data lake team is converting CSV files to Apache Parquet format for storage in S3. The dataset contains a mix of columns: 5 numeric columns frequently used for aggregations, 3 high-cardinality string columns, and 2 timestamp columns. They need to choose the optimal compression codec. Which codec selection strategy maximizes both compression ratio and query performance for this analytical workload?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use Gzip compression for all columns to maximize compression ratio</li>
+                <li><span class="option-label">A.</span> Use Gzip compression for all columns to maximize compression ratio and fast decompression suitable for analytical queries</li>
                 <li><span class="option-label">B.</span> Use Snappy compression for all columns to maximize decompression speed</li>
                 <li><span class="option-label">C.</span> Use ZSTD compression which provides a balance of high compression ratio and fast decompression suitable for analytical queries</li>
                 <li><span class="option-label">D.</span> Use LZO compression for all columns as it provides the fastest read performance</li>
@@ -94,7 +94,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">ZSTD (Zstandard) memberikan keseimbangan terbaik antara compression ratio yang tinggi (mendekati Gzip) dan kecepatan decompression yang cepat (mendekati Snappy). Untuk analytical workload dimana data dibaca berulang kali, ZSTD mengurangi storage cost sekaligus mempertahankan query performance. Opsi A (Gzip) memiliki compression ratio tertinggi tapi decompression yang lambat, meningkatkan query latency. Opsi B (Snappy) tercepat untuk decompress tapi compression ratio lebih rendah, meningkatkan scan volume dan cost. Opsi D (LZO) sudah less common dan tidak optimal dibandingkan ZSTD.</div>
+                <div class="explanation">ZSTD (Zstandard) memberikan keseimbangan terbaik antara compression ratio yang tinggi (mendekati Gzip) dan kecepatan decompression yang cepat (mendekati Snappy). Untuk analytical workload dimana data dibaca berulang kali, ZSTD mengurangi storage cost sekaligus mempertahankan query performance. Opsi A (Gzip) memiliki compression ratio tertinggi tapi decompression yang lambat, meningkatkan query latency — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi B (Snappy) tercepat untuk decompress tapi compression ratio lebih rendah, meningkatkan scan volume dan cost. Opsi D (LZO) sudah less common dan tidak optimal dibandingkan ZSTD.</div>
             </div>
         </div>
 
@@ -105,13 +105,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase the Athena DPU count to process more files in parallel</li>
                 <li><span class="option-label">B.</span> Compact small files into larger files targeting 128-512 MB per file using AWS Glue or an S3DistCp job</li>
-                <li><span class="option-label">C.</span> Switch from Parquet to CSV format which handles small files better</li>
+                <li><span class="option-label">C.</span> Switch from Parquet to CSV format which handles small files better with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Add more partition levels to distribute files across more directories</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Small file problem adalah masalah umum di data lakes. Setiap file memerlukan overhead untuk opening, reading metadata, dan closing. Menggabungkan file kecil menjadi file 128-512 MB mengurangi jumlah file operations secara drastis dan memungkinkan parallel processing yang lebih efisien. Opsi A (lebih banyak DPU) meningkatkan biaya tanpa menyelesaikan root cause — overhead per-file tetap ada. Opsi C (CSV) justru lebih buruk karena kehilangan columnar benefits. Opsi D (lebih banyak partisi) akan memperburuk masalah dengan lebih banyak directory listings.</div>
+                <div class="explanation">Small file problem adalah masalah umum di data lakes. Setiap file memerlukan overhead untuk opening, reading metadata, dan closing. Menggabungkan file kecil menjadi file 128-512 MB mengurangi jumlah file operations secara drastis dan memungkinkan parallel processing yang lebih efisien. Opsi A (lebih banyak DPU) meningkatkan biaya tanpa menyelesaikan root cause — overhead per-file tetap ada. Opsi C (CSV) justru lebih buruk karena kehilangan columnar benefits — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (lebih banyak partisi) akan memperburuk masalah dengan lebih banyak directory listings.</div>
             </div>
         </div>
 
@@ -140,12 +140,12 @@
                 <li><span class="option-label">A.</span> Create separate partitions for latitude ranges and longitude ranges in addition to date</li>
                 <li><span class="option-label">B.</span> Apply Z-ordering (space-filling curve) on latitude, longitude, and timestamp columns to co-locate related data</li>
                 <li><span class="option-label">C.</span> Use Parquet row group filtering with min/max statistics on lat/long columns</li>
-                <li><span class="option-label">D.</span> Implement bucketing on a geohash column derived from latitude and longitude</li>
+                <li><span class="option-label">D.</span> Implement bucketing on a geohash column derived from latitude and longitude and timestamp columns to co-locate related data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Z-ordering menggunakan space-filling curves untuk memetakan data multi-dimensi ke satu dimensi sambil mempertahankan locality. Ini memungkinkan data yang dekat dalam multiple dimensions (lat, long, timestamp) juga dekat secara fisik di storage, sehingga file pruning efektif untuk semua kombinasi filter. Opsi A (separate partitions) menyebabkan partition explosion karena kombinasi ranges yang banyak. Opsi C (row group min/max) membantu tapi tanpa Z-ordering, data mungkin tersebar acak sehingga min/max ranges overlap. Opsi D (geohash bucketing) hanya membantu spatial queries tapi tidak mengoptimalkan temporal dimension secara bersamaan.</div>
+                <div class="explanation">Z-ordering menggunakan space-filling curves untuk memetakan data multi-dimensi ke satu dimensi sambil mempertahankan locality. Ini memungkinkan data yang dekat dalam multiple dimensions (lat, long, timestamp) juga dekat secara fisik di storage, sehingga file pruning efektif untuk semua kombinasi filter. Opsi A (separate partitions) menyebabkan partition explosion karena kombinasi ranges yang banyak. Opsi C (row group min/max) membantu tapi tanpa Z-ordering, data mungkin tersebar acak sehingga min/max ranges overlap. Opsi D (geohash bucketing) hanya membantu spatial queries tapi tidak mengoptimalkan temporal dimension secara bersamaan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer is configuring Parquet file writes for a data lake that will be queried by both Athena and Redshift Spectrum. The dataset has 200 columns but typical queries only access 5-10 columns at a time. The engineer needs to optimize row group size for this access pattern. Which row group configuration is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Set row group size to 8 MB to minimize memory usage during reads</li>
+                <li><span class="option-label">A.</span> Set row group size to 8 MB to minimize memory usage during reads for columnar reads of wide tables</li>
                 <li><span class="option-label">B.</span> Set row group size to 128 MB (default) which provides optimal balance for columnar reads of wide tables</li>
                 <li><span class="option-label">C.</span> Set row group size to 1 GB to minimize the number of row groups per file</li>
                 <li><span class="option-label">D.</span> Set row group size to 32 KB to maximize predicate pushdown granularity</li>
@@ -162,7 +162,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Row group size 128 MB (default Parquet) memberikan keseimbangan optimal. Untuk wide tables (200 kolom) dimana hanya 5-10 kolom dibaca, row group yang cukup besar memastikan column chunks memiliki cukup data untuk sequential I/O yang efisien. Opsi A (8 MB) terlalu kecil — column chunks hanya ~40 KB per kolom, menghasilkan banyak random I/O. Opsi C (1 GB) terlalu besar, memerlukan memory berlebihan dan membuat predicate pushdown kurang granular. Opsi D (32 KB) sangat kecil, setiap column chunk hanya ~160 bytes yang tidak efisien untuk I/O.</div>
+                <div class="explanation">Row group size 128 MB (default Parquet) memberikan keseimbangan optimal. Untuk wide tables (200 kolom) dimana hanya 5-10 kolom dibaca, row group yang cukup besar memastikan column chunks memiliki cukup data untuk sequential I/O yang efisien. Opsi A (8 MB) terlalu kecil — column chunks hanya ~40 KB per kolom, menghasilkan banyak random I/O — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (1 GB) terlalu besar, memerlukan memory berlebihan dan membuat predicate pushdown kurang granular. Opsi D (32 KB) sangat kecil, setiap column chunk hanya ~160 bytes yang tidak efisien untuk I/O.</div>
             </div>
         </div>
 
@@ -174,12 +174,12 @@
                 <li><span class="option-label">A.</span> Zone maps don't work with VARCHAR columns; switch to integer encoding for categories</li>
                 <li><span class="option-label">B.</span> The table has too many unsorted rows after recent loads; run VACUUM SORT to restore zone map effectiveness</li>
                 <li><span class="option-label">C.</span> The query is using LIKE patterns which cannot leverage zone maps; use equality predicates instead</li>
-                <li><span class="option-label">D.</span> Compound sort keys don't support zone maps; switch to interleaved sort key</li>
+                <li><span class="option-label">D.</span> Compound sort keys don't support zone maps; switch to interleaved sort key configured for optimal performance and minimal</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Ketika data baru di-load ke Redshift (via COPY atau INSERT), rows baru ditambahkan sebagai unsorted region. Zone maps pada unsorted region memiliki min/max ranges yang sangat wide, membuat data skipping tidak efektif. VACUUM SORT mengurutkan ulang data sehingga zone maps memiliki ranges yang tight dan bisa melakukan effective pruning. Opsi A salah — zone maps bekerja dengan VARCHAR. Opsi C salah — LIKE dengan prefix bisa leverage zone maps. Opsi D salah — compound sort keys bekerja sangat baik dengan zone maps, terutama untuk kolom pertama.</div>
+                <div class="explanation">Ketika data baru di-load ke Redshift (via COPY atau INSERT), rows baru ditambahkan sebagai unsorted region. Zone maps pada unsorted region memiliki min/max ranges yang sangat wide, membuat data skipping tidak efektif. VACUUM SORT mengurutkan ulang data sehingga zone maps memiliki ranges yang tight dan bisa melakukan effective pruning. Opsi A salah — zone maps bekerja dengan VARCHAR. Opsi C salah — LIKE dengan prefix bisa leverage zone maps. Opsi D salah — compound sort keys bekerja sangat baik dengan zone maps, terutama untuk kolom pertama — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -190,13 +190,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable Bloom filters on the user_id column during ORC file creation to enable predicate pushdown for equality filters</li>
                 <li><span class="option-label">B.</span> Partition the data by user_id to leverage partition pruning instead of predicate pushdown</li>
-                <li><span class="option-label">C.</span> Convert from ORC to Parquet format which has better predicate pushdown support</li>
+                <li><span class="option-label">C.</span> Convert from ORC to Parquet format which has better predicate pushdown support for equality filters</li>
                 <li><span class="option-label">D.</span> Increase the ORC stripe size to improve min/max index effectiveness</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk high-cardinality columns, ORC min/max statistics (row index) tidak efektif karena setiap stripe likely memiliki wide range of user_ids. Bloom filters di ORC memberikan probabilistic test yang dapat menentukan apakah suatu stripe definitely doesn't contain a specific user_id, enabling effective data skipping untuk equality predicates. Opsi B (partition by user_id) akan menghasilkan jutaan partisi yang sangat buruk untuk performance (partition explosion). Opsi C salah — kedua format mendukung predicate pushdown, tapi ORC memiliki Bloom filter built-in. Opsi D (larger stripe size) justru memperburuk masalah karena ranges menjadi lebih wide.</div>
+                <div class="explanation">Untuk high-cardinality columns, ORC min/max statistics (row index) tidak efektif karena setiap stripe likely memiliki wide range of user_ids. Bloom filters di ORC memberikan probabilistic test yang dapat menentukan apakah suatu stripe definitely doesn't contain a specific user_id, enabling effective data skipping untuk equality predicates. Opsi B (partition by user_id) akan menghasilkan jutaan partisi yang sangat buruk untuk performance (partition explosion). Opsi C salah — kedua format mendukung predicate pushdown, tapi ORC memiliki Bloom filter built-in — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (larger stripe size) justru memperburuk masalah karena ranges menjadi lebih wide.</div>
             </div>
         </div>
         

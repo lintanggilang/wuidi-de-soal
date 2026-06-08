@@ -36,13 +36,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Each consumer gets approximately 666 KB/s of read throughput per shard, potentially causing increased latency</li>
                 <li><span class="option-label">B.</span> Each consumer gets the full 2 MB/s independently</li>
-                <li><span class="option-label">C.</span> Only one consumer can read at a time; others are queued</li>
+                <li><span class="option-label">C.</span> Only one consumer can read at a time; others are queued with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> The stream automatically creates additional shards for each consumer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Tanpa Enhanced Fan-Out, semua consumers berbagi 2 MB/s read throughput per shard menggunakan GetRecords API (polling). Dengan 3 consumers, masing-masing secara efektif mendapat ~666 KB/s. Selain itu, GetRecords dibatasi 5 calls/second per shard yang juga dibagi. Ini meningkatkan read latency. Opsi B hanya berlaku dengan Enhanced Fan-Out. Opsi C salah — multiple consumers bisa polling bersamaan. Opsi D — Kinesis tidak auto-shard berdasarkan consumer count.</div>
+                <div class="explanation">Tanpa Enhanced Fan-Out, semua consumers berbagi 2 MB/s read throughput per shard menggunakan GetRecords API (polling). Dengan 3 consumers, masing-masing secara efektif mendapat ~666 KB/s. Selain itu, GetRecords dibatasi 5 calls/second per shard yang juga dibagi. Ini meningkatkan read latency. Opsi B hanya berlaku dengan Enhanced Fan-Out. Opsi C salah — multiple consumers bisa polling bersamaan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Kinesis tidak auto-shard berdasarkan consumer count.</div>
             </div>
         </div>
 
@@ -52,13 +52,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon SNS topic receiving events, with SQS queues as subscriptions for each downstream service</li>
                 <li><span class="option-label">B.</span> Amazon Kinesis Data Stream with 5 separate consumer applications using Enhanced Fan-Out</li>
-                <li><span class="option-label">C.</span> Single Lambda function that forwards events to 5 different SQS queues</li>
+                <li><span class="option-label">C.</span> Single Lambda function that forwards events to 5 different SQS queues with SQS queues as subscriptions for each</li>
                 <li><span class="option-label">D.</span> Amazon MSK topic with 5 consumer groups</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SNS + SQS fan-out pattern adalah yang paling scalable. SNS dapat handle millions of messages/second dan delivers ke semua subscribers (SQS queues) secara independen. Setiap SQS queue buffers messages untuk consumer masing-masing, memberikan decoupling sempurna. Opsi B (Kinesis EFO) baik untuk streaming tapi Enhanced Fan-Out max 20 consumers dan memiliki biaya per-consumer per-shard. Opsi C (Lambda forwarder) menjadi bottleneck dan single point of failure. Opsi D (MSK) valid tapi lebih operational overhead.</div>
+                <div class="explanation">SNS + SQS fan-out pattern adalah yang paling scalable. SNS dapat handle millions of messages/second dan delivers ke semua subscribers (SQS queues) secara independen. Setiap SQS queue buffers messages untuk consumer masing-masing, memberikan decoupling sempurna. Opsi B (Kinesis EFO) baik untuk streaming tapi Enhanced Fan-Out max 20 consumers dan memiliki biaya per-consumer per-shard. Opsi C (Lambda forwarder) menjadi bottleneck dan single point of failure — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (MSK) valid tapi lebih operational overhead.</div>
             </div>
         </div>
 
@@ -68,13 +68,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon Kinesis Data Streams with gateway ID as partition key, ensuring each gateway's data goes to the same shard for ordering</li>
                 <li><span class="option-label">B.</span> Amazon SQS standard queue receiving from all gateways</li>
-                <li><span class="option-label">C.</span> Direct Lambda invocation from each gateway</li>
+                <li><span class="option-label">C.</span> Direct Lambda invocation from each gateway with gateway ID as partition key for ordering</li>
                 <li><span class="option-label">D.</span> Amazon S3 with each gateway writing to its own prefix</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Kinesis dengan gateway ID sebagai partition key menjamin ordering per gateway (semua records dari gateway yang sama masuk ke shard yang sama). Dengan 50 MB/s, dibutuhkan minimal 50 shards (1 MB/s per shard). 500 gateways akan terdistribusi di antara 50 shards (~10 gateways per shard). Ini scalable dan real-time. Opsi B (SQS) tidak menjamin ordering. Opsi C (Lambda) tidak cocok untuk high-throughput streaming. Opsi D (S3) bukan real-time processing.</div>
+                <div class="explanation">Kinesis dengan gateway ID sebagai partition key menjamin ordering per gateway (semua records dari gateway yang sama masuk ke shard yang sama). Dengan 50 MB/s, dibutuhkan minimal 50 shards (1 MB/s per shard). 500 gateways akan terdistribusi di antara 50 shards (~10 gateways per shard). Ini scalable dan real-time. Opsi B (SQS) tidak menjamin ordering. Opsi C (Lambda) tidak cocok untuk high-throughput streaming — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (S3) bukan real-time processing.</div>
             </div>
         </div>
 
@@ -99,14 +99,14 @@
             <div class="question-text">A media company needs to distribute live video metadata events to 20 different microservices. Each microservice needs to receive ALL events. The event rate is 100,000 events per second. Which fan-out pattern handles this scale with guaranteed delivery to all consumers?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon MSK (Kafka) topic with 20 consumer groups, each independently consuming all messages from the topic</li>
-                <li><span class="option-label">B.</span> Amazon Kinesis with Enhanced Fan-Out registered for 20 consumers</li>
+                <li><span class="option-label">B.</span> Amazon Kinesis with Enhanced Fan-Out registered for 20 consumers configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Amazon SNS topic with 20 SQS subscriptions for guaranteed delivery</li>
                 <li><span class="option-label">D.</span> Amazon EventBridge custom event bus with 20 rules targeting different services</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon MSK (Kafka) consumer groups memungkinkan setiap group membaca semua messages dari topic secara independen. Kafka dirancang untuk high-throughput (100K+ events/sec) dengan multiple consumer groups tanpa performance degradation karena messages disimpan di log. Opsi B (Kinesis EFO) hanya mendukung max 20 consumers tapi dengan 100K events/sec membutuhkan banyak shards yang mahal. Opsi C (SNS+SQS) memiliki message size limit 256KB dan bisa costly di volume ini. Opsi D (EventBridge) memiliki throughput limits yang mungkin tidak cukup.</div>
+                <div class="explanation">Amazon MSK (Kafka) consumer groups memungkinkan setiap group membaca semua messages dari topic secara independen. Kafka dirancang untuk high-throughput (100K+ events/sec) dengan multiple consumer groups tanpa performance degradation karena messages disimpan di log. Opsi B (Kinesis EFO) hanya mendukung max 20 consumers tapi dengan 100K events/sec membutuhkan banyak shards yang mahal — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (SNS+SQS) memiliki message size limit 256KB dan bisa costly di volume ini. Opsi D (EventBridge) memiliki throughput limits yang mungkin tidak cukup.</div>
             </div>
         </div>
 
@@ -131,14 +131,14 @@
             <div class="question-text">A ride-sharing company uses Kinesis to stream ride events. They need to fan-out the stream to: (1) a real-time pricing engine that needs sub-second latency, (2) a data lake writer that can tolerate 5-minute latency, and (3) an ML model training pipeline. Each consumer has different throughput and latency requirements. Which architecture satisfies all requirements?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enhanced Fan-Out for the pricing engine (low latency), standard shared consumer for the data lake writer, and a separate Kinesis Analytics application for ML preprocessing</li>
-                <li><span class="option-label">B.</span> Three separate Kinesis streams, one for each consumer</li>
+                <li><span class="option-label">B.</span> Three separate Kinesis streams, one for each consumer configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Single Lambda function that writes to three different targets</li>
                 <li><span class="option-label">D.</span> Amazon Data Firehose for all three consumers with different buffer intervals</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Enhanced Fan-Out memberikan dedicated 2MB/s dan ~70ms latency via HTTP/2 push — ideal untuk pricing engine yang butuh sub-second. Standard shared consumer (GetRecords) cukup untuk data lake writer yang toleran latency. Kinesis Analytics (Flink) melakukan preprocessing untuk ML. Ini mengoptimalkan cost sesuai requirement masing-masing. Opsi B (3 streams) membutuhkan producing ke 3 streams yang mahal. Opsi C (single Lambda) menjadi bottleneck. Opsi D (Firehose) minimum buffer 60 detik, tidak cocok untuk sub-second pricing engine.</div>
+                <div class="explanation">Enhanced Fan-Out memberikan dedicated 2MB/s dan ~70ms latency via HTTP/2 push — ideal untuk pricing engine yang butuh sub-second. Standard shared consumer (GetRecords) cukup untuk data lake writer yang toleran latency. Kinesis Analytics (Flink) melakukan preprocessing untuk ML. Ini mengoptimalkan cost sesuai requirement masing-masing. Opsi B (3 streams) membutuhkan producing ke 3 streams yang mahal — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (single Lambda) menjadi bottleneck. Opsi D (Firehose) minimum buffer 60 detik, tidak cocok untuk sub-second pricing engine.</div>
             </div>
         </div>
 
@@ -147,14 +147,14 @@
             <div class="question-text">A data engineer is implementing a fan-in pattern where multiple AWS accounts produce events that need to be consolidated into a single Kinesis stream in a central analytics account. Each producer account generates 1,000 events/second. Which is the MOST secure cross-account fan-in approach?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure a Kinesis stream resource policy allowing PutRecord from producer account roles, and have producers assume a cross-account role to write</li>
-                <li><span class="option-label">B.</span> Create IAM users with access keys in the central account for each producer</li>
+                <li><span class="option-label">B.</span> Create IAM users with access keys in the central account for each producer and have producers assume a cross-account role to write</li>
                 <li><span class="option-label">C.</span> Use VPC Peering between all accounts and write via private endpoints</li>
                 <li><span class="option-label">D.</span> Each producer writes to their local stream, then replicate via DMS to central stream</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Kinesis resource policy (sejak 2023) memungkinkan cross-account access secara langsung. Producer accounts menggunakan IAM roles (AssumeRole) untuk mendapat temporary credentials dan menulis ke stream di central account. Ini mengikuti least privilege dan tidak memerlukan static credentials. Opsi B (IAM users + access keys) anti-pattern keamanan. Opsi C (VPC Peering) menambah complexity dan tidak diperlukan karena Kinesis adalah regional service. Opsi D (DMS replication) overkill dan menambah latency.</div>
+                <div class="explanation">Kinesis resource policy (sejak 2023) memungkinkan cross-account access secara langsung. Producer accounts menggunakan IAM roles (AssumeRole) untuk mendapat temporary credentials dan menulis ke stream di central account. Ini mengikuti least privilege dan tidak memerlukan static credentials. Opsi B (IAM users + access keys) anti-pattern keamanan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (VPC Peering) menambah complexity dan tidak diperlukan karena Kinesis adalah regional service. Opsi D (DMS replication) overkill dan menambah latency.</div>
             </div>
         </div>
 
@@ -164,13 +164,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Kafka Streams application with branching (KStream.branch) to route messages to different topics based on predicates</li>
                 <li><span class="option-label">B.</span> Use MSK Connect with a custom SMT (Single Message Transform) to route messages</li>
-                <li><span class="option-label">C.</span> Use multiple consumer groups each filtering for their region</li>
+                <li><span class="option-label">C.</span> Use multiple consumer groups each filtering for their region with branching</li>
                 <li><span class="option-label">D.</span> Configure MSK topic-level routing rules in the broker settings</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Kafka Streams KStream.branch() (atau split() di newer versions) memungkinkan routing messages ke multiple output topics berdasarkan predicates (conditions). Ini berjalan sebagai stream processing application yang membaca dari source topic dan menulis ke destination topics. Ini MSK-native dan scalable. Opsi B (MSK Connect SMT) biasanya untuk transformasi, bukan multi-topic routing. Opsi C (consumer groups) — setiap group membaca ALL messages dan membuang yang tidak dibutuhkan (inefficient). Opsi D — Kafka brokers tidak memiliki routing rules built-in.</div>
+                <div class="explanation">Kafka Streams KStream.branch() (atau split() di newer versions) memungkinkan routing messages ke multiple output topics berdasarkan predicates (conditions). Ini berjalan sebagai stream processing application yang membaca dari source topic dan menulis ke destination topics. Ini MSK-native dan scalable. Opsi B (MSK Connect SMT) biasanya untuk transformasi, bukan multi-topic routing. Opsi C (consumer groups) — setiap group membaca ALL messages dan membuang yang tidak dibutuhkan (inefficient) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Kafka brokers tidak memiliki routing rules built-in.</div>
             </div>
         </div>
 
@@ -181,12 +181,12 @@
                 <li><span class="option-label">A.</span> ReadProvisionedThroughputExceeded metric increases; enable Enhanced Fan-Out for at least the latency-sensitive consumers</li>
                 <li><span class="option-label">B.</span> WriteProvisionedThroughputExceeded metric increases; add more shards</li>
                 <li><span class="option-label">C.</span> GetRecords.IteratorAgeMilliseconds increases; increase Lambda concurrency</li>
-                <li><span class="option-label">D.</span> IncomingBytes metric decreases; fix the producers</li>
+                <li><span class="option-label">D.</span> IncomingBytes metric decreases; fix the producers for at least the latency-sensitive consumers</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">ReadProvisionedThroughputExceeded menunjukkan bahwa consumers melebihi read capacity (2 MB/s shared atau 5 GetRecords calls/s per shard). Dengan 5 consumers berbagi, setiap consumer hanya bisa GetRecords 1x/second per shard. Enhanced Fan-Out memberikan dedicated 2 MB/s per consumer per shard via HTTP/2 push, menghilangkan sharing. Opsi B (Write exceeded) terkait producers bukan consumers. Opsi C (IteratorAge) adalah symptom, bukan confirmation metric untuk fan-out bottleneck. Opsi D (IncomingBytes) terkait ingestion bukan consumption.</div>
+                <div class="explanation">ReadProvisionedThroughputExceeded menunjukkan bahwa consumers melebihi read capacity (2 MB/s shared atau 5 GetRecords calls/s per shard). Dengan 5 consumers berbagi, setiap consumer hanya bisa GetRecords 1x/second per shard. Enhanced Fan-Out memberikan dedicated 2 MB/s per consumer per shard via HTTP/2 push, menghilangkan sharing. Opsi B (Write exceeded) terkait producers bukan consumers. Opsi C (IteratorAge) adalah symptom, bukan confirmation metric untuk fan-out bottleneck. Opsi D (IncomingBytes) terkait ingestion bukan consumption — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

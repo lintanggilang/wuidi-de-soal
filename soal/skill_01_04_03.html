@@ -53,12 +53,12 @@
                 <li><span class="option-label">A.</span> Python with boto3 in a Lambda function, caching the DynamoDB reference data in the function's memory between invocations</li>
                 <li><span class="option-label">B.</span> Scala on Amazon EMR with a long-running Spark Structured Streaming job</li>
                 <li><span class="option-label">C.</span> Java on Amazon ECS Fargate with a continuously running container</li>
-                <li><span class="option-label">D.</span> R script on an EC2 instance processing data in micro-batches</li>
+                <li><span class="option-label">D.</span> R script on an EC2 instance processing data in micro-batches with boto3 in a Lambda function</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Python with boto3 in Lambda is most cost-effective: Lambda charges only for execution time, boto3 natively integrates with DynamoDB and S3, and reference data (50 MB) fits within Lambda memory. Lambda can be triggered directly by Kinesis as an event source mapping, making simple key lookups efficient. Opsi B — EMR with Spark is over-provisioned for simple key lookups on small reference data; minimum cluster cost is high. Opsi C — Fargate continuously running incurs cost 24/7 regardless of traffic. Opsi D — R is not optimized for stream processing and EC2 requires always-on billing.</div>
+                <div class="explanation">Python with boto3 in Lambda is most cost-effective: Lambda charges only for execution time, boto3 natively integrates with DynamoDB and S3, and reference data (50 MB) fits within Lambda memory. Lambda can be triggered directly by Kinesis as an event source mapping, making simple key lookups efficient. Opsi B — EMR with Spark is over-provisioned for simple key lookups on small reference data; minimum cluster cost is high. Opsi C — Fargate continuously running incurs cost 24/7 regardless of traffic. Opsi D — R is not optimized for stream processing and EC2 requires always-on billing — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -69,12 +69,12 @@
                 <li><span class="option-label">A.</span> Write the transformations directly in SQL using Redshift's native window functions (ROW_NUMBER, SUM OVER, LAG/LEAD) within a stored procedure or scheduled query</li>
                 <li><span class="option-label">B.</span> Extract data to Python, process using pandas groupby and rolling functions, then reload to Redshift</li>
                 <li><span class="option-label">C.</span> Use PySpark in AWS Glue to perform the window functions and write back to Redshift</li>
-                <li><span class="option-label">D.</span> Use R with dplyr to calculate rankings and running totals, then write results to Redshift via JDBC</li>
+                <li><span class="option-label">D.</span> Use R with dplyr to calculate rankings and running totals, then write results to Redshift via JDBC configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SQL window functions (ROW_NUMBER, SUM() OVER(), LAG/LEAD) are natively optimized in Redshift's MPP engine. Running totals, ranking, and gap detection are classic window function use cases. Processing stays within Redshift — no data movement, no external compute costs. Redshift's columnar storage and distribution keys optimize these operations. Opsi B — extracting 100s of GBs to Python adds latency, network cost, and pandas cannot handle Redshift-scale data. Opsi C — Glue adds unnecessary data movement; Redshift already has these capabilities. Opsi D — R via JDBC is slow for large datasets and adds external dependency.</div>
+                <div class="explanation">SQL window functions (ROW_NUMBER, SUM() OVER(), LAG/LEAD) are natively optimized in Redshift's MPP engine. Running totals, ranking, and gap detection are classic window function use cases. Processing stays within Redshift — no data movement, no external compute costs. Redshift's columnar storage and distribution keys optimize these operations. Opsi B — extracting 100s of GBs to Python adds latency, network cost, and pandas cannot handle Redshift-scale data. Opsi C — Glue adds unnecessary data movement; Redshift already has these capabilities. Opsi D — R via JDBC is slow for large datasets and adds external dependency — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -84,13 +84,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Keep the pipeline in Scala because it runs directly on the JVM without serialization overhead, which is critical for iterative graph algorithms that require frequent data shuffling between the driver and executors</li>
                 <li><span class="option-label">B.</span> Rewrite in PySpark because Python is easier to maintain and performance is identical</li>
-                <li><span class="option-label">C.</span> Rewrite in Python pandas to simplify the code</li>
+                <li><span class="option-label">C.</span> Rewrite in Python pandas to simplify the code and executors</li>
                 <li><span class="option-label">D.</span> Convert to SQL-only transformations in Amazon Athena</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Scala runs natively on the JVM alongside Spark, eliminating Python-JVM serialization overhead (via Py4J). For iterative graph algorithms with frequent shuffles and custom aggregations, Scala provides better performance because UDFs run in-process. On 2 TB with complex graph traversals, serialization overhead compounds significantly. Additionally, rewriting complex existing Scala introduces risk. Opsi B — PySpark has serialization overhead for UDFs and custom aggregators; performance is NOT identical for UDF-heavy workloads. Opsi C — pandas cannot process 2 TB. Opsi D — Athena SQL cannot express complex graph traversals.</div>
+                <div class="explanation">Scala runs natively on the JVM alongside Spark, eliminating Python-JVM serialization overhead (via Py4J). For iterative graph algorithms with frequent shuffles and custom aggregations, Scala provides better performance because UDFs run in-process. On 2 TB with complex graph traversals, serialization overhead compounds significantly. Additionally, rewriting complex existing Scala introduces risk. Opsi B — PySpark has serialization overhead for UDFs and custom aggregators; performance is NOT identical for UDF-heavy workloads. Opsi C — pandas cannot process 2 TB — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Athena SQL cannot express complex graph traversals.</div>
             </div>
         </div>
 
@@ -100,13 +100,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Bash shell script that uses aws s3 cp for file downloads, export for environment variables, chmod for permissions, and pip install for Python packages</li>
                 <li><span class="option-label">B.</span> Python script using boto3 and os modules</li>
-                <li><span class="option-label">C.</span> PowerShell script with AWS.Tools modules</li>
+                <li><span class="option-label">C.</span> PowerShell script with AWS.Tools modules and pip install for Python packages for file downloads</li>
                 <li><span class="option-label">D.</span> Scala script compiled and uploaded as a JAR file</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EMR bootstrap actions run on Amazon Linux instances where Bash is the native shell. Bash directly handles system operations: aws CLI for S3 downloads, export for environment variables, chmod for permissions, and pip install for packages — all without additional runtime dependencies. Bootstrap actions execute before applications start, so Bash guarantees availability. Opsi B — Python may not be fully configured yet during bootstrap (that's what bootstrap installs). Opsi C — PowerShell is not natively available on Amazon Linux EMR nodes. Opsi D — Scala requires JVM setup which may not be complete during bootstrap phase.</div>
+                <div class="explanation">EMR bootstrap actions run on Amazon Linux instances where Bash is the native shell. Bash directly handles system operations: aws CLI for S3 downloads, export for environment variables, chmod for permissions, and pip install for packages — all without additional runtime dependencies. Bootstrap actions execute before applications start, so Bash guarantees availability. Opsi B — Python may not be fully configured yet during bootstrap (that's what bootstrap installs). Opsi C — PowerShell is not natively available on Amazon Linux EMR nodes — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Scala requires JVM setup which may not be complete during bootstrap phase.</div>
             </div>
         </div>
 
@@ -116,13 +116,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use boto3 STS assume_role() to get temporary credentials for each account, create account-specific Glue clients, and implement exponential backoff with jitter using botocore's built-in retry configuration</li>
                 <li><span class="option-label">B.</span> Store IAM access keys for all 15 accounts in the script and create separate boto3 sessions for each</li>
-                <li><span class="option-label">C.</span> Use a single IAM user with cross-account permissions and no retry logic</li>
+                <li><span class="option-label">C.</span> Use a single IAM user with cross-account permissions and no retry logic for each account</li>
                 <li><span class="option-label">D.</span> Use AWS CLI commands via subprocess calls in Python for each account</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">STS assume_role() is the standard pattern for cross-account access — provides temporary credentials (security best practice). Botocore's retry configuration with exponential backoff and jitter handles API throttling automatically, essential when creating resources across 15 accounts. Pattern: sts.assume_role() → create session with temp credentials → create glue client → use Config(retries={'max_attempts': 10, 'mode': 'adaptive'}). Opsi B — storing long-term access keys is a security anti-pattern. Opsi C — no retry logic will fail under throttling with 15 accounts. Opsi D — subprocess CLI calls lose boto3's native retry handling and error typing.</div>
+                <div class="explanation">STS assume_role() is the standard pattern for cross-account access — provides temporary credentials (security best practice). Botocore's retry configuration with exponential backoff and jitter handles API throttling automatically, essential when creating resources across 15 accounts. Pattern: sts.assume_role() → create session with temp credentials → create glue client → use Config(retries={'max_attempts': 10, 'mode': 'adaptive'}). Opsi B — storing long-term access keys is a security anti-pattern. Opsi C — no retry logic will fail under throttling with 15 accounts — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — subprocess CLI calls lose boto3's native retry handling and error typing.</div>
             </div>
         </div>
 
@@ -132,13 +132,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Window functions: AVG() OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) for moving average, SUM() OVER (PARTITION BY category) for percentage contribution, and LAG() OVER (ORDER BY month) for month-over-month difference</li>
                 <li><span class="option-label">B.</span> Self-joins with subqueries to calculate moving averages and GROUP BY with HAVING for category totals</li>
-                <li><span class="option-label">C.</span> Multiple CTEs with correlated subqueries for each calculation</li>
+                <li><span class="option-label">C.</span> Multiple CTEs with correlated subqueries for each calculation with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> Extract data to Python pandas and use rolling() and groupby() functions instead of SQL</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Window functions are purpose-built for these calculations: ROWS BETWEEN 6 PRECEDING AND CURRENT ROW creates exact 7-day windows, PARTITION BY category computes category-level aggregates alongside row-level detail, and LAG() accesses previous row values without self-joins. Athena (Presto/Trino) fully supports ANSI SQL window functions. Single pass over data = efficient. Opsi B — self-joins create cartesian products, extremely expensive on large datasets. Opsi C — correlated subqueries execute per-row, O(n²) performance. Opsi D — extracting to Python adds latency and doesn't scale for large Athena datasets.</div>
+                <div class="explanation">Window functions are purpose-built for these calculations: ROWS BETWEEN 6 PRECEDING AND CURRENT ROW creates exact 7-day windows, PARTITION BY category computes category-level aggregates alongside row-level detail, and LAG() accesses previous row values without self-joins. Athena (Presto/Trino) fully supports ANSI SQL window functions. Single pass over data = efficient. Opsi B — self-joins create cartesian products, extremely expensive on large datasets. Opsi C — correlated subqueries execute per-row, O(n²) performance — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — extracting to Python adds latency and doesn't scale for large Athena datasets.</div>
             </div>
         </div>
 
@@ -149,12 +149,12 @@
                 <li><span class="option-label">A.</span> Python 3.12 runtime, because Python has one of the fastest Lambda cold start times, and the required operations (JSON parsing, math, boto3 DynamoDB writes) are all available in the standard library and included SDK</li>
                 <li><span class="option-label">B.</span> Java 17 runtime with Spring Boot framework for enterprise-grade structure</li>
                 <li><span class="option-label">C.</span> .NET 6 runtime with full ASP.NET framework</li>
-                <li><span class="option-label">D.</span> Node.js 20 runtime with TypeScript compilation</li>
+                <li><span class="option-label">D.</span> Node.js 20 runtime with TypeScript compilation configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Python consistently has among the fastest Lambda cold starts (typically 100-200ms) because the interpreter is lightweight and boto3 is included in the Lambda runtime (no additional dependencies). For simple JSON parsing + math + DynamoDB writes, Python is more than performant enough. Opsi B — Java with Spring Boot has notoriously slow cold starts (3-10 seconds) due to JVM initialization and framework bootstrapping. Opsi C — .NET with full framework has significant cold start overhead. Opsi D — Node.js is also fast, but TypeScript requires compilation step which adds complexity; Node.js without TypeScript would be comparable to Python.</div>
+                <div class="explanation">Python consistently has among the fastest Lambda cold starts (typically 100-200ms) because the interpreter is lightweight and boto3 is included in the Lambda runtime (no additional dependencies). For simple JSON parsing + math + DynamoDB writes, Python is more than performant enough. Opsi B — Java with Spring Boot has notoriously slow cold starts (3-10 seconds) due to JVM initialization and framework bootstrapping. Opsi C — .NET with full framework has significant cold start overhead. Opsi D — Node — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.js is also fast, but TypeScript requires compilation step which adds complexity; Node.js without TypeScript would be comparable to Python.</div>
             </div>
         </div>
 
@@ -165,12 +165,12 @@
                 <li><span class="option-label">A.</span> Use PySpark (AWS Glue's native framework) for all datasets — Glue Auto Scaling automatically adjusts workers for small datasets (reducing to minimum workers) and scales up for large datasets, providing a single codebase that handles both scenarios</li>
                 <li><span class="option-label">B.</span> Use pandas for weekday processing and PySpark for weekend processing with conditional logic to switch</li>
                 <li><span class="option-label">C.</span> Use Dask as a middle ground between pandas and Spark</li>
-                <li><span class="option-label">D.</span> Always provision for the 50 GB case and accept over-provisioning on weekdays</li>
+                <li><span class="option-label">D.</span> Always provision for the 50 GB case and accept over-provisioning on weekdays with parallel processing and horizontal scaling capabilities</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">PySpark in Glue with Auto Scaling provides single codebase adaptability. Glue Auto Scaling dynamically adjusts the number of workers based on actual workload parallelism — fewer workers for 100 MB (minimum cost), more workers for 50 GB (maximum throughput). The same PySpark code runs identically regardless of data size. Opsi B — maintaining two code paths (pandas + PySpark) doubles testing effort and introduces bugs. Opsi C — Dask is not natively supported in AWS Glue. Opsi D — over-provisioning wastes cost on weekdays (paying for unused DPUs).</div>
+                <div class="explanation">PySpark in Glue with Auto Scaling provides single codebase adaptability. Glue Auto Scaling dynamically adjusts the number of workers based on actual workload parallelism — fewer workers for 100 MB (minimum cost), more workers for 50 GB (maximum throughput). The same PySpark code runs identically regardless of data size. Opsi B — maintaining two code paths (pandas + PySpark) doubles testing effort and introduces bugs. Opsi C — Dask is not natively supported in AWS Glue. Opsi D — over-provisioning wastes cost on weekdays (paying for unused DPUs) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -181,12 +181,12 @@
                 <li><span class="option-label">A.</span> Package the dependencies as a .whl (wheel) file or .zip archive and upload to S3, then reference the S3 path in the Glue job's --extra-py-files parameter. For compiled libraries (like cryptography), use a wheel built for the Glue runtime's Python version and Linux platform</li>
                 <li><span class="option-label">B.</span> Include a requirements.txt file alongside the Glue script in S3</li>
                 <li><span class="option-label">C.</span> Install libraries at runtime using subprocess pip install at the beginning of the script</li>
-                <li><span class="option-label">D.</span> Copy all library source files into the same S3 folder as the Glue script</li>
+                <li><span class="option-label">D.</span> Copy all library source files into the same S3 folder as the Glue script for compiled libraries (like cryptography)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue's --extra-py-files parameter is the official mechanism for additional Python dependencies. Wheel files (.whl) are preferred because they contain pre-compiled binaries for the target platform. For libraries with C extensions (cryptography), the wheel must match Glue's Python version and manylinux platform. Multiple .whl files can be comma-separated in the parameter. Opsi B — Glue doesn't automatically process requirements.txt (unlike some other services). Opsi C — subprocess pip at runtime is unreliable, slow, and may fail without internet access in VPC. Opsi D — loose source files won't be importable without proper package structure.</div>
+                <div class="explanation">AWS Glue's --extra-py-files parameter is the official mechanism for additional Python dependencies. Wheel files (.whl) are preferred because they contain pre-compiled binaries for the target platform. For libraries with C extensions (cryptography), the wheel must match Glue's Python version and manylinux platform. Multiple .whl files can be comma-separated in the parameter. Opsi B — Glue doesn't automatically process requirements.txt (unlike some other services). Opsi C — subprocess pip at runtime is unreliable, slow, and may fail without internet access in VPC. Opsi D — loose source files won't be importable without proper package structure — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

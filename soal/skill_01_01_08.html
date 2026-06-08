@@ -37,12 +37,12 @@
                 <li><span class="option-label">A.</span> Add a self-referencing inbound rule to the Glue connection's security group, and add the Glue security group as an allowed source in the RDS security group</li>
                 <li><span class="option-label">B.</span> Add the AWS Glue service IP range to the RDS security group inbound rules</li>
                 <li><span class="option-label">C.</span> Configure a VPC endpoint for Glue and whitelist the endpoint IP</li>
-                <li><span class="option-label">D.</span> Move the RDS instance to a public subnet and allow all inbound traffic</li>
+                <li><span class="option-label">D.</span> Move the RDS instance to a public subnet and allow all inbound traffic configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue connections menggunakan ENI (Elastic Network Interface) di VPC dengan security group yang ditetapkan. Glue membutuhkan self-referencing rule (inbound dari security group sendiri) untuk komunikasi antar worker nodes. RDS security group harus mengizinkan inbound dari Glue security group. Opsi B salah karena Glue menggunakan ENI di VPC, bukan IP range service. Opsi C (VPC endpoint) untuk akses ke Glue API, bukan untuk Glue mengakses resources di VPC. Opsi D melanggar security best practices.</div>
+                <div class="explanation">AWS Glue connections menggunakan ENI (Elastic Network Interface) di VPC dengan security group yang ditetapkan. Glue membutuhkan self-referencing rule (inbound dari security group sendiri) untuk komunikasi antar worker nodes. RDS security group harus mengizinkan inbound dari Glue security group. Opsi B salah karena Glue menggunakan ENI di VPC, bukan IP range service. Opsi C (VPC endpoint) untuk akses ke Glue API, bukan untuk Glue mengakses resources di VPC. Opsi D melanggar security best practices — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -52,13 +52,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Assign an Elastic IP (EIP) to the DMS replication instance in a public subnet, and allowlist that EIP on the on-premises firewall</li>
                 <li><span class="option-label">B.</span> Use the VPC's NAT Gateway public IP address as the allowlisted IP</li>
-                <li><span class="option-label">C.</span> Allowlist the entire AWS IP range for the region</li>
+                <li><span class="option-label">C.</span> Allowlist the entire AWS IP range for the region and allowlist that EIP on the on-premises firewall</li>
                 <li><span class="option-label">D.</span> Use the DMS replication instance's private IP address</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk koneksi dari DMS ke sumber on-premises melalui internet, DMS replication instance harus berada di public subnet dengan Elastic IP. EIP ini statis dan dapat di-allowlist di firewall on-premises. Opsi B (NAT Gateway) bisa bekerja jika replication instance di private subnet tapi EIP di replication instance lebih direct. Opsi C (seluruh AWS IP range) terlalu luas dan insecure. Opsi D (private IP) tidak routable melalui internet ke on-premises.</div>
+                <div class="explanation">Untuk koneksi dari DMS ke sumber on-premises melalui internet, DMS replication instance harus berada di public subnet dengan Elastic IP. EIP ini statis dan dapat di-allowlist di firewall on-premises. Opsi B (NAT Gateway) bisa bekerja jika replication instance di private subnet tapi EIP di replication instance lebih direct. Opsi C (seluruh AWS IP range) terlalu luas dan insecure — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (private IP) tidak routable melalui internet ke on-premises.</div>
             </div>
         </div>
 
@@ -68,13 +68,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Update the Redshift cluster's security group inbound rules to allow TCP port 5439 only from the partner's IP addresses</li>
                 <li><span class="option-label">B.</span> Configure a Network ACL (NACL) on the VPC to deny all traffic except from partner IPs</li>
-                <li><span class="option-label">C.</span> Create an S3 bucket policy with IP condition restricting access</li>
+                <li><span class="option-label">C.</span> Create an S3 bucket policy with IP condition restricting access configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Configure AWS WAF with an IP set rule for the partner's addresses</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Security group pada Redshift cluster adalah mekanisme yang tepat untuk membatasi akses network ke IP tertentu. Dengan menambahkan inbound rule untuk TCP 5439 (Redshift port) dari CIDR partner's IP, hanya partner yang bisa connect. Opsi B (NACL) terlalu broad dan bisa mempengaruhi resources lain di subnet. Opsi C (S3 bucket policy) tidak relevan untuk Redshift connection. Opsi D (WAF) tidak applicable untuk Redshift — WAF untuk HTTP/HTTPS di ALB, CloudFront, atau API Gateway.</div>
+                <div class="explanation">Security group pada Redshift cluster adalah mekanisme yang tepat untuk membatasi akses network ke IP tertentu. Dengan menambahkan inbound rule untuk TCP 5439 (Redshift port) dari CIDR partner's IP, hanya partner yang bisa connect. Opsi B (NACL) terlalu broad dan bisa mempengaruhi resources lain di subnet. Opsi C (S3 bucket policy) tidak relevan untuk Redshift connection — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (WAF) tidak applicable untuk Redshift — WAF untuk HTTP/HTTPS di ALB, CloudFront, atau API Gateway.</div>
             </div>
         </div>
 
@@ -83,14 +83,14 @@
             <div class="question-text">An AWS Glue ETL job in a VPC needs to access both an S3 bucket and an on-premises database through a VPN connection. The job currently cannot reach S3. The subnet has no internet access. What is the MOST secure solution to allow S3 access?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a VPC Gateway Endpoint for S3 and update the route table of the Glue subnet</li>
-                <li><span class="option-label">B.</span> Add a NAT Gateway and route internet traffic through it</li>
+                <li><span class="option-label">B.</span> Add a NAT Gateway and route internet traffic through it and update the route table of the Glue subnet</li>
                 <li><span class="option-label">C.</span> Allowlist S3 public IP ranges in the security group outbound rules</li>
                 <li><span class="option-label">D.</span> Move the Glue connection to a public subnet with an Internet Gateway</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">VPC Gateway Endpoint untuk S3 memungkinkan akses ke S3 tanpa internet, menjaga traffic di dalam AWS network. Route table di-update untuk mengarahkan traffic S3 melalui endpoint. Ini paling secure karena traffic tidak pernah meninggalkan AWS network. Opsi B (NAT Gateway) memungkinkan internet access yang lebih luas dari yang diperlukan. Opsi C (security group) — security groups are stateful dan allow all outbound by default; masalahnya routing bukan security group. Opsi D (public subnet) menambah attack surface.</div>
+                <div class="explanation">VPC Gateway Endpoint untuk S3 memungkinkan akses ke S3 tanpa internet, menjaga traffic di dalam AWS network. Route table di-update untuk mengarahkan traffic S3 melalui endpoint. Ini paling secure karena traffic tidak pernah meninggalkan AWS network. Opsi B (NAT Gateway) memungkinkan internet access yang lebih luas dari yang diperlukan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (security group) — security groups are stateful dan allow all outbound by default; masalahnya routing bukan security group. Opsi D (public subnet) menambah attack surface.</div>
             </div>
         </div>
 
@@ -99,14 +99,14 @@
             <div class="question-text">A company's data pipeline connects to a third-party SaaS API that rotates its IP addresses frequently. The data engineer needs to allowlist these IPs in the VPC security group, but manual updates are not feasible. Which approach automates IP allowlist management?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Lambda triggered by DNS resolution changes (via Route 53 health checks) to automatically update security group rules with current IPs</li>
-                <li><span class="option-label">B.</span> Use a prefix list that automatically resolves domain names to IPs</li>
+                <li><span class="option-label">B.</span> Use a prefix list that automatically resolves domain names to IPs with domain-based filtering rules instead</li>
                 <li><span class="option-label">C.</span> Configure the security group with the domain name instead of IP addresses</li>
                 <li><span class="option-label">D.</span> Use AWS Network Firewall with domain-based filtering rules instead of IP-based security groups</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">AWS Network Firewall mendukung domain name filtering (stateful rule groups) yang secara otomatis resolve domain ke IP saat evaluasi. Ini ideal ketika IPs berubah sering karena rules berdasarkan domain name, bukan static IPs. Opsi A bisa bekerja tapi sangat custom dan fragile. Opsi B (prefix list) tidak resolve DNS - hanya berisi static CIDR blocks. Opsi C tidak supported - security groups hanya menerima IP/CIDR, bukan domain names.</div>
+                <div class="explanation">AWS Network Firewall mendukung domain name filtering (stateful rule groups) yang secara otomatis resolve domain ke IP saat evaluasi. Ini ideal ketika IPs berubah sering karena rules berdasarkan domain name, bukan static IPs. Opsi A bisa bekerja tapi sangat custom dan fragile. Opsi B (prefix list) tidak resolve DNS - hanya berisi static CIDR blocks — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C tidak supported - security groups hanya menerima IP/CIDR, bukan domain names.</div>
             </div>
         </div>
 
@@ -115,14 +115,14 @@
             <div class="question-text">A data engineer needs to allow an Amazon EMR cluster in a private subnet to access a partner's SFTP server on the internet. The partner requires the company to provide static IP addresses for their firewall allowlist. How should this be architected?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Place the EMR cluster in a private subnet with a NAT Gateway in the public subnet; provide the NAT Gateway's Elastic IP to the partner</li>
-                <li><span class="option-label">B.</span> Assign Elastic IPs to all EMR cluster nodes and provide those to the partner</li>
+                <li><span class="option-label">B.</span> Assign Elastic IPs to all EMR cluster nodes and provide those to the partner with a NAT Gateway in the public subnet; provide the NAT Gateway's Elastic IP</li>
                 <li><span class="option-label">C.</span> Use AWS PrivateLink to establish a private connection to the partner's SFTP server</li>
                 <li><span class="option-label">D.</span> Configure a VPN connection to the partner and use the VPN endpoint IP</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">NAT Gateway memiliki Elastic IP yang statis. Semua outbound traffic dari private subnet ke internet melewati NAT Gateway, sehingga partner akan selalu melihat koneksi dari NAT Gateway's EIP. Ini memberikan satu static IP untuk allowlisting. Opsi B tidak feasible karena EMR nodes bisa auto-scale dan private subnet nodes tidak bisa punya public IP. Opsi C (PrivateLink) membutuhkan partner juga di AWS dan mengekspos NLB. Opsi D (VPN) over-engineering untuk SFTP access.</div>
+                <div class="explanation">NAT Gateway memiliki Elastic IP yang statis. Semua outbound traffic dari private subnet ke internet melewati NAT Gateway, sehingga partner akan selalu melihat koneksi dari NAT Gateway's EIP. Ini memberikan satu static IP untuk allowlisting. Opsi B tidak feasible karena EMR nodes bisa auto-scale dan private subnet nodes tidak bisa punya public IP — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (PrivateLink) membutuhkan partner juga di AWS dan mengekspos NLB. Opsi D (VPN) over-engineering untuk SFTP access.</div>
             </div>
         </div>
 
@@ -133,12 +133,12 @@
                 <li><span class="option-label">A.</span> Enable publicly accessible on the Redshift cluster, configure the security group to allow port 5439 from corporate CIDR ranges only, and enable audit logging</li>
                 <li><span class="option-label">B.</span> Use a VPN connection for all BI tool access and remove public accessibility</li>
                 <li><span class="option-label">C.</span> Configure NACL rules to allow the corporate CIDR and deny all else, with VPC Flow Logs for logging</li>
-                <li><span class="option-label">D.</span> Place Redshift behind an Application Load Balancer with WAF rules for IP filtering</li>
+                <li><span class="option-label">D.</span> Place Redshift behind an Application Load Balancer with WAF rules for IP filtering and enable audit logging</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Redshift publicly accessible + security group IP restriction adalah cara standar untuk memberikan akses dari corporate network. Security group membatasi akses ke CIDR yang ditentukan. Redshift audit logging mencatat semua connection attempts dan queries. Opsi B mengubah requirement (harus publicly accessible untuk BI tool). Opsi C (NACL + Flow Logs) kurang granular dan Flow Logs tidak capture application-level info. Opsi D (ALB + WAF) tidak applicable karena Redshift menggunakan PostgreSQL protocol, bukan HTTP.</div>
+                <div class="explanation">Redshift publicly accessible + security group IP restriction adalah cara standar untuk memberikan akses dari corporate network. Security group membatasi akses ke CIDR yang ditentukan. Redshift audit logging mencatat semua connection attempts dan queries. Opsi B mengubah requirement (harus publicly accessible untuk BI tool). Opsi C (NACL + Flow Logs) kurang granular dan Flow Logs tidak capture application-level info. Opsi D (ALB + WAF) tidak applicable karena Redshift menggunakan PostgreSQL protocol, bukan HTTP — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -165,12 +165,12 @@
                 <li><span class="option-label">A.</span> Use a VPC Interface Endpoint for Kinesis with an endpoint policy that restricts access, combined with a Kinesis resource policy with aws:SourceVpce condition</li>
                 <li><span class="option-label">B.</span> Configure a security group on the Kinesis stream to restrict source IPs</li>
                 <li><span class="option-label">C.</span> Use IAM policy with aws:SourceIp condition to restrict access to specific CIDR ranges</li>
-                <li><span class="option-label">D.</span> Configure Kinesis VPC allowlist in the stream settings</li>
+                <li><span class="option-label">D.</span> Configure Kinesis VPC allowlist in the stream settings with aws:SourceIp condition</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">IAM policy dengan aws:SourceIp condition membatasi akses API ke Kinesis berdasarkan source IP address. Ini bisa diterapkan pada IAM role/user yang digunakan consumer application. Untuk cross-region access, ini adalah mekanisme yang efektif karena Kinesis adalah service managed yang tidak memiliki security group sendiri. Opsi A valid untuk same-region VPC endpoint tapi cross-region endpoint membutuhkan setup tambahan. Opsi B salah — Kinesis tidak memiliki security group. Opsi D — fitur ini tidak ada di Kinesis.</div>
+                <div class="explanation">IAM policy dengan aws:SourceIp condition membatasi akses API ke Kinesis berdasarkan source IP address. Ini bisa diterapkan pada IAM role/user yang digunakan consumer application. Untuk cross-region access, ini adalah mekanisme yang efektif karena Kinesis adalah service managed yang tidak memiliki security group sendiri. Opsi A valid untuk same-region VPC endpoint tapi cross-region endpoint membutuhkan setup tambahan. Opsi B salah — Kinesis tidak memiliki security group. Opsi D — fitur ini tidak ada di Kinesis — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -181,12 +181,12 @@
                 <li><span class="option-label">A.</span> Add three inbound rules referencing each service's security group ID as the source (Glue SG, Lambda SG, EC2 SG) on port 3306</li>
                 <li><span class="option-label">B.</span> Add one inbound rule allowing the entire VPC CIDR range on port 3306</li>
                 <li><span class="option-label">C.</span> Add individual IP addresses of each Glue ENI, Lambda ENI, and EC2 instance</li>
-                <li><span class="option-label">D.</span> Use a managed prefix list containing all service IP ranges</li>
+                <li><span class="option-label">D.</span> Use a managed prefix list containing all service IP ranges configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Security group references (SG-to-SG rules) adalah best practice karena rules tetap valid bahkan ketika IP addresses berubah. Setiap resource yang menggunakan SG yang di-reference secara otomatis mendapat akses. Ini paling maintainable karena tidak perlu update ketika instances berubah. Opsi B (VPC CIDR) terlalu luas dan melanggar least privilege. Opsi C (individual IPs) tidak maintainable karena ENI IPs berubah. Opsi D (prefix list) untuk static CIDR ranges, bukan dynamic service IPs.</div>
+                <div class="explanation">Security group references (SG-to-SG rules) adalah best practice karena rules tetap valid bahkan ketika IP addresses berubah. Setiap resource yang menggunakan SG yang di-reference secara otomatis mendapat akses. Ini paling maintainable karena tidak perlu update ketika instances berubah. Opsi B (VPC CIDR) terlalu luas dan melanggar least privilege. Opsi C (individual IPs) tidak maintainable karena ENI IPs berubah. Opsi D (prefix list) untuk static CIDR ranges, bukan dynamic service IPs — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

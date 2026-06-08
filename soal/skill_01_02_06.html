@@ -53,12 +53,12 @@
                 <li><span class="option-label">A.</span> Enable Firehose format conversion with output format set to Parquet, referencing a schema from the AWS Glue Data Catalog</li>
                 <li><span class="option-label">B.</span> Use a Lambda transformation function to convert JSON to Parquet within Firehose</li>
                 <li><span class="option-label">C.</span> Configure S3 to automatically convert JSON to Parquet on write</li>
-                <li><span class="option-label">D.</span> Use Firehose data partitioning to output as Parquet</li>
+                <li><span class="option-label">D.</span> Use Firehose data partitioning to output as Parquet with output format set</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon Data Firehose memiliki built-in format conversion yang mengkonversi JSON/CSV input ke Apache Parquet atau Apache ORC. Fitur ini menggunakan schema dari Glue Data Catalog untuk mapping fields. Tidak perlu Lambda atau service tambahan. Opsi B — Lambda transformation bisa modify content tapi Firehose native format conversion lebih efisien untuk format change. Opsi C — S3 tidak melakukan format conversion. Opsi D — partitioning berbeda dari format conversion.</div>
+                <div class="explanation">Amazon Data Firehose memiliki built-in format conversion yang mengkonversi JSON/CSV input ke Apache Parquet atau Apache ORC. Fitur ini menggunakan schema dari Glue Data Catalog untuk mapping fields. Tidak perlu Lambda atau service tambahan. Opsi B — Lambda transformation bisa modify content tapi Firehose native format conversion lebih efisien untuk format change. Opsi C — S3 tidak melakukan format conversion. Opsi D — partitioning berbeda dari format conversion — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -69,12 +69,12 @@
                 <li><span class="option-label">A.</span> Re-write the Parquet file using Glue ETL with Spark config spark.sql.parquet.outputTimestampType set to TIMESTAMP_MICROS (INT64)</li>
                 <li><span class="option-label">B.</span> Cast the timestamp column in the Redshift Spectrum query</li>
                 <li><span class="option-label">C.</span> Update the Glue Data Catalog table to change the timestamp format</li>
-                <li><span class="option-label">D.</span> Use a Redshift UDF to interpret INT96 timestamps</li>
+                <li><span class="option-label">D.</span> Use a Redshift UDF to interpret INT96 timestamps with Spark config spark</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">INT96 timestamp adalah legacy Parquet format yang tidak semua systems support correctly. Mengkonversi ke TIMESTAMP_MICROS (INT64) menggunakan spark.sql.parquet.outputTimestampType memastikan compatibility dengan Redshift Spectrum dan services lainnya. Ini fix masalah di source. Opsi B (cast di query) tidak bisa correctly interpret INT96 di Spectrum. Opsi C (catalog metadata) tidak mengubah physical file format. Opsi D (UDF) workaround yang fragile.</div>
+                <div class="explanation">INT96 timestamp adalah legacy Parquet format yang tidak semua systems support correctly. Mengkonversi ke TIMESTAMP_MICROS (INT64) menggunakan spark.sql.parquet.outputTimestampType memastikan compatibility dengan Redshift Spectrum dan services lainnya. Ini fix masalah di source. Opsi B (cast di query) tidak bisa correctly interpret INT96 di Spectrum. Opsi C (catalog metadata) tidak mengubah physical file format. Opsi D (UDF) workaround yang fragile — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -85,12 +85,12 @@
                 <li><span class="option-label">A.</span> Use the Glue DynamicFrame's repartition() or coalesce() before writing, calculating the number of partitions based on target file size</li>
                 <li><span class="option-label">B.</span> Set maxRecordsPerFile in the write options to control records per file</li>
                 <li><span class="option-label">C.</span> The file size is automatically optimized by Glue</li>
-                <li><span class="option-label">D.</span> Set the S3 multipart upload size to 256 MB</li>
+                <li><span class="option-label">D.</span> Set the S3 multipart upload size to 256 MB with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">File count = number of Spark partitions. Dengan repartition(N), Anda bisa mengontrol berapa banyak output files. Jika 500 GB CSV menjadi ~100 GB Parquet (compression), dan target 128-256 MB per file, maka N = 100GB/200MB ≈ 500 partitions. coalesce() juga bisa mengurangi partisi tanpa shuffle. Opsi B (maxRecordsPerFile) adalah Spark option yang valid tapi kurang presisi untuk size control. Opsi C — Glue tidak otomatis optimize file sizes ke target tertentu. Opsi D (S3 multipart) tidak mengontrol logical file size.</div>
+                <div class="explanation">File count = number of Spark partitions. Dengan repartition(N), Anda bisa mengontrol berapa banyak output files. Jika 500 GB CSV menjadi ~100 GB Parquet (compression), dan target 128-256 MB per file, maka N = 100GB/200MB ≈ 500 partitions. coalesce() juga bisa mengurangi partisi tanpa shuffle. Opsi B (maxRecordsPerFile) adalah Spark option yang valid tapi kurang presisi untuk size control. Opsi C — Glue tidak otomatis optimize file sizes ke target tertentu. Opsi D (S3 multipart) tidak mengontrol logical file size — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -100,13 +100,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue ETL with schema evolution enabled — Glue reads Avro schemas automatically and can merge schemas when writing to Parquet</li>
                 <li><span class="option-label">B.</span> Manually update the target Parquet schema definition each time the Avro schema changes</li>
-                <li><span class="option-label">C.</span> Reject files with new fields until the pipeline is updated</li>
+                <li><span class="option-label">C.</span> Reject files with new fields until the pipeline is updated and can merge schemas when writing to Parquet</li>
                 <li><span class="option-label">D.</span> Convert to JSON first as an intermediate format</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue membaca Avro files dengan embedded schemas otomatis. Dengan schema evolution handling (misalnya mergeSchema option saat write Parquet), new fields ditambahkan ke output schema tanpa breaking existing data. Existing records mendapat NULL untuk new fields. Opsi B (manual update) tidak scalable saat schema berubah sering. Opsi C (reject) menyebabkan data loss. Opsi D (intermediate JSON) menambah unnecessary step dan kehilangan type information.</div>
+                <div class="explanation">Glue membaca Avro files dengan embedded schemas otomatis. Dengan schema evolution handling (misalnya mergeSchema option saat write Parquet), new fields ditambahkan ke output schema tanpa breaking existing data. Existing records mendapat NULL untuk new fields. Opsi B (manual update) tidak scalable saat schema berubah sering. Opsi C (reject) menyebabkan data loss — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (intermediate JSON) menambah unnecessary step dan kehilangan type information.</div>
             </div>
         </div>
 
@@ -117,12 +117,12 @@
                 <li><span class="option-label">A.</span> Snappy — because it provides faster decompression speed which reduces query latency, despite slightly larger file sizes compared to GZIP</li>
                 <li><span class="option-label">B.</span> GZIP — because it produces smaller files which reduce Athena scan costs</li>
                 <li><span class="option-label">C.</span> No compression — for fastest read performance</li>
-                <li><span class="option-label">D.</span> LZO — because it is splittable unlike Snappy</li>
+                <li><span class="option-label">D.</span> LZO — because it is splittable unlike Snappy configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk latency-sensitive queries (dashboards), decompression speed lebih penting dari compression ratio. Snappy decompresses ~2-3x faster dari GZIP. Dalam Parquet, compression diterapkan per column chunk sehingga splittability bukan issue. Trade-off: file ~30% larger tapi query 2-3x faster decompression. Opsi B (GZIP) smaller files tapi slower decompression menambah query latency. Opsi C (no compression) file terlalu besar — more I/O time dari S3. Opsi D (LZO) — di Parquet semua compression splittable per row group.</div>
+                <div class="explanation">Untuk latency-sensitive queries (dashboards), decompression speed lebih penting dari compression ratio. Snappy decompresses ~2-3x faster dari GZIP. Dalam Parquet, compression diterapkan per column chunk sehingga splittability bukan issue. Trade-off: file ~30% larger tapi query 2-3x faster decompression. Opsi B (GZIP) smaller files tapi slower decompression menambah query latency. Opsi C (no compression) file terlalu besar — more I/O time dari S3. Opsi D (LZO) — di Parquet semua compression splittable per row group — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -133,12 +133,12 @@
                 <li><span class="option-label">A.</span> Use the Relationalize transform in Glue DynamicFrames to flatten nested structures into separate flat tables with foreign key relationships</li>
                 <li><span class="option-label">B.</span> Use standard Spark explode() and select() functions manually for each nested level</li>
                 <li><span class="option-label">C.</span> Glue automatically flattens nested JSON when writing to Parquet</li>
-                <li><span class="option-label">D.</span> Use AWS Glue DataBrew to flatten before the ETL job</li>
+                <li><span class="option-label">D.</span> Use AWS Glue DataBrew to flatten before the ETL job with foreign key relationships</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue DynamicFrame Relationalize transform secara otomatis flatten nested structures (arrays dan structs) menjadi separate flat DynamicFrames linked by auto-generated keys. Ini menangani multiple levels of nesting secara rekursif. Sangat powerful untuk complex nested JSON. Opsi B (manual explode) bekerja tapi membutuhkan code per nested level — tedious untuk 5 levels. Opsi C — Glue tidak auto-flatten, Parquet mendukung nested types. Opsi D (DataBrew) valid tapi Relationalize lebih direct di ETL pipeline.</div>
+                <div class="explanation">Glue DynamicFrame Relationalize transform secara otomatis flatten nested structures (arrays dan structs) menjadi separate flat DynamicFrames linked by auto-generated keys. Ini menangani multiple levels of nesting secara rekursif. Sangat powerful untuk complex nested JSON. Opsi B (manual explode) bekerja tapi membutuhkan code per nested level — tedious untuk 5 levels. Opsi C — Glue tidak auto-flatten, Parquet mendukung nested types. Opsi D (DataBrew) valid tapi Relationalize lebih direct di ETL pipeline — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -149,12 +149,12 @@
                 <li><span class="option-label">A.</span> Use the UNLOAD command with FORMAT PARQUET option to export query results directly to S3 in Parquet format</li>
                 <li><span class="option-label">B.</span> Use UNLOAD to export as CSV, then run a Glue job to convert to Parquet</li>
                 <li><span class="option-label">C.</span> Use a Python script with psycopg2 to fetch results and write Parquet using PyArrow</li>
-                <li><span class="option-label">D.</span> Create an external table in Redshift Spectrum and write to it</li>
+                <li><span class="option-label">D.</span> Create an external table in Redshift Spectrum and write to it with FORMAT PARQUET option</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Redshift UNLOAD command mendukung FORMAT AS PARQUET secara native. Data ditulis langsung ke S3 dalam Parquet format dengan columnar storage dan compression. Ini paling efisien karena Redshift melakukan conversion internally tanpa data transfer overhead. Opsi B (CSV + Glue) menambah step dan biaya Glue job. Opsi C (Python script) sangat lambat untuk large datasets dan bottleneck di single connection. Opsi D — Redshift Spectrum external tables are read-only, tidak bisa INSERT INTO.</div>
+                <div class="explanation">Redshift UNLOAD command mendukung FORMAT AS PARQUET secara native. Data ditulis langsung ke S3 dalam Parquet format dengan columnar storage dan compression. Ini paling efisien karena Redshift melakukan conversion internally tanpa data transfer overhead. Opsi B (CSV + Glue) menambah step dan biaya Glue job. Opsi C (Python script) sangat lambat untuk large datasets dan bottleneck di single connection. Opsi D — Redshift Spectrum external tables are read-only, tidak bisa INSERT INTO — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -164,13 +164,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Both Athena and Redshift Spectrum support ORC natively, so conversion to Parquet is optional; however, Parquet has broader ecosystem support and is the AWS recommended format for new workloads</li>
                 <li><span class="option-label">B.</span> ORC must be converted to Parquet immediately because Athena cannot read ORC</li>
-                <li><span class="option-label">C.</span> Parquet and ORC are identical formats with different names</li>
+                <li><span class="option-label">C.</span> Parquet and ORC are identical formats with different names for new workloads</li>
                 <li><span class="option-label">D.</span> ORC is always superior to Parquet for analytical queries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena dan Redshift Spectrum keduanya mendukung ORC secara native. Migration ke Parquet tidak wajib untuk fungsionalitas. Namun, Parquet memiliki broader ecosystem support (Spark, pandas, Arrow, ML frameworks), lebih baik untuk nested data, dan umumnya direkomendasikan AWS untuk new workloads. Opsi B salah — Athena reads ORC. Opsi C salah — mereka berbeda (ORC dari Hive ecosystem, Parquet dari Hadoop/Spark). Opsi D over-generalization — keduanya memiliki trade-offs.</div>
+                <div class="explanation">Athena dan Redshift Spectrum keduanya mendukung ORC secara native. Migration ke Parquet tidak wajib untuk fungsionalitas. Namun, Parquet memiliki broader ecosystem support (Spark, pandas, Arrow, ML frameworks), lebih baik untuk nested data, dan umumnya direkomendasikan AWS untuk new workloads. Opsi B salah — Athena reads ORC. Opsi C salah — mereka berbeda (ORC dari Hive ecosystem, Parquet dari Hadoop/Spark) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D over-generalization — keduanya memiliki trade-offs.</div>
             </div>
         </div>
 
@@ -180,13 +180,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue's ResolveChoice transform to handle ambiguous types by casting to a common type (e.g., cast to string) or creating separate columns for each detected type</li>
                 <li><span class="option-label">B.</span> Parquet will automatically handle mixed types using variant type</li>
-                <li><span class="option-label">C.</span> Remove rows with incorrect types before conversion</li>
+                <li><span class="option-label">C.</span> Remove rows with incorrect types before conversion for each detected type</li>
                 <li><span class="option-label">D.</span> Use CSV format permanently since it handles mixed types</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue DynamicFrames mendeteksi mixed types dan membuat ChoiceType. ResolveChoice transform menyediakan strategies: cast (convert semua ke satu type), make_cols (buat kolom terpisah per type), make_struct (nested structure), atau project (keep specific type). Ini menyelesaikan type ambiguity sebelum write ke Parquet. Opsi B — Parquet standard tidak memiliki variant type (beberapa extensions ada tapi non-standard). Opsi C menyebabkan data loss. Opsi D mengorbankan query performance.</div>
+                <div class="explanation">Glue DynamicFrames mendeteksi mixed types dan membuat ChoiceType. ResolveChoice transform menyediakan strategies: cast (convert semua ke satu type), make_cols (buat kolom terpisah per type), make_struct (nested structure), atau project (keep specific type). Ini menyelesaikan type ambiguity sebelum write ke Parquet. Opsi B — Parquet standard tidak memiliki variant type (beberapa extensions ada tapi non-standard). Opsi C menyebabkan data loss — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D mengorbankan query performance.</div>
             </div>
         </div>
         

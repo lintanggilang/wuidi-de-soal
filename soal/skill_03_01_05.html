@@ -54,13 +54,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Add a "Deprecation" and "Sunset" HTTP response header to the deprecated endpoint, enable API Gateway access logging to track consumer usage by API key</li>
                 <li><span class="option-label">B.</span> Send an email notification to all teams and remove the endpoint after 6 months</li>
-                <li><span class="option-label">C.</span> Return HTTP 301 redirects immediately to force consumers to use the new endpoint</li>
+                <li><span class="option-label">C.</span> Return HTTP 301 redirects immediately to force consumers to use the new endpoint configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Add deprecation notices to the API documentation and create a CloudWatch dashboard to monitor total request counts</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Menggunakan HTTP headers "Deprecation" (RFC 8594) dan "Sunset" memberikan machine-readable notice yang dapat dideteksi oleh consumer applications secara otomatis. API Gateway access logging dengan API keys memungkinkan tracking granular tentang consumer mana yang masih menggunakan endpoint deprecated. Ini menggabungkan komunikasi proaktif dengan monitoring. Opsi B (email only) tidak memberikan tracking dan mudah terlewat. Opsi C (301 redirect) akan langsung memecah consumer yang tidak siap. Opsi D (documentation + total counts) tidak mengidentifikasi consumer individual yang belum migrasi.</div>
+                <div class="explanation">Menggunakan HTTP headers "Deprecation" (RFC 8594) dan "Sunset" memberikan machine-readable notice yang dapat dideteksi oleh consumer applications secara otomatis. API Gateway access logging dengan API keys memungkinkan tracking granular tentang consumer mana yang masih menggunakan endpoint deprecated. Ini menggabungkan komunikasi proaktif dengan monitoring. Opsi B (email only) tidak memberikan tracking dan mudah terlewat. Opsi C (301 redirect) akan langsung memecah consumer yang tidak siap — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (documentation + total counts) tidak mengidentifikasi consumer individual yang belum migrasi.</div>
             </div>
         </div>
 
@@ -70,14 +70,14 @@
             <div class="question-text">A data engineer needs to add a new optional field "processing_timestamp" to an existing API response without breaking any current consumers. The API is documented using OpenAPI specification and consumed by multiple teams. Which change is considered backward compatible?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Add the new optional field to the response body — consumers that don't need it can simply ignore it</li>
-                <li><span class="option-label">B.</span> Add the new field as a required field in the response with a default value</li>
+                <li><span class="option-label">B.</span> Add the new field as a required field in the response with a default value configured for optimal performance</li>
                 <li><span class="option-label">C.</span> Rename an existing field from "timestamp" to "processing_timestamp" to better describe its purpose</li>
                 <li><span class="option-label">D.</span> Change the data type of the existing "timestamp" field from string to integer (Unix epoch)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Menambahkan field opsional baru ke response body adalah backward-compatible change karena consumer yang sudah ada mengabaikan field yang tidak mereka kenal (sesuai dengan Postel's Law / Robustness Principle). Opsi B (required field) bisa jadi masalah jika consumer melakukan strict schema validation. Opsi C (rename field) adalah breaking change karena consumer yang membaca field lama tidak akan menemukan data mereka. Opsi D (change data type) adalah breaking change yang akan menyebabkan parsing errors pada consumer yang mengharapkan string.</div>
+                <div class="explanation">Menambahkan field opsional baru ke response body adalah backward-compatible change karena consumer yang sudah ada mengabaikan field yang tidak mereka kenal (sesuai dengan Postel's Law / Robustness Principle). Opsi B (required field) bisa jadi masalah jika consumer melakukan strict schema validation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (rename field) adalah breaking change karena consumer yang membaca field lama tidak akan menemukan data mereka. Opsi D (change data type) adalah breaking change yang akan menyebabkan parsing errors pada consumer yang mengharapkan string.</div>
             </div>
         </div>
 
@@ -87,14 +87,14 @@
             <div class="question-text">A data platform team provides a high-volume analytics API that receives 10,000 requests per second during peak hours. They notice that some consumers are sending excessive requests that degrade performance for other users. The team needs to implement fair usage controls. Which API Gateway configuration provides the MOST granular control?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure usage plans with API keys, setting per-key throttle rates and monthly quota limits for each consumer team</li>
-                <li><span class="option-label">B.</span> Set a single account-level throttle limit on the API Gateway stage</li>
+                <li><span class="option-label">B.</span> Set a single account-level throttle limit on the API Gateway stage with API keys and monthly quota limits for each consumer team</li>
                 <li><span class="option-label">C.</span> Use AWS WAF rate-based rules to block IP addresses that exceed a request threshold</li>
                 <li><span class="option-label">D.</span> Implement client-side rate limiting in the SDK distributed to consumers</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">API Gateway usage plans dengan API keys memberikan kontrol granular per consumer — throttle rate (requests per second) dan quota (total requests per period) dapat dikonfigurasi secara independen untuk setiap team. Ini memastikan fair usage tanpa mempengaruhi consumer lain. Opsi B (account-level throttle) membatasi semua consumer secara sama tanpa diferensiasi. Opsi C (WAF rate-based) bekerja per IP yang tidak cocok untuk internal consumers yang mungkin share IP. Opsi D (client-side limiting) tidak enforceable karena consumer bisa bypass atau mengubah implementasi.</div>
+                <div class="explanation">API Gateway usage plans dengan API keys memberikan kontrol granular per consumer — throttle rate (requests per second) dan quota (total requests per period) dapat dikonfigurasi secara independen untuk setiap team. Ini memastikan fair usage tanpa mempengaruhi consumer lain. Opsi B (account-level throttle) membatasi semua consumer secara sama tanpa diferensiasi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (WAF rate-based) bekerja per IP yang tidak cocok untuk internal consumers yang mungkin share IP. Opsi D (client-side limiting) tidak enforceable karena consumer bisa bypass atau mengubah implementasi.</div>
             </div>
         </div>
 
@@ -105,13 +105,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> CloudWatch metrics for API Gateway (4XXError, 5XXError, Latency, Count) with composite alarms, combined with CloudWatch Logs for detailed request/response logging</li>
                 <li><span class="option-label">B.</span> CloudWatch Logs Insights queries running on a daily schedule to identify error patterns</li>
-                <li><span class="option-label">C.</span> CloudWatch Synthetics canaries that test API endpoints every 5 minutes</li>
+                <li><span class="option-label">C.</span> CloudWatch Synthetics canaries that test API endpoints every 5 minutes with composite alarms for API Gateway (4XXError</li>
                 <li><span class="option-label">D.</span> AWS X-Ray tracing enabled on all API requests to track latency distributions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudWatch metrics untuk API Gateway (4XXError, 5XXError, Latency, Count) memberikan real-time visibility ke kesehatan API. Composite alarms menggabungkan multiple conditions (misalnya, error rate > 5% DAN latency > 2s) untuk alerting yang lebih akurat. Detailed logging memberikan data untuk troubleshooting. Opsi B (daily Logs Insights) terlalu lambat untuk mendeteksi masalah sebelum impact. Opsi C (Synthetics) berguna sebagai tambahan tetapi hanya menguji dari perspektif sintetis, bukan traffic aktual. Opsi D (X-Ray) bagus untuk tracing tetapi tidak menyediakan alerting atau error rate monitoring secara langsung.</div>
+                <div class="explanation">CloudWatch metrics untuk API Gateway (4XXError, 5XXError, Latency, Count) memberikan real-time visibility ke kesehatan API. Composite alarms menggabungkan multiple conditions (misalnya, error rate > 5% DAN latency > 2s) untuk alerting yang lebih akurat. Detailed logging memberikan data untuk troubleshooting. Opsi B (daily Logs Insights) terlalu lambat untuk mendeteksi masalah sebelum impact. Opsi C (Synthetics) berguna sebagai tambahan tetapi hanya menguji dari perspektif sintetis, bukan traffic aktual — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (X-Ray) bagus untuk tracing tetapi tidak menyediakan alerting atau error rate monitoring secara langsung.</div>
             </div>
         </div>
 
@@ -123,12 +123,12 @@
                 <li><span class="option-label">A.</span> Use API Gateway canary deployment on the production stage with a 10% canary percentage and configure CloudWatch alarms to trigger automatic rollback</li>
                 <li><span class="option-label">B.</span> Use Route 53 weighted routing between two API Gateway endpoints with health checks</li>
                 <li><span class="option-label">C.</span> Deploy both versions as separate stages and use a Lambda@Edge function to distribute traffic</li>
-                <li><span class="option-label">D.</span> Use AWS CodeDeploy with a Lambda deployment preference of Linear10PercentEvery1Minute</li>
+                <li><span class="option-label">D.</span> Use AWS CodeDeploy with a Lambda deployment preference of Linear10PercentEvery1Minute and configure CloudWatch alarms to trigger automatic rollback</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">API Gateway mendukung canary deployments secara native pada stage level. Traffic dapat dialokasikan ke canary (misalnya 10%) sementara sisanya tetap di deployment saat ini. Dengan CloudWatch alarms pada canary metrics, rollback otomatis dapat dicapai melalui API Gateway deployment rollback. Ini built-in tanpa kode kustom. Opsi B (Route 53) memerlukan dua endpoints terpisah dan tidak terintegrasi untuk rollback otomatis. Opsi C (Lambda@Edge) memerlukan development kustom yang signifikan. Opsi D (CodeDeploy Lambda) untuk Lambda functions, bukan API Gateway stage deployments.</div>
+                <div class="explanation">API Gateway mendukung canary deployments secara native pada stage level. Traffic dapat dialokasikan ke canary (misalnya 10%) sementara sisanya tetap di deployment saat ini. Dengan CloudWatch alarms pada canary metrics, rollback otomatis dapat dicapai melalui API Gateway deployment rollback. Ini built-in tanpa kode kustom. Opsi B (Route 53) memerlukan dua endpoints terpisah dan tidak terintegrasi untuk rollback otomatis. Opsi C (Lambda@Edge) memerlukan development kustom yang signifikan. Opsi D (CodeDeploy Lambda) untuk Lambda functions, bukan API Gateway stage deployments — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -138,14 +138,14 @@
             <div class="question-text">A data platform team needs to maintain two major versions of their API simultaneously (v1 and v2) for at least 12 months. Each version has different request/response schemas, different business logic, and independent deployment cycles. The team wants to minimize code duplication while keeping versions independently deployable. Which architecture is MOST appropriate?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use separate Lambda functions for v1 and v2 behind a single API Gateway with base path mappings, sharing common logic through Lambda layers</li>
-                <li><span class="option-label">B.</span> Use a single Lambda function with version-based conditional logic handling both v1 and v2 requests</li>
+                <li><span class="option-label">B.</span> Use a single Lambda function with version-based conditional logic handling both v1 and v2 requests configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Deploy two completely independent API Gateway APIs with no shared components</li>
                 <li><span class="option-label">D.</span> Use API Gateway request/response mapping templates to transform v1 requests into v2 format before forwarding to a single backend</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Separate Lambda functions untuk setiap versi memungkinkan independent deployment cycles dan isolasi logika bisnis. Lambda layers sharing common code (utility functions, data access layer) mengurangi duplikasi. Base path mappings pada custom domain menyediakan clean URL routing. Opsi B (single Lambda) mencampur logika kedua versi, membuat testing dan deployment lebih kompleks dan berisiko. Opsi C (completely separate) memaksimalkan duplikasi kode. Opsi D (mapping templates) hanya bekerja jika perbedaan versi minimal dan superficial, tidak cocok untuk different business logic.</div>
+                <div class="explanation">Separate Lambda functions untuk setiap versi memungkinkan independent deployment cycles dan isolasi logika bisnis. Lambda layers sharing common code (utility functions, data access layer) mengurangi duplikasi. Base path mappings pada custom domain menyediakan clean URL routing. Opsi B (single Lambda) mencampur logika kedua versi, membuat testing dan deployment lebih kompleks dan berisiko — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (completely separate) memaksimalkan duplikasi kode. Opsi D (mapping templates) hanya bekerja jika perbedaan versi minimal dan superficial, tidak cocok untuk different business logic.</div>
             </div>
         </div>
 
@@ -157,12 +157,12 @@
                 <li><span class="option-label">A.</span> Import the OpenAPI specification directly into API Gateway and use it as the single source of truth — any API changes must first update the spec, then deploy through the spec</li>
                 <li><span class="option-label">B.</span> Generate documentation from the deployed API Gateway using the export feature and publish it to a developer portal</li>
                 <li><span class="option-label">C.</span> Assign a documentation owner who manually updates the OpenAPI spec after each release</li>
-                <li><span class="option-label">D.</span> Use AWS AppSync with a GraphQL schema that auto-generates documentation from the type definitions</li>
+                <li><span class="option-label">D.</span> Use AWS AppSync with a GraphQL schema that auto-generates documentation from the type definitions configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Menggunakan OpenAPI specification sebagai single source of truth memastikan dokumentasi dan implementasi selalu synchronized. API Gateway mendukung import OpenAPI spec yang mendefinisikan endpoints, request/response models, dan validasi. CI/CD pipeline memastikan perubahan selalu dimulai dari spec update. Opsi B (export) bersifat reactive — dokumentasi diupdate setelah perubahan, bisa ada gap. Opsi C (manual owner) rentan terhadap human error dan delays. Opsi D (AppSync/GraphQL) mengubah arsitektur sepenuhnya dan bukan solusi untuk REST API yang sudah ada.</div>
+                <div class="explanation">Menggunakan OpenAPI specification sebagai single source of truth memastikan dokumentasi dan implementasi selalu synchronized. API Gateway mendukung import OpenAPI spec yang mendefinisikan endpoints, request/response models, dan validasi. CI/CD pipeline memastikan perubahan selalu dimulai dari spec update. Opsi B (export) bersifat reactive — dokumentasi diupdate setelah perubahan, bisa ada gap. Opsi C (manual owner) rentan terhadap human error dan delays. Opsi D (AppSync/GraphQL) mengubah arsitektur sepenuhnya dan bukan solusi untuk REST API yang sudah ada — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -173,13 +173,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a phased approach: announce via developer portal and API response headers (Sunset header with date), track usage of deprecated field through custom CloudWatch metrics, contact remaining consumers directly before removal</li>
                 <li><span class="option-label">B.</span> Remove the field immediately and notify consumers through an email blast after the change</li>
-                <li><span class="option-label">C.</span> Make the field return null values for 30 days before removing it completely</li>
+                <li><span class="option-label">C.</span> Make the field return null values for 30 days before removing it completely with date)</li>
                 <li><span class="option-label">D.</span> Create a new API version and redirect all v1 traffic to v2 immediately</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Pendekatan bertahap mengkombinasikan multiple communication channels: developer portal untuk awareness, Sunset header (RFC 8594) untuk machine-readable notice, custom metrics untuk tracking siapa yang masih menggunakan field deprecated, dan direct contact untuk consumers yang belum migrasi. Ini memaksimalkan awareness dan minimalisir disruption. Opsi B (immediate removal) akan langsung memecah consumers. Opsi C (null values) bisa menyebabkan NullPointerException pada consumers yang menggunakan field tersebut. Opsi D (immediate redirect) tidak memberikan waktu migrasi.</div>
+                <div class="explanation">Pendekatan bertahap mengkombinasikan multiple communication channels: developer portal untuk awareness, Sunset header (RFC 8594) untuk machine-readable notice, custom metrics untuk tracking siapa yang masih menggunakan field deprecated, dan direct contact untuk consumers yang belum migrasi. Ini memaksimalkan awareness dan minimalisir disruption. Opsi B (immediate removal) akan langsung memecah consumers. Opsi C (null values) bisa menyebabkan NullPointerException pada consumers yang menggunakan field tersebut — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (immediate redirect) tidak memberikan waktu migrasi.</div>
             </div>
         </div>
 
@@ -191,12 +191,12 @@
                 <li><span class="option-label">A.</span> Create tiered usage plans — premium plan with higher throttle/burst limits for critical consumers, standard plan with lower limits for others, combined with method-level throttling for expensive endpoints</li>
                 <li><span class="option-label">B.</span> Increase the account-level throttle limit to accommodate the maximum expected traffic spike</li>
                 <li><span class="option-label">C.</span> Place Amazon CloudFront in front of API Gateway to cache all responses and reduce backend load</li>
-                <li><span class="option-label">D.</span> Implement an SQS queue between API Gateway and the backend to buffer requests during spikes</li>
+                <li><span class="option-label">D.</span> Implement an SQS queue between API Gateway and the backend to buffer requests during spikes with higher throttle/burst limits for critical consumers</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Tiered usage plans memungkinkan diferensiasi service level antar consumer groups. Critical consumers mendapat throttle/burst limits lebih tinggi sehingga tetap bisa mengakses API saat traffic spike. Method-level throttling melindungi endpoint yang mahal secara komputasi. Opsi B (increase limits) tidak memberikan prioritas dan bisa overload backend. Opsi C (CloudFront caching) hanya efektif untuk data yang jarang berubah, tidak cocok untuk real-time analytics API. Opsi D (SQS buffer) mengubah API dari synchronous ke asynchronous yang memecah consumer expectations.</div>
+                <div class="explanation">Tiered usage plans memungkinkan diferensiasi service level antar consumer groups. Critical consumers mendapat throttle/burst limits lebih tinggi sehingga tetap bisa mengakses API saat traffic spike. Method-level throttling melindungi endpoint yang mahal secara komputasi. Opsi B (increase limits) tidak memberikan prioritas dan bisa overload backend. Opsi C (CloudFront caching) hanya efektif untuk data yang jarang berubah, tidak cocok untuk real-time analytics API. Opsi D (SQS buffer) mengubah API dari synchronous ke asynchronous yang memecah consumer expectations — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

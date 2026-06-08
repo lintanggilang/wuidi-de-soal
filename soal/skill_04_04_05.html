@@ -37,13 +37,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Each log source → CloudWatch Logs → Subscription filters → Amazon Data Firehose → S3 data lake</li>
                 <li><span class="option-label">B.</span> Each log source → Amazon Data Firehose (direct PUT or service integrations) → S3 data lake with dynamic partitioning</li>
-                <li><span class="option-label">C.</span> Each log source → Amazon Kinesis Data Streams → AWS Lambda consumers → S3 data lake</li>
+                <li><span class="option-label">C.</span> Each log source → Amazon Kinesis Data Streams → AWS Lambda consumers → S3 data lake with dynamic partitioning</li>
                 <li><span class="option-label">D.</span> Each log source → S3 direct delivery → AWS Glue ETL jobs (scheduled hourly) → S3 data lake (curated)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Amazon Data Firehose (sebelumnya Kinesis Data Firehose) adalah solusi paling tepat untuk high-volume log ingestion ke S3. Firehose mendukung direct integration dari banyak AWS services (VPC Flow Logs, WAF, CloudTrail), auto-scaling tanpa management, built-in buffering untuk batch writes yang efisien ke S3, dynamic partitioning untuk organisasi data, dan format conversion (JSON ke Parquet). Opsi A menambahkan hop melalui CloudWatch Logs yang menambah biaya ingestion dan latency — tidak perlu untuk route ke S3. Opsi C (Lambda consumers) memiliki concurrency limits dan timeout yang membuatnya tidak ideal untuk 5 TB/day. Opsi D (hourly Glue jobs) memiliki gap 1 jam dan Glue tidak ideal untuk continuous ingestion.</div>
+                <div class="explanation">Amazon Data Firehose (sebelumnya Kinesis Data Firehose) adalah solusi paling tepat untuk high-volume log ingestion ke S3. Firehose mendukung direct integration dari banyak AWS services (VPC Flow Logs, WAF, CloudTrail), auto-scaling tanpa management, built-in buffering untuk batch writes yang efisien ke S3, dynamic partitioning untuk organisasi data, dan format conversion (JSON ke Parquet). Opsi A menambahkan hop melalui CloudWatch Logs yang menambah biaya ingestion dan latency — tidak perlu untuk route ke S3. Opsi C (Lambda consumers) memiliki concurrency limits dan timeout yang membuatnya tidak ideal untuk 5 TB/day — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (hourly Glue jobs) memiliki gap 1 jam dan Glue tidak ideal untuk continuous ingestion.</div>
             </div>
         </div>
 
@@ -54,13 +54,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS Glue ETL with Spark jobs using DynamicFrames</li>
                 <li><span class="option-label">B.</span> Amazon EMR with Spark configured with memory-optimized instances for the 10 TB dataset</li>
-                <li><span class="option-label">C.</span> Amazon Athena CTAS queries to transform and filter the logs</li>
+                <li><span class="option-label">C.</span> Amazon Athena CTAS queries to transform and filter the logs with Spark</li>
                 <li><span class="option-label">D.</span> AWS Lambda with S3 batch operations processing each log file independently</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Amazon EMR dengan Spark memberikan kontrol penuh atas cluster sizing, memory configuration, dan processing optimization yang diperlukan untuk 10 TB data dengan complex joins dan business rules dalam batas waktu 4 jam. Memory-optimized instances (r5/r6g) optimal untuk large-scale data joining. EMR juga mendukung custom libraries untuk business rules. Opsi A (Glue) memiliki auto-scaling tapi less control over cluster configuration dan bisa kurang predictable untuk strict 4-hour SLA pada 10 TB. Opsi C (Athena CTAS) tidak mendukung complex business rules, custom UDFs terbatas, dan memiliki query timeout limits. Opsi D (Lambda) tidak bisa melakukan joins cross-file dan memiliki 15-minute timeout per invocation.</div>
+                <div class="explanation">Amazon EMR dengan Spark memberikan kontrol penuh atas cluster sizing, memory configuration, dan processing optimization yang diperlukan untuk 10 TB data dengan complex joins dan business rules dalam batas waktu 4 jam. Memory-optimized instances (r5/r6g) optimal untuk large-scale data joining. EMR juga mendukung custom libraries untuk business rules. Opsi A (Glue) memiliki auto-scaling tapi less control over cluster configuration dan bisa kurang predictable untuk strict 4-hour SLA pada 10 TB. Opsi C (Athena CTAS) tidak mendukung complex business rules, custom UDFs terbatas, dan memiliki query timeout limits — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Lambda) tidak bisa melakukan joins cross-file dan memiliki 15-minute timeout per invocation.</div>
             </div>
         </div>
 
@@ -71,13 +71,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Amazon Data Firehose with Lambda transformation functions to normalize each log source to a common schema before delivery to S3</li>
                 <li><span class="option-label">B.</span> Store raw logs in S3 and create Athena views that normalize schemas using CASE statements and type casting</li>
-                <li><span class="option-label">C.</span> Use AWS Glue ETL crawlers to auto-detect schemas and create a unified Glue Data Catalog with consistent column naming</li>
+                <li><span class="option-label">C.</span> Use AWS Glue ETL crawlers to auto-detect schemas and create a unified Glue Data Catalog with consistent column naming with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Define an OCSF (Open Cybersecurity Schema Framework) schema in AWS Glue, use Glue ETL jobs to transform each source to OCSF format, store in S3 as Parquet</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">OCSF (Open Cybersecurity Schema Framework) adalah standar industri untuk normalisasi security log data. Menggunakan AWS Glue ETL untuk mentransformasi setiap sumber ke format OCSF memberikan: (1) schema yang konsisten dan well-documented, (2) Parquet format untuk query efficiency, (3) maintainability karena OCSF adalah standard yang evolving dengan community support. AWS Security Lake juga menggunakan OCSF. Opsi A (Firehose Lambda) berfungsi tapi custom schema tanpa standard bisa menjadi maintenance burden. Opsi B (Athena views) tidak mentransformasi data fisik dan views bisa menjadi complex dan lambat. Opsi C (crawlers) mendeteksi schema tapi tidak menormalkan — setiap sumber tetap memiliki schema berbeda.</div>
+                <div class="explanation">OCSF (Open Cybersecurity Schema Framework) adalah standar industri untuk normalisasi security log data. Menggunakan AWS Glue ETL untuk mentransformasi setiap sumber ke format OCSF memberikan: (1) schema yang konsisten dan well-documented, (2) Parquet format untuk query efficiency, (3) maintainability karena OCSF adalah standard yang evolving dengan community support. AWS Security Lake juga menggunakan OCSF. Opsi A (Firehose Lambda) berfungsi tapi custom schema tanpa standard bisa menjadi maintenance burden. Opsi B (Athena views) tidak mentransformasi data fisik dan views bisa menjadi complex dan lambat. Opsi C (crawlers) mendeteksi schema tapi tidak menormalkan — setiap sumber tetap memiliki schema berbeda — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -103,7 +103,7 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer needs to build a real-time log processing pipeline that: detects security threats within 30 seconds of log generation, enriches events with threat intelligence data, and stores processed events for historical analysis. The pipeline processes 100,000 events per second from multiple log sources. Which architecture provides the LOWEST detection latency?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Log sources → Amazon Data Firehose → S3 → Lambda (triggered by S3) → threat detection → DynamoDB</li>
+                <li><span class="option-label">A.</span> Log sources → Amazon Data Firehose → S3 → Lambda (triggered by S3) → threat detection → DynamoDB with enrichment → Firehose → S3 + OpenSearch</li>
                 <li><span class="option-label">B.</span> Log sources → Amazon Kinesis Data Streams → Amazon Managed Service for Apache Flink → threat detection with enrichment → Firehose → S3 + OpenSearch</li>
                 <li><span class="option-label">C.</span> Log sources → CloudWatch Logs → Metric Filters → CloudWatch Alarms → SNS → Lambda → threat detection</li>
                 <li><span class="option-label">D.</span> Log sources → Amazon MSK → Spark Streaming on EMR → threat detection → Redshift for storage</li>
@@ -111,7 +111,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Kinesis Data Streams → Managed Flink memberikan latency terendah untuk real-time processing: Kinesis memberikan sub-second delivery, dan Flink memproses events secara streaming dengan stateful enrichment (lookup ke threat intelligence database menggunakan async I/O). Output ke Firehose → S3 untuk historical analysis dan OpenSearch untuk real-time dashboards. Opsi A (Firehose → S3 → Lambda) memiliki buffering delay Firehose (minimum 60 seconds) yang melebihi requirement 30 detik. Opsi C (CloudWatch metric filters) hanya detect berdasarkan pattern count, bukan enrichment-based threat detection, dan alarm evaluation adds latency. Opsi D (EMR Spark Streaming) memiliki micro-batch latency lebih tinggi dari Flink dan EMR cluster startup time menjadi masalah.</div>
+                <div class="explanation">Kinesis Data Streams → Managed Flink memberikan latency terendah untuk real-time processing: Kinesis memberikan sub-second delivery, dan Flink memproses events secara streaming dengan stateful enrichment (lookup ke threat intelligence database menggunakan async I/O). Output ke Firehose → S3 untuk historical analysis dan OpenSearch untuk real-time dashboards. Opsi A (Firehose → S3 → Lambda) memiliki buffering delay Firehose (minimum 60 seconds) yang melebihi requirement 30 detik — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (CloudWatch metric filters) hanya detect berdasarkan pattern count, bukan enrichment-based threat detection, dan alarm evaluation adds latency. Opsi D (EMR Spark Streaming) memiliki micro-batch latency lebih tinggi dari Flink dan EMR cluster startup time menjadi masalah.</div>
             </div>
         </div>
 
@@ -140,12 +140,12 @@
                 <li><span class="option-label">A.</span> Use AWS Glue ETL jobs scheduled monthly to process all log sources, generate summary tables in a Glue Data Catalog, and visualize with Amazon QuickSight</li>
                 <li><span class="option-label">B.</span> Create Athena saved queries for each report metric and manually run them monthly</li>
                 <li><span class="option-label">C.</span> Use CloudWatch Logs Insights with saved queries and export results to S3 monthly</li>
-                <li><span class="option-label">D.</span> Build a custom dashboard in Amazon Managed Grafana querying CloudWatch metrics</li>
+                <li><span class="option-label">D.</span> Build a custom dashboard in Amazon Managed Grafana querying CloudWatch metrics with Amazon QuickSight and visualize with Amazon QuickSight</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue ETL jobs yang dijadwalkan bulanan memberikan solusi paling otomatis dan repeatable: scheduled triggers memastikan jobs berjalan tanpa intervensi manual, jobs dapat memproses multiple log sources (CloudTrail + VPC Flow Logs + S3 access logs), menghasilkan summary tables yang terstruktur di Data Catalog, dan QuickSight dashboards otomatis refresh dari summary tables. Opsi B (manual Athena queries) tidak otomatis — memerlukan human intervention setiap bulan. Opsi C (CloudWatch Logs Insights) memiliki batas query scope dan tidak bisa join antar log sources yang berbeda. Opsi D (Grafana + CloudWatch Metrics) hanya menampilkan metrics, bukan detailed log analysis yang diperlukan untuk unique principals dan IP range checking.</div>
+                <div class="explanation">Glue ETL jobs yang dijadwalkan bulanan memberikan solusi paling otomatis dan repeatable: scheduled triggers memastikan jobs berjalan tanpa intervensi manual, jobs dapat memproses multiple log sources (CloudTrail + VPC Flow Logs + S3 access logs), menghasilkan summary tables yang terstruktur di Data Catalog, dan QuickSight dashboards otomatis refresh dari summary tables. Opsi B (manual Athena queries) tidak otomatis — memerlukan human intervention setiap bulan. Opsi C (CloudWatch Logs Insights) memiliki batas query scope dan tidak bisa join antar log sources yang berbeda. Opsi D (Grafana + CloudWatch Metrics) hanya menampilkan metrics, bukan detailed log analysis yang diperlukan untuk unique principals dan IP range checking — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -174,12 +174,12 @@
                 <li><span class="option-label">A.</span> Increase the Firehose buffer size to 128 MB and buffer interval to 900 seconds to create larger files</li>
                 <li><span class="option-label">B.</span> Enable Firehose data format conversion to Apache Parquet with Snappy compression, and increase buffer size to 128 MB</li>
                 <li><span class="option-label">C.</span> Add a Lambda transformation function to compress JSON files with GZIP before delivery</li>
-                <li><span class="option-label">D.</span> Enable Firehose dynamic partitioning to organize files by source IP and destination IP</li>
+                <li><span class="option-label">D.</span> Enable Firehose dynamic partitioning to organize files by source IP and destination IP with Snappy compression and increase buffer size to 128 MB</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Konversi ke Parquet memberikan improvement terbesar untuk Athena: columnar format memungkinkan Athena hanya membaca kolom yang diperlukan (mengurangi data scanned signifikan), Snappy compression mengurangi ukuran file lebih lanjut, dan buffer 128 MB menghasilkan file berukuran optimal untuk Athena (ideal 128 MB-512 MB). Kombinasi Parquet + larger files bisa mengurangi query cost dan waktu hingga 90%. Opsi A (larger buffer only) masih JSON row-format yang memaksa full file scan. Opsi C (GZIP JSON) mengurangi storage tapi Athena masih harus decompress dan scan seluruh file karena row-format. Opsi D (dynamic partitioning) membantu filter tapi tanpa columnar format, improvement terbatas.</div>
+                <div class="explanation">Konversi ke Parquet memberikan improvement terbesar untuk Athena: columnar format memungkinkan Athena hanya membaca kolom yang diperlukan (mengurangi data scanned signifikan), Snappy compression mengurangi ukuran file lebih lanjut, dan buffer 128 MB menghasilkan file berukuran optimal untuk Athena (ideal 128 MB-512 MB). Kombinasi Parquet + larger files bisa mengurangi query cost dan waktu hingga 90%. Opsi A (larger buffer only) masih JSON row-format yang memaksa full file scan. Opsi C (GZIP JSON) mengurangi storage tapi Athena masih harus decompress dan scan seluruh file karena row-format. Opsi D (dynamic partitioning) membantu filter tapi tanpa columnar format, improvement terbatas — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -188,7 +188,7 @@
             <div class="question-number">10</div>
             <div class="question-text">A security operations center (SOC) needs to correlate events across CloudTrail, GuardDuty findings, VPC Flow Logs, and custom application security logs in near real-time. When a high-severity correlation is detected (e.g., GuardDuty finding + unusual VPC traffic from same IP within 5 minutes), an alert must be triggered. Which architecture provides the MOST effective real-time correlation?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> All sources → S3 data lake → Athena scheduled queries every 5 minutes → SNS for alerting</li>
+                <li><span class="option-label">A.</span> All sources → S3 data lake → Athena scheduled queries every 5 minutes → SNS for alerting with windowed joins → SNS/Lambda for alerting</li>
                 <li><span class="option-label">B.</span> All sources → Amazon Kinesis Data Streams → Amazon Managed Service for Apache Flink with windowed joins → SNS/Lambda for alerting</li>
                 <li><span class="option-label">C.</span> All sources → Amazon EventBridge → EventBridge rules with pattern matching → Lambda for correlation → SNS</li>
                 <li><span class="option-label">D.</span> All sources → CloudWatch Logs → CloudWatch Contributor Insights → CloudWatch Alarms → SNS</li>
@@ -196,7 +196,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Apache Flink (via Managed Service) adalah satu-satunya opsi yang mendukung windowed joins — kemampuan untuk menggabungkan events dari multiple streams dalam time window tertentu (5 menit). Flink memproses events secara stateful, menyimpan state per IP address, dan mendeteksi ketika GuardDuty finding dan unusual VPC traffic dari IP yang sama terjadi dalam window 5 menit. Ini memberikan true real-time correlation. Opsi A (scheduled Athena) memiliki latency 5+ menit dan bukan streaming. Opsi C (EventBridge) hanya melakukan single-event pattern matching — tidak mendukung temporal correlation antar events berbeda. Opsi D (Contributor Insights) melakukan top-N analysis, bukan multi-source temporal correlation.</div>
+                <div class="explanation">Apache Flink (via Managed Service) adalah satu-satunya opsi yang mendukung windowed joins — kemampuan untuk menggabungkan events dari multiple streams dalam time window tertentu (5 menit). Flink memproses events secara stateful, menyimpan state per IP address, dan mendeteksi ketika GuardDuty finding dan unusual VPC traffic dari IP yang sama terjadi dalam window 5 menit. Ini memberikan true real-time correlation. Opsi A (scheduled Athena) memiliki latency 5+ menit dan bukan streaming — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (EventBridge) hanya melakukan single-event pattern matching — tidak mendukung temporal correlation antar events berbeda. Opsi D (Contributor Insights) melakukan top-N analysis, bukan multi-source temporal correlation.</div>
             </div>
         </div>
         

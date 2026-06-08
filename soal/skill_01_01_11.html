@@ -35,14 +35,14 @@
             <div class="question-text">A data engineer discovers that an ETL pipeline had a bug that corrupted 3 days of data in the data warehouse. The pipeline reads from Amazon Kinesis Data Streams (retention set to 24 hours). The raw data beyond 24 hours is no longer in Kinesis. What design pattern would have enabled replay for this scenario?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Archive raw Kinesis data to S3 using Amazon Data Firehose before ETL processing, creating a replayable raw data layer</li>
-                <li><span class="option-label">B.</span> Increase Kinesis retention to 365 days</li>
+                <li><span class="option-label">B.</span> Increase Kinesis retention to 365 days with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">C.</span> Enable Kinesis Enhanced Fan-Out for the ETL consumer</li>
                 <li><span class="option-label">D.</span> Use DynamoDB Streams instead of Kinesis for unlimited retention</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Best practice untuk replayability adalah menyimpan raw data di immutable storage (S3) sebelum pemrosesan. S3 berfungsi sebagai "source of truth" yang bisa digunakan kapan saja untuk replay. Firehose mengarchive ke S3 secara otomatis. Opsi B (365 day retention) mahal dan Kinesis tetap lebih costly dibanding S3. Opsi C (Enhanced Fan-Out) untuk throughput bukan retention. Opsi D (DynamoDB Streams) hanya retain data 24 jam juga.</div>
+                <div class="explanation">Best practice untuk replayability adalah menyimpan raw data di immutable storage (S3) sebelum pemrosesan. S3 berfungsi sebagai "source of truth" yang bisa digunakan kapan saja untuk replay. Firehose mengarchive ke S3 secara otomatis. Opsi B (365 day retention) mahal dan Kinesis tetap lebih costly dibanding S3 — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Enhanced Fan-Out) untuk throughput bukan retention. Opsi D (DynamoDB Streams) hanya retain data 24 jam juga.</div>
             </div>
         </div>
 
@@ -53,12 +53,12 @@
                 <li><span class="option-label">A.</span> Store raw data in S3 with lifecycle policies: Standard for 30 days, Glacier Instant Retrieval for 1 year, Glacier Deep Archive for remaining years, partitioned by date</li>
                 <li><span class="option-label">B.</span> Keep all data in S3 Standard storage class with versioning enabled</li>
                 <li><span class="option-label">C.</span> Store raw data in Amazon Redshift with Historical tables</li>
-                <li><span class="option-label">D.</span> Use Amazon Kinesis with 7-year retention period</li>
+                <li><span class="option-label">D.</span> Use Amazon Kinesis with 7-year retention period for 30 days</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">S3 lifecycle policies mengoptimalkan biaya berdasarkan umur data. Recent data di Standard (fast access), moderate di Glacier Instant Retrieval (millisecond access, lower cost), dan old data di Deep Archive (cheapest). Date partitioning memungkinkan replay hanya hari spesifik. Opsi B (Standard only) sangat mahal untuk 7 tahun × 500 GB/day (~1.2 PB). Opsi C (Redshift) sangat mahal untuk cold storage. Opsi D — Kinesis tidak mendukung 7-year retention (max 365 days).</div>
+                <div class="explanation">S3 lifecycle policies mengoptimalkan biaya berdasarkan umur data. Recent data di Standard (fast access), moderate di Glacier Instant Retrieval (millisecond access, lower cost), dan old data di Deep Archive (cheapest). Date partitioning memungkinkan replay hanya hari spesifik. Opsi B (Standard only) sangat mahal untuk 7 tahun × 500 GB/day (~1.2 PB). Opsi C (Redshift) sangat mahal untuk cold storage. Opsi D — Kinesis tidak mendukung 7-year retention (max 365 days) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -67,14 +67,14 @@
             <div class="question-text">A data pipeline processes streaming data and writes to a DynamoDB table. The pipeline needs to be replayable without creating duplicate entries in DynamoDB. Which design principle ensures idempotent replay?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a natural unique key from the source data as the DynamoDB partition key, so replaying the same record overwrites rather than duplicates</li>
-                <li><span class="option-label">B.</span> Generate a UUID for each record's partition key to ensure uniqueness</li>
+                <li><span class="option-label">B.</span> Generate a UUID for each record's partition key to ensure uniqueness with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">C.</span> Use DynamoDB conditional writes with attribute_not_exists to reject duplicates</li>
                 <li><span class="option-label">D.</span> Delete all DynamoDB data before each replay</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Menggunakan natural unique key (misalnya order_id, transaction_id) sebagai partition key membuat operasi idempotent. PutItem dengan key yang sama akan overwrite record yang sudah ada dengan data yang identik — tidak ada duplikasi. Ini memungkinkan replay tanpa cleanup. Opsi B (UUID) membuat setiap replay menghasilkan record baru (duplikasi). Opsi C (conditional writes) akan menolak replay yang justru diinginkan. Opsi D (delete all) menghilangkan data yang mungkin masih valid dan bukan scalable approach.</div>
+                <div class="explanation">Menggunakan natural unique key (misalnya order_id, transaction_id) sebagai partition key membuat operasi idempotent. PutItem dengan key yang sama akan overwrite record yang sudah ada dengan data yang identik — tidak ada duplikasi. Ini memungkinkan replay tanpa cleanup. Opsi B (UUID) membuat setiap replay menghasilkan record baru (duplikasi) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (conditional writes) akan menolak replay yang justru diinginkan. Opsi D (delete all) menghilangkan data yang mungkin masih valid dan bukan scalable approach.</div>
             </div>
         </div>
 
@@ -83,14 +83,14 @@
             <div class="question-text">A data engineer uses Apache Kafka (Amazon MSK) for event streaming. A consumer application crashed and needs to replay events from 48 hours ago. The topic retention is set to 7 days. How does Kafka's architecture inherently support replay?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Kafka stores messages in an immutable log; consumers can reset their consumer group offset to any point within the retention period to replay from that position</li>
-                <li><span class="option-label">B.</span> Kafka automatically replays messages to any new consumer group from the beginning</li>
+                <li><span class="option-label">B.</span> Kafka automatically replays messages to any new consumer group from the beginning configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Kafka queues messages until acknowledged; unacknowledged messages are automatically redelivered</li>
                 <li><span class="option-label">D.</span> Kafka maintains a backup of consumed messages in a separate replay topic</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Kafka menyimpan messages dalam append-only immutable log. Messages tidak dihapus setelah consumed (berbeda dengan traditional queues). Consumers melacak posisi (offset) mereka sendiri. Offset bisa di-reset ke timestamp tertentu menggunakan kafka-consumer-groups.sh --reset-offsets atau API. Ini memungkinkan replay kapan saja dalam retention period. Opsi B (auto replay new group) — perilaku default bisa "earliest" atau "latest" tergantung config. Opsi C mendeskripsikan traditional queue (SQS), bukan Kafka. Opsi D tidak ada replay topic built-in.</div>
+                <div class="explanation">Kafka menyimpan messages dalam append-only immutable log. Messages tidak dihapus setelah consumed (berbeda dengan traditional queues). Consumers melacak posisi (offset) mereka sendiri. Offset bisa di-reset ke timestamp tertentu menggunakan kafka-consumer-groups.sh --reset-offsets atau API. Ini memungkinkan replay kapan saja dalam retention period. Opsi B (auto replay new group) — perilaku default bisa "earliest" atau "latest" tergantung config — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C mendeskripsikan traditional queue (SQS), bukan Kafka. Opsi D tidak ada replay topic built-in.</div>
             </div>
         </div>
 
@@ -99,14 +99,14 @@
             <div class="question-text">A data lake architecture uses the medallion pattern (bronze/silver/gold layers) stored in S3. A bug is found in the silver layer transformation logic. The engineer needs to replay bronze data through the corrected transformation. Which characteristic of the bronze layer enables this replay?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Bronze layer stores raw, immutable data in its original format with append-only writes, partitioned by ingestion timestamp</li>
-                <li><span class="option-label">B.</span> Bronze layer stores pre-processed and deduplicated data</li>
+                <li><span class="option-label">B.</span> Bronze layer stores pre-processed and deduplicated data with append-only writes</li>
                 <li><span class="option-label">C.</span> Bronze layer uses ACID transactions to maintain data consistency</li>
                 <li><span class="option-label">D.</span> Bronze layer automatically version-controls all transformations</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Bronze layer dalam medallion pattern menyimpan data mentah persis seperti diterima (raw, immutable). Append-only berarti data tidak pernah diubah atau dihapus. Partisi berdasarkan waktu ingestion memungkinkan replay dari periode waktu tertentu. Ini adalah prinsip utama replayability — selalu simpan raw source data yang tidak dimodifikasi. Opsi B (pre-processed) bukan definisi bronze layer. Opsi C (ACID) adalah fitur data format bukan prinsip replay. Opsi D (version control transformations) adalah tentang code bukan data.</div>
+                <div class="explanation">Bronze layer dalam medallion pattern menyimpan data mentah persis seperti diterima (raw, immutable). Append-only berarti data tidak pernah diubah atau dihapus. Partisi berdasarkan waktu ingestion memungkinkan replay dari periode waktu tertentu. Ini adalah prinsip utama replayability — selalu simpan raw source data yang tidak dimodifikasi. Opsi B (pre-processed) bukan definisi bronze layer — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (ACID) adalah fitur data format bukan prinsip replay. Opsi D (version control transformations) adalah tentang code bukan data.</div>
             </div>
         </div>
 
@@ -117,12 +117,12 @@
                 <li><span class="option-label">A.</span> Use deterministic processing logic, idempotent writes (upsert by customer_id + date), and source data that doesn't change between replays</li>
                 <li><span class="option-label">B.</span> Process records in any order since aggregation is commutative</li>
                 <li><span class="option-label">C.</span> Use exactly-once delivery in the messaging system</li>
-                <li><span class="option-label">D.</span> Cache aggregation results and return cached values on replay</li>
+                <li><span class="option-label">D.</span> Cache aggregation results and return cached values on replay and source data that doesn't change between replays</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Safe replayability membutuhkan tiga hal: (1) Deterministic logic — same input selalu menghasilkan same output, (2) Idempotent writes — menghindari duplikasi saat replay (upsert by natural key), (3) Immutable source — data sumber tidak berubah antara replays. Kombinasi ini menjamin output identik. Opsi B (commutative) hanya membantu ordering tapi tidak menjamin idempotency. Opsi C (exactly-once) membantu tapi tidak sufficient tanpa idempotent writes. Opsi D (caching) menghasilkan stale data jika replay diperlukan karena bug fix.</div>
+                <div class="explanation">Safe replayability membutuhkan tiga hal: (1) Deterministic logic — same input selalu menghasilkan same output, (2) Idempotent writes — menghindari duplikasi saat replay (upsert by natural key), (3) Immutable source — data sumber tidak berubah antara replays. Kombinasi ini menjamin output identik. Opsi B (commutative) hanya membantu ordering tapi tidak menjamin idempotency. Opsi C (exactly-once) membantu tapi tidak sufficient tanpa idempotent writes. Opsi D (caching) menghasilkan stale data jika replay diperlukan karena bug fix — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -132,13 +132,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Kinesis → Amazon Data Firehose → S3 (raw layer, 30-day retention) with the ETL pipeline reading from S3 for replay scenarios</li>
                 <li><span class="option-label">B.</span> Increase Kinesis retention to 30 days (720 hours)</li>
-                <li><span class="option-label">C.</span> Kinesis → Lambda → DynamoDB (raw events) with 30-day TTL</li>
+                <li><span class="option-label">C.</span> Kinesis → Lambda → DynamoDB (raw events) with 30-day TTL for replay scenarios</li>
                 <li><span class="option-label">D.</span> Use Kinesis on-demand mode for automatic extended retention</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Firehose automatically delivers semua Kinesis records ke S3 dengan near-zero operational overhead. S3 sebagai replay source sangat cost-effective. Pipeline ETL didesain untuk bisa membaca dari Kinesis (real-time) atau S3 (replay). S3 lifecycle policies menghapus data setelah 30 hari. Opsi B (30-day Kinesis retention) sangat mahal — extended retention dicharge per shard-hour. Opsi C (Lambda→DynamoDB) mahal untuk high-volume event storage. Opsi D — on-demand mode untuk throughput bukan retention.</div>
+                <div class="explanation">Firehose automatically delivers semua Kinesis records ke S3 dengan near-zero operational overhead. S3 sebagai replay source sangat cost-effective. Pipeline ETL didesain untuk bisa membaca dari Kinesis (real-time) atau S3 (replay). S3 lifecycle policies menghapus data setelah 30 hari. Opsi B (30-day Kinesis retention) sangat mahal — extended retention dicharge per shard-hour. Opsi C (Lambda→DynamoDB) mahal untuk high-volume event storage — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — on-demand mode untuk throughput bukan retention.</div>
             </div>
         </div>
 
@@ -147,14 +147,14 @@
             <div class="question-text">A data pipeline writes processed data to Amazon Redshift. After a replay, the engineer notices duplicate rows in Redshift because the pipeline ran twice for the same time window. How should the pipeline be modified to support idempotent replay into Redshift?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a staging table pattern: TRUNCATE the target partition, then INSERT new data within a transaction (DELETE+INSERT or MERGE)</li>
-                <li><span class="option-label">B.</span> Use INSERT with no-duplicate detection</li>
+                <li><span class="option-label">B.</span> Use INSERT with no-duplicate detection with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">C.</span> Add a UNIQUE constraint on all columns to prevent duplicates</li>
                 <li><span class="option-label">D.</span> Run VACUUM DELETE after each pipeline run to remove duplicates</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Staging table pattern (atau DELETE+INSERT within transaction) adalah best practice untuk idempotent writes ke Redshift. Langkahnya: (1) Load data ke staging table, (2) Begin transaction, (3) DELETE existing records untuk time window dari target, (4) INSERT from staging ke target, (5) Commit. Replay akan menghapus data lama dan memasukkan yang baru. Opsi B (INSERT) tidak mencegah duplikasi. Opsi C (UNIQUE constraint) — Redshift tidak enforce uniqueness constraints. Opsi D (VACUUM) tidak menghapus logical duplicates.</div>
+                <div class="explanation">Staging table pattern (atau DELETE+INSERT within transaction) adalah best practice untuk idempotent writes ke Redshift. Langkahnya: (1) Load data ke staging table, (2) Begin transaction, (3) DELETE existing records untuk time window dari target, (4) INSERT from staging ke target, (5) Commit. Replay akan menghapus data lama dan memasukkan yang baru. Opsi B (INSERT) tidak mencegah duplikasi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (UNIQUE constraint) — Redshift tidak enforce uniqueness constraints. Opsi D (VACUUM) tidak menghapus logical duplicates.</div>
             </div>
         </div>
 
@@ -163,14 +163,14 @@
             <div class="question-text">A company is evaluating whether their data pipeline is replayable. The pipeline reads from a third-party API that provides data for a specific date range. The API has a 7-day lookback limit. After 7 days, historical data is no longer available from the API. What is the impact on replayability?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The pipeline is NOT fully replayable from source after 7 days; the company must capture and persist raw API responses in S3 at ingestion time to enable replay beyond 7 days</li>
-                <li><span class="option-label">B.</span> The pipeline is fully replayable because the data is already in the data warehouse</li>
+                <li><span class="option-label">B.</span> The pipeline is fully replayable because the data is already in the data warehouse with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">C.</span> The pipeline is fully replayable if the API is called with the original date range parameters</li>
                 <li><span class="option-label">D.</span> Replayability is not affected because AWS services maintain copies of all API responses</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Jika source data memiliki window terbatas (7 hari), pipeline kehilangan kemampuan replay dari source setelah window tersebut. Untuk memastikan replayability, raw responses HARUS disimpan di S3 saat ingestion (capture at source). Ini adalah prinsip fundamental: jika source bisa hilang, simpan salinan raw data. Opsi B (data warehouse) berisi processed data, bukan raw — tidak bisa replay transformasi. Opsi C salah karena API tidak punya data setelah 7 hari. Opsi D — AWS tidak menyimpan third-party API responses.</div>
+                <div class="explanation">Jika source data memiliki window terbatas (7 hari), pipeline kehilangan kemampuan replay dari source setelah window tersebut. Untuk memastikan replayability, raw responses HARUS disimpan di S3 saat ingestion (capture at source). Ini adalah prinsip fundamental: jika source bisa hilang, simpan salinan raw data. Opsi B (data warehouse) berisi processed data, bukan raw — tidak bisa replay transformasi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah karena API tidak punya data setelah 7 hari. Opsi D — AWS tidak menyimpan third-party API responses.</div>
             </div>
         </div>
 
@@ -181,12 +181,12 @@
                 <li><span class="option-label">A.</span> Use Iceberg's time travel to identify the snapshot before the buggy data, create a branch, reprocess into the branch, then fast-forward merge when validated</li>
                 <li><span class="option-label">B.</span> Delete the Iceberg table and recreate it from scratch</li>
                 <li><span class="option-label">C.</span> Overwrite the last 5 partitions directly in the main table</li>
-                <li><span class="option-label">D.</span> Use Iceberg's expire_snapshots to remove buggy data</li>
+                <li><span class="option-label">D.</span> Use Iceberg's expire_snapshots to remove buggy data configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Iceberg's branching (table branching) memungkinkan reprocessing di branch terpisah tanpa mempengaruhi main table yang dibaca downstream consumers. Setelah validasi, branch di-merge (fast-forward) ke main. Time travel membantu identify correct snapshot. Ini adalah safe replay pattern. Opsi B (delete+recreate) menyebabkan downtime dan kehilangan history. Opsi C (overwrite) mempengaruhi downstream consumers selama reprocessing. Opsi D (expire_snapshots) menghapus metadata bukan data correction.</div>
+                <div class="explanation">Iceberg's branching (table branching) memungkinkan reprocessing di branch terpisah tanpa mempengaruhi main table yang dibaca downstream consumers. Setelah validasi, branch di-merge (fast-forward) ke main. Time travel membantu identify correct snapshot. Ini adalah safe replay pattern. Opsi B (delete+recreate) menyebabkan downtime dan kehilangan history. Opsi C (overwrite) mempengaruhi downstream consumers selama reprocessing. Opsi D (expire_snapshots) menghapus metadata bukan data correction — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

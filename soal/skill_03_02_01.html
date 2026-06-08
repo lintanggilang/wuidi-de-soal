@@ -120,7 +120,7 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer is creating an Amazon QuickSight dataset that combines data from an Amazon RDS PostgreSQL database and a CSV file stored in Amazon S3. The combined dataset will be used for monthly sales analysis. The data in RDS changes daily while the CSV is updated monthly. What is the MOST efficient approach to configure the dataset refresh?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use direct query mode for both sources to always get the latest data</li>
+                <li><span class="option-label">A.</span> Use direct query mode for both sources to always get the latest data with incremental refresh on the RDS source</li>
                 <li><span class="option-label">B.</span> Import both sources into SPICE with a daily full refresh schedule</li>
                 <li><span class="option-label">C.</span> Import into SPICE with incremental refresh on the RDS source and full refresh monthly for the S3 source</li>
                 <li><span class="option-label">D.</span> Import into SPICE with a weekly full refresh schedule for cost optimization</li>
@@ -128,7 +128,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">QuickSight SPICE mendukung incremental refresh yang hanya mengambil data baru/berubah berdasarkan kolom date/timestamp. Untuk RDS yang berubah harian, incremental refresh menghemat waktu dan SPICE capacity. Untuk S3 CSV yang hanya update bulanan, full refresh bulanan sudah cukup. Opsi A kehilangan keuntungan performa SPICE. Opsi B membuang resource dengan full refresh setiap hari. Opsi D bisa menyebabkan data stale hingga seminggu untuk sumber RDS yang berubah harian.</div>
+                <div class="explanation">QuickSight SPICE mendukung incremental refresh yang hanya mengambil data baru/berubah berdasarkan kolom date/timestamp. Untuk RDS yang berubah harian, incremental refresh menghemat waktu dan SPICE capacity. Untuk S3 CSV yang hanya update bulanan, full refresh bulanan sudah cukup. Opsi A kehilangan keuntungan performa SPICE — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi B membuang resource dengan full refresh setiap hari. Opsi D bisa menyebabkan data stale hingga seminggu untuk sumber RDS yang berubah harian.</div>
             </div>
         </div>
 
@@ -138,14 +138,14 @@
             <div class="question-text">A data team wants to embed an Amazon QuickSight dashboard into their internal React web application. The application uses SAML-based SSO with Okta for authentication. Users should see their QuickSight dashboards seamlessly without a separate login prompt. Which implementation approach is correct?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use the QuickSight GetDashboardEmbedUrl API with the QUICKSIGHT identity type after registering users via SAML federation</li>
-                <li><span class="option-label">B.</span> Use the GenerateEmbedUrlForAnonymousUser API to avoid authentication complexity</li>
+                <li><span class="option-label">B.</span> Use the GenerateEmbedUrlForAnonymousUser API to avoid authentication complexity with the QUICKSIGHT identity type after registering users via SAML federation</li>
                 <li><span class="option-label">C.</span> Embed QuickSight using an iframe with the dashboard URL directly from the QuickSight console</li>
                 <li><span class="option-label">D.</span> Use QuickSight public sharing link and embed it in the React application</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk authenticated embedding dengan SSO, QuickSight mendukung SAML federation. Setelah user terdaftar via SAML (Okta sebagai IdP), aplikasi backend memanggil GetDashboardEmbedUrl API dengan identity type QUICKSIGHT untuk mendapatkan signed URL yang di-embed. Ini memberikan SSO seamless. Opsi B (anonymous) tidak memanfaatkan SSO dan tidak mendukung RLS per-user. Opsi C (direct iframe) diblokir oleh QuickSight karena alasan keamanan. Opsi D (public link) tidak aman untuk data internal.</div>
+                <div class="explanation">Untuk authenticated embedding dengan SSO, QuickSight mendukung SAML federation. Setelah user terdaftar via SAML (Okta sebagai IdP), aplikasi backend memanggil GetDashboardEmbedUrl API dengan identity type QUICKSIGHT untuk mendapatkan signed URL yang di-embed. Ini memberikan SSO seamless. Opsi B (anonymous) tidak memanfaatkan SSO dan tidak mendukung RLS per-user — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (direct iframe) diblokir oleh QuickSight karena alasan keamanan. Opsi D (public link) tidak aman untuk data internal.</div>
             </div>
         </div>
 
@@ -173,13 +173,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a QuickSight dataset using Amazon Athena as the data source, which references the Glue Data Catalog tables</li>
                 <li><span class="option-label">B.</span> Create a QuickSight dataset using a direct S3 data source with manifest file pointing to the Parquet files</li>
-                <li><span class="option-label">C.</span> Load the data into Amazon Redshift first, then connect QuickSight to Redshift</li>
+                <li><span class="option-label">C.</span> Load the data into Amazon Redshift first, then connect QuickSight to Redshift configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Use AWS Glue ETL to export the data to CSV, then upload directly to QuickSight</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon Athena secara native terintegrasi dengan AWS Glue Data Catalog dan bisa langsung query data Parquet di S3 tanpa infrastruktur tambahan (serverless). QuickSight memiliki native connector ke Athena, sehingga bisa langsung memvisualisasikan data dari data lake. Opsi B (S3 manifest) mendukung format terbatas dan lebih kompleks konfigurasinya. Opsi C (Redshift) memerlukan provisioning cluster yang tidak perlu. Opsi D (export CSV) kehilangan efisiensi Parquet dan memerlukan ETL tambahan.</div>
+                <div class="explanation">Amazon Athena secara native terintegrasi dengan AWS Glue Data Catalog dan bisa langsung query data Parquet di S3 tanpa infrastruktur tambahan (serverless). QuickSight memiliki native connector ke Athena, sehingga bisa langsung memvisualisasikan data dari data lake. Opsi B (S3 manifest) mendukung format terbatas dan lebih kompleks konfigurasinya. Opsi C (Redshift) memerlukan provisioning cluster yang tidak perlu — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (export CSV) kehilangan efisiensi Parquet dan memerlukan ETL tambahan.</div>
             </div>
         </div>
 

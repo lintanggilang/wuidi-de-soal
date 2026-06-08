@@ -52,7 +52,7 @@
             <div class="question-number">2</div>
             <div class="question-text">A company has an Amazon Redshift cluster in a VPC that needs to be accessed by data analysts from the corporate network (10.0.0.0/8) and by AWS Glue ETL jobs. The data engineer needs to configure the Redshift cluster's security group. Which set of inbound rules provides the MOST secure configuration?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Allow port 5439 from 0.0.0.0/0</li>
+                <li><span class="option-label">A.</span> Allow port 5439 from 0.0.0.0/0 configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> Allow port 5439 from 10.0.0.0/8 and allow port 5439 from the Glue connection's security group ID</li>
                 <li><span class="option-label">C.</span> Allow all TCP ports from 10.0.0.0/8 and allow all TCP ports from the Glue security group ID</li>
                 <li><span class="option-label">D.</span> Allow port 5439 from 10.0.0.0/8 and allow all traffic from the VPC CIDR range</li>
@@ -60,7 +60,7 @@
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Konfigurasi paling aman adalah memberikan akses hanya pada port yang diperlukan (5439 untuk Redshift) dari sumber yang spesifik: CIDR corporate network untuk analysts dan security group ID untuk Glue. Security group referencing (SG-to-SG) lebih aman daripada CIDR karena hanya resource yang terhubung ke security group tersebut yang diizinkan. Opsi A (0.0.0.0/0) terlalu permissive dan membuka Redshift ke internet. Opsi C (semua TCP ports) melanggar prinsip least privilege. Opsi D (all traffic dari VPC CIDR) terlalu broad — semua resource di VPC akan bisa akses.</div>
+                <div class="explanation">Konfigurasi paling aman adalah memberikan akses hanya pada port yang diperlukan (5439 untuk Redshift) dari sumber yang spesifik: CIDR corporate network untuk analysts dan security group ID untuk Glue. Security group referencing (SG-to-SG) lebih aman daripada CIDR karena hanya resource yang terhubung ke security group tersebut yang diizinkan. Opsi A (0.0.0.0/0) terlalu permissive dan membuka Redshift ke internet — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (semua TCP ports) melanggar prinsip least privilege. Opsi D (all traffic dari VPC CIDR) terlalu broad — semua resource di VPC akan bisa akses.</div>
             </div>
         </div>
 
@@ -71,13 +71,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Add an outbound rule in the Lambda security group allowing HTTPS (port 443) to 0.0.0.0/0</li>
                 <li><span class="option-label">B.</span> Create a VPC Gateway Endpoint for S3 and update the route table associated with the Lambda subnet</li>
-                <li><span class="option-label">C.</span> Attach an elastic IP to the Lambda function's ENI for internet access</li>
+                <li><span class="option-label">C.</span> Attach an elastic IP to the Lambda function's ENI for internet access with the Lambda subnet and update the route</li>
                 <li><span class="option-label">D.</span> Create a VPC Interface Endpoint for S3 and modify the Lambda security group to allow outbound traffic to the endpoint</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">VPC Gateway Endpoint untuk S3 memungkinkan akses ke S3 melalui AWS private network tanpa internet gateway atau NAT gateway. Gateway endpoint tidak memerlukan perubahan security group karena traffic di-route melalui route table. Ini gratis dan menyediakan akses private ke S3. Opsi A tidak akan berhasil karena tanpa internet gateway/NAT, tidak ada path ke internet meskipun security group mengizinkan. Opsi C tidak possible — Lambda ENI tidak bisa memiliki elastic IP secara langsung. Opsi D (Interface Endpoint) juga bisa berfungsi tetapi Gateway Endpoint untuk S3 lebih sederhana, lebih murah (gratis), dan direkomendasikan AWS.</div>
+                <div class="explanation">VPC Gateway Endpoint untuk S3 memungkinkan akses ke S3 melalui AWS private network tanpa internet gateway atau NAT gateway. Gateway endpoint tidak memerlukan perubahan security group karena traffic di-route melalui route table. Ini gratis dan menyediakan akses private ke S3. Opsi A tidak akan berhasil karena tanpa internet gateway/NAT, tidak ada path ke internet meskipun security group mengizinkan. Opsi C tidak possible — Lambda ENI tidak bisa memiliki elastic IP secara langsung — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Interface Endpoint) juga bisa berfungsi tetapi Gateway Endpoint untuk S3 lebih sederhana, lebih murah (gratis), dan direkomendasikan AWS.</div>
             </div>
         </div>
 
@@ -89,12 +89,12 @@
                 <li><span class="option-label">A.</span> One security group for master with all ports open from core nodes SG, one for core nodes with all ports open from master SG, and a NAT gateway for internet access</li>
                 <li><span class="option-label">B.</span> A single shared security group for both master and core nodes allowing all internal traffic, with VPC endpoints for all services</li>
                 <li><span class="option-label">C.</span> Separate security groups for master and core nodes with required inter-node communication ports, VPC Gateway Endpoints for S3 and DynamoDB, and a NAT gateway for the external API</li>
-                <li><span class="option-label">D.</span> Default EMR-managed security groups with an internet gateway attached to the subnet for all external communications</li>
+                <li><span class="option-label">D.</span> Default EMR-managed security groups with an internet gateway attached to the subnet for all external communications with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Best practice untuk EMR adalah: (1) Separate security groups untuk master dan core/task nodes dengan port-port spesifik yang diperlukan untuk inter-node communication (misalnya port 8443 untuk cluster management). (2) VPC Gateway Endpoints untuk S3 dan DynamoDB (gratis, traffic tetap di AWS network). (3) NAT gateway untuk akses ke external API yang memerlukan internet. Opsi A (all ports open) terlalu permissive meskipun antar SG sendiri. Opsi B (single shared SG) tidak memungkinkan granular control antara master dan core. Opsi D (internet gateway + public subnet) membuat nodes accessible dari internet — kurang aman untuk private subnet pattern.</div>
+                <div class="explanation">Best practice untuk EMR adalah: (1) Separate security groups untuk master dan core/task nodes dengan port-port spesifik yang diperlukan untuk inter-node communication (misalnya port 8443 untuk cluster management). (2) VPC Gateway Endpoints untuk S3 dan DynamoDB (gratis, traffic tetap di AWS network). (3) NAT gateway untuk akses ke external API yang memerlukan internet. Opsi A (all ports open) terlalu permissive meskipun antar SG sendiri. Opsi B (single shared SG) tidak memungkinkan granular control antara master dan core. Opsi D (internet gateway + public subnet) membuat nodes accessible dari internet — kurang aman untuk private subnet pattern — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -106,12 +106,12 @@
                 <li><span class="option-label">A.</span> Whether the Glue connection's security group (sg-glue) has a self-referencing inbound rule for all TCP traffic</li>
                 <li><span class="option-label">B.</span> Whether the Redshift Serverless workgroup is configured to be publicly accessible</li>
                 <li><span class="option-label">C.</span> Whether the VPC has DNS resolution and DNS hostnames enabled</li>
-                <li><span class="option-label">D.</span> Whether the subnet route table has a route to an internet gateway</li>
+                <li><span class="option-label">D.</span> Whether the subnet route table has a route to an internet gateway for all TCP traffic</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Masalah paling umum saat Glue connection gagal adalah tidak adanya self-referencing inbound rule pada security group Glue. AWS Glue membutuhkan ENI-nya untuk berkomunikasi satu sama lain (inter-node communication), yang memerlukan inbound rule dari security group itu sendiri (self-referencing). Ini adalah persyaratan spesifik Glue yang sering terlewat. Opsi B (publicly accessible) tidak relevan karena keduanya dalam VPC yang sama. Opsi C (DNS settings) penting tapi biasanya sudah enabled by default di VPC. Opsi D (internet gateway) tidak diperlukan untuk komunikasi intra-VPC.</div>
+                <div class="explanation">Masalah paling umum saat Glue connection gagal adalah tidak adanya self-referencing inbound rule pada security group Glue. AWS Glue membutuhkan ENI-nya untuk berkomunikasi satu sama lain (inter-node communication), yang memerlukan inbound rule dari security group itu sendiri (self-referencing). Ini adalah persyaratan spesifik Glue yang sering terlewat. Opsi B (publicly accessible) tidak relevan karena keduanya dalam VPC yang sama. Opsi C (DNS settings) penting tapi biasanya sudah enabled by default di VPC. Opsi D (internet gateway) tidak diperlukan untuk komunikasi intra-VPC — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -157,12 +157,12 @@
                 <li><span class="option-label">A.</span> Use one security group for all three tiers with rules restricting port-based access</li>
                 <li><span class="option-label">B.</span> Create three separate security groups. Aurora SG allows inbound 3306 from Lambda SG and Glue SG. Lambda SG and Glue SG have no rules referencing each other.</li>
                 <li><span class="option-label">C.</span> Create two security groups — one for Lambda and Glue, another for Aurora. Aurora SG allows inbound from the shared SG.</li>
-                <li><span class="option-label">D.</span> Use Network ACLs to block traffic between Lambda and Glue subnets, with a single security group for all services</li>
+                <li><span class="option-label">D.</span> Use Network ACLs to block traffic between Lambda and Glue subnets, with a single security group for all services and Glue SG</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Tiga security groups terpisah memberikan isolasi yang diperlukan: Aurora SG mengizinkan port 3306 dari Lambda SG dan Glue SG secara terpisah. Lambda SG dan Glue SG tidak memiliki rules yang mereferensikan satu sama lain, sehingga tidak bisa berkomunikasi langsung. Opsi A (satu SG) tidak memungkinkan isolasi antar tier karena semua resource dalam SG yang sama bisa berkomunikasi. Opsi C (shared SG untuk Lambda dan Glue) membuat keduanya berada dalam security group yang sama — jika ada self-referencing rule, mereka bisa berkomunikasi. Opsi D (NACL) bisa bekerja tapi lebih sulit di-manage dan stateless.</div>
+                <div class="explanation">Tiga security groups terpisah memberikan isolasi yang diperlukan: Aurora SG mengizinkan port 3306 dari Lambda SG dan Glue SG secara terpisah. Lambda SG dan Glue SG tidak memiliki rules yang mereferensikan satu sama lain, sehingga tidak bisa berkomunikasi langsung. Opsi A (satu SG) tidak memungkinkan isolasi antar tier karena semua resource dalam SG yang sama bisa berkomunikasi. Opsi C (shared SG untuk Lambda dan Glue) membuat keduanya berada dalam security group yang sama — jika ada self-referencing rule, mereka bisa berkomunikasi. Opsi D (NACL) bisa bekerja tapi lebih sulit di-manage dan stateless — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -174,12 +174,12 @@
                 <li><span class="option-label">A.</span> The EMR security group's outbound rules have been modified to restrict traffic, preventing outbound connections to port 3306</li>
                 <li><span class="option-label">B.</span> EMR requires an additional managed security group that was not attached to the cluster</li>
                 <li><span class="option-label">C.</span> The RDS instance is in a different Availability Zone than the EMR cluster</li>
-                <li><span class="option-label">D.</span> The Network ACL on the EMR subnet is blocking outbound traffic to the RDS subnet</li>
+                <li><span class="option-label">D.</span> The Network ACL on the EMR subnet is blocking outbound traffic to the RDS subnet configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Secara default, security groups mengizinkan semua outbound traffic. Namun, jika engineer menggunakan custom security group dan memodifikasi outbound rules (misalnya hanya mengizinkan port tertentu), koneksi outbound ke port 3306 bisa diblok. VPC flow logs mengkonfirmasi bahwa traffic outbound yang ditolak — ini menunjukkan masalah pada outbound rules di security group EMR atau NACL. Karena soal menyebutkan "outbound traffic from EMR is being rejected" dan security group memiliki custom rules, kemungkinan besar outbound rule EMR SG yang restrictive. Opsi B (managed SG) tidak menyebabkan outbound rejection. Opsi C (AZ berbeda) tidak mempengaruhi connectivity. Opsi D bisa jadi penyebab, tetapi custom SG outbound restriction adalah penyebab paling umum.</div>
+                <div class="explanation">Secara default, security groups mengizinkan semua outbound traffic. Namun, jika engineer menggunakan custom security group dan memodifikasi outbound rules (misalnya hanya mengizinkan port tertentu), koneksi outbound ke port 3306 bisa diblok. VPC flow logs mengkonfirmasi bahwa traffic outbound yang ditolak — ini menunjukkan masalah pada outbound rules di security group EMR atau NACL. Karena soal menyebutkan "outbound traffic from EMR is being rejected" dan security group memiliki custom rules, kemungkinan besar outbound rule EMR SG yang restrictive. Opsi B (managed SG) tidak menyebabkan outbound rejection. Opsi C (AZ berbeda) tidak mempengaruhi connectivity. Opsi D bisa jadi penyebab, tetapi custom SG outbound restriction adalah penyebab paling umum — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -191,12 +191,12 @@
                 <li><span class="option-label">A.</span> Create a single inbound rule on the Redshift security group using the VPC CIDR range on port 5439</li>
                 <li><span class="option-label">B.</span> Create individual inbound rules on the Redshift security group referencing each service's security group ID on port 5439</li>
                 <li><span class="option-label">C.</span> Create a common "data-access" security group, assign it as an additional security group to all services that need Redshift access, and add one inbound rule on Redshift SG referencing this common SG</li>
-                <li><span class="option-label">D.</span> Use AWS Resource Access Manager to share the Redshift security group with all service accounts</li>
+                <li><span class="option-label">D.</span> Use AWS Resource Access Manager to share the Redshift security group with all service accounts configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Membuat common "data-access" security group dan menambahkannya sebagai additional SG ke setiap service adalah pendekatan paling maintainable. Redshift SG hanya memerlukan satu inbound rule (port 5439 dari data-access SG). Ketika service baru ditambahkan, cukup attach data-access SG ke service tersebut tanpa memodifikasi Redshift SG. Opsi A (VPC CIDR) terlalu broad — semua resource di VPC bisa akses. Opsi B (individual rules) berfungsi tapi memerlukan penambahan rule baru setiap kali ada service baru — kurang scalable dan bisa hit rule limit. Opsi D (RAM) bukan untuk sharing security groups antar services dalam account yang sama.</div>
+                <div class="explanation">Membuat common "data-access" security group dan menambahkannya sebagai additional SG ke setiap service adalah pendekatan paling maintainable. Redshift SG hanya memerlukan satu inbound rule (port 5439 dari data-access SG). Ketika service baru ditambahkan, cukup attach data-access SG ke service tersebut tanpa memodifikasi Redshift SG. Opsi A (VPC CIDR) terlalu broad — semua resource di VPC bisa akses. Opsi B (individual rules) berfungsi tapi memerlukan penambahan rule baru setiap kali ada service baru — kurang scalable dan bisa hit rule limit. Opsi D (RAM) bukan untuk sharing security groups antar services dalam account yang sama — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

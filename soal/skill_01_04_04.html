@@ -36,13 +36,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a trunk-based development model with short-lived feature branches, requiring pull requests with at least one approval before merging to main, combined with automated CI tests that run Glue job unit tests on every PR</li>
                 <li><span class="option-label">B.</span> Have all engineers commit directly to the main branch with no reviews</li>
-                <li><span class="option-label">C.</span> Use long-lived feature branches (lasting weeks) that are merged monthly</li>
+                <li><span class="option-label">C.</span> Use long-lived feature branches (lasting weeks) that are merged monthly with short-lived feature branches</li>
                 <li><span class="option-label">D.</span> Maintain separate repositories for each engineer's work and manually copy code to production</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Trunk-based development with short-lived feature branches minimizes merge conflicts because branches diverge briefly. Pull request reviews catch errors before production. Automated CI running unit tests on PRs ensures broken code never reaches main. This balances velocity with safety. Opsi B — direct commits with no reviews leads to broken production pipelines. Opsi C — long-lived branches accumulate massive merge conflicts and integration issues (the exact problem they're facing). Opsi D — separate repos make collaboration impossible and code synchronization a nightmare.</div>
+                <div class="explanation">Trunk-based development with short-lived feature branches minimizes merge conflicts because branches diverge briefly. Pull request reviews catch errors before production. Automated CI running unit tests on PRs ensures broken code never reaches main. This balances velocity with safety. Opsi B — direct commits with no reviews leads to broken production pipelines. Opsi C — long-lived branches accumulate massive merge conflicts and integration issues (the exact problem they're facing) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — separate repos make collaboration impossible and code synchronization a nightmare.</div>
             </div>
         </div>
 
@@ -51,14 +51,14 @@
             <div class="question-text">A data engineer writes an AWS Glue ETL job that reads CSV files from S3, applies data type conversions, filters invalid records, and writes Parquet to a target bucket. The engineer wants to write unit tests for the transformation logic WITHOUT requiring an actual Spark cluster or AWS resources. Which testing approach is MOST effective?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use pytest with a local SparkSession (spark-testing-base or pyspark local mode), create small in-memory DataFrames as test inputs, apply the transformation functions, and assert expected outputs using DataFrame comparisons</li>
-                <li><span class="option-label">B.</span> Deploy the job to a Glue development endpoint and manually verify output files in S3</li>
+                <li><span class="option-label">B.</span> Deploy the job to a Glue development endpoint and manually verify output files in S3 with a local SparkSession (spark-testing-base or pyspark local mode) and assert expected outputs using DataFrame comparisons</li>
                 <li><span class="option-label">C.</span> Write integration tests that run the full Glue job against production data</li>
                 <li><span class="option-label">D.</span> Test by reading the output Parquet files after a production run and checking data quality</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Local SparkSession with pytest allows testing transformation logic in isolation — no AWS resources needed, fast feedback loop (seconds vs minutes). Pattern: create DataFrame with known input → apply transform function → assert output matches expected DataFrame. This tests business logic independently of infrastructure. Opsi B — development endpoints are expensive, slow, and don't provide automated regression testing. Opsi C — integration tests against production are slow, expensive, and not unit tests. Opsi D — testing after production is too late — bugs already affect downstream consumers.</div>
+                <div class="explanation">Local SparkSession with pytest allows testing transformation logic in isolation — no AWS resources needed, fast feedback loop (seconds vs minutes). Pattern: create DataFrame with known input → apply transform function → assert output matches expected DataFrame. This tests business logic independently of infrastructure. Opsi B — development endpoints are expensive, slow, and don't provide automated regression testing — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — integration tests against production are slow, expensive, and not unit tests. Opsi D — testing after production is too late — bugs already affect downstream consumers.</div>
             </div>
         </div>
 
@@ -68,13 +68,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement integration tests that run the full pipeline against a dedicated test environment with known seed data, then validate row counts, schema conformity, data types, and sample record values in the target Redshift cluster</li>
                 <li><span class="option-label">B.</span> Add more unit tests for individual transformation functions</li>
-                <li><span class="option-label">C.</span> Perform manual spot-checks on production data weekly</li>
+                <li><span class="option-label">C.</span> Perform manual spot-checks on production data weekly with known seed data and sample record values in the target Redshift cluster</li>
                 <li><span class="option-label">D.</span> Run the same unit tests multiple times to increase confidence</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Integration tests validate the interaction between components (RDS → Glue → Redshift) which unit tests cannot cover. Issues like connection timeouts, schema drift in source, Redshift COPY command failures, and data type mismatches only surface during end-to-end execution. A dedicated test environment with seed data provides repeatable, automated validation. Opsi B — more unit tests don't catch integration-level issues (connectivity, permissions, schema mismatches). Opsi C — manual checks are unreliable and not scalable. Opsi D — running the same tests repeatedly doesn't increase coverage.</div>
+                <div class="explanation">Integration tests validate the interaction between components (RDS → Glue → Redshift) which unit tests cannot cover. Issues like connection timeouts, schema drift in source, Redshift COPY command failures, and data type mismatches only surface during end-to-end execution. A dedicated test environment with seed data provides repeatable, automated validation. Opsi B — more unit tests don't catch integration-level issues (connectivity, permissions, schema mismatches). Opsi C — manual checks are unreliable and not scalable — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — running the same tests repeatedly doesn't increase coverage.</div>
             </div>
         </div>
 
@@ -84,13 +84,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement structured logging (JSON format) with correlation IDs, log at key checkpoints (records read, records filtered, records written), capture failed record details in a dead-letter location, and use different log levels (INFO for progress, WARN for data quality issues, ERROR for failures)</li>
                 <li><span class="option-label">B.</span> Add print statements throughout the code to output record counts</li>
-                <li><span class="option-label">C.</span> Enable Glue continuous logging and rely solely on the default Glue metrics</li>
+                <li><span class="option-label">C.</span> Enable Glue continuous logging and rely solely on the default Glue metrics with correlation IDs for progress</li>
                 <li><span class="option-label">D.</span> Write all records to a debug S3 bucket for manual inspection after failures</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Structured logging (JSON) enables CloudWatch Logs Insights queries for fast troubleshooting. Correlation IDs link related log entries across distributed workers. Checkpoint logging (records_read=1M, records_filtered=50K, records_written=950K) quickly identifies where data loss occurs. Dead-letter capture preserves failed records for investigation. Log levels allow filtering noise. Opsi B — print statements are unstructured, unsearchable, and provide no context. Opsi C — Glue metrics show job-level info but not record-level failures. Opsi D — writing all records to debug bucket is expensive and doesn't identify the failure point.</div>
+                <div class="explanation">Structured logging (JSON) enables CloudWatch Logs Insights queries for fast troubleshooting. Correlation IDs link related log entries across distributed workers. Checkpoint logging (records_read=1M, records_filtered=50K, records_written=950K) quickly identifies where data loss occurs. Dead-letter capture preserves failed records for investigation. Log levels allow filtering noise. Opsi B — print statements are unstructured, unsearchable, and provide no context. Opsi C — Glue metrics show job-level info but not record-level failures — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — writing all records to debug bucket is expensive and doesn't identify the failure point.</div>
             </div>
         </div>
 
@@ -101,12 +101,12 @@
                 <li><span class="option-label">A.</span> Create CloudWatch custom metrics for each pipeline (records_processed, processing_duration, error_count), set CloudWatch Alarms with appropriate thresholds for SLA breach detection, configure SNS notifications to the on-call team, and build a CloudWatch Dashboard showing all pipeline health metrics</li>
                 <li><span class="option-label">B.</span> Check the Glue console manually each morning for failed jobs</li>
                 <li><span class="option-label">C.</span> Set up email notifications only for job failures via Glue job bookmarks</li>
-                <li><span class="option-label">D.</span> Rely on downstream consumers to report when they notice missing data</li>
+                <li><span class="option-label">D.</span> Rely on downstream consumers to report when they notice missing data with appropriate thresholds for SLA breach detection for each pipeline (records_processed</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Custom CloudWatch metrics provide quantitative pipeline health data. Alarms trigger proactively BEFORE SLA breaches (e.g., alarm if processing_duration exceeds 80% of SLA window). SNS notifications ensure immediate human response. Dashboards give at-a-glance health across all 25 pipelines. This covers failures (error_count), performance degradation (duration trending up), and data completeness (records_processed below expected). Opsi B — manual checking is reactive and doesn't scale. Opsi C — job failure notifications don't catch SLA breaches or quality issues. Opsi D — learning from consumers means SLAs are already broken.</div>
+                <div class="explanation">Custom CloudWatch metrics provide quantitative pipeline health data. Alarms trigger proactively BEFORE SLA breaches (e.g., alarm if processing_duration exceeds 80% of SLA window). SNS notifications ensure immediate human response. Dashboards give at-a-glance health across all 25 pipelines. This covers failures (error_count), performance degradation (duration trending up), and data completeness (records_processed below expected). Opsi B — manual checking is reactive and doesn't scale. Opsi C — job failure notifications don't catch SLA breaches or quality issues. Opsi D — learning from consumers means SLAs are already broken — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -116,13 +116,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Externalize configuration (S3 paths, database names) to Glue job parameters or AWS Systems Manager Parameter Store, add input validation with descriptive error messages, extract duplicated logic into reusable functions, and move SQL to separate files or use parameterized templates</li>
                 <li><span class="option-label">B.</span> The code works correctly, so approve the PR without changes</li>
-                <li><span class="option-label">C.</span> Only fix the hardcoded paths and approve the rest</li>
+                <li><span class="option-label">C.</span> Only fix the hardcoded paths and approve the rest with descriptive error messages and move SQL to separate files or use parameterized templates</li>
                 <li><span class="option-label">D.</span> Rewrite the entire job from scratch following a different design pattern</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">All four concerns impact long-term reliability: Hardcoded paths break when environments change (dev→prod). No input validation causes cryptic failures on bad data. Duplicated logic means bugs must be fixed in multiple places. Unformatted SQL is error-prone to modify. Externalizing config enables environment promotion. Input validation provides clear failure messages. DRY functions reduce bug surface area. Separated SQL files enable syntax checking. Opsi B — working code with technical debt accumulates maintenance cost. Opsi C — partial fixes leave other risks. Opsi D — full rewrite is excessive when targeted improvements suffice.</div>
+                <div class="explanation">All four concerns impact long-term reliability: Hardcoded paths break when environments change (dev→prod). No input validation causes cryptic failures on bad data. Duplicated logic means bugs must be fixed in multiple places. Unformatted SQL is error-prone to modify. Externalizing config enables environment promotion. Input validation provides clear failure messages. DRY functions reduce bug surface area. Separated SQL files enable syntax checking. Opsi B — working code with technical debt accumulates maintenance cost. Opsi C — partial fixes leave other risks — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — full rewrite is excessive when targeted improvements suffice.</div>
             </div>
         </div>
 
@@ -132,13 +132,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement a tiered error handling strategy: retry transient errors (network timeouts, throttling) with exponential backoff, route malformed records to a dead-letter queue for later investigation, use checkpointing to enable resumption from the last successful point, and alert on non-retryable errors (disk full, permission denied)</li>
                 <li><span class="option-label">B.</span> Wrap the entire pipeline in a single try-except block that catches all exceptions and retries from the beginning</li>
-                <li><span class="option-label">C.</span> Ignore errors and continue processing, logging them for later review</li>
+                <li><span class="option-label">C.</span> Ignore errors and continue processing, logging them for later review with exponential backoff</li>
                 <li><span class="option-label">D.</span> Add a 5-minute sleep between operations to avoid all errors</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Tiered error handling distinguishes between error types: Transient errors (network, throttling) are retryable — exponential backoff prevents thundering herd. Malformed records shouldn't stop the pipeline — dead-letter queue preserves them without blocking good records. Checkpointing prevents reprocessing already-completed work after recovery. Non-retryable errors (disk full) need immediate human intervention. This pattern maximizes data throughput while maintaining data integrity. Opsi B — retrying from beginning is wasteful and may hit the same non-transient error. Opsi C — ignoring errors silently loses data. Opsi D — arbitrary sleeps don't prevent errors and add latency.</div>
+                <div class="explanation">Tiered error handling distinguishes between error types: Transient errors (network, throttling) are retryable — exponential backoff prevents thundering herd. Malformed records shouldn't stop the pipeline — dead-letter queue preserves them without blocking good records. Checkpointing prevents reprocessing already-completed work after recovery. Non-retryable errors (disk full) need immediate human intervention. This pattern maximizes data throughput while maintaining data integrity. Opsi B — retrying from beginning is wasteful and may hit the same non-transient error. Opsi C — ignoring errors silently loses data — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — arbitrary sleeps don't prevent errors and add latency.</div>
             </div>
         </div>
 
@@ -147,14 +147,14 @@
             <div class="question-text">A data engineering team needs to deploy AWS Glue jobs across development, staging, and production environments. Each environment has different S3 buckets, database endpoints, IAM roles, and Glue job configurations (number of workers, timeout values). Deployments are currently manual and error-prone. Which CI/CD approach is MOST appropriate?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS CodePipeline with CodeBuild stages: source from CodeCommit/GitHub triggers the pipeline, CodeBuild runs unit tests, then deploys via CloudFormation/CDK with environment-specific parameter files (dev.json, staging.json, prod.json) that contain S3 paths, IAM roles, and worker counts for each environment</li>
-                <li><span class="option-label">B.</span> Manually upload Glue scripts to S3 and update job configurations through the AWS Console for each environment</li>
+                <li><span class="option-label">B.</span> Manually upload Glue scripts to S3 and update job configurations through the AWS Console for each environment with CodeBuild stages: source from CodeCommit/GitHub triggers the pipeline and worker counts for each environment</li>
                 <li><span class="option-label">C.</span> Use a single Glue job configuration across all environments with if/else statements in the code to switch behavior</li>
                 <li><span class="option-label">D.</span> Deploy only to production and use production as the test environment</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CodePipeline provides automated, repeatable deployments. Environment-specific parameter files separate configuration from code — same CloudFormation template deploys to dev/staging/prod with different parameters. CodeBuild runs tests before deployment (fail-fast). Pipeline stages can include manual approval gates before production. This eliminates human error and ensures consistency across environments. Opsi B — manual deployment is the problem being solved; error-prone and unauditable. Opsi C — environment logic in code is fragile and makes testing difficult. Opsi D — testing in production risks data corruption and outages.</div>
+                <div class="explanation">CodePipeline provides automated, repeatable deployments. Environment-specific parameter files separate configuration from code — same CloudFormation template deploys to dev/staging/prod with different parameters. CodeBuild runs tests before deployment (fail-fast). Pipeline stages can include manual approval gates before production. This eliminates human error and ensures consistency across environments. Opsi B — manual deployment is the problem being solved; error-prone and unauditable — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — environment logic in code is fragile and makes testing difficult. Opsi D — testing in production risks data corruption and outages.</div>
             </div>
         </div>
 
@@ -164,13 +164,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Store sensitive values (connection strings, API keys) in AWS Secrets Manager with environment-specific secret names, store non-sensitive configuration (feature flags, batch sizes) in AWS Systems Manager Parameter Store with hierarchical paths (/app/prod/glue/batch-size), and have Glue jobs retrieve configurations at runtime based on an environment parameter</li>
                 <li><span class="option-label">B.</span> Store all configurations in a config.py file committed to the Git repository</li>
-                <li><span class="option-label">C.</span> Use environment variables hardcoded in each Glue job definition</li>
+                <li><span class="option-label">C.</span> Use environment variables hardcoded in each Glue job definition with environment-specific secret names</li>
                 <li><span class="option-label">D.</span> Maintain a shared spreadsheet with all configuration values that engineers reference during deployment</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Secrets Manager handles sensitive credentials with automatic rotation capability and audit logging. Parameter Store with hierarchical paths (/app/{env}/glue/{param}) organizes non-sensitive config by environment and service. Runtime retrieval based on environment parameter ensures jobs automatically get correct config without code changes. IAM policies control which environment's secrets each role can access. Opsi B — credentials in Git repos are a critical security vulnerability and are hard to rotate. Opsi C — hardcoded env vars require job updates for config changes and don't support rotation. Opsi D — spreadsheets have no access control, versioning, or audit trail.</div>
+                <div class="explanation">Secrets Manager handles sensitive credentials with automatic rotation capability and audit logging. Parameter Store with hierarchical paths (/app/{env}/glue/{param}) organizes non-sensitive config by environment and service. Runtime retrieval based on environment parameter ensures jobs automatically get correct config without code changes. IAM policies control which environment's secrets each role can access. Opsi B — credentials in Git repos are a critical security vulnerability and are hard to rotate. Opsi C — hardcoded env vars require job updates for config changes and don't support rotation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — spreadsheets have no access control, versioning, or audit trail.</div>
             </div>
         </div>
 
@@ -181,12 +181,12 @@
                 <li><span class="option-label">A.</span> Create a runbook containing: architecture diagram showing data flow between components, SLA requirements per pipeline stage, common failure scenarios with remediation steps, escalation procedures, monitoring dashboard locations, and a data dictionary describing input/output schemas at each stage</li>
                 <li><span class="option-label">B.</span> Write inline code comments explaining every line of code in all 25 components</li>
                 <li><span class="option-label">C.</span> Create a single README.md with a high-level description of the project</li>
-                <li><span class="option-label">D.</span> Record a video walkthrough of the AWS Console showing each resource</li>
+                <li><span class="option-label">D.</span> Record a video walkthrough of the AWS Console showing each resource with remediation steps</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">A runbook is the most operationally valuable documentation for pipeline maintenance. Architecture diagrams show dependencies and data flow. SLA requirements define when issues are urgent. Common failure scenarios with remediation steps enable quick resolution without deep code knowledge. Escalation procedures prevent single points of failure. Data dictionaries help understand what each component does. Opsi B — line-by-line comments are excessive, become stale, and don't help with operational issues. Opsi C — a single README lacks the operational detail needed for incident response. Opsi D — video walkthroughs become outdated as UI changes and are not searchable during incidents.</div>
+                <div class="explanation">A runbook is the most operationally valuable documentation for pipeline maintenance. Architecture diagrams show dependencies and data flow. SLA requirements define when issues are urgent. Common failure scenarios with remediation steps enable quick resolution without deep code knowledge. Escalation procedures prevent single points of failure. Data dictionaries help understand what each component does. Opsi B — line-by-line comments are excessive, become stale, and don't help with operational issues. Opsi C — a single README lacks the operational detail needed for incident response. Opsi D — video walkthroughs become outdated as UI changes and are not searchable during incidents — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

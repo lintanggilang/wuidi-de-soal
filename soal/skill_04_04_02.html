@@ -54,13 +54,13 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use CloudWatch Logs CreateExportTask API called by a daily EventBridge scheduled rule triggering a Lambda function</li>
                 <li><span class="option-label">B.</span> Create a CloudWatch Logs subscription filter that streams all logs to Amazon Data Firehose, which delivers to S3</li>
-                <li><span class="option-label">C.</span> Use AWS DataSync to synchronize CloudWatch Logs storage to S3 on a daily schedule</li>
+                <li><span class="option-label">C.</span> Use AWS DataSync to synchronize CloudWatch Logs storage to S3 on a daily schedule with real-time processing and low-latency data delivery</li>
                 <li><span class="option-label">D.</span> Configure CloudWatch Logs automatic export feature in the log group settings to export to S3 daily</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Subscription filter ke Firehose memberikan near real-time streaming ke S3 dengan prefiks terstruktur secara otomatis, minimal operational overhead, dan tidak memerlukan scheduled jobs. Firehose mendukung dynamic partitioning berdasarkan waktu. Opsi A (CreateExportTask) berfungsi tapi memiliki keterbatasan: hanya satu export task per log group pada satu waktu, memerlukan maintenance Lambda, dan ada delay. Opsi C (DataSync) tidak mendukung CloudWatch Logs sebagai source. Opsi D tidak ada fitur automatic export bawaan di CloudWatch Logs — export harus dilakukan secara manual atau via API.</div>
+                <div class="explanation">Subscription filter ke Firehose memberikan near real-time streaming ke S3 dengan prefiks terstruktur secara otomatis, minimal operational overhead, dan tidak memerlukan scheduled jobs. Firehose mendukung dynamic partitioning berdasarkan waktu. Opsi A (CreateExportTask) berfungsi tapi memiliki keterbatasan: hanya satu export task per log group pada satu waktu, memerlukan maintenance Lambda, dan ada delay. Opsi C (DataSync) tidak mendukung CloudWatch Logs sebagai source — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D tidak ada fitur automatic export bawaan di CloudWatch Logs — export harus dilakukan secara manual atau via API.</div>
             </div>
         </div>
 
@@ -72,12 +72,12 @@
                 <li><span class="option-label">A.</span> Use CloudWatch Logs cross-account subscription filters in each source account to stream logs to the central account's log groups</li>
                 <li><span class="option-label">B.</span> Create a CloudWatch Logs resource policy in the central account that grants PutLogEvents from source accounts, and configure source accounts to send logs directly</li>
                 <li><span class="option-label">C.</span> Use CloudWatch cross-account observability with a monitoring account as sink and source accounts as links, managed via AWS Organizations</li>
-                <li><span class="option-label">D.</span> Export logs from each account to a shared S3 bucket using cross-account bucket policies</li>
+                <li><span class="option-label">D.</span> Export logs from each account to a shared S3 bucket using cross-account bucket policies with a monitoring account as sink and source accounts as links, managed</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">CloudWatch cross-account observability memungkinkan monitoring account (sink) untuk melihat logs dari source accounts (links) tanpa menyalin data. Ketika dikelola via Organizations, konfigurasi diterapkan secara terpusat dan member accounts tidak bisa memodifikasi sharing configuration. Source accounts tetap memiliki akses baca ke logs mereka sendiri. Opsi A memerlukan konfigurasi subscription filter di setiap source account yang bisa diubah admin lokal. Opsi B memerlukan konfigurasi di source accounts dan tidak mencegah modifikasi oleh admin lokal. Opsi D (S3 export) tidak real-time dan tidak memberikan kemampuan query langsung dari CloudWatch console.</div>
+                <div class="explanation">CloudWatch cross-account observability memungkinkan monitoring account (sink) untuk melihat logs dari source accounts (links) tanpa menyalin data. Ketika dikelola via Organizations, konfigurasi diterapkan secara terpusat dan member accounts tidak bisa memodifikasi sharing configuration. Source accounts tetap memiliki akses baca ke logs mereka sendiri. Opsi A memerlukan konfigurasi subscription filter di setiap source account yang bisa diubah admin lokal. Opsi B memerlukan konfigurasi di source accounts dan tidak mencegah modifikasi oleh admin lokal. Opsi D (S3 export) tidak real-time dan tidak memberikan kemampuan query langsung dari CloudWatch console — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -106,12 +106,12 @@
                 <li><span class="option-label">A.</span> Move all log groups to Infrequent Access log class to reduce storage and ingestion costs</li>
                 <li><span class="option-label">B.</span> Separate logs into two log groups — frequently queried logs in Standard class and compliance-only logs in Infrequent Access class</li>
                 <li><span class="option-label">C.</span> Export all logs to S3 using Firehose and delete from CloudWatch Logs after 1 day</li>
-                <li><span class="option-label">D.</span> Compress logs before sending to CloudWatch Logs to reduce storage volume</li>
+                <li><span class="option-label">D.</span> Compress logs before sending to CloudWatch Logs to reduce storage volume and compliance-only logs in Infrequent Access class</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Memisahkan logs berdasarkan pola akses ke dua log classes adalah pendekatan paling cost-effective. Infrequent Access class memiliki biaya ingestion lebih rendah (~50% lebih murah) tapi tidak mendukung semua fitur (misalnya subscription filters, Live Tail dibatasi). Logs yang sering di-query tetap di Standard class untuk fungsionalitas penuh. Opsi A menempatkan semua di Infrequent Access, yang membatasi kemampuan query untuk 10% logs yang sering diakses. Opsi C (export ke S3) menambah kompleksitas dan menghilangkan kemampuan CloudWatch Logs Insights query. Opsi D salah karena CloudWatch Logs sudah melakukan kompresi internal — pengguna tidak bisa mengirim data pre-compressed.</div>
+                <div class="explanation">Memisahkan logs berdasarkan pola akses ke dua log classes adalah pendekatan paling cost-effective. Infrequent Access class memiliki biaya ingestion lebih rendah (~50% lebih murah) tapi tidak mendukung semua fitur (misalnya subscription filters, Live Tail dibatasi). Logs yang sering di-query tetap di Standard class untuk fungsionalitas penuh. Opsi A menempatkan semua di Infrequent Access, yang membatasi kemampuan query untuk 10% logs yang sering diakses. Opsi C (export ke S3) menambah kompleksitas dan menghilangkan kemampuan CloudWatch Logs Insights query. Opsi D salah karena CloudWatch Logs sudah melakukan kompresi internal — pengguna tidak bisa mengirim data pre-compressed — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -157,12 +157,12 @@
                 <li><span class="option-label">A.</span> Create separate log groups per tenant (/app/tenant/{tenant_id}) and use IAM policies with conditions on the log group ARN to restrict tenant access</li>
                 <li><span class="option-label">B.</span> Keep a single log group and use CloudWatch Logs Insights queries filtered by tenant_id for each tenant's access</li>
                 <li><span class="option-label">C.</span> Create separate log streams per tenant within one log group and use stream-level IAM permissions</li>
-                <li><span class="option-label">D.</span> Use subscription filters per tenant to copy relevant logs to tenant-specific log groups</li>
+                <li><span class="option-label">D.</span> Use subscription filters per tenant to copy relevant logs to tenant-specific log groups with conditions on the log group ARN</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Log groups terpisah per tenant memungkinkan IAM policies yang membatasi akses berdasarkan log group ARN (arn:aws:logs:region:account:log-group:/app/tenant/{tenant_id}:*). Ini memberikan isolasi yang kuat dan auditable. Platform team bisa memiliki akses ke semua log groups. Opsi B tidak memberikan isolasi nyata — tenant dengan permission FilterLogEvents bisa melihat semua logs di log group. Opsi C salah karena IAM permissions CloudWatch Logs tidak mendukung granularitas level log stream — permissions berlaku di level log group. Opsi D menambah kompleksitas dan biaya (double ingestion) dan subscription filters memiliki limit per log group.</div>
+                <div class="explanation">Log groups terpisah per tenant memungkinkan IAM policies yang membatasi akses berdasarkan log group ARN (arn:aws:logs:region:account:log-group:/app/tenant/{tenant_id}:*). Ini memberikan isolasi yang kuat dan auditable. Platform team bisa memiliki akses ke semua log groups. Opsi B tidak memberikan isolasi nyata — tenant dengan permission FilterLogEvents bisa melihat semua logs di log group. Opsi C salah karena IAM permissions CloudWatch Logs tidak mendukung granularitas level log stream — permissions berlaku di level log group. Opsi D menambah kompleksitas dan biaya (double ingestion) dan subscription filters memiliki limit per log group — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -174,12 +174,12 @@
                 <li><span class="option-label">A.</span> Configure CloudWatch Logs metric filters to count only ERROR and WARN events, ignoring DEBUG</li>
                 <li><span class="option-label">B.</span> Set the Lambda function's log level configuration to WARN to prevent DEBUG logs from being emitted to CloudWatch</li>
                 <li><span class="option-label">C.</span> Create a subscription filter that only forwards ERROR and WARN logs to a separate log group</li>
-                <li><span class="option-label">D.</span> Set the log group retention to 1 day to minimize storage costs for DEBUG logs</li>
+                <li><span class="option-label">D.</span> Set the log group retention to 1 day to minimize storage costs for DEBUG logs configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS Lambda Advanced Logging Controls memungkinkan pengaturan log level di level fungsi (DEBUG, INFO, WARN, ERROR). Mengatur ke WARN akan mencegah DEBUG dan INFO logs dikirim ke CloudWatch Logs sama sekali, mengurangi ingestion costs langsung di source. Opsi A (metric filters) tetap mengingestion semua logs — metric filters hanya memproses data yang sudah di-ingest. Opsi C (subscription filter) juga tidak mengurangi ingestion karena logs sudah masuk ke log group pertama sebelum difilter. Opsi D (retention 1 hari) mengurangi storage costs tapi tidak ingestion costs — biaya terbesar biasanya ada di ingestion.</div>
+                <div class="explanation">AWS Lambda Advanced Logging Controls memungkinkan pengaturan log level di level fungsi (DEBUG, INFO, WARN, ERROR). Mengatur ke WARN akan mencegah DEBUG dan INFO logs dikirim ke CloudWatch Logs sama sekali, mengurangi ingestion costs langsung di source. Opsi A (metric filters) tetap mengingestion semua logs — metric filters hanya memproses data yang sudah di-ingest. Opsi C (subscription filter) juga tidak mengurangi ingestion karena logs sudah masuk ke log group pertama sebelum difilter. Opsi D (retention 1 hari) mengurangi storage costs tapi tidak ingestion costs — biaya terbesar biasanya ada di ingestion — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
