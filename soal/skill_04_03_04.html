@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> Configure S3 server-side encryption — this automatically enforces HTTPS</li>
                 <li><span class="option-label">B.</span> Add an S3 bucket policy with a Deny statement that blocks all requests where the condition aws:SecureTransport equals "false" — this denies any HTTP (non-TLS) request regardless of which principal makes it. Combined with the aws:SecureTransport condition, only HTTPS connections are permitted to access objects in the bucket</li>
                 <li><span class="option-label">C.</span> Disable the HTTP endpoint on S3 — S3 can be configured to only listen on port 443</li>
-                <li><span class="option-label">D.</span> Use VPC endpoints which automatically enforce HTTPS without any policy changes</li>
+                <li><span class="option-label">D.</span> Use VPC endpoints which automatically enforce HTTPS without any policy changes with a Deny statement that blocks all requests where the condition aws:SecureTransport equals "false" — this denies any HTTP (non-TLS) request regardless of which principal makes it</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -52,7 +52,7 @@
             <div class="question-number">2</div>
             <div class="question-text">A data engineer connects a Glue ETL job to an Amazon RDS PostgreSQL database using a JDBC connection. The security team requires TLS encryption for all database connections. How should the engineer configure the Glue JDBC connection to enforce TLS?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> TLS is always active on Glue JDBC connections by default — no configuration needed</li>
+                <li><span class="option-label">A.</span> TLS is always active on Glue JDBC connections by default — no configuration needed with SSL parameters: add "?ssl=true&sslmode=verify-full&sslrootcert=path-to-rds-ca-cert" for server certificate validation</li>
                 <li><span class="option-label">B.</span> Configure the Glue JDBC connection URL with SSL parameters: add "?ssl=true&sslmode=verify-full&sslrootcert=path-to-rds-ca-cert" to the JDBC URL. Additionally, configure the RDS instance to require SSL (rds.force_ssl=1 parameter). The Glue connection should reference the RDS CA certificate bundle for server certificate validation. In the Glue Connection properties, enable "Require SSL connection"</li>
                 <li><span class="option-label">C.</span> Place the RDS instance and Glue job in the same VPC — VPC-internal traffic is automatically encrypted</li>
                 <li><span class="option-label">D.</span> Use IAM database authentication which automatically encrypts the connection</li>
@@ -72,7 +72,7 @@
                 <li><span class="option-label">A.</span> Direct Connect traffic is always encrypted by AWS — no additional configuration needed</li>
                 <li><span class="option-label">B.</span> Layer a Site-to-Site VPN over the Direct Connect connection — create a VPN connection using the Direct Connect public virtual interface (or transit VIF with Transit Gateway), establishing an IPsec tunnel that encrypts all traffic traversing the Direct Connect link. This provides both the reliability/bandwidth of Direct Connect AND the encryption of VPN. Alternatively, use MACsec (802.1AE) encryption at the physical layer for dedicated connections that support it</li>
                 <li><span class="option-label">C.</span> Use S3 Transfer Acceleration which automatically encrypts Direct Connect traffic</li>
-                <li><span class="option-label">D.</span> Enable "encryption" toggle in the Direct Connect console settings</li>
+                <li><span class="option-label">D.</span> Enable "encryption" toggle in the Direct Connect console settings with Transit Gateway) and the encryption of VPN</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -89,7 +89,7 @@
                 <li><span class="option-label">A.</span> MSK encrypts all traffic by default — no additional configuration required by producers or consumers</li>
                 <li><span class="option-label">B.</span> Configure MSK cluster encryption settings: enable TLS encryption in the cluster configuration (set encryption in-transit to TLS or TLS_PLAINTEXT). For inter-broker communication, enable TLS in broker settings. Producers and consumers must be configured to use the TLS bootstrap endpoints (port 9094 for TLS vs 9092 for plaintext) and include SSL truststore configuration pointing to the Amazon certificate authority. MSK handles certificate provisioning via ACM</li>
                 <li><span class="option-label">C.</span> Use VPC security groups to encrypt traffic between producers, brokers, and consumers</li>
-                <li><span class="option-label">D.</span> Install custom SSL certificates on each Kafka broker EC2 instance manually</li>
+                <li><span class="option-label">D.</span> Install custom SSL certificates on each Kafka broker EC2 instance manually for inter-broker communication</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -106,7 +106,7 @@
                 <li><span class="option-label">A.</span> Enable "encryption in transit" in a single checkbox in the EMR console — all components are encrypted automatically</li>
                 <li><span class="option-label">B.</span> Create an EMR Security Configuration that enables in-transit encryption and specifies a certificate provider: (1) For node-to-node: TLS certificates encrypt HDFS data transfer, MapReduce shuffle, and Spark shuffle between nodes, (2) For EMRFS (EMR to S3): TLS is used by default for S3 API calls (HTTPS), (3) For Spark: inter-executor communication encrypted with TLS. The certificate provider can be PEM certificates from an S3 path, ACM certificates, or a custom certificate provider Java class. Apply this Security Configuration when launching the cluster</li>
                 <li><span class="option-label">C.</span> EMR clusters in a VPC automatically encrypt all inter-node traffic — VPC provides encryption</li>
-                <li><span class="option-label">D.</span> Install and configure Apache Ranger on the cluster to handle all encryption</li>
+                <li><span class="option-label">D.</span> Install and configure Apache Ranger on the cluster to handle all encryption with TLS</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -122,7 +122,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Redshift only supports TLS 1.2+ by default — older versions are automatically rejected</li>
                 <li><span class="option-label">B.</span> Modify the Redshift cluster parameter group to enforce minimum TLS version: set the ssl_min_protocol_version parameter to "TLSv1.2". This rejects any connection attempt using TLS 1.0 or TLS 1.1. Additionally, require SSL by setting require_SSL to true in the parameter group, which blocks ALL unencrypted connections. Clients must then connect using JDBC/ODBC drivers that support TLS 1.2</li>
-                <li><span class="option-label">C.</span> Use a Network Load Balancer in front of Redshift to terminate TLS 1.0/1.1 connections</li>
+                <li><span class="option-label">C.</span> Use a Network Load Balancer in front of Redshift to terminate TLS 1.0/1.1 connections configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Configure security groups to block ports associated with older TLS versions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -139,7 +139,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> All AWS services communicate in plaintext by default and require explicit TLS configuration at every hop</li>
                 <li><span class="option-label">B.</span> Kinesis Data Streams API endpoints use TLS by default (HTTPS) — producers using the AWS SDK or KPL communicate over TLS automatically. Lambda invocations from Kinesis use AWS's internal TLS-encrypted channels. Lambda to DynamoDB uses HTTPS (TLS) by default via the AWS SDK. The key responsibility is ensuring: (1) on-premises producers use HTTPS endpoints (not HTTP), (2) any custom SDK configurations haven't disabled SSL, (3) VPC endpoints if used are properly configured for private network paths</li>
-                <li><span class="option-label">C.</span> Only the Kinesis to Lambda hop is encrypted — all other hops require manual TLS configuration</li>
+                <li><span class="option-label">C.</span> Only the Kinesis to Lambda hop is encrypted — all other hops require manual TLS configuration for private network paths</li>
                 <li><span class="option-label">D.</span> Kinesis internally stores data without encryption between shards, creating a gap in transit protection</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -157,7 +157,7 @@
                 <li><span class="option-label">A.</span> Configure S3 server-side encryption with a stronger cipher — SSE provides before-transit encryption</li>
                 <li><span class="option-label">B.</span> Implement client-side encryption (CSE) — encrypt the data locally using the AWS Encryption SDK or S3 Encryption Client BEFORE calling S3 PutObject. The data is encrypted in the application's memory using either a KMS-managed key (CSE-KMS) or a client-managed master key (CSE-C). The encrypted ciphertext is what travels over HTTPS to S3. S3 stores the already-encrypted object. Only the intended recipient with the correct key can decrypt, regardless of S3 permissions</li>
                 <li><span class="option-label">C.</span> Use a VPN connection to S3 which provides double encryption</li>
-                <li><span class="option-label">D.</span> Enable S3 Transfer Acceleration which adds an extra encryption layer</li>
+                <li><span class="option-label">D.</span> Enable S3 Transfer Acceleration which adds an extra encryption layer with the correct key can decrypt</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -171,7 +171,7 @@
             <div class="question-number">9</div>
             <div class="question-text">A company uses AWS Certificate Manager (ACM) to manage TLS certificates for their data pipeline endpoints. They have an Application Load Balancer in front of their data API, a custom domain for their Redshift endpoint, and internal services communicating over mTLS. Which ACM capabilities support each use case?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> ACM provides a single certificate type that works for all use cases — public, private, and mutual TLS</li>
+                <li><span class="option-label">A.</span> ACM provides a single certificate type that works for all use cases — public, private, and mutual TLS with ACM</li>
                 <li><span class="option-label">B.</span> ACM provides different capabilities for each scenario: (1) Public certificates (free) for ALB/CloudFront — ACM issues and auto-renews public TLS certificates for domains you own; attach to ALB for HTTPS termination. (2) ACM Private CA for internal mTLS — issue private certificates for internal services that need mutual authentication; each service gets a client certificate for bi-directional verification. (3) Imported certificates for Redshift custom domains — import third-party certificates for services that don't natively integrate with ACM. All with automated renewal (public) or managed lifecycle (private CA)</li>
                 <li><span class="option-label">C.</span> ACM only works with CloudFront and ALB — it cannot be used for database or internal service encryption</li>
                 <li><span class="option-label">D.</span> ACM requires manual certificate renewal every 90 days for all certificate types</li>
@@ -190,7 +190,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Allow HTTP fallback for devices that fail TLS handshake — availability over security</li>
                 <li><span class="option-label">B.</span> Deploy an architecture that optimizes TLS while maintaining encryption: (1) Use AWS IoT Core as an ingestion endpoint — it supports lightweight TLS (TLS 1.2 with optimal cipher suites for IoT), MQTT protocol (less overhead than HTTPS), and persistent connections (reducing repeated handshakes). (2) IoT Core rules route data to Kinesis. (3) For extremely constrained devices: use AWS IoT Greengrass as a local TLS-terminating gateway that aggregates messages and forwards to cloud over a single persistent TLS connection. This maintains end-to-end encryption while reducing per-device TLS overhead</li>
-                <li><span class="option-label">C.</span> Increase the Kinesis timeout settings to accommodate slow TLS handshakes</li>
+                <li><span class="option-label">C.</span> Increase the Kinesis timeout settings to accommodate slow TLS handshakes with optimal cipher suites for IoT) and persistent connections (reducing repeated handshakes)</li>
                 <li><span class="option-label">D.</span> Use TLS 1.0 which has faster handshake than TLS 1.2/1.3</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
