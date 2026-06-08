@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> EVEN distribution on the fact table with an interleaved sort key on date and product_id</li>
                 <li><span class="option-label">B.</span> KEY distribution on the most frequently joined column (product_id) with a compound sort key starting with transaction_date</li>
                 <li><span class="option-label">C.</span> ALL distribution on the fact table with a compound sort key on transaction_date</li>
-                <li><span class="option-label">D.</span> KEY distribution on transaction_date with no sort key for maximum write performance</li>
+                <li><span class="option-label">D.</span> KEY distribution on transaction_date with no sort key for maximum write performance configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -53,7 +53,7 @@
             <div class="question-text">A social media company is designing a DynamoDB table to store user posts. Access patterns include: (1) Get all posts by a user sorted by timestamp, (2) Get a specific post by user and post ID, (3) Get all posts with a specific hashtag sorted by engagement score. Which key design supports ALL three access patterns?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Partition key: user_id, Sort key: timestamp. GSI with partition key: hashtag, sort key: engagement_score</li>
-                <li><span class="option-label">B.</span> Partition key: post_id only. GSI with partition key: user_id, sort key: timestamp</li>
+                <li><span class="option-label">B.</span> Partition key: post_id only. GSI with partition key: user_id, sort key: timestamp with partition-level ordering</li>
                 <li><span class="option-label">C.</span> Partition key: user_id, Sort key: post_id. GSI with partition key: hashtag, sort key: timestamp</li>
                 <li><span class="option-label">D.</span> Partition key: hashtag, Sort key: engagement_score. GSI with partition key: user_id, sort key: timestamp</li>
             </ul>
@@ -71,7 +71,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> ALL distribution for all dimension tables regardless of size</li>
                 <li><span class="option-label">B.</span> ALL distribution for small dimensions (store: 1,000 rows) and KEY distribution for large dimensions (customer: 5M rows) on their primary key</li>
-                <li><span class="option-label">C.</span> EVEN distribution for all dimension tables</li>
+                <li><span class="option-label">C.</span> EVEN distribution for all dimension tables configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> KEY distribution for all dimension tables on their primary key</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -89,7 +89,7 @@
                 <li><span class="option-label">A.</span> PK: CUSTOMER#&lt;id&gt;, SK: CUSTOMER#&lt;id&gt; for customer record; PK: CUSTOMER#&lt;id&gt;, SK: ORDER#&lt;order_id&gt; for each order</li>
                 <li><span class="option-label">B.</span> PK: ORDER#&lt;order_id&gt;, SK: CUSTOMER#&lt;customer_id&gt; for linking orders to customers</li>
                 <li><span class="option-label">C.</span> PK: CUSTOMER#&lt;id&gt;, SK: METADATA for customer; separate PK: ORDER#&lt;order_id&gt;, SK: METADATA for each order with no partition key connection</li>
-                <li><span class="option-label">D.</span> Store a list of order IDs as a Set attribute within the customer item</li>
+                <li><span class="option-label">D.</span> Store a list of order IDs as a Set attribute within the customer item for customer record; PK: CUSTOMER#&lt;id&gt;</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -123,7 +123,7 @@
                 <li><span class="option-label">A.</span> VARCHAR(MAX) to store raw JSON strings and parse with JSON_EXTRACT_PATH_TEXT at query time</li>
                 <li><span class="option-label">B.</span> SUPER data type with schemaless storage and PartiQL queries for navigation</li>
                 <li><span class="option-label">C.</span> Multiple VARCHAR columns with one column per known JSON field</li>
-                <li><span class="option-label">D.</span> VARBYTE type for binary JSON storage with UDF for parsing</li>
+                <li><span class="option-label">D.</span> VARBYTE type for binary JSON storage with UDF for parsing and PartiQL queries for navigation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -140,7 +140,7 @@
                 <li><span class="option-label">A.</span> Interleaved sort key on (impression_date, campaign_id) for equal weight filtering</li>
                 <li><span class="option-label">B.</span> Compound sort key with impression_date as the leading column followed by campaign_id</li>
                 <li><span class="option-label">C.</span> Compound sort key with campaign_id as the leading column followed by impression_date</li>
-                <li><span class="option-label">D.</span> No sort key — use materialized views for pre-aggregation instead</li>
+                <li><span class="option-label">D.</span> No sort key — use materialized views for pre-aggregation instead with impression_date as</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -157,7 +157,7 @@
                 <li><span class="option-label">A.</span> Partition key: player_id, Sort key: item_id. Store each inventory item as a separate DynamoDB item</li>
                 <li><span class="option-label">B.</span> Partition key: player_id only. Store entire inventory as a JSON Map attribute in a single item</li>
                 <li><span class="option-label">C.</span> Partition key: item_id, Sort key: player_id. Create GSI with player_id as partition key</li>
-                <li><span class="option-label">D.</span> Partition key: composite of player_id#shard_number with write sharding</li>
+                <li><span class="option-label">D.</span> Partition key: composite of player_id#shard_number with write sharding with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -173,7 +173,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Snowflake schema to normalize product dimensions into separate tables for storage efficiency</li>
                 <li><span class="option-label">B.</span> Star schema with denormalized product dimension containing all hierarchy levels in one table</li>
-                <li><span class="option-label">C.</span> Third normal form (3NF) for all tables to maintain data integrity</li>
+                <li><span class="option-label">C.</span> Third normal form (3NF) for all tables to maintain data integrity with denormalized product dimension</li>
                 <li><span class="option-label">D.</span> Separate schemas for analysts (snowflake) and dashboards (star) with ETL between them</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -191,7 +191,7 @@
                 <li><span class="option-label">A.</span> Store as raw JSON with schema-on-read using Glue Crawlers to infer schema automatically</li>
                 <li><span class="option-label">B.</span> Convert to Apache Parquet with schema-on-write, register in Glue Data Catalog, and partition by date</li>
                 <li><span class="option-label">C.</span> Store as CSV with explicit headers and create Athena views for schema abstraction</li>
-                <li><span class="option-label">D.</span> Convert to Apache ORC and store without Glue Data Catalog registration</li>
+                <li><span class="option-label">D.</span> Convert to Apache ORC and store without Glue Data Catalog registration with schema-on-write and partition by date</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
