@@ -37,7 +37,7 @@
                 <li><span class="option-label">A.</span> HNSW (Hierarchical Navigable Small World) index — HNSW builds a multi-layer graph structure where each node connects to its nearest neighbors. At query time, the search traverses from a top-layer entry point down through progressively denser layers, providing consistently low latency (sub-100ms) with high recall (95%+). HNSW excels for read-heavy workloads with infrequent updates due to its fast query speed but higher index build time</li>
                 <li><span class="option-label">B.</span> IVF (Inverted File) index with 1,000 clusters — IVF partitions vectors into clusters and searches only the nearest clusters at query time</li>
                 <li><span class="option-label">C.</span> Flat (brute-force) exact nearest neighbor search without any index to guarantee 100% recall</li>
-                <li><span class="option-label">D.</span> A B-tree index on a hash of the embedding vector for exact match lookups</li>
+                <li><span class="option-label">D.</span> A B-tree index on a hash of the embedding vector for exact match lookups with high recall (95%+)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -53,7 +53,7 @@
                 <li><span class="option-label">A.</span> IVF (Inverted File) index — IVF partitions the vector space into clusters using k-means centroids. New vectors are assigned to existing clusters quickly (only computing distance to centroids), making ingestion fast. The index structure is more memory-efficient than graph-based approaches because it stores cluster assignments rather than per-vector neighbor lists. IVF supports incremental additions without full reindexing</li>
                 <li><span class="option-label">B.</span> HNSW index with default parameters — HNSW provides the best query latency regardless of ingestion rate and memory constraints</li>
                 <li><span class="option-label">C.</span> Flat index with S3-backed storage to offload memory requirements to object storage</li>
-                <li><span class="option-label">D.</span> Product Quantization (PQ) index alone without any partitioning structure for maximum compression</li>
+                <li><span class="option-label">D.</span> Product Quantization (PQ) index alone without any partitioning structure for maximum compression with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use an HNSW index with high ef_construction (512) during build time and high ef_search (200) at query time. Higher ef_construction creates denser graph connections during index building, and higher ef_search explores more candidates during query traversal — both directly increase recall at the cost of build time and query latency respectively. At ef_search=200 for 5M vectors, HNSW typically achieves 99%+ recall within the 500ms latency budget</li>
                 <li><span class="option-label">B.</span> Use an IVF index with nlist=100 clusters and nprobe=1 to minimize latency while relying on cluster quality for recall</li>
-                <li><span class="option-label">C.</span> Use a flat (exact) brute-force index for guaranteed 100% recall regardless of dataset characteristics</li>
+                <li><span class="option-label">C.</span> Use a flat (exact) brute-force index for guaranteed 100% recall regardless of dataset characteristics with high ef_construction (512) during build time and high ef_search (200) at query time</li>
                 <li><span class="option-label">D.</span> Use HNSW with default parameters (ef_construction=64, ef_search=40) and post-filter results using a re-ranking model to catch missed documents</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -83,7 +83,7 @@
             <div class="question-text">A company uses Amazon OpenSearch Service for a customer support chatbot that performs semantic similarity search against 50 million FAQ and knowledge base embeddings. They notice that their HNSW index consumes 180 GB of RAM just for the graph structure (separate from vector storage). The team needs to reduce memory footprint by at least 60% while maintaining acceptable query performance. Which technique MOST effectively reduces HNSW memory consumption?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Reduce the HNSW M parameter (maximum connections per node) from the default 16 to 8. The graph adjacency lists consume M × 4 bytes × number_of_vectors × number_of_layers — halving M approximately halves the graph memory. Additionally, combine with Product Quantization (PQ) to compress the stored vectors from full-precision floats to 8-bit quantized codes, reducing vector storage by 4×. Together, these achieve 60%+ memory reduction</li>
-                <li><span class="option-label">B.</span> Enable OpenSearch's disk-based vector search to move the entire HNSW graph to SSD storage instead of RAM</li>
+                <li><span class="option-label">B.</span> Enable OpenSearch's disk-based vector search to move the entire HNSW graph to SSD storage instead of RAM with Product Quantization (PQ)</li>
                 <li><span class="option-label">C.</span> Increase ef_construction to build a higher-quality graph that requires fewer connections per node for the same recall</li>
                 <li><span class="option-label">D.</span> Switch from cosine similarity to dot product distance metric to reduce the computational memory required during search</li>
             </ul>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Apply dimensionality reduction using PCA (Principal Component Analysis) to reduce embeddings from 2,048 to 256 dimensions before indexing. PCA identifies the principal components that capture the most variance in the embedding space, compressing vectors by 8× with typically 90-95% of the original similarity information preserved. Distance computation becomes 8× faster per vector comparison, dramatically reducing query latency</li>
                 <li><span class="option-label">B.</span> Split each 2,048-dimensional vector into 8 sub-vectors of 256 dimensions and create separate indexes for each sub-vector, then aggregate results</li>
                 <li><span class="option-label">C.</span> Increase the number of OpenSearch data nodes to distribute the 100M vectors across more shards for parallel search</li>
-                <li><span class="option-label">D.</span> Switch from HNSW to a flat brute-force index with SIMD-optimized distance computation for high-dimensional vectors</li>
+                <li><span class="option-label">D.</span> Switch from HNSW to a flat brute-force index with SIMD-optimized distance computation for high-dimensional vectors configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Amazon OpenSearch Service with k-NN plugin — store vectors in k-NN vector fields (HNSW or IVF engine), combine with OpenSearch's native full-text search and filtering capabilities. Use a single index with both vector fields and metadata fields, enabling hybrid queries that combine k-NN similarity scores with BM25 text relevance scores and exact metadata filters in a single request. The k-NN score_mode allows blending vector and text scores</li>
                 <li><span class="option-label">B.</span> Amazon Aurora PostgreSQL with pgvector — store vectors with pgvector and use SQL WHERE clauses for metadata filtering and LIKE queries for text search</li>
                 <li><span class="option-label">C.</span> Amazon Neptune with graph-based vector similarity — store embeddings as graph node properties and use graph traversal for finding similar products</li>
-                <li><span class="option-label">D.</span> Amazon S3 with a custom Lambda function that performs brute-force similarity search and applies metadata filters in memory</li>
+                <li><span class="option-label">D.</span> Amazon S3 with a custom Lambda function that performs brute-force similarity search and applies metadata filters in memory and filtering capabilities</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -133,7 +133,7 @@
                 <li><span class="option-label">A.</span> Set nlist = sqrt(N) as a baseline (approximately 14,142 clusters for 200M vectors), which provides roughly equal-sized clusters of ~14,000 vectors each. Set nprobe based on recall requirements: nprobe=1 gives ~50-60% recall with minimal latency; nprobe=10-20 achieves 90-95% recall; nprobe=50+ approaches 99% recall but with proportionally higher latency. The multi-domain nature suggests vectors cluster well, so moderate nprobe values should achieve high recall</li>
                 <li><span class="option-label">B.</span> Set nlist equal to the number of distinct domains (4 clusters) since vectors naturally group by domain, and set nprobe=4 to always search all clusters</li>
                 <li><span class="option-label">C.</span> Set nlist=1,000,000 (very fine granularity) to maximize precision per cluster and set nprobe=1 to search only the single closest cluster for minimum latency</li>
-                <li><span class="option-label">D.</span> Set nlist and nprobe to the same value to ensure every cluster is searched, guaranteeing 100% recall</li>
+                <li><span class="option-label">D.</span> Set nlist and nprobe to the same value to ensure every cluster is searched, guaranteeing 100% recall with minimal latency; nprobe=10-20 achieves 90-95% recall; nprobe=50+ approaches 99% recall but with proportionally higher latency for 200M vectors)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -149,7 +149,7 @@
                 <li><span class="option-label">A.</span> Create an HNSW index on the embedding column with m=16 and ef_construction=200. For filtered queries, use partial HNSW indexes (CREATE INDEX ... WHERE category = 'X') for high-cardinality filters, or use post-filtering for low-selectivity filters. Set ef_search=100 at query time for high recall. With 2M vectors, HNSW provides sub-50ms latency while pgvector's SQL integration allows combining vector search with standard WHERE clause metadata filtering</li>
                 <li><span class="option-label">B.</span> Create an IVF index with lists=1000 and use pre-filtering (filter first, then vector search on filtered subset) for all queries</li>
                 <li><span class="option-label">C.</span> Use a flat (no index) approach with parallel sequential scan since 2M vectors at 1,536 dimensions is small enough for brute-force within 50ms on Aurora</li>
-                <li><span class="option-label">D.</span> Create separate HNSW indexes for each combination of category and access level to avoid any runtime filtering</li>
+                <li><span class="option-label">D.</span> Create separate HNSW indexes for each combination of category and access level to avoid any runtime filtering with m=16 and ef_construction=200</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The daily ingestion of 100,000 new vectors is the decisive factor. HNSW requires expensive graph updates for each insertion (connecting new nodes to existing neighbors and potentially updating connections at multiple graph layers), while IVF only needs to assign new vectors to existing clusters (a single centroid distance computation). For frequently-updated datasets, IVF's lighter write path provides better operational sustainability despite slightly lower recall</li>
                 <li><span class="option-label">B.</span> The 2% recall difference (97% vs 95%) is the decisive factor — in production, this means missing 2% more relevant results which may be unacceptable</li>
-                <li><span class="option-label">C.</span> The RAM difference (45 GB vs 12 GB) is the decisive factor — it directly determines infrastructure cost and instance type selection</li>
+                <li><span class="option-label">C.</span> The RAM difference (45 GB vs 12 GB) is the decisive factor — it directly determines infrastructure cost and instance type selection configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> The build time difference (4 hours vs 30 minutes) is the decisive factor — it determines how quickly the index can be rebuilt after failures</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -179,7 +179,7 @@
             <div class="question-text">A data engineering team builds an ETL pipeline that generates product embeddings using Amazon SageMaker, stores them in Amazon Aurora PostgreSQL (pgvector), and serves similarity queries to a downstream recommendation API. The pipeline must generate embeddings for 1 million new products weekly, upsert them into the vector store, and ensure the HNSW index remains performant. After 3 months, they notice query latency has increased from 10ms to 80ms. Investigation reveals the HNSW index has become fragmented due to frequent updates. What is the MOST effective maintenance strategy?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Schedule a weekly REINDEX CONCURRENTLY operation after the embedding upsert pipeline completes. REINDEX CONCURRENTLY rebuilds the HNSW index from scratch without blocking concurrent queries — it builds a new index in the background, then atomically swaps it with the old index. This restores optimal graph connectivity that degrades when nodes are deleted and re-inserted, returning latency to the original 10ms baseline</li>
-                <li><span class="option-label">B.</span> Increase the maintenance_work_mem parameter to allow PostgreSQL's autovacuum to rebuild the HNSW index more efficiently</li>
+                <li><span class="option-label">B.</span> Increase the maintenance_work_mem parameter to allow PostgreSQL's autovacuum to rebuild the HNSW index more efficiently with the old index</li>
                 <li><span class="option-label">C.</span> Switch from HNSW to IVF index type which doesn't suffer from fragmentation during updates</li>
                 <li><span class="option-label">D.</span> Increase the ef_search parameter from the original value to compensate for index quality degradation without rebuilding</li>
             </ul>
