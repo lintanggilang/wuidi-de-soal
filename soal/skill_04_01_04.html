@@ -38,7 +38,7 @@
                 <li><span class="option-label">A.</span> Attach the AWS managed policy AmazonKinesisFullAccess, AmazonDynamoDBFullAccess, and AmazonSNSFullAccess</li>
                 <li><span class="option-label">B.</span> Create a custom policy allowing kinesis:GetRecords, kinesis:GetShardIterator, kinesis:DescribeStream, kinesis:ListShards on the specific stream ARN; dynamodb:PutItem, dynamodb:BatchWriteItem on the specific table ARN; and sns:Publish on the specific topic ARN</li>
                 <li><span class="option-label">C.</span> Attach the PowerUserAccess managed policy which covers all services except IAM</li>
-                <li><span class="option-label">D.</span> Create a custom policy with kinesis:*, dynamodb:*, and sns:* on resource "*"</li>
+                <li><span class="option-label">D.</span> Create a custom policy with kinesis:*, dynamodb:*, and sns:* on resource "*" and sns:Publish on the specific topic ARN</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -55,7 +55,7 @@
                 <li><span class="option-label">A.</span> The engineer's IAM user needs direct glue:CreateJob permission in addition to CloudFormation permissions</li>
                 <li><span class="option-label">B.</span> CloudFormation needs a service role with permissions to create the Glue job, S3 bucket, and Lambda function. The engineer should create and assign a CloudFormation service role with appropriate permissions.</li>
                 <li><span class="option-label">C.</span> The Glue job definition in the template has a syntax error causing CloudFormation to report it as an access issue</li>
-                <li><span class="option-label">D.</span> CloudFormation stacks can only be created from the AWS Management Console, not from the CLI</li>
+                <li><span class="option-label">D.</span> CloudFormation stacks can only be created from the AWS Management Console, not from the CLI with permissions and Lambda function</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -70,7 +70,7 @@
             <div class="question-text">A data engineer needs to allow a third-party SaaS application to write data to an S3 bucket in their AWS account. The SaaS provider gives their AWS Account ID and an External ID. Which IAM role configuration securely enables this access?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a role with trust policy allowing the SaaS provider's account as Principal, include an sts:ExternalId condition matching the provided External ID, and attach a policy allowing s3:PutObject on the target bucket</li>
-                <li><span class="option-label">B.</span> Create an IAM user with access keys and share the credentials with the SaaS provider</li>
+                <li><span class="option-label">B.</span> Create an IAM user with access keys and share the credentials with the SaaS provider and attach a policy allowing s3:PutObject on the target bucket</li>
                 <li><span class="option-label">C.</span> Create a role with trust policy allowing "*" as Principal and use the External ID in the permission policy's Condition block</li>
                 <li><span class="option-label">D.</span> Make the S3 bucket public and restrict access using bucket policy conditions based on the source IP of the SaaS provider</li>
             </ul>
@@ -87,7 +87,7 @@
             <div class="question-text">A data engineer needs to configure an API Gateway REST API that triggers a Lambda function for a data ingestion endpoint. The API should accept requests only from authenticated IAM users and roles. Which authorization mechanism should be configured on the API Gateway method?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Set the authorization type to AWS_IAM on the API method. Callers must sign requests with SigV4 credentials of an IAM entity that has execute-api:Invoke permission on the API resource.</li>
-                <li><span class="option-label">B.</span> Create a Cognito User Pool and configure it as the authorizer for the API method</li>
+                <li><span class="option-label">B.</span> Create a Cognito User Pool and configure it as the authorizer for the API method with SigV4 credentials of an IAM entity that has execute-api:Invoke permission on the API resource</li>
                 <li><span class="option-label">C.</span> Create a Lambda authorizer that validates IAM access keys in the request headers</li>
                 <li><span class="option-label">D.</span> Set the authorization type to NONE and use a WAF rule to filter requests by IAM source</li>
             </ul>
@@ -106,7 +106,7 @@
                 <li><span class="option-label">A.</span> Create IAM users with access keys in each account and configure three named profiles with static credentials</li>
                 <li><span class="option-label">B.</span> Configure named profiles in ~/.aws/config with role_arn and source_profile settings, allowing the CLI to automatically assume roles in each account using temporary credentials</li>
                 <li><span class="option-label">C.</span> Use a single set of administrator credentials that has cross-account access to all three accounts</li>
-                <li><span class="option-label">D.</span> Store access keys for all accounts in environment variables and switch between them using shell scripts</li>
+                <li><span class="option-label">D.</span> Store access keys for all accounts in environment variables and switch between them using shell scripts with role_arn</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -123,7 +123,7 @@
                 <li><span class="option-label">A.</span> The engineer's IAM user/role needs an iam:PassRole permission with the resource set to the GlueETLRole ARN and a condition restricting it to the glue.amazonaws.com service</li>
                 <li><span class="option-label">B.</span> The GlueETLRole needs an iam:PassRole permission in its own policy to allow itself to be passed</li>
                 <li><span class="option-label">C.</span> The engineer needs full IAM administrator access to assign any role to any service</li>
-                <li><span class="option-label">D.</span> The GlueETLRole trust policy must include the engineer's IAM user ARN as a trusted principal</li>
+                <li><span class="option-label">D.</span> The GlueETLRole trust policy must include the engineer's IAM user ARN as a trusted principal with the resource set and a condition restricting it to the glue</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -139,7 +139,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create an IAM role with the required permissions, create an instance profile containing that role, and specify the instance profile when launching the EMR cluster</li>
                 <li><span class="option-label">B.</span> Create an IAM user with the required permissions and pass the access keys to EMR through cluster configuration</li>
-                <li><span class="option-label">C.</span> Attach the permissions directly to the EMR service role (EMR_DefaultRole)</li>
+                <li><span class="option-label">C.</span> Attach the permissions directly to the EMR service role (EMR_DefaultRole) with the required permissions and specify the instance profile when launching the EMR cluster</li>
                 <li><span class="option-label">D.</span> Create an IAM group with the required permissions and add the EMR cluster to the group</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -156,7 +156,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The GlueServiceRole in Account A needs sts:AssumeRole permission with the cross-account role ARN as the resource</li>
                 <li><span class="option-label">B.</span> The cross-account role in Account B needs to trust the GlueServiceRole ARN specifically, not just Account A</li>
-                <li><span class="option-label">C.</span> Account A needs to be part of the same AWS Organization as Account B</li>
+                <li><span class="option-label">C.</span> Account A needs to be part of the same AWS Organization as Account B with the cross-account role ARN as the resource</li>
                 <li><span class="option-label">D.</span> The Glue job needs a VPC endpoint to reach the STS service endpoint</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -190,7 +190,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Add iam:PassRole permission for the LambdaExecRole ARN with a condition that restricts iam:PassedToService to lambda.amazonaws.com</li>
                 <li><span class="option-label">B.</span> Add iam:CreateRole and iam:AttachRolePolicy permissions to allow CloudFormation to create the role</li>
-                <li><span class="option-label">C.</span> Add sts:AssumeRole permission for the LambdaExecRole ARN</li>
+                <li><span class="option-label">C.</span> Add sts:AssumeRole permission for the LambdaExecRole ARN with a condition that restricts iam:PassedToService</li>
                 <li><span class="option-label">D.</span> Add administrator access to the CloudFormation service role to avoid permission issues</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
