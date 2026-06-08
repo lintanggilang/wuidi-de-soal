@@ -37,7 +37,7 @@
                 <li><span class="option-label">A.</span> Use Transform: AWS::Serverless-2016-10-31, define the Lambda function as AWS::Serverless::Function with an S3 event source (Events property with Type: S3 and Properties specifying bucket and event type s3:ObjectCreated:*), and define the DynamoDB table as AWS::Serverless::SimpleTable</li>
                 <li><span class="option-label">B.</span> Use Transform: AWS::CloudFormation-2010-09-09 and define all resources using standard CloudFormation resource types without SAM transforms</li>
                 <li><span class="option-label">C.</span> Define the Lambda function without any Events property and create a separate AWS::S3::BucketNotification resource manually</li>
-                <li><span class="option-label">D.</span> Use AWS::Serverless::Api as the event source for the Lambda function since all SAM triggers must go through API Gateway</li>
+                <li><span class="option-label">D.</span> Use AWS::Serverless::Api as the event source for the Lambda function since all SAM triggers must go through API Gateway with an S3 event source (Events property with Type: S3</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -51,7 +51,7 @@
             <div class="question-text">A data engineer has developed a serverless ETL pipeline locally using SAM. The pipeline includes a Lambda function with Python dependencies (pandas, pyarrow) specified in a requirements.txt file. The engineer needs to package and deploy the application. Which sequence of SAM CLI commands correctly builds, packages, and deploys the application?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Run sam build (compiles code and installs dependencies into .aws-sam/build), then sam deploy --guided (packages artifacts to S3, creates/updates CloudFormation stack, and prompts for deployment parameters on first run)</li>
-                <li><span class="option-label">B.</span> Run sam package first, then sam build, then sam deploy</li>
+                <li><span class="option-label">B.</span> Run sam package first, then sam build, then sam deploy and installs dependencies into for deployment parameters on first run)</li>
                 <li><span class="option-label">C.</span> Run sam deploy directly without building — SAM automatically handles dependencies at deployment time</li>
                 <li><span class="option-label">D.</span> Run sam init to create the deployment package, then sam publish to deploy to AWS</li>
             </ul>
@@ -67,7 +67,7 @@
             <div class="question-text">A data engineer is developing a Lambda function that processes Kinesis stream events for a real-time data pipeline. Before deploying to AWS, the engineer wants to test the function locally with sample Kinesis events to verify the transformation logic. Which SAM CLI approach enables effective local testing?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use sam local invoke with a JSON event file containing sample Kinesis records (sam local invoke MyFunction --event kinesis-event.json), where the event file mirrors the actual Kinesis event structure including Records array with base64-encoded data</li>
-                <li><span class="option-label">B.</span> Use sam local start-api to create a local HTTP endpoint and send Kinesis events via curl</li>
+                <li><span class="option-label">B.</span> Use sam local start-api to create a local HTTP endpoint and send Kinesis events via curl with a JSON event file containing sample Kinesis records (sam local invoke MyFunction --event kinesis-event</li>
                 <li><span class="option-label">C.</span> Deploy to AWS first and test using actual Kinesis stream data in production</li>
                 <li><span class="option-label">D.</span> Use sam local generate-event kinesis get-records to create a sample event, but this only works with API Gateway events</li>
             </ul>
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> Define the state machine using AWS::Serverless::StateMachine resource type with the DefinitionUri property pointing to a separate ASL JSON/YAML file (statemachine/etl-pipeline.asl.json), and use DefinitionSubstitutions to inject Lambda function ARNs dynamically</li>
                 <li><span class="option-label">B.</span> Embed the entire 200+ line ASL definition inline in the SAM template's Definition property</li>
                 <li><span class="option-label">C.</span> Create the Step Functions state machine manually in the console and reference its ARN in the SAM template</li>
-                <li><span class="option-label">D.</span> Split the state machine into three separate state machines, one for each Lambda function</li>
+                <li><span class="option-label">D.</span> Split the state machine into three separate state machines, one for each Lambda function with the DefinitionUri property pointing</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -100,7 +100,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Lambda Layers by defining an AWS::Serverless::LayerVersion resource in the SAM template that packages pandas and numpy into a layer, then reference the layer in the function's Layers property — this separates dependencies from function code and allows sharing across functions</li>
                 <li><span class="option-label">B.</span> Remove pandas and rewrite all transformation logic using only Python standard library functions</li>
-                <li><span class="option-label">C.</span> Increase Lambda's package size limit by requesting a service quota increase from AWS Support</li>
+                <li><span class="option-label">C.</span> Increase Lambda's package size limit by requesting a service quota increase from AWS Support with fully managed infrastructure and automatic scaling</li>
                 <li><span class="option-label">D.</span> Zip the code manually and upload directly to S3, bypassing SAM's build process entirely</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Use SAM's Globals section for shared properties, Parameters section for environment-specific values, and deploy with parameter overrides: sam deploy --parameter-overrides Environment=prod MemorySize=1024 Timeout=300 DataBucket=prod-data-bucket</li>
                 <li><span class="option-label">B.</span> Maintain separate SAM template files for each environment (template-dev.yaml, template-prod.yaml)</li>
                 <li><span class="option-label">C.</span> Hardcode production values in the template and manually change them for development deployments</li>
-                <li><span class="option-label">D.</span> Use SAM Accelerate (sam sync) to push code changes without any template parameterization</li>
+                <li><span class="option-label">D.</span> Use SAM Accelerate (sam sync) to push code changes without any template parameterization with parameter overrides: sam deploy --parameter-overrides Environment=prod MemorySize=1024 Timeout=300 DataBucket=prod-data-bucket for shared properties</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -133,7 +133,7 @@
                 <li><span class="option-label">A.</span> The Policies property is missing the DynamoDB access policy. Add DynamoDBCrudPolicy with the TableName parameter referencing the table's logical ID — SAM policy templates automatically generate properly scoped IAM policies without requiring manual policy document authoring</li>
                 <li><span class="option-label">B.</span> API Gateway is blocking the Lambda-to-DynamoDB communication and needs a resource policy</li>
                 <li><span class="option-label">C.</span> DynamoDB requires a VPC endpoint for Lambda access, and the template is missing VPC configuration</li>
-                <li><span class="option-label">D.</span> The Lambda function needs to assume a different IAM role at runtime using STS AssumeRole</li>
+                <li><span class="option-label">D.</span> The Lambda function needs to assume a different IAM role at runtime using STS AssumeRole with the TableName parameter referencing the table's logical ID — SAM policy templates automatically generate properly scoped IAM policies without requiring manual policy document authoring</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -149,7 +149,7 @@
                 <li><span class="option-label">A.</span> Define an AWS::Serverless::Function with an Api event type (Events: ApiEvent: Type: Api, Properties: Path: /ingest, Method: post) — SAM automatically creates an implicit API Gateway REST API with the specified route, requiring no separate AWS::Serverless::Api resource definition</li>
                 <li><span class="option-label">B.</span> Define separate resources: AWS::ApiGateway::RestApi, AWS::ApiGateway::Resource, AWS::ApiGateway::Method, AWS::Lambda::Permission, and AWS::ApiGateway::Deployment</li>
                 <li><span class="option-label">C.</span> Use AWS::Serverless::HttpApi with detailed route configuration, stage definition, and explicit Lambda integration</li>
-                <li><span class="option-label">D.</span> Deploy API Gateway manually and use SAM only for the Lambda function, connecting them post-deployment</li>
+                <li><span class="option-label">D.</span> Deploy API Gateway manually and use SAM only for the Lambda function, connecting them post-deployment with an Api event type (Events: ApiEvent: Type: Api</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -165,7 +165,7 @@
                 <li><span class="option-label">A.</span> In the AWS::Serverless::Function resource, set the KmsKeyArn property under the function definition to reference the customer-managed KMS key ARN, and define environment variables in the Environment.Variables property — Lambda automatically encrypts these at rest using the specified KMS key</li>
                 <li><span class="option-label">B.</span> Encrypt each environment variable value manually with the KMS CLI before putting them in the template</li>
                 <li><span class="option-label">C.</span> Store all configuration in Secrets Manager and remove environment variables entirely from the template</li>
-                <li><span class="option-label">D.</span> Add a KMS key policy in the template but don't reference it from the Lambda function</li>
+                <li><span class="option-label">D.</span> Add a KMS key policy in the template but don't reference it from the Lambda function and define environment variables in the Environment</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -181,7 +181,7 @@
                 <li><span class="option-label">A.</span> Create a shared Lambda Layer containing the utility code, define it as AWS::Serverless::LayerVersion in the template, reference it in each function's Layers property, and use the Globals section to apply the layer to all functions automatically without repeating it per function</li>
                 <li><span class="option-label">B.</span> Combine all 5 functions into a single Lambda function with if/else logic to handle different event types</li>
                 <li><span class="option-label">C.</span> Publish the shared code as a pip package to PyPI and list it in each function's requirements.txt</li>
-                <li><span class="option-label">D.</span> Use symlinks in the file system to point each function directory to a shared folder</li>
+                <li><span class="option-label">D.</span> Use symlinks in the file system to point each function directory to a shared folder with fully managed infrastructure and automatic scaling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
