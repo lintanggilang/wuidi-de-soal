@@ -36,7 +36,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Partition key: device_id, Sort key: timestamp. This allows efficient range queries on timestamp within a single device partition using Query with KeyConditionExpression. Add a GSI with partition key sensor_type and sort key timestamp for the secondary access pattern</li>
                 <li><span class="option-label">B.</span> Partition key: timestamp (truncated to hour), Sort key: device_id. This distributes writes across time-based partitions</li>
-                <li><span class="option-label">C.</span> Partition key: sensor_type, Sort key: device_id#timestamp. This optimizes for the secondary access pattern of querying by sensor type</li>
+                <li><span class="option-label">C.</span> Partition key: sensor_type, Sort key: device_id#timestamp. This optimizes for the secondary access pattern of querying by sensor type with KeyConditionExpression and sort key timestamp for the secondary access pattern</li>
                 <li><span class="option-label">D.</span> Single partition key: device_id#timestamp as a composite string with no sort key, using Scan with filter expressions for time range queries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -53,7 +53,7 @@
                 <li><span class="option-label">A.</span> Orders table: KEY distribution on product_id, compound sort key (order_date, product_id). Products table: ALL distribution. This co-locates the dimension table on every node, eliminating network shuffling for JOINs, while the sort key optimizes date range filtering</li>
                 <li><span class="option-label">B.</span> Both tables: KEY distribution on product_id. Orders table: sort key on order_date. This co-locates matching product_id rows from both tables on the same node</li>
                 <li><span class="option-label">C.</span> Orders table: EVEN distribution. Products table: EVEN distribution. No sort keys defined</li>
-                <li><span class="option-label">D.</span> Orders table: ALL distribution. Products table: KEY distribution on product_id</li>
+                <li><span class="option-label">D.</span> Orders table: ALL distribution. Products table: KEY distribution on product_id for JOINs</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -68,7 +68,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create read replicas and configure the application to route enterprise tenant reporting queries to read replicas while directing all write operations and standard tenant queries to the primary instance, using an application-level routing layer or Amazon RDS Proxy with custom endpoints</li>
                 <li><span class="option-label">B.</span> Vertically scale the primary instance to a larger instance type (e.g., db.r5.8xlarge) to handle both read and write workloads</li>
-                <li><span class="option-label">C.</span> Enable Multi-AZ deployment to distribute the read load across the primary and standby instances</li>
+                <li><span class="option-label">C.</span> Enable Multi-AZ deployment to distribute the read load across the primary and standby instances with custom endpoints</li>
                 <li><span class="option-label">D.</span> Migrate all enterprise tenants to a separate RDS instance and all standard tenants to another instance</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -85,7 +85,7 @@
                 <li><span class="option-label">A.</span> Add a secondary partition on event_type within each date partition (s3://bucket/events/year=2024/month=01/day=15/event_type=click/), enabling Athena to prune irrelevant event types during quarterly scans. Additionally, convert data to Parquet with columnar compression and use partition projection in Athena to eliminate Glue Catalog calls for partition discovery</li>
                 <li><span class="option-label">B.</span> Move data older than 7 days to S3 Glacier and restore it on-demand when quarterly reports are needed</li>
                 <li><span class="option-label">C.</span> Create a single large Parquet file per day instead of multiple small files to reduce Athena's listing overhead</li>
-                <li><span class="option-label">D.</span> Use S3 Select to push filter predicates to S3 and reduce the data read by Athena</li>
+                <li><span class="option-label">D.</span> Use S3 Select to push filter predicates to S3 and reduce the data read by Athena with columnar compression for partition discovery</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -100,7 +100,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create three Global Secondary Indexes: GSI1 (partition key: email) for login lookups with provisioned capacity matching 10K RPS, GSI2 (partition key: city, sort key: user_id) for city queries, and GSI3 (partition key: registration_month, sort key: registration_date) for recent registrations. Project only necessary attributes to minimize GSI storage costs</li>
                 <li><span class="option-label">B.</span> Create a single GSI with a generic partition key (GSI_PK) and sort key (GSI_SK) using the overloading pattern: store email, city, and registration_date as different GSI_PK values with a type prefix (e.g., "EMAIL#user@test.com", "CITY#Seattle")</li>
-                <li><span class="option-label">C.</span> Use DynamoDB Scan operations with FilterExpressions on each attribute for all three access patterns</li>
+                <li><span class="option-label">C.</span> Use DynamoDB Scan operations with FilterExpressions on each attribute for all three access patterns with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> Create Local Secondary Indexes for all three attributes since they provide strongly consistent reads</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Create materialized views for the 20 dashboard queries with AUTO REFRESH enabled, so Redshift pre-computes and caches results that are automatically refreshed when underlying data changes, serving dashboard queries from the materialized view in milliseconds instead of scanning 500 GB each time</li>
                 <li><span class="option-label">B.</span> Enable Redshift result caching, which automatically caches query results and serves identical queries from cache without re-execution</li>
                 <li><span class="option-label">C.</span> Add more nodes to the Redshift cluster to increase parallel processing capacity and reduce query time through horizontal scaling</li>
-                <li><span class="option-label">D.</span> Create regular views for the 20 queries and have the BI tool query the views instead of the base tables</li>
+                <li><span class="option-label">D.</span> Create regular views for the 20 queries and have the BI tool query the views instead of the base tables with AUTO REFRESH enabled</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Redshift Workload Management (WLM) with query queues: create a "large tenant" queue with limited concurrency and memory allocation (e.g., 40% of memory, max 5 concurrent queries) and a "standard tenant" queue with higher concurrency (60% memory, 15 concurrent queries). Combine with row-level security policies using Redshift RLS to restrict each tenant to their own data rows</li>
                 <li><span class="option-label">B.</span> Create separate Redshift clusters for each of the 1,000 tenants to ensure complete isolation</li>
-                <li><span class="option-label">C.</span> Use IAM policies to restrict Redshift access at the cluster level, with separate database users per tenant</li>
+                <li><span class="option-label">C.</span> Use IAM policies to restrict Redshift access at the cluster level, with separate database users per tenant and memory allocation (e</li>
                 <li><span class="option-label">D.</span> Implement application-level filtering by adding WHERE tenant_id = :current_tenant to every query in the application code</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a GSI with partition key customer_id and sort key order_date (stored as ISO-8601 string for lexicographic sorting). Query the GSI with ScanIndexForward=false (descending order), Limit=20 for page size, and use the returned LastEvaluatedKey as ExclusiveStartKey for subsequent page requests</li>
                 <li><span class="option-label">B.</span> Use the base table with a Scan operation filtered by customer_id, sort results in application memory, and implement offset-based pagination</li>
-                <li><span class="option-label">C.</span> Store all orders for a customer in a single DynamoDB item as a list attribute, and use application logic to sort and paginate the list</li>
+                <li><span class="option-label">C.</span> Store all orders for a customer in a single DynamoDB item as a list attribute, and use application logic to sort and paginate the list with partition key customer_id</li>
                 <li><span class="option-label">D.</span> Create a GSI with partition key customer_id and no sort key, then sort results alphabetically by order_id in the application</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -164,7 +164,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure WLM with two separate queues: an "analytical" queue with low concurrency (3 slots) and high memory per query (70% of memory) with query timeout of 30 minutes, and an "API" queue with high concurrency (20 slots) and low memory per query (30% of memory) with query timeout of 5 seconds and Short Query Acceleration (SQA) enabled to prioritize fast-running queries</li>
                 <li><span class="option-label">B.</span> Set up concurrency scaling for the cluster to add temporary capacity when queries are queued</li>
-                <li><span class="option-label">C.</span> Schedule analytical queries to run only during off-peak hours (nights and weekends) when API traffic is low</li>
+                <li><span class="option-label">C.</span> Schedule analytical queries to run only during off-peak hours (nights and weekends) when API traffic is low with two separate queues: an "analytical" queue with low concurrency (3 slots)</li>
                 <li><span class="option-label">D.</span> Increase the cluster size to have enough resources for both workloads to run simultaneously without contention</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -181,7 +181,7 @@
                 <li><span class="option-label">A.</span> Use Lake Formation column-level permissions: grant HR full table access, grant Finance access to all columns except SSN, and grant Marketing access only to name and department columns. When users query via Athena, Lake Formation automatically enforces these column restrictions regardless of the SQL submitted</li>
                 <li><span class="option-label">B.</span> Create three separate copies of the data in S3: one with all columns for HR, one without SSN for Finance, and one with only name/department for Marketing</li>
                 <li><span class="option-label">C.</span> Use IAM policies with S3 resource-level permissions to restrict access to specific Parquet column groups within S3 objects</li>
-                <li><span class="option-label">D.</span> Create three Athena named queries with appropriate column selections and train each team to only use their designated query</li>
+                <li><span class="option-label">D.</span> Create three Athena named queries with appropriate column selections and train each team to only use their designated query and grant Marketing access only to name and department columns</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
