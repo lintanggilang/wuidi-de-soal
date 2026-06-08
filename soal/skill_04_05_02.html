@@ -35,7 +35,7 @@
             <div class="question-number">1</div>
             <div class="question-text">A financial services company stores customer data across 500 S3 buckets. The compliance team requires automated discovery of all PII (names, credit card numbers, Social Security numbers) within these buckets and needs findings categorized by severity. They also want continuous monitoring as new data arrives. Which Amazon Macie configuration provides the MOST comprehensive PII detection?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable Macie and create a one-time classification job scanning all 500 buckets, then manually re-run monthly</li>
+                <li><span class="option-label">A.</span> Enable Macie and create a one-time classification job scanning all 500 buckets, then manually re-run monthly for the account</li>
                 <li><span class="option-label">B.</span> Enable Macie, configure automated sensitive data discovery for the account, and create scheduled classification jobs running daily for comprehensive coverage</li>
                 <li><span class="option-label">C.</span> Use S3 event notifications to trigger a Lambda function that calls Macie's API for each new object uploaded</li>
                 <li><span class="option-label">D.</span> Enable Macie with automated sensitive data discovery only, relying on its statistical sampling approach for all detection needs</li>
@@ -53,7 +53,7 @@
             <div class="question-text">A healthcare company receives patient intake forms in PDF and CSV format uploaded to S3. They have specific formats for medical record numbers (MRN) that follow the pattern "MRN-XXXXXX-YY" where X is digits and Y is letters. Macie's built-in managed data identifiers do not recognize this custom format. How should the data engineer configure Macie to detect these custom identifiers?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a custom data identifier in Macie using the regex pattern MRN-\d{6}-[A-Z]{2} with keywords ["medical record", "patient"] and a maximum match distance of 50 characters</li>
-                <li><span class="option-label">B.</span> Submit a request to AWS to add the MRN pattern to the managed data identifiers list</li>
+                <li><span class="option-label">B.</span> Submit a request to AWS to add the MRN pattern to the managed data identifiers list with keywords ["medical record" and a maximum match distance of 50 characters</li>
                 <li><span class="option-label">C.</span> Create an allow list in Macie containing all valid MRN patterns so Macie classifies matches as sensitive</li>
                 <li><span class="option-label">D.</span> Use AWS Glue sensitive data detection with custom PII entity types instead of Macie</li>
             </ul>
@@ -71,7 +71,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Macie → SNS → Security team email notification, then manual access restriction</li>
                 <li><span class="option-label">B.</span> Macie → EventBridge rule (filter on HIGH severity findings) → Lambda function (adds restrictive bucket policy for affected prefix and tags objects) + SNS notification to security team</li>
-                <li><span class="option-label">C.</span> Macie → CloudWatch Alarm → Auto Scaling action to move objects to Glacier</li>
+                <li><span class="option-label">C.</span> Macie → CloudWatch Alarm → Auto Scaling action to move objects to Glacier and tags objects) + SNS notification to security team</li>
                 <li><span class="option-label">D.</span> Macie → AWS Config rule → Systems Manager Automation to delete affected objects</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -105,7 +105,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Macie finding → EventBridge → Lambda that: (1) adds S3 object tag "contains-eu-pii=true", (2) registers the S3 location in Lake Formation, (3) grants Lake Formation permissions only to the DPO team's IAM role</li>
                 <li><span class="option-label">B.</span> Macie finding → SNS → SQS → Lambda that moves objects to a separate "pii-quarantine" S3 bucket managed by Lake Formation with DPO-only permissions</li>
-                <li><span class="option-label">C.</span> Configure Lake Formation to automatically read Macie findings and apply tag-based access control based on sensitivity levels</li>
+                <li><span class="option-label">C.</span> Configure Lake Formation to automatically read Macie findings and apply tag-based access control based on sensitivity levels with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Use Macie's built-in Lake Formation integration to automatically restrict permissions when PII is detected</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -122,7 +122,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Increase the sampling depth to scan more objects per run but limit the number of bytes scanned per object</li>
                 <li><span class="option-label">B.</span> Configure the job with object criteria to include only objects modified since the last successful run (incremental scanning) and set a sampling depth percentage</li>
-                <li><span class="option-label">C.</span> Split into multiple parallel jobs — one per file format — and run all simultaneously</li>
+                <li><span class="option-label">C.</span> Split into multiple parallel jobs — one per file format — and run all simultaneously with object criteria and set a sampling depth percentage</li>
                 <li><span class="option-label">D.</span> Reduce the number of managed data identifiers to scan only for the most critical PII types</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -139,7 +139,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Modify Macie's severity scoring configuration to change CREDIT_CARD_NUMBER findings from MEDIUM to HIGH</li>
                 <li><span class="option-label">B.</span> Create an EventBridge rule that matches Macie findings containing the CREDIT_CARD_NUMBER data identifier regardless of severity, and trigger the HIGH-priority remediation workflow</li>
-                <li><span class="option-label">C.</span> Create a custom data identifier for credit cards with a higher severity threshold setting</li>
+                <li><span class="option-label">C.</span> Create a custom data identifier for credit cards with a higher severity threshold setting and trigger the HIGH-priority remediation workflow</li>
                 <li><span class="option-label">D.</span> Use AWS Security Hub to customize the severity of Macie findings before they reach EventBridge</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -157,7 +157,7 @@
                 <li><span class="option-label">A.</span> Enable all Macie managed data identifiers which cover all CCPA PII categories including behavioral and inference data</li>
                 <li><span class="option-label">B.</span> Use Macie managed data identifiers for standard PII (names, emails, SSN) combined with custom data identifiers for CCPA-specific categories like geolocation coordinates and device identifiers</li>
                 <li><span class="option-label">C.</span> Use only custom data identifiers to create regex patterns for all CCPA-defined PII categories</li>
-                <li><span class="option-label">D.</span> Deploy a third-party DLP solution since Macie cannot detect non-standard PII types required by CCPA</li>
+                <li><span class="option-label">D.</span> Deploy a third-party DLP solution since Macie cannot detect non-standard PII types required by CCPA with custom data identifiers for CCPA-specific categories like geolocation coordinates and device identifiers</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -173,7 +173,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Immediately delete all objects in the staging bucket since they contain PII</li>
                 <li><span class="option-label">B.</span> Run a targeted classification job on the bucket to get complete findings, then implement data masking or tokenization in the ETL pipeline before data reaches the staging bucket</li>
-                <li><span class="option-label">C.</span> Reduce the bucket's sensitivity score by adding it to Macie's exclusion list</li>
+                <li><span class="option-label">C.</span> Reduce the bucket's sensitivity score by adding it to Macie's exclusion list configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Move the staging bucket to a different AWS Region where Macie is not enabled</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -190,7 +190,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Export Macie findings to the delegated administrator's S3 bucket using Macie's findings export configuration, then use Athena to query findings for the report</li>
                 <li><span class="option-label">B.</span> Use Macie's built-in reporting dashboard to generate monthly PDF compliance reports</li>
-                <li><span class="option-label">C.</span> Configure each member account to independently export findings to a centralized S3 bucket</li>
+                <li><span class="option-label">C.</span> Configure each member account to independently export findings to a centralized S3 bucket with Athena and QuickSight</li>
                 <li><span class="option-label">D.</span> Enable AWS Security Hub integration to aggregate Macie findings, then use Security Hub's export to S3 for cross-service reporting with Athena and QuickSight</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
