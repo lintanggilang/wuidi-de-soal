@@ -60,7 +60,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS Transfer Family (SFTP) → Amazon S3 → S3 Event Notification → Lambda → Kinesis Data Streams</li>
                 <li><span class="option-label">B.</span> AWS Direct Connect → Amazon Kinesis Agent on-premises → Kinesis Data Streams</li>
-                <li><span class="option-label">C.</span> AWS DataSync → Amazon S3 → AWS Glue Streaming ETL → Kinesis Data Streams</li>
+                <li><span class="option-label">C.</span> AWS Transfer Family (SFTP) managed endpoint → Amazon S3 → AWS Glue Streaming ETL with near real-time micro-batching → Kinesis Data Streams</li>
                 <li><span class="option-label">D.</span> AWS DMS with SFTP as a source endpoint → Kinesis Data Streams as target</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -92,7 +92,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use compute-optimized instances (c5) for core nodes with Spot Instances, memory-optimized (r5) for master node On-Demand</li>
                 <li><span class="option-label">B.</span> Use general-purpose instances (m5) On-Demand for all nodes</li>
-                <li><span class="option-label">C.</span> Use storage-optimized instances (d2) with local HDFS storage</li>
+                <li><span class="option-label">C.</span> Use storage-optimized instances (d2) with local HDFS storage for core nodes with Spot Instances</li>
                 <li><span class="option-label">D.</span> Use graviton instances (m6g) for all nodes with Reserved Instances</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -108,7 +108,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement exponential backoff with jitter and a maximum retry count with dead letter queue for failed requests</li>
                 <li><span class="option-label">B.</span> Immediately retry failed requests with no delay</li>
-                <li><span class="option-label">C.</span> Skip the failed requests and log them for manual retry later</li>
+                <li><span class="option-label">C.</span> Skip the failed requests and log them for manual retry later with jitter</li>
                 <li><span class="option-label">D.</span> Increase the concurrency of API calls to compensate for failed requests</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -123,7 +123,7 @@
             <div class="question-text">A data engineering team is migrating from a self-managed Apache Airflow on EC2 to Amazon MWAA. Their existing DAGs use custom Python packages and operators. What must they do to ensure the DAGs work on MWAA?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Package custom dependencies in a requirements.txt file and upload DAGs and plugins to the designated S3 bucket</li>
-                <li><span class="option-label">B.</span> Install custom packages directly on the MWAA worker nodes via SSH</li>
+                <li><span class="option-label">B.</span> Install custom packages directly on the MWAA worker nodes via SSH and upload DAGs and plugins to the designated S3 bucket</li>
                 <li><span class="option-label">C.</span> Use only Airflow providers available in the MWAA managed image without custom packages</li>
                 <li><span class="option-label">D.</span> Deploy custom operators as Lambda functions and call them from the DAG</li>
             </ul>
@@ -141,7 +141,7 @@
                 <li><span class="option-label">A.</span> EventBridge rule with content filtering on the detail.object.size field using numeric matching (greater than 104857600)</li>
                 <li><span class="option-label">B.</span> S3 Event Notification with a size filter in the configuration</li>
                 <li><span class="option-label">C.</span> Lambda function triggered by all S3 events that checks file size using HeadObject before processing</li>
-                <li><span class="option-label">D.</span> S3 Intelligent-Tiering to separate large and small files automatically</li>
+                <li><span class="option-label">D.</span> S3 Intelligent-Tiering to separate large and small files automatically with content filtering on the detail</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -155,7 +155,7 @@
             <div class="question-text">A Lambda function processes events from a Kinesis stream with 5 shards. The event source mapping is configured with ParallelizationFactor = 5. During peak hours, the data engineer notices that some Lambda invocations are being throttled. What is the maximum number of concurrent Lambda executions possible with this configuration?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> 25 concurrent executions (5 shards × 5 parallelization factor)</li>
-                <li><span class="option-label">B.</span> 5 concurrent executions (one per shard)</li>
+                <li><span class="option-label">B.</span> 5 concurrent executions (one per shard) with parallel processing</li>
                 <li><span class="option-label">C.</span> 10 concurrent executions (5 shards × 2 default parallelization)</li>
                 <li><span class="option-label">D.</span> 50 concurrent executions (5 shards × 10 maximum parallelization)</li>
             </ul>
@@ -188,7 +188,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a Map state with MaxConcurrency set to 10, with each iteration including a Wait state of 1 second</li>
                 <li><span class="option-label">B.</span> Use a Choice state to check current time and skip if too many requests were sent</li>
-                <li><span class="option-label">C.</span> Process all 100,000 records in a single Lambda function with sleep intervals</li>
+                <li><span class="option-label">C.</span> Process all 100,000 records in a single Lambda function with sleep intervals configured for optimal performance</li>
                 <li><span class="option-label">D.</span> Use an SQS FIFO queue with a message delay of 100ms between sends</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -203,7 +203,7 @@
             <div class="question-text">A data engineer is implementing a fan-in pattern where multiple AWS accounts produce events that need to be consolidated into a single Kinesis stream in a central analytics account. Each producer account generates 1,000 events/second. Which is the MOST secure cross-account fan-in approach?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure a Kinesis stream resource policy allowing PutRecord from producer account roles, and have producers assume a cross-account role to write</li>
-                <li><span class="option-label">B.</span> Create IAM users with access keys in the central account for each producer</li>
+                <li><span class="option-label">B.</span> Create IAM users with access keys in the central account for each producer and have producers assume a cross-account role to write</li>
                 <li><span class="option-label">C.</span> Use VPC Peering between all accounts and write via private endpoints</li>
                 <li><span class="option-label">D.</span> Each producer writes to their local stream, then replicate via DMS to central stream</li>
             </ul>
@@ -219,7 +219,7 @@
             <div class="question-text">A data pipeline writes processed data to Amazon Redshift. After a replay, the engineer notices duplicate rows in Redshift because the pipeline ran twice for the same time window. How should the pipeline be modified to support idempotent replay into Redshift?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use a staging table pattern: TRUNCATE the target partition, then INSERT new data within a transaction (DELETE+INSERT or MERGE)</li>
-                <li><span class="option-label">B.</span> Use INSERT with no-duplicate detection</li>
+                <li><span class="option-label">B.</span> Use INSERT with no-duplicate detection with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">C.</span> Add a UNIQUE constraint on all columns to prevent duplicates</li>
                 <li><span class="option-label">D.</span> Run VACUUM DELETE after each pipeline run to remove duplicates</li>
             </ul>
@@ -235,7 +235,7 @@
             <div class="question-text">A data engineer needs to implement exactly-once semantics for a stateful streaming pipeline that processes payment transactions. The pipeline uses Apache Flink on Amazon Managed Service for Apache Flink. Which combination of Flink features provides exactly-once guarantees?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable checkpointing with exactly-once mode and use two-phase commit sink connectors for external systems</li>
-                <li><span class="option-label">B.</span> Set parallelism to 1 to process one record at a time</li>
+                <li><span class="option-label">B.</span> Set parallelism to 1 to process one record at a time with exactly-once mode and use two-phase commit sink connectors</li>
                 <li><span class="option-label">C.</span> Use at-least-once checkpointing with deduplication in the sink</li>
                 <li><span class="option-label">D.</span> Disable checkpointing and rely on Kinesis exactly-once delivery</li>
             </ul>
@@ -252,7 +252,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Set the ECS service desired count to 10 tasks, matching the number of shards, with one KCL worker per task</li>
                 <li><span class="option-label">B.</span> Set desired count to 1 task with 10 threads inside the container</li>
-                <li><span class="option-label">C.</span> Set desired count to 20 tasks for redundancy</li>
+                <li><span class="option-label">C.</span> Set desired count to 20 tasks for redundancy with one KCL worker per task</li>
                 <li><span class="option-label">D.</span> Use ECS Service Auto Scaling based on CPU utilization</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -268,7 +268,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Store MySQL credentials in AWS Secrets Manager and reference the secret ARN in the CREATE EXTERNAL SCHEMA command using SECRET_ARN parameter</li>
                 <li><span class="option-label">B.</span> Hard-code the credentials directly in the CREATE EXTERNAL SCHEMA SQL statement</li>
-                <li><span class="option-label">C.</span> Store credentials in an S3 file and reference it in the schema definition</li>
+                <li><span class="option-label">C.</span> Store credentials in an S3 file and reference it in the schema definition configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Use IAM authentication for the external MySQL database</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -285,7 +285,7 @@
                 <li><span class="option-label">A.</span> Apply a lowercase transformation to the email column in both DynamicFrames before performing the join</li>
                 <li><span class="option-label">B.</span> Use a fuzzy matching algorithm for the join condition</li>
                 <li><span class="option-label">C.</span> Configure Glue to perform case-insensitive joins automatically</li>
-                <li><span class="option-label">D.</span> Create a lookup table mapping uppercase to lowercase emails</li>
+                <li><span class="option-label">D.</span> Create a lookup table mapping uppercase to lowercase emails configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -300,7 +300,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use S3 Select or Glue pushdown predicates to filter data at read time, dramatically reducing the data volume processed by Glue workers</li>
                 <li><span class="option-label">B.</span> Increase workers to 200 to finish faster (less DPU-hours)</li>
-                <li><span class="option-label">C.</span> Switch to G.2X workers for faster processing</li>
+                <li><span class="option-label">C.</span> Switch to G.2X workers for faster processing with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Run the job less frequently (weekly instead of daily)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -316,7 +316,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable data transformation on the Firehose delivery stream using an inline Lambda function</li>
                 <li><span class="option-label">B.</span> Add a Kinesis Data Stream before Firehose and use a separate Lambda consumer</li>
-                <li><span class="option-label">C.</span> Replace Firehose with a Glue Streaming ETL job</li>
+                <li><span class="option-label">C.</span> Replace Firehose with a Glue Streaming ETL job with real-time processing and low-latency data delivery</li>
                 <li><span class="option-label">D.</span> Deploy an Apache Flink application to perform the transformation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -333,7 +333,7 @@
                 <li><span class="option-label">A.</span> Use the UNLOAD command with FORMAT PARQUET option to export query results directly to S3 in Parquet format</li>
                 <li><span class="option-label">B.</span> Use UNLOAD to export as CSV, then run a Glue job to convert to Parquet</li>
                 <li><span class="option-label">C.</span> Use a Python script with psycopg2 to fetch results and write Parquet using PyArrow</li>
-                <li><span class="option-label">D.</span> Create an external table in Redshift Spectrum and write to it</li>
+                <li><span class="option-label">D.</span> Create an external table in Redshift Spectrum and write to it with FORMAT PARQUET option</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -348,7 +348,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The number of output files equals the number of Spark partitions. Use coalesce(100) or repartition(100) before writing to reduce the number of output partitions to 100</li>
                 <li><span class="option-label">B.</span> S3 has a file size limit causing splits</li>
-                <li><span class="option-label">C.</span> Parquet format cannot produce large files</li>
+                <li><span class="option-label">C.</span> Parquet format cannot produce large files with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">D.</span> The Glue worker type determines file size</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -364,7 +364,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> API Gateway Usage Plans with API Keys — provides per-partner rate limits, throttling, API key validation, and usage tracking for metering/billing</li>
                 <li><span class="option-label">B.</span> API Gateway Lambda authorizer with custom rate limiting logic</li>
-                <li><span class="option-label">C.</span> AWS WAF with rate-based rules attached to API Gateway</li>
+                <li><span class="option-label">C.</span> AWS WAF with rate-based rules attached to API Gateway and usage tracking for metering/billing for metering/billing</li>
                 <li><span class="option-label">D.</span> IAM authentication with resource-based policies</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -380,7 +380,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Organize by data zone (raw/curated/consumption) with sub-folders by source system and format, using Glue crawlers to catalog structured and semi-structured data separately</li>
                 <li><span class="option-label">B.</span> Store all data in a single flat prefix sorted by date</li>
-                <li><span class="option-label">C.</span> Create separate S3 buckets for each format type</li>
+                <li><span class="option-label">C.</span> Create separate S3 buckets for each format type with sub-folders by source system</li>
                 <li><span class="option-label">D.</span> Convert all data to Parquet before storing</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -397,7 +397,7 @@
                 <li><span class="option-label">A.</span> Enable Amazon Bedrock Guardrails with PII detection filters that automatically redact sensitive information before it reaches the model</li>
                 <li><span class="option-label">B.</span> Trust that Bedrock doesn't store or learn from customer data</li>
                 <li><span class="option-label">C.</span> Use regex to remove all numbers from the text before sending</li>
-                <li><span class="option-label">D.</span> Encrypt the text before sending to the LLM</li>
+                <li><span class="option-label">D.</span> Encrypt the text before sending to the LLM with PII detection filters that automatically redact sensitive information before it reaches the model</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -412,7 +412,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Wrap all task states in a single Parallel state (with one branch) that has a Catch block, redirecting to a shared error-handling state that publishes to SNS and logs details</li>
                 <li><span class="option-label">B.</span> Keep individual Catch blocks on each state for granular control</li>
-                <li><span class="option-label">C.</span> Remove all error handling and rely on CloudWatch Alarms</li>
+                <li><span class="option-label">C.</span> Remove all error handling and rely on CloudWatch Alarms and logs details</li>
                 <li><span class="option-label">D.</span> Use Step Functions Express Workflows which have automatic error handling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -427,7 +427,7 @@
             <div class="question-text">A data pipeline's performance degrades as data volume grows. Currently it processes 100 GB in 1 hour but performance is linear — 200 GB takes 2 hours, 1 TB would take 10 hours. The SLA requires processing within 2 hours regardless of volume. Which architectural change enables sub-linear scaling?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Partition the data and process partitions in parallel using auto-scaling compute (e.g., EMR Managed Scaling or Glue Auto Scaling). Double the data = double the workers, maintaining constant wall-clock time</li>
-                <li><span class="option-label">B.</span> Optimize the processing code to be 10x faster</li>
+                <li><span class="option-label">B.</span> Optimize the processing code to be 10x faster with fully managed infrastructure and automatic scaling</li>
                 <li><span class="option-label">C.</span> Pre-provision compute for maximum expected volume</li>
                 <li><span class="option-label">D.</span> Process only a sample of the data when volume is high</li>
             </ul>
@@ -444,7 +444,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Express Workflows are billed per number of state transitions AND duration (memory × time), not just per execution. High state count per execution multiplied by 100K daily executions results in significant transition charges</li>
                 <li><span class="option-label">B.</span> Standard Workflows would be cheaper at this scale</li>
-                <li><span class="option-label">C.</span> Step Functions charges for failed executions too</li>
+                <li><span class="option-label">C.</span> Step Functions charges for failed executions too and duration (memory × time), not just per execution</li>
                 <li><span class="option-label">D.</span> The Lambda invocations inside the workflow are double-billed</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -459,7 +459,7 @@
             <div class="question-text">A data engineer needs to send different types of alerts from a single SNS topic: "pipeline-alerts". Some subscribers only want failure alerts, others want all alerts including success notifications. How can subscribers selectively receive messages?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use SNS message attributes (e.g., "alertType": "FAILURE") and configure subscription filter policies on each subscriber to match only their desired alertType values</li>
-                <li><span class="option-label">B.</span> Create separate SNS topics for each alert type</li>
+                <li><span class="option-label">B.</span> Create separate SNS topics for each alert type configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Include filter instructions in the message body</li>
                 <li><span class="option-label">D.</span> Let subscribers discard unwanted messages after receiving them</li>
             </ul>
@@ -477,7 +477,7 @@
                 <li><span class="option-label">A.</span> Use BatchWriteItem to write up to 25 items per API call, reducing the number of API calls from 100 to 4 and leveraging parallelism within each batch call</li>
                 <li><span class="option-label">B.</span> Use TransactWriteItems for all 100 records in one transaction</li>
                 <li><span class="option-label">C.</span> Increase Lambda timeout to accommodate sequential writes</li>
-                <li><span class="option-label">D.</span> Write to S3 instead of DynamoDB for better throughput</li>
+                <li><span class="option-label">D.</span> Write to S3 instead of DynamoDB for better throughput and leveraging parallelism within each batch call</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -493,7 +493,7 @@
                 <li><span class="option-label">A.</span> Place initialization code (connection pool, config loading) OUTSIDE the handler function at module level — this code runs only during cold start and is reused across subsequent warm invocations</li>
                 <li><span class="option-label">B.</span> Place all initialization inside the handler function to ensure fresh state every time</li>
                 <li><span class="option-label">C.</span> Use environment variables for all configuration to avoid Parameter Store calls</li>
-                <li><span class="option-label">D.</span> Create a new connection for each record processed</li>
+                <li><span class="option-label">D.</span> Create a new connection for each record processed and is reused across subsequent warm invocations</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -509,7 +509,7 @@
                 <li><span class="option-label">A.</span> Python 3.12 runtime, because Python has one of the fastest Lambda cold start times, and the required operations (JSON parsing, math, boto3 DynamoDB writes) are all available in the standard library and included SDK</li>
                 <li><span class="option-label">B.</span> Java 17 runtime with Spring Boot framework for enterprise-grade structure</li>
                 <li><span class="option-label">C.</span> .NET 6 runtime with full ASP.NET framework</li>
-                <li><span class="option-label">D.</span> Node.js 20 runtime with TypeScript compilation</li>
+                <li><span class="option-label">D.</span> Node.js 20 runtime with TypeScript compilation configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -523,7 +523,7 @@
             <div class="question-text">A data engineering team needs to deploy AWS Glue jobs across development, staging, and production environments. Each environment has different S3 buckets, database endpoints, IAM roles, and Glue job configurations (number of workers, timeout values). Deployments are currently manual and error-prone. Which CI/CD approach is MOST appropriate?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS CodePipeline with CodeBuild stages: source from CodeCommit/GitHub triggers the pipeline, CodeBuild runs unit tests, then deploys via CloudFormation/CDK with environment-specific parameter files (dev.json, staging.json, prod.json) that contain S3 paths, IAM roles, and worker counts for each environment</li>
-                <li><span class="option-label">B.</span> Manually upload Glue scripts to S3 and update job configurations through the AWS Console for each environment</li>
+                <li><span class="option-label">B.</span> Manually upload Glue scripts to S3 and update job configurations through the AWS Console for each environment with CodeBuild stages: source from CodeCommit/GitHub triggers the pipeline and worker counts for each environment</li>
                 <li><span class="option-label">C.</span> Use a single Glue job configuration across all environments with if/else statements in the code to switch behavior</li>
                 <li><span class="option-label">D.</span> Deploy only to production and use production as the test environment</li>
             </ul>
@@ -540,7 +540,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS CDK with Python, using L2 constructs that provide sensible defaults and reduce boilerplate — for example, a single line creates a Kinesis stream with default settings, and grant methods simplify IAM permissions (stream.grant_read(lambda_function))</li>
                 <li><span class="option-label">B.</span> Write raw CloudFormation YAML templates from scratch, manually defining every property including IAM policies</li>
-                <li><span class="option-label">C.</span> Use Terraform with HCL since it's the industry standard regardless of team expertise</li>
+                <li><span class="option-label">C.</span> Use Terraform with HCL since it's the industry standard regardless of team expertise for example</li>
                 <li><span class="option-label">D.</span> Create all resources through the AWS Console and export them to CloudFormation later</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -557,7 +557,7 @@
                 <li><span class="option-label">A.</span> Define an AWS::Serverless::Function with an Api event type (Events: ApiEvent: Type: Api, Properties: Path: /ingest, Method: post) — SAM automatically creates an implicit API Gateway REST API with the specified route, requiring no separate AWS::Serverless::Api resource definition</li>
                 <li><span class="option-label">B.</span> Define separate resources: AWS::ApiGateway::RestApi, AWS::ApiGateway::Resource, AWS::ApiGateway::Method, AWS::Lambda::Permission, and AWS::ApiGateway::Deployment</li>
                 <li><span class="option-label">C.</span> Use AWS::Serverless::HttpApi with detailed route configuration, stage definition, and explicit Lambda integration</li>
-                <li><span class="option-label">D.</span> Deploy API Gateway manually and use SAM only for the Lambda function, connecting them post-deployment</li>
+                <li><span class="option-label">D.</span> Deploy API Gateway manually and use SAM only for the Lambda function, connecting them post-deployment with an Api event type (Events: ApiEvent: Type: Api</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -572,7 +572,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use EFS as the shared cache. A separate scheduled Lambda function updates the reference data on EFS hourly. All 100+ concurrent execution instances read from the same EFS mount point, seeing the updated data immediately after the refresh Lambda completes its write</li>
                 <li><span class="option-label">B.</span> Store cache in each Lambda's /tmp and trigger a deployment to clear all containers when cache needs refreshing</li>
-                <li><span class="option-label">C.</span> Use Lambda environment variables to store the 500MB cache data</li>
+                <li><span class="option-label">C.</span> Use Lambda environment variables to store the 500MB cache data configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Implement a custom cache invalidation protocol using SNS to notify each Lambda instance to download fresh data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -589,7 +589,7 @@
                 <li><span class="option-label">A.</span> Enable CloudFormation drift detection on the stack and run it before each deployment. Implement an AWS Config rule that detects changes not originating from CloudFormation. Use IAM policies that restrict console-level modifications to production resources (only allowing changes through the CI/CD pipeline with CloudFormation)</li>
                 <li><span class="option-label">B.</span> Always run cdk destroy and cdk deploy instead of updating the existing stack</li>
                 <li><span class="option-label">C.</span> Accept that drift will happen and manually fix conflicts as they arise</li>
-                <li><span class="option-label">D.</span> Add a README telling team members not to make console changes</li>
+                <li><span class="option-label">D.</span> Add a README telling team members not to make console changes with CloudFormation) and run it before each deployment</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -604,7 +604,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Add a post-deployment stage in CodePipeline that triggers a canary test: run the Glue job against a small known dataset in production, validate output row counts, checksums, and schema against expected values. If validation fails, automatically trigger rollback to the previous version. Use CloudWatch custom metrics to track deployment success rate</li>
                 <li><span class="option-label">B.</span> Send a Slack notification after deployment and ask team members to manually check output data</li>
-                <li><span class="option-label">C.</span> Consider the deployment successful if CloudFormation stack update completes without errors</li>
+                <li><span class="option-label">C.</span> Consider the deployment successful if CloudFormation stack update completes without errors and schema against expected values</li>
                 <li><span class="option-label">D.</span> Wait for downstream consumers to report data quality issues within 24 hours</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -620,7 +620,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Horizontal scaling: replace the single large instance with a cluster of 20 smaller instances (r5.2xlarge). Distribute the 10TB across all nodes using Spark's parallel processing. Each node processes its partition simultaneously, achieving near-linear speedup. Total cost is similar (20 × r5.2xlarge ≈ 1 × r5.24xlarge) but processing completes in approximately 30 minutes instead of 10 hours</li>
                 <li><span class="option-label">B.</span> Vertical scaling: upgrade to an even larger instance type (r5.metal with 96 vCPUs and 768GB RAM) to handle the 10TB dataset faster on a single machine</li>
-                <li><span class="option-label">C.</span> Process the data in 10 sequential 1TB batches on the existing instance</li>
+                <li><span class="option-label">C.</span> Process the data in 10 sequential 1TB batches on the existing instance with a cluster of 20 smaller instances (r5</li>
                 <li><span class="option-label">D.</span> Compress the data to reduce volume rather than scaling compute</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -637,7 +637,7 @@
                 <li><span class="option-label">A.</span> Implement a materialized path approach storing the full ancestor path for each ICD-10 code (e.g., "I/I00-I99/I20-I25/I21") in the diagnosis records, then use prefix matching on the path string to efficiently find all descendants of any category node</li>
                 <li><span class="option-label">B.</span> Store only the leaf-level ICD-10 code in each diagnosis record and perform recursive lookups through a separate parent-child hierarchy table at query time</li>
                 <li><span class="option-label">C.</span> Flatten the entire ICD-10 hierarchy into a single level by removing all parent categories and storing only leaf codes, requiring users to enumerate all specific codes in their queries</li>
-                <li><span class="option-label">D.</span> Store the full ICD-10 tree as a single JSON document and use Athena JSON functions to traverse the tree for each query</li>
+                <li><span class="option-label">D.</span> Store the full ICD-10 tree as a single JSON document and use Athena JSON functions to traverse the tree for each query configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -651,7 +651,7 @@
             <div class="question-text">A company currently uses Amazon Redshift DC2 nodes for their data warehouse. Their data has grown from 2 TB to 20 TB over 18 months, and frequently accessed "hot" data represents only 3 TB while the remaining 17 TB is accessed rarely for historical analysis. The current DC2 cluster requires expensive resizing to accommodate growth. Which Redshift node type migration provides the MOST cost-effective solution for this data growth pattern?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Migrate to Redshift RA3 nodes with Managed Storage, which automatically tiers hot data on fast local SSD cache and warm/cold data on S3-backed managed storage, allowing compute and storage to scale independently — pay for compute nodes while storage costs pennies per GB on S3</li>
-                <li><span class="option-label">B.</span> Add more DC2 nodes to the cluster through elastic resize to accommodate the full 20 TB on local SSDs</li>
+                <li><span class="option-label">B.</span> Add more DC2 nodes to the cluster through elastic resize to accommodate the full 20 TB on local SSDs with Managed Storage</li>
                 <li><span class="option-label">C.</span> Keep the DC2 cluster at 3 TB and offload historical data to S3, using Redshift Spectrum for historical queries</li>
                 <li><span class="option-label">D.</span> Migrate all 20 TB to Amazon Athena and decommission the Redshift cluster entirely</li>
             </ul>
@@ -668,7 +668,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a GSI with partition key customer_id and sort key order_date (stored as ISO-8601 string for lexicographic sorting). Query the GSI with ScanIndexForward=false (descending order), Limit=20 for page size, and use the returned LastEvaluatedKey as ExclusiveStartKey for subsequent page requests</li>
                 <li><span class="option-label">B.</span> Use the base table with a Scan operation filtered by customer_id, sort results in application memory, and implement offset-based pagination</li>
-                <li><span class="option-label">C.</span> Store all orders for a customer in a single DynamoDB item as a list attribute, and use application logic to sort and paginate the list</li>
+                <li><span class="option-label">C.</span> Store all orders for a customer in a single DynamoDB item as a list attribute, and use application logic to sort and paginate the list with partition key customer_id</li>
                 <li><span class="option-label">D.</span> Create a GSI with partition key customer_id and no sort key, then sort results alphabetically by order_id in the application</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -683,7 +683,7 @@
             <div class="question-text">A machine learning team has trained a product recommendation model that generates 768-dimensional embedding vectors. They need to serve recommendations with: (1) vector similarity search across 100 million product embeddings, (2) real-time filtering by product availability (boolean) and price range during the search, (3) updates to product availability status within 1 second of change, and (4) 99.9% availability. The team wants a fully managed solution. Which approach BEST meets all requirements?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Amazon OpenSearch Service with k-NN plugin using HNSW algorithm, storing embeddings as knn_vector fields alongside product metadata. Use filtered k-NN queries that apply metadata filters (availability=true AND price BETWEEN 10 AND 50) during the vector search, with near real-time index refreshes for availability updates</li>
-                <li><span class="option-label">B.</span> Aurora PostgreSQL with pgvector, using HNSW index on the embedding column and WHERE clauses for metadata filtering</li>
+                <li><span class="option-label">B.</span> Aurora PostgreSQL with pgvector, using HNSW index on the embedding column and WHERE clauses for metadata filtering with real-time processing and low-latency data delivery</li>
                 <li><span class="option-label">C.</span> Amazon SageMaker with a custom endpoint hosting a FAISS index loaded from S3, with separate DynamoDB calls for metadata filtering</li>
                 <li><span class="option-label">D.</span> Amazon Neptune with vector similarity as a custom Lambda function integrated into graph queries</li>
             </ul>
@@ -699,7 +699,7 @@
             <div class="question-text">An enterprise has 200 TB of data across 3 on-premises data centers that needs to be migrated to AWS. Each data center has limited bandwidth (1 Gbps each) and the total migration must complete within 6 weeks. The data includes files (150 TB on NFS), a 30 TB Oracle database, and 20 TB of VMware virtual machine images. Which combination of migration tools creates the MOST efficient parallel migration strategy?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> AWS Snowball Edge devices (multiple per data center) for the 150 TB of NFS files, running in parallel across all 3 data centers. AWS DMS for the 30 TB Oracle database with full load + CDC over Direct Connect. AWS Application Migration Service (MGN) for the 20 TB VMware images with continuous block-level replication</li>
-                <li><span class="option-label">B.</span> Use AWS DataSync for all 200 TB over the combined 3 Gbps bandwidth across all data centers</li>
+                <li><span class="option-label">B.</span> Use AWS DataSync for all 200 TB over the combined 3 Gbps bandwidth across all data centers with full load + CDC over Direct Connect</li>
                 <li><span class="option-label">C.</span> Order a single AWS Snowmobile (100 PB capacity) to visit each data center sequentially and load all data types</li>
                 <li><span class="option-label">D.</span> Use AWS DMS for all data types — files, database, and VM images — since DMS supports multiple source types</li>
             </ul>
@@ -715,7 +715,7 @@
             <div class="question-text">A Redshift data warehouse team notices that their Spectrum queries reading from a shared S3 data lake often have inconsistent performance. Some queries complete in 30 seconds while identical queries take 5 minutes at other times. Investigation reveals that the Spectrum compute layer is shared across multiple Redshift clusters in the same region, and peak-hour contention affects performance. The team needs consistent sub-60-second performance for critical Spectrum queries. Which strategy MOST reliably ensures consistent Spectrum query performance?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Create materialized views that pre-compute and store the results of critical Spectrum queries locally in Redshift. Use AUTO REFRESH to keep the materialized views updated when underlying S3 data changes. Critical dashboards query the local materialized view (sub-second latency) instead of Spectrum, eliminating dependency on shared Spectrum compute resources</li>
-                <li><span class="option-label">B.</span> Schedule critical Spectrum queries during off-peak hours when Spectrum contention is lower</li>
+                <li><span class="option-label">B.</span> Schedule critical Spectrum queries during off-peak hours when Spectrum contention is lower with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">C.</span> Add more nodes to the Redshift cluster to increase the number of Spectrum requests that can be processed concurrently</li>
                 <li><span class="option-label">D.</span> Use Redshift concurrency scaling to handle peak-time Spectrum query bursts</li>
             </ul>
@@ -732,7 +732,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Redshift's snapshot isolation behavior: in Redshift, SELECT queries read from a snapshot of committed data and are NOT blocked by concurrent write locks. If dashboards are experiencing delays, the actual issue is likely WLM queue configuration or resource contention, not write locks blocking reads</li>
                 <li><span class="option-label">B.</span> Create a secondary Redshift cluster using data sharing specifically for dashboard queries, completely isolating read workloads from ETL write contention</li>
-                <li><span class="option-label">C.</span> Configure WLM with a high-priority queue for dashboard queries with queue-hopping rules that preempt ETL queries when dashboards are waiting</li>
+                <li><span class="option-label">C.</span> Configure WLM with a high-priority queue for dashboard queries with queue-hopping rules that preempt ETL queries when dashboards are waiting and are NOT blocked by concurrent write locks</li>
                 <li><span class="option-label">D.</span> Implement table-level read locks using LOCK TABLE IN SHARE MODE before dashboard queries execute to prevent concurrent writes</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -747,7 +747,7 @@
             <div class="question-text">A data engineering team manages an Iceberg table that receives concurrent writes from two Glue jobs running simultaneously — one appending hourly sales data and another updating product prices. Both jobs occasionally fail with "CommitFailedException: Conflict detected" errors. The team needs to understand Iceberg's concurrency control model and configure appropriate conflict resolution. What causes these conflicts and how should they be resolved?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Iceberg uses optimistic concurrency control with snapshot isolation. Conflicts occur when two concurrent writers modify overlapping data (same partitions/files). The resolution is to enable automatic retry on CommitFailedException — the failed writer re-reads the current table state, validates its changes don't conflict with the committed write, and re-attempts the commit. For truly non-overlapping operations (appends to different partitions vs. updates to existing rows), Iceberg can validate there's no actual conflict and commit successfully on retry</li>
-                <li><span class="option-label">B.</span> The conflicts occur because Iceberg uses pessimistic locking and both jobs attempt to acquire the same table-level write lock simultaneously</li>
+                <li><span class="option-label">B.</span> The conflicts occur because Iceberg uses pessimistic locking and both jobs attempt to acquire the same table-level write lock simultaneously with snapshot isolation and re-attempts the commit</li>
                 <li><span class="option-label">C.</span> The conflicts are caused by S3's eventual consistency model — both writers succeed on S3 but the Glue Data Catalog rejects the second commit</li>
                 <li><span class="option-label">D.</span> The conflicts occur because Iceberg limits each table to a single writer at any given time; the solution is to queue writes sequentially</li>
             </ul>
@@ -765,7 +765,7 @@
                 <li><span class="option-label">A.</span> Create an HNSW index on the embedding column with m=16 and ef_construction=200. For filtered queries, use partial HNSW indexes (CREATE INDEX ... WHERE category = 'X') for high-cardinality filters, or use post-filtering for low-selectivity filters. Set ef_search=100 at query time for high recall. With 2M vectors, HNSW provides sub-50ms latency while pgvector's SQL integration allows combining vector search with standard WHERE clause metadata filtering</li>
                 <li><span class="option-label">B.</span> Create an IVF index with lists=1000 and use pre-filtering (filter first, then vector search on filtered subset) for all queries</li>
                 <li><span class="option-label">C.</span> Use a flat (no index) approach with parallel sequential scan since 2M vectors at 1,536 dimensions is small enough for brute-force within 50ms on Aurora</li>
-                <li><span class="option-label">D.</span> Create separate HNSW indexes for each combination of category and access level to avoid any runtime filtering</li>
+                <li><span class="option-label">D.</span> Create separate HNSW indexes for each combination of category and access level to avoid any runtime filtering with m=16 and ef_construction=200</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -781,7 +781,7 @@
                 <li><span class="option-label">A.</span> Implement a catalog classification system using Glue Data Catalog table properties and Lake Formation tags to designate data quality tiers: "gold" (authoritative, curated), "silver" (transformed but not primary), "bronze" (raw ingestion). Add business metadata properties like owner, refresh-frequency, source-system, and data-quality-score. Deprecate non-authoritative tables by adding a "status: deprecated" property with migration guidance pointing to the gold-tier equivalent</li>
                 <li><span class="option-label">B.</span> Delete all duplicate and non-authoritative tables from the catalog, keeping only one version of each dataset</li>
                 <li><span class="option-label">C.</span> Create IAM policies that deny access to non-authoritative tables, forcing analysts to use only the designated gold tables</li>
-                <li><span class="option-label">D.</span> Rename all non-authoritative tables with a "DO_NOT_USE_" prefix so analysts can identify them by name</li>
+                <li><span class="option-label">D.</span> Rename all non-authoritative tables with a "DO_NOT_USE_" prefix so analysts can identify them by name configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -797,7 +797,7 @@
                 <li><span class="option-label">A.</span> In the producer account (A), use Lake Formation to grant table-level permissions (SELECT, DESCRIBE) to consumer account IDs. In each consumer account, create resource links pointing to the producer's shared tables. The resource links appear as local catalog entries in the consumer's databases — Athena and Spectrum query them using local schema references while data access is governed by the producer's Lake Formation permissions</li>
                 <li><span class="option-label">B.</span> Configure a Glue Data Catalog resource policy in Account A granting cross-account access, then have consumers directly reference the producer's catalog ID in their Athena queries using catalog_id parameter</li>
                 <li><span class="option-label">C.</span> Set up AWS DMS to replicate the Glue Data Catalog metadata from Account A to Accounts B, C, and D periodically</li>
-                <li><span class="option-label">D.</span> Create IAM cross-account roles in Account A and have consumer Athena assume those roles to access the producer's catalog and S3 data</li>
+                <li><span class="option-label">D.</span> Create IAM cross-account roles in Account A and have consumer Athena assume those roles to access the producer's catalog and S3 data configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -812,7 +812,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Set the crawler's S3 target to s3://bucket/data/ (limiting scope to business data only) and add exclusion patterns: "_metadata", "_SUCCESS", "_committed*", "_started*", ".*" (hidden files). These patterns use glob syntax and are applied to file/folder names within the target path. The crawler skips any path segment matching these patterns, avoiding Spark metadata directories and output marker files while processing only actual data files</li>
                 <li><span class="option-label">B.</span> Set the crawler target to s3://bucket/ and use include patterns "data/**" with exclusions for "logs/**" and "tmp/**"</li>
-                <li><span class="option-label">C.</span> Configure S3 lifecycle policies to delete _metadata and _SUCCESS files before the crawler runs</li>
+                <li><span class="option-label">C.</span> Configure S3 lifecycle policies to delete _metadata and _SUCCESS files before the crawler runs with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Create an S3 bucket policy that denies the crawler's IAM role access to paths containing _metadata and _SUCCESS</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -828,7 +828,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> In the Glue ETL job script, after writing data using DynamicFrame's write_dynamic_frame with catalog_id and database/table parameters, enable the "enableUpdateCatalog" and "partitionKeys" options. This tells the Glue job to automatically call BatchCreatePartition for any new partition combinations it writes, registering them in the Glue Data Catalog as part of the write operation itself</li>
                 <li><span class="option-label">B.</span> After the write operation, add boto3 code in the ETL script to call glue_client.batch_create_partition() with the list of new partitions written during the job</li>
-                <li><span class="option-label">C.</span> Use a Glue workflow that runs the ETL job followed by MSCK REPAIR TABLE via an Athena query in a Python shell job</li>
+                <li><span class="option-label">C.</span> Use a Glue workflow that runs the ETL job followed by MSCK REPAIR TABLE via an Athena query in a Python shell job with catalog_id for any new partition combinations it writes</li>
                 <li><span class="option-label">D.</span> Configure the ETL job's output sink to write directly to the Glue Data Catalog table (catalog target) instead of S3, which auto-registers partitions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -843,7 +843,7 @@
             <div class="question-text">A Glue connection to an Amazon RDS SQL Server instance works correctly for ETL jobs but the connection test in the AWS Console always fails with "Connection timeout." The ETL job successfully reads and writes data through this connection. What explains this discrepancy between the test failure and successful job execution?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The Glue connection test uses a specific subnet (the first available in the connection's VPC configuration) which may differ from the subnet used by the actual ETL job. If the test subnet's route table doesn't have proper routing to the RDS instance (different AZ, missing routes), the test fails while jobs running in a different subnet succeed. Verify that ALL subnets configured in the connection have proper routing and security group access to the RDS instance</li>
-                <li><span class="option-label">B.</span> The connection test uses a smaller, more restricted ENI configuration than actual ETL jobs. The test ENI has a default security group applied in addition to the specified security group, and the default group may block outbound traffic</li>
+                <li><span class="option-label">B.</span> The connection test uses a smaller, more restricted ENI configuration than actual ETL jobs. The test ENI has a default security group applied in addition to the specified security group, and the default group may block outbound traffic and security group access to the RDS instance</li>
                 <li><span class="option-label">C.</span> The Glue connection test requires the testing IAM role (AWSGlueServiceRole) to have different permissions than the ETL job role. The test role may lack VPC or ENI creation permissions</li>
                 <li><span class="option-label">D.</span> The connection test has a shorter timeout period (10 seconds) compared to ETL jobs (configurable timeout). If the RDS instance takes longer than 10 seconds to respond to initial TCP handshake due to SSL negotiation, the test times out while the job's longer timeout allows completion</li>
             </ul>
@@ -860,7 +860,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Define custom metadata forms with required fields and attach them to the DataZone domain or specific projects as publishing requirements. When a data producer attempts to publish an asset, DataZone validates that all required metadata form fields are populated (e.g., business description, data classification, update frequency, data owner, glossary terms). Publishing is blocked until the form is complete, ensuring consistent minimum metadata quality across all catalog assets</li>
                 <li><span class="option-label">B.</span> Create a Lambda function triggered by DataZone publish events that checks metadata completeness and automatically unpublishes assets that don't meet standards</li>
-                <li><span class="option-label">C.</span> Configure DataZone to run a Glue Data Quality check on each asset before publishing, blocking publication if quality scores are below threshold</li>
+                <li><span class="option-label">C.</span> Configure DataZone to run a Glue Data Quality check on each asset before publishing, blocking publication if quality scores are below threshold with required fields</li>
                 <li><span class="option-label">D.</span> Send weekly reports to project owners listing assets with incomplete metadata and rely on manual compliance</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -877,7 +877,7 @@
                 <li><span class="option-label">A.</span> Use the MAXFILESIZE parameter in UNLOAD to set a larger maximum file size (e.g., MAXFILESIZE 1 GB). By default, UNLOAD creates files up to 6.2 GB for uncompressed data. MAXFILESIZE controls the upper bound — setting it larger produces fewer, larger files. Additionally, use PARALLEL OFF to write output as a single file (if fewer files is the priority), though this sacrifices UNLOAD speed for consolidation</li>
                 <li><span class="option-label">B.</span> Use the FILECOUNT parameter to specify exactly how many output files UNLOAD should produce</li>
                 <li><span class="option-label">C.</span> Use PARALLEL ON with a number (e.g., PARALLEL 4) to control the degree of output parallelism and thus the file count</li>
-                <li><span class="option-label">D.</span> Run a post-UNLOAD S3 batch operation to merge the 200 small files into fewer large files using S3 Object Lambda</li>
+                <li><span class="option-label">D.</span> Run a post-UNLOAD S3 batch operation to merge the 200 small files into fewer large files using S3 Object Lambda for uncompressed data</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -892,7 +892,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a lifecycle rule with the action "Transition noncurrent versions" to S3 Glacier Deep Archive after 7 days, AND "Expire noncurrent versions" after 90 days keeping the latest 3 noncurrent versions (NewerNoncurrentVersions = 3). This transitions old versions to cheap storage quickly and permanently deletes all but the 3 most recent noncurrent versions after 90 days. Current versions are unaffected — lifecycle rules for noncurrent versions only target noncurrent objects</li>
                 <li><span class="option-label">B.</span> Disable versioning on the bucket — this automatically deletes all noncurrent versions and prevents future version accumulation</li>
-                <li><span class="option-label">C.</span> Create a lifecycle rule that expires ALL objects older than 90 days — this removes old versions while keeping recently updated files</li>
+                <li><span class="option-label">C.</span> Create a lifecycle rule that expires ALL objects older than 90 days — this removes old versions while keeping recently updated files with the action "Transition noncurrent versions"</li>
                 <li><span class="option-label">D.</span> Use S3 Batch Operations to delete all noncurrent versions in a one-time cleanup, then set versioning to suspended to prevent future growth</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -908,7 +908,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> When lifecycle expiration deletes an object from Glacier Flexible Retrieval in an unversioned bucket, the deletion is IMMEDIATE and PERMANENT. There is no grace period, no recycle bin, and no recovery mechanism. The object is gone. Unlike versioned buckets (where deletion creates a recoverable delete marker), unversioned bucket deletion is irreversible. For audit compliance: if data must be recoverable after expiration, use versioning with NoncurrentVersionExpiration providing a grace period, or replicate to another bucket before expiration</li>
                 <li><span class="option-label">B.</span> Objects in Glacier have a 90-day minimum storage duration. If expired before 90 days in Glacier, there's a pro-rated charge but the object is still deleted. After 90 days in Glacier, deletion is immediate and free</li>
-                <li><span class="option-label">C.</span> Glacier provides a 30-day recovery window after deletion — the object can be restored using the vault recovery feature during this period</li>
+                <li><span class="option-label">C.</span> Glacier provides a 30-day recovery window after deletion — the object can be restored using the vault recovery feature during this period with NoncurrentVersionExpiration providing a grace period and PERMANENT</li>
                 <li><span class="option-label">D.</span> Lifecycle expiration of Glacier objects requires a restore operation first — the object is restored to Standard, then deleted. This adds a 3-5 hour delay between expiration trigger and actual deletion</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -922,7 +922,7 @@
             <div class="question-number">55</div><span class="skill-tag">Skill 2.3.4</span>
             <div class="question-text">A data engineer observes that DynamoDB TTL is not deleting expired items immediately at the specified expiration time. Some items remain in the table for several hours after their TTL timestamp has passed. The application queries are returning stale data. What is the MOST appropriate solution?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Increase the table's write capacity units to speed up TTL deletions</li>
+                <li><span class="option-label">A.</span> Increase the table's write capacity units to speed up TTL deletions configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> Add a filter expression in application queries to exclude items where the TTL attribute is less than the current time</li>
                 <li><span class="option-label">C.</span> Disable and re-enable TTL to reset the background deletion process</li>
                 <li><span class="option-label">D.</span> Contact AWS Support to increase the TTL deletion throughput for the table</li>
@@ -938,7 +938,7 @@
             <div class="question-number">56</div><span class="skill-tag">Skill 2.3.5</span>
             <div class="question-text">A data engineer needs to maintain an audit trail proving that customer data was properly deleted in compliance with GDPR Article 17. Which AWS service combination provides the MOST comprehensive audit trail for data deletion operations?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable S3 Server Access Logging and DynamoDB Streams to capture all deletion events</li>
+                <li><span class="option-label">A.</span> Enable S3 Server Access Logging and DynamoDB Streams to capture all deletion events with Object Lock</li>
                 <li><span class="option-label">B.</span> Use AWS CloudTrail to log all API calls (DeleteObject, DeleteItem) and store trail logs in a separate compliance S3 bucket with Object Lock</li>
                 <li><span class="option-label">C.</span> Enable Amazon CloudWatch Events to capture deletion notifications and store in CloudWatch Logs</li>
                 <li><span class="option-label">D.</span> Use AWS Config rules to detect when objects are deleted and generate compliance reports</li>
@@ -957,7 +957,7 @@
                 <li><span class="option-label">A.</span> Enable automated snapshots every hour and configure cross-region snapshot copy to eu-west-1</li>
                 <li><span class="option-label">B.</span> Run a secondary Redshift cluster in eu-west-1 with Redshift data sharing for real-time synchronization</li>
                 <li><span class="option-label">C.</span> Use AWS DMS for continuous replication from us-east-1 Redshift to eu-west-1 Redshift</li>
-                <li><span class="option-label">D.</span> Export data to S3 every hour using UNLOAD and replicate with S3 CRR</li>
+                <li><span class="option-label">D.</span> Export data to S3 every hour using UNLOAD and replicate with S3 CRR and configure cross-region snapshot copy</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -973,7 +973,7 @@
                 <li><span class="option-label">A.</span> Partition key: player_id, Sort key: item_id. Store each inventory item as a separate DynamoDB item</li>
                 <li><span class="option-label">B.</span> Partition key: player_id only. Store entire inventory as a JSON Map attribute in a single item</li>
                 <li><span class="option-label">C.</span> Partition key: item_id, Sort key: player_id. Create GSI with player_id as partition key</li>
-                <li><span class="option-label">D.</span> Partition key: composite of player_id#shard_number with write sharding</li>
+                <li><span class="option-label">D.</span> Partition key: composite of player_id#shard_number with write sharding with partition-level ordering and dedicated throughput</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -989,7 +989,7 @@
                 <li><span class="option-label">A.</span> Disable Glue Crawlers and manually define schemas in the Data Catalog</li>
                 <li><span class="option-label">B.</span> Configure Glue Crawlers with schema change policy set to "LOG" instead of "UPDATE" and review changes before applying</li>
                 <li><span class="option-label">C.</span> Use Glue Schema Registry to version schemas and configure Crawlers to align with registered schema versions</li>
-                <li><span class="option-label">D.</span> Create separate Glue databases per microservice and let each team manage their own schemas</li>
+                <li><span class="option-label">D.</span> Create separate Glue databases per microservice and let each team manage their own schemas with schema change policy set</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1020,7 +1020,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable AWS Glue Data Catalog replication across accounts and track lineage in each account's catalog independently</li>
                 <li><span class="option-label">B.</span> Use Amazon DataZone with cross-account enrollment to provide unified lineage visualization across all participating accounts</li>
-                <li><span class="option-label">C.</span> Consolidate all AWS Glue jobs into a single account to simplify lineage tracking</li>
+                <li><span class="option-label">C.</span> Consolidate all AWS Glue jobs into a single account to simplify lineage tracking with cross-account enrollment</li>
                 <li><span class="option-label">D.</span> Use AWS RAM (Resource Access Manager) to share Glue Data Catalog resources and enable cross-account lineage queries</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1034,7 +1034,7 @@
             <div class="question-number">62</div><span class="skill-tag">Skill 2.4.5</span>
             <div class="question-text">A data engineer is configuring Parquet file writes for a data lake that will be queried by both Athena and Redshift Spectrum. The dataset has 200 columns but typical queries only access 5-10 columns at a time. The engineer needs to optimize row group size for this access pattern. Which row group configuration is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Set row group size to 8 MB to minimize memory usage during reads</li>
+                <li><span class="option-label">A.</span> Set row group size to 8 MB to minimize memory usage during reads for columnar reads of wide tables</li>
                 <li><span class="option-label">B.</span> Set row group size to 128 MB (default) which provides optimal balance for columnar reads of wide tables</li>
                 <li><span class="option-label">C.</span> Set row group size to 1 GB to minimize the number of row groups per file</li>
                 <li><span class="option-label">D.</span> Set row group size to 32 KB to maximize predicate pushdown granularity</li>
@@ -1050,7 +1050,7 @@
             <div class="question-number">63</div><span class="skill-tag">Skill 2.4.6</span>
             <div class="question-text">A healthcare company stores patient research papers in S3 and uses Amazon Bedrock Knowledge Base for their medical research assistant. Researchers report that the assistant sometimes returns irrelevant results when searching for specific drug interactions. The embedding model used is Amazon Titan Text Embeddings V2 with 1024 dimensions. What is the MOST likely cause and solution?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The embedding dimensions are too high; reduce to 256 to improve retrieval precision</li>
+                <li><span class="option-label">A.</span> The embedding dimensions are too high; reduce to 256 to improve retrieval precision configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> The chunking strategy produces chunks that are too large, mixing multiple topics in a single embedding; use smaller, more focused chunks</li>
                 <li><span class="option-label">C.</span> The similarity threshold is too low; increase it to filter out less relevant results</li>
                 <li><span class="option-label">D.</span> Amazon Titan embeddings are not suitable for medical text; switch to a domain-specific model</li>
@@ -1066,7 +1066,7 @@
             <div class="question-number">64</div><span class="skill-tag">Skill 3.1.1</span>
             <div class="question-text">A Step Functions workflow for a data pipeline needs to handle the following error scenario: if a Glue job fails with a "ConcurrentRunsExceededException", the workflow should wait 10 minutes and retry up to 3 times. For any other error type, the workflow should immediately transition to a failure notification step. Which Step Functions error handling configuration achieves this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use a single Catch block with a Choice state that examines the error type</li>
+                <li><span class="option-label">A.</span> Use a single Catch block with a Choice state that examines the error type for the specific Glue exception</li>
                 <li><span class="option-label">B.</span> Use a Retry field with ErrorEquals for the specific Glue exception, and a Catch field for all other errors routing to the notification step</li>
                 <li><span class="option-label">C.</span> Implement the retry logic in a Lambda function wrapper that calls the Glue API</li>
                 <li><span class="option-label">D.</span> Use a Parallel state with one branch for the job and another for error monitoring</li>
@@ -1084,7 +1084,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The worker_concurrency setting is too low, limiting how many tasks each worker can execute simultaneously</li>
                 <li><span class="option-label">B.</span> The MWAA autoscaling is too slow to scale up workers, and current workers are at maximum capacity</li>
-                <li><span class="option-label">C.</span> The Celery broker (SQS) has a message delivery delay configured</li>
+                <li><span class="option-label">C.</span> The Celery broker (SQS) has a message delivery delay configured and current workers are at maximum capacity</li>
                 <li><span class="option-label">D.</span> The scheduler is processing DAGs too slowly to dispatch tasks to workers</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1117,7 +1117,7 @@
                 <li><span class="option-label">A.</span> Amazon EMR Serverless for on-demand Spark job execution without cluster provisioning</li>
                 <li><span class="option-label">B.</span> Amazon EMR on EC2 with managed scaling enabled and minimum node count set to zero</li>
                 <li><span class="option-label">C.</span> AWS Glue ETL jobs with auto-scaling DPUs configured at maximum capacity</li>
-                <li><span class="option-label">D.</span> Amazon EMR on EKS with Kubernetes Cluster Autoscaler</li>
+                <li><span class="option-label">D.</span> Amazon EMR on EKS with Kubernetes Cluster Autoscaler with fully managed infrastructure and automatic scaling</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1133,7 +1133,7 @@
                 <li><span class="option-label">A.</span> Import the OpenAPI specification directly into API Gateway and use it as the single source of truth — any API changes must first update the spec, then deploy through the spec</li>
                 <li><span class="option-label">B.</span> Generate documentation from the deployed API Gateway using the export feature and publish it to a developer portal</li>
                 <li><span class="option-label">C.</span> Assign a documentation owner who manually updates the OpenAPI spec after each release</li>
-                <li><span class="option-label">D.</span> Use AWS AppSync with a GraphQL schema that auto-generates documentation from the type definitions</li>
+                <li><span class="option-label">D.</span> Use AWS AppSync with a GraphQL schema that auto-generates documentation from the type definitions configured for optimal performance and minimal operational overhead</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1149,7 +1149,7 @@
                 <li><span class="option-label">A.</span> Use DataBrew's duplicate removal transformation with grouping by exact match on date of birth and insurance ID, combined with a pre-step to standardize name formatting (UPPER, TRIM) for improved matching</li>
                 <li><span class="option-label">B.</span> Use DataBrew's built-in ML-based fuzzy matching algorithm that automatically detects duplicates across all fields</li>
                 <li><span class="option-label">C.</span> Export data to AWS Entity Resolution for probabilistic matching and feed results back to DataBrew</li>
-                <li><span class="option-label">D.</span> Create a DataBrew recipe that sorts records and removes consecutive rows with identical values in all columns</li>
+                <li><span class="option-label">D.</span> Create a DataBrew recipe that sorts records and removes consecutive rows with identical values in all columns for improved matching</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1163,7 +1163,7 @@
             <div class="question-text">A data lake contains millions of small files (average 1 MB each) generated by IoT devices. Athena queries on this data are extremely slow despite the total data volume being only 100 GB. The data is already in Parquet format and properly partitioned. What is the PRIMARY cause and the BEST solution?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The small file problem causes excessive S3 LIST and GET operations — use Athena CTAS or AWS Glue to compact files into larger sizes (128 MB - 512 MB optimal range)</li>
-                <li><span class="option-label">B.</span> Parquet format is not efficient for small files — convert to ORC format which handles small files better</li>
+                <li><span class="option-label">B.</span> Parquet format is not efficient for small files — convert to ORC format which handles small files better with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">C.</span> The partitioning scheme has too many partitions — reduce the number of partitions by using monthly instead of daily</li>
                 <li><span class="option-label">D.</span> Athena needs more compute resources — switch to Athena provisioned capacity for consistent performance</li>
             </ul>
@@ -1181,7 +1181,7 @@
                 <li><span class="option-label">A.</span> Use AWS Step Functions to orchestrate the Lambda functions with parallel states, error handling (Retry/Catch), and conditional branching for each step</li>
                 <li><span class="option-label">B.</span> Chain Lambda functions using S3 event notifications — each step writes output to a different S3 prefix that triggers the next step</li>
                 <li><span class="option-label">C.</span> Use a single Lambda function that calls the other functions synchronously using the invoke API</li>
-                <li><span class="option-label">D.</span> Use SNS topics between each step with Lambda subscriptions</li>
+                <li><span class="option-label">D.</span> Use SNS topics between each step with Lambda subscriptions and conditional branching for each step</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1196,7 +1196,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create three EventBridge rules with event patterns that match on the S3 object key suffix (.csv, .parquet, .json), each routing to its respective target</li>
                 <li><span class="option-label">B.</span> Create one rule that sends all S3 events to a Lambda router function that inspects the file extension and invokes the appropriate service</li>
-                <li><span class="option-label">C.</span> Configure three separate S3 event notifications with prefix/suffix filters, each pointing to the respective service</li>
+                <li><span class="option-label">C.</span> Configure three separate S3 event notifications with prefix/suffix filters, each pointing to the respective service with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Use a Step Functions state machine with a Choice state that routes based on file extension</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1227,7 +1227,7 @@
             <div class="question-text">A data engineer is building a data quality monitoring system for a multi-source data lake. The system needs to track data quality metrics over time, detect quality degradation trends, and provide a visual dashboard showing quality scores per source system. Quality rules are already defined in AWS Glue Data Quality. How should the engineer implement the monitoring dashboard?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Export Glue Data Quality evaluation results to S3, catalog with Glue, and visualize trends in Amazon QuickSight</li>
-                <li><span class="option-label">B.</span> Use CloudWatch custom metrics to publish quality scores and create CloudWatch dashboards</li>
+                <li><span class="option-label">B.</span> Use CloudWatch custom metrics to publish quality scores and create CloudWatch dashboards with Glue and visualize trends in Amazon QuickSight</li>
                 <li><span class="option-label">C.</span> Store quality results in DynamoDB and build a custom web dashboard using API Gateway and Lambda</li>
                 <li><span class="option-label">D.</span> Use AWS Glue DataBrew profile job statistics as the quality monitoring dashboard</li>
             </ul>
@@ -1259,9 +1259,9 @@
             <div class="question-text">A data engineer is using Athena Spark notebooks to explore data quality issues in a large dataset. The engineer wants to use Spark DataFrames to identify records where multiple columns have correlated anomalies (e.g., when order_amount is negative AND shipping_date is before order_date simultaneously). After identifying these records, the engineer needs to generate a summary report. Which Spark DataFrame approach is MOST appropriate?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use df.filter() with multiple conditions combined using & operator, then use df.describe() and df.count() for summary statistics</li>
-                <li><span class="option-label">B.</span> Use df.where() with a single string condition and write results to a CSV file</li>
+                <li><span class="option-label">B.</span> Use df.where() with a single string condition and write results to a CSV file and df for summary statistics</li>
                 <li><span class="option-label">C.</span> Convert the entire DataFrame to pandas and use pandas profiling library</li>
-                <li><span class="option-label">D.</span> Use Spark SQL CASE WHEN statements to flag anomalies and aggregate with GROUP BY</li>
+                <li><span class="option-label">D.</span> Use Spark SQL CASE WHEN statements to flag anomalies and aggregate with GROUP</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1276,7 +1276,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Only provisioned services (EMR on EC2, Redshift Provisioned) can meet these requirements because serverless services don't support VPC deployment</li>
                 <li><span class="option-label">B.</span> Both provisioned and serverless AWS data services support VPC, KMS encryption, and CloudTrail logging, so security is not a differentiator</li>
-                <li><span class="option-label">C.</span> Serverless services are more secure because AWS manages the underlying infrastructure patching</li>
+                <li><span class="option-label">C.</span> Serverless services are more secure because AWS manages the underlying infrastructure patching with fully managed infrastructure and automatic scaling</li>
                 <li><span class="option-label">D.</span> Provisioned services offer more granular network controls through security groups and NACLs, making them slightly more suitable for highly regulated environments</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1292,7 +1292,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use PIVOT clause in Athena which supports dynamic column generation</li>
                 <li><span class="option-label">B.</span> Use conditional aggregation with MAX(CASE WHEN metric_name = 'temperature' THEN metric_value END) for each of the 50 metrics, grouped by sensor_id</li>
-                <li><span class="option-label">C.</span> Use the UNPIVOT function to reshape the data</li>
+                <li><span class="option-label">C.</span> Use the UNPIVOT function to reshape the data with MAX(CASE WHEN metric_name = 'temperature' THEN metric_value END) for each of the 50 metrics</li>
                 <li><span class="option-label">D.</span> Create 50 separate queries and UNION ALL the results</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1306,7 +1306,7 @@
             <div class="question-number">79</div><span class="skill-tag">Skill 3.3.1</span>
             <div class="question-text">A data engineer needs to extract Redshift user activity logs to identify all SQL queries that accessed a specific sensitive table during a data breach investigation. The user activity logs are delivered to S3. The logs contain thousands of SQL statements per hour. Which approach efficiently filters the relevant audit events?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Download the user activity log files and use grep to search for the table name.</li>
+                <li><span class="option-label">A.</span> Download the user activity log files and use grep to search for the table name. and use SQL to filter by table name in the query text</li>
                 <li><span class="option-label">B.</span> Create an Athena table over the Redshift user activity log files in S3 and use SQL to filter by table name in the query text.</li>
                 <li><span class="option-label">C.</span> Query the SVL_STATEMENTTEXT system view in Redshift filtered by the table name.</li>
                 <li><span class="option-label">D.</span> Use Amazon Redshift Spectrum to query the audit log files directly from Redshift.</li>
@@ -1324,7 +1324,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Associate a KMS key with each CloudWatch Logs log group using the associate-kms-key API. Update the KMS key policy to grant the CloudWatch Logs service principal encrypt/decrypt permissions.</li>
                 <li><span class="option-label">B.</span> Configure the Glue jobs, Lambda functions, and Step Functions to encrypt log output before sending to CloudWatch Logs.</li>
-                <li><span class="option-label">C.</span> Enable default encryption on the AWS account level for all CloudWatch Logs using AWS Config.</li>
+                <li><span class="option-label">C.</span> Enable default encryption on the AWS account level for all CloudWatch Logs using AWS Config, with each CloudWatch Logs log group using the associate-kms-key API</li>
                 <li><span class="option-label">D.</span> Create an S3 bucket with KMS encryption and redirect all CloudWatch Logs to S3 using subscription filters.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1339,7 +1339,7 @@
             <div class="question-text">A data engineering team needs to monitor their EMR cluster and receive alerts when the YARN memory utilization exceeds 90% for more than 10 minutes. The EMR cluster uses managed scaling. Which monitoring approach correctly captures YARN-level metrics for alerting?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Enable EMR managed scaling metrics that include YARNMemoryAvailablePercentage. Create a CloudWatch alarm with the threshold at less than 10% available, evaluated over 10 minutes.</li>
-                <li><span class="option-label">B.</span> Use the default EC2 CloudWatch metrics for memory utilization on EMR core nodes.</li>
+                <li><span class="option-label">B.</span> Use the default EC2 CloudWatch metrics for memory utilization on EMR core nodes, with the threshold at less than 10% available</li>
                 <li><span class="option-label">C.</span> Install the CloudWatch agent on the EMR master node to collect custom YARN metrics from the ResourceManager JMX port.</li>
                 <li><span class="option-label">D.</span> Query the EMR cluster's Ganglia dashboard metrics and set up alerts based on the Ganglia data.</li>
             </ul>
@@ -1357,7 +1357,7 @@
                 <li><span class="option-label">A.</span> The S3 sink is the bottleneck due to small file writes or high-latency put operations. Increasing the sink parallelism or buffering more data before flushing would help.</li>
                 <li><span class="option-label">B.</span> The Kinesis source is not reading fast enough, causing backpressure that propagates to the sink.</li>
                 <li><span class="option-label">C.</span> The windowed aggregation requires more memory allocation for state management.</li>
-                <li><span class="option-label">D.</span> The Flink application needs more Kinesis Processing Units (KPUs) for overall throughput.</li>
+                <li><span class="option-label">D.</span> The Flink application needs more Kinesis Processing Units (KPUs) for overall throughput, with parallel processing and horizontal scaling capabilities</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1373,7 +1373,7 @@
                 <li><span class="option-label">A.</span> Create a single trail with management events enabled for all services. Use advanced event selectors to enable S3 data events only for the 5 sensitive buckets and DynamoDB data events only for specific tables.</li>
                 <li><span class="option-label">B.</span> Create two trails: one for management events across all services, and another for data events across all S3 buckets and DynamoDB tables.</li>
                 <li><span class="option-label">C.</span> Create a single trail with management events and data events enabled for all resources to ensure complete coverage.</li>
-                <li><span class="option-label">D.</span> Create separate trails for each sensitive S3 bucket with data events enabled.</li>
+                <li><span class="option-label">D.</span> Create separate trails for each sensitive S3 bucket with data events enabled. and DynamoDB data events only for specific tables</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1388,7 +1388,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Configure the Glue job's MaxRetries parameter to 2 within the Glue workflow trigger configuration. This provides built-in retry with Glue handling the re-execution automatically.</li>
                 <li><span class="option-label">B.</span> Implement try-catch blocks in the Glue script's Python code to catch S3 throttling errors and retry individual S3 API calls with exponential backoff.</li>
-                <li><span class="option-label">C.</span> Configure S3 Event Notifications to detect 503 errors and trigger a Lambda function to restart the Glue job.</li>
+                <li><span class="option-label">C.</span> Configure S3 Event Notifications to detect 503 errors and trigger a Lambda function to restart the Glue job, with Glue handling the re-execution automatically</li>
                 <li><span class="option-label">D.</span> Use Amazon EventBridge to detect Glue job FAILED state changes and trigger job restart via Lambda with a 5-minute delay.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1404,7 +1404,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> fields @timestamp, orderId, customerId, processingTimeMs | filter customerId = "CUST-12345" and processingTimeMs > 5000 | sort @timestamp desc</li>
                 <li><span class="option-label">B.</span> SELECT timestamp, orderId, customerId FROM logs WHERE customerId = 'CUST-12345' AND processingTimeMs > 5000 ORDER BY timestamp DESC</li>
-                <li><span class="option-label">C.</span> fields @timestamp, orderId | filter @message like "CUST-12345" | filter @message like "processingTimeMs"</li>
+                <li><span class="option-label">C.</span> fields @timestamp, orderId | filter @message like "CUST-12345" | filter @message like "processingTimeMs" and processingTimeMs > 5000 | sort @timestamp desc</li>
                 <li><span class="option-label">D.</span> stats count(*) as slowOrders by customerId | filter processingTimeMs > 5000 | having customerId = "CUST-12345"</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1420,7 +1420,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Select all 20 log groups in the CloudWatch Logs Insights query editor, then use: fields @timestamp, @logStream, correlationId, stage, duration | filter correlationId = "abc-123" | sort @timestamp asc — Logs Insights natively supports querying up to 50 log groups simultaneously.</li>
                 <li><span class="option-label">B.</span> Create 20 separate queries (one per log group) and manually join the results using spreadsheet software to correlate by correlationId.</li>
-                <li><span class="option-label">C.</span> Create subscription filters on all 20 log groups to stream to a single consolidated log group, then query the consolidated group.</li>
+                <li><span class="option-label">C.</span> Create subscription filters on all 20 log groups to stream to a single consolidated log group, then query the consolidated group, with real-time processing and low-latency data delivery</li>
                 <li><span class="option-label">D.</span> Use CloudWatch ServiceLens to automatically trace requests across all 20 log groups without writing queries.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1436,7 +1436,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Perform a left anti-join between the order DynamicFrame and customer dimension DynamicFrame on customer_id. Records that match the anti-join (no corresponding customer) are flagged as referential integrity violations and routed to an exception report.</li>
                 <li><span class="option-label">B.</span> For each order record, execute a DynamoDB GetItem call to verify the customer_id exists in a DynamoDB table containing all valid customer IDs.</li>
-                <li><span class="option-label">C.</span> Use a Glue Data Quality rule "ReferentialIntegrity 'orders.customer_id' 'customers.customer_id' = 1.0" to check integrity automatically.</li>
+                <li><span class="option-label">C.</span> Use a Glue Data Quality rule "ReferentialIntegrity 'orders.customer_id' 'customers.customer_id' = 1.0" to check integrity automatically. and customer dimension DynamicFrame on customer_id</li>
                 <li><span class="option-label">D.</span> Load all valid customer_ids into a Python set during job initialization, then use a Map function to check each order's customer_id against the set.</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1451,7 +1451,7 @@
             <div class="question-text">A company is migrating from a manual data quality process (analysts running SQL checks) to automated Glue Data Quality rules. They have 300 existing SQL validation queries. The team wants to gradually migrate these while maintaining backward compatibility. Which migration strategy is MOST practical?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Convert each SQL query to its equivalent DQDL native rule type where possible (e.g., COUNT(*) WHERE x IS NULL → Completeness, COUNT(DISTINCT x) → Uniqueness). For complex queries without DQDL equivalents, use CustomSql rules to wrap the existing SQL logic.</li>
-                <li><span class="option-label">B.</span> Rewrite all 300 SQL queries as custom Python functions within Glue ETL scripts that validate data programmatically.</li>
+                <li><span class="option-label">B.</span> Rewrite all 300 SQL queries as custom Python functions within Glue ETL scripts that validate data programmatically. for complex queries without DQDL equivalents</li>
                 <li><span class="option-label">C.</span> Keep all 300 SQL queries running as scheduled Athena queries and use the query results to populate a quality dashboard, without migrating to DQDL.</li>
                 <li><span class="option-label">D.</span> Use an automated tool to convert all SQL queries to DQDL syntax in bulk, deploying all 300 rules simultaneously.</li>
             </ul>
@@ -1467,7 +1467,7 @@
             <div class="question-text">A data engineer identifies duplicate customer records across three source systems being merged into a unified data lake. Each system has its own customer ID format. Some customers exist in all three systems with different IDs but the same name and email. The team needs to identify and resolve these cross-system duplicates. Which approach is MOST scalable?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Use AWS Glue's FindMatches ML transform which uses machine learning to identify duplicate records across datasets based on fuzzy matching of multiple fields (name, email, address) without requiring exact key matches.</li>
-                <li><span class="option-label">B.</span> Perform exact joins on email address across all three sources to identify customers present in multiple systems.</li>
+                <li><span class="option-label">B.</span> Perform exact joins on email address across all three sources to identify customers present in multiple systems. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Use DataBrew profiling to identify records with similar names across datasets, then manually review and merge them.</li>
                 <li><span class="option-label">D.</span> Create a deterministic hash of (lowercase_name + email_domain) and join on the hash across all three sources.</li>
             </ul>
@@ -1483,7 +1483,7 @@
             <div class="question-text">A data engineer builds a quality monitoring system for a pipeline that processes 50 million records daily. Due to processing costs, they can only afford to run comprehensive quality checks (20+ rules) on a sample of 500,000 records. After sampling, they discover that 0.3% of sampled records have quality issues. What confidence interval can they report to stakeholders about the true population quality?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> With n=500,000 and observed proportion p=0.003, the 95% confidence interval is approximately 0.3% ± 0.05% (using the formula: p ± Z×√(p(1-p)/n)), meaning the true error rate in the full 50 million records is between 0.25% and 0.35% with 95% confidence.</li>
-                <li><span class="option-label">B.</span> The confidence interval is exactly 0.3% because the sample is large enough to represent the population perfectly.</li>
+                <li><span class="option-label">B.</span> The confidence interval is exactly 0.3% because the sample is large enough to represent the population perfectly, with 95% confidence and observed proportion p=0</li>
                 <li><span class="option-label">C.</span> No confidence interval can be calculated because the sample is less than 1% of the total population.</li>
                 <li><span class="option-label">D.</span> The confidence interval is 0.3% ± 3% (±100% of the observed rate) because the sample represents only 1% of the population.</li>
             </ul>
@@ -1501,7 +1501,7 @@
                 <li><span class="option-label">A.</span> Increase executor memory to 64 GB and enable off-heap memory with spark.memory.offHeap.enabled=true</li>
                 <li><span class="option-label">B.</span> Use a two-phase aggregation: first partial aggregate with a salt column to distribute skewed keys, then remove salt and perform final aggregation</li>
                 <li><span class="option-label">C.</span> Replace groupBy with reduceByKey and increase spark.sql.shuffle.partitions to 10000</li>
-                <li><span class="option-label">D.</span> Convert the job to use DynamicFrames with AWS Glue's built-in groupFilter transformation</li>
+                <li><span class="option-label">D.</span> Convert the job to use DynamicFrames with AWS Glue's built-in groupFilter transformation and perform final aggregation</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1517,7 +1517,7 @@
                 <li><span class="option-label">A.</span> Use one security group for all three tiers with rules restricting port-based access</li>
                 <li><span class="option-label">B.</span> Create three separate security groups. Aurora SG allows inbound 3306 from Lambda SG and Glue SG. Lambda SG and Glue SG have no rules referencing each other.</li>
                 <li><span class="option-label">C.</span> Create two security groups — one for Lambda and Glue, another for Aurora. Aurora SG allows inbound from the shared SG.</li>
-                <li><span class="option-label">D.</span> Use Network ACLs to block traffic between Lambda and Glue subnets, with a single security group for all services</li>
+                <li><span class="option-label">D.</span> Use Network ACLs to block traffic between Lambda and Glue subnets, with a single security group for all services and Glue SG</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1532,7 +1532,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Access is allowed because identity-based policies (IAM group) take precedence over resource-based policies (bucket policy)</li>
                 <li><span class="option-label">B.</span> Access is denied because an explicit Deny in any policy always overrides an Allow in any other policy</li>
-                <li><span class="option-label">C.</span> Access depends on which policy was created most recently</li>
+                <li><span class="option-label">C.</span> Access depends on which policy was created most recently configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Access is allowed because resource-based policies and identity-based policies are evaluated independently, and one Allow is sufficient</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1548,7 +1548,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Cache the secret value in a DynamoDB table and read from DynamoDB instead</li>
                 <li><span class="option-label">B.</span> Use the AWS Secrets Manager caching library (client-side caching) with a configurable TTL in the Lambda function</li>
-                <li><span class="option-label">C.</span> Store the credentials in Lambda environment variables encrypted with KMS</li>
+                <li><span class="option-label">C.</span> Store the credentials in Lambda environment variables encrypted with KMS configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Use Parameter Store instead of Secrets Manager as it has higher API rate limits</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1563,7 +1563,7 @@
             <div class="question-text">A data engineer creates an AWS Glue job that needs to assume a cross-account role to read data from Account B's S3 bucket. The Glue job uses a service role (GlueServiceRole) in Account A. The engineer writes code in the Glue job to call sts:AssumeRole for the cross-account role. However, the AssumeRole call fails. The cross-account role's trust policy allows Account A. What permission is MOST likely missing?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> The GlueServiceRole in Account A needs sts:AssumeRole permission with the cross-account role ARN as the resource</li>
-                <li><span class="option-label">B.</span> The cross-account role in Account B needs to trust the GlueServiceRole ARN specifically, not just Account A</li>
+                <li><span class="option-label">C.</span> Account A needs to be part of the same AWS Organization as Account B</li>
                 <li><span class="option-label">C.</span> Account A needs to be part of the same AWS Organization as Account B</li>
                 <li><span class="option-label">D.</span> The Glue job needs a VPC endpoint to reach the STS service endpoint</li>
             </ul>
@@ -1581,7 +1581,7 @@
                 <li><span class="option-label">A.</span> Enable S3 Block Public Access at the account level (s3:PutAccountPublicAccessBlock) to block all current and future public access configurations</li>
                 <li><span class="option-label">B.</span> Create an AWS Config rule to detect public S3 buckets and automatically remediate</li>
                 <li><span class="option-label">C.</span> Use Amazon Macie to scan for publicly exposed buckets and alert the security team</li>
-                <li><span class="option-label">D.</span> Add a Deny statement in every bucket policy preventing public access</li>
+                <li><span class="option-label">D.</span> Add a Deny statement in every bucket policy preventing public access and future public access configurations</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1594,7 +1594,7 @@
             <div class="question-number">97</div><span class="skill-tag">Skill 4.1.6</span>
             <div class="question-text">A company must choose between AWS Glue DataBrew (fully managed) and running custom PySpark data quality scripts on EMR (semi-managed) for data preparation. The CISO asks about the security update lifecycle differences. Which answer correctly explains the patching and update responsibilities?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Both services require manual patching by the customer on a monthly schedule</li>
+                <li><span class="option-label">A.</span> Both services require manual patching by the customer on a monthly schedule with no customer action needed for the compute/runtime layer; EMR requires customers and handle bootstrap script security</li>
                 <li><span class="option-label">B.</span> Glue DataBrew receives security updates transparently from AWS with no customer action needed for the compute/runtime layer; EMR requires customers to manage AMI updates, apply security patches to cluster nodes, update Hadoop/Spark framework versions, and handle bootstrap script security</li>
                 <li><span class="option-label">C.</span> EMR automatically patches all cluster nodes without any customer intervention similar to Glue DataBrew</li>
                 <li><span class="option-label">D.</span> AWS does not provide security patches for either service — customers must build custom security solutions</li>
@@ -1612,7 +1612,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> The DataZone subscription was revoked after initial approval</li>
                 <li><span class="option-label">B.</span> The Environment within the project has not been properly provisioned with the subscription grant — the environment profile may not have the correct IAM role or Lake Formation permissions to access the underlying data location, even though the subscription is approved at the DataZone governance layer</li>
-                <li><span class="option-label">C.</span> Athena does not support DataZone integration</li>
+                <li><span class="option-label">C.</span> Athena does not support DataZone integration with the subscription grant — the environment profile may not have the correct IAM role or Lake Formation permissions</li>
                 <li><span class="option-label">D.</span> The user needs to manually add S3 bucket policy permissions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1626,7 +1626,7 @@
             <div class="question-number">99</div><span class="skill-tag">Skill 4.2.1</span>
             <div class="question-text">A data engineer needs to write a custom policy for a Glue Crawler role. The crawler needs to: access a specific S3 source path, write metadata to the Glue Data Catalog (specific database only), and write logs to CloudWatch. The existing AWS managed policy AWSGlueServiceRole is too permissive. Which custom policy follows least privilege MOST accurately?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use AWSGlueServiceRole managed policy and add a Deny statement for unnecessary permissions</li>
+                <li><span class="option-label">A.</span> Use AWSGlueServiceRole managed policy and add a Deny statement for unnecessary permissions with real-time processing and low-latency data delivery</li>
                 <li><span class="option-label">B.</span> Custom policy with: (1) s3:GetObject on specific source path ARN, (2) glue:CreateTable, glue:UpdateTable, glue:GetDatabase on specific database ARN, (3) logs:CreateLogGroup, logs:CreateLogStream, logs:PutLogEvents on the specific log group ARN</li>
                 <li><span class="option-label">C.</span> Custom policy with: s3:*, glue:*, logs:* on Resource "*"</li>
                 <li><span class="option-label">D.</span> Custom policy with only s3:GetObject — Glue will automatically have catalog and logging permissions</li>
@@ -1644,7 +1644,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Add a NAT Gateway to the private subnet to allow EMR nodes to reach Secrets Manager over the internet</li>
                 <li><span class="option-label">B.</span> Create a VPC Interface Endpoint for Secrets Manager (com.amazonaws.region.secretsmanager) in the VPC, ensuring the endpoint's security group allows HTTPS (443) from the EMR nodes' security group</li>
-                <li><span class="option-label">C.</span> Store credentials in the EMR bootstrap script instead of Secrets Manager</li>
+                <li><span class="option-label">C.</span> Store credentials in the EMR bootstrap script instead of Secrets Manager for Secrets Manager</li>
                 <li><span class="option-label">D.</span> Move the EMR cluster to a public subnet</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1660,7 +1660,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create Redshift database users matching the IAM role names and manually assign permissions</li>
                 <li><span class="option-label">B.</span> Use Redshift's native IAM role integration — when federated users connect using GetClusterCredentials API with DbGroup parameter, they are automatically added to specified Redshift database groups; OR use role-based identity mapping where IAM roles are mapped to Redshift roles via the Redshift identity provider configuration</li>
-                <li><span class="option-label">C.</span> Federated users always get superuser access to Redshift</li>
+                <li><span class="option-label">C.</span> Federated users always get superuser access to Redshift with DbGroup parameter</li>
                 <li><span class="option-label">D.</span> Use S3 bucket policies to control Redshift access for federated users</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1674,7 +1674,7 @@
             <div class="question-number">102</div><span class="skill-tag">Skill 4.2.4</span>
             <div class="question-text">A data engineer grants Lake Formation permissions: GRANT SELECT ON TABLE "sales" TO ROLE "analyst_role" WITH GRANT OPTION. An analyst with this role then tries to grant SELECT on "sales" to another role "intern_role". What happens and what are the implications of WITH GRANT OPTION?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The grant fails because only Lake Formation Admins can grant permissions</li>
+                <li><span class="option-label">A.</span> The grant fails because only Lake Formation Admins can grant permissions with GRANT OPTION delegates granting authority — the analyst becomes a data steward for this table and can further distribute access</li>
                 <li><span class="option-label">B.</span> The analyst can successfully grant SELECT on "sales" to "intern_role" because WITH GRANT OPTION delegates granting authority — the analyst becomes a data steward for this table and can further distribute access. However, they can only grant permissions they themselves possess and cannot grant higher-level permissions (like ALTER or DROP)</li>
                 <li><span class="option-label">C.</span> WITH GRANT OPTION means the permission will automatically expire after a set time</li>
                 <li><span class="option-label">D.</span> The analyst can grant ANY permission on any table because WITH GRANT OPTION provides administrative access</li>
@@ -1690,7 +1690,7 @@
             <div class="question-number">103</div><span class="skill-tag">Skill 4.2.5</span>
             <div class="question-text">A data platform team is designing authorization for a multi-tenant data pipeline. Each tenant's data is stored in S3 with the prefix s3://pipeline-data/{tenant-id}/. Pipeline Glue jobs process data for multiple tenants but should only access the specific tenant's data during each job run. How should they implement tenant-scoped authorization for Glue jobs?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create a separate Glue job and IAM role for each tenant</li>
+                <li><span class="option-label">A.</span> Create a separate Glue job and IAM role for each tenant with variable substitution — the Glue job's IAM role policy uses a condition that restricts S3 access</li>
                 <li><span class="option-label">B.</span> Use a single Glue job with a single IAM role that has s3:* access to all tenant prefixes</li>
                 <li><span class="option-label">C.</span> Pass tenant-id as a job parameter and use IAM policy conditions with variable substitution — the Glue job's IAM role policy uses a condition that restricts S3 access to the prefix matching the job's tag or a session policy that scopes down permissions to only the current tenant's data for that execution</li>
                 <li><span class="option-label">D.</span> Encrypt each tenant's data with a different KMS key and only grant decrypt permissions at runtime</li>
@@ -1706,7 +1706,7 @@
             <div class="question-number">104</div><span class="skill-tag">Skill 4.2.6</span>
             <div class="question-text">A data engineer discovers that their Glue Crawler role has permissions for glue:CreateDatabase, glue:CreateTable, glue:UpdateTable, and glue:DeleteTable. The crawler only needs to CREATE new tables and UPDATE existing ones when schema changes are detected — it should never delete tables or create new databases. How should the policy be refined?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Keep all four permissions since the crawler might need them in the future</li>
+                <li><span class="option-label">A.</span> Keep all four permissions since the crawler might need them in the future with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">B.</span> Remove glue:DeleteTable and glue:CreateDatabase from the policy, keeping only glue:CreateTable and glue:UpdateTable plus the required supporting actions (glue:GetTable, glue:GetDatabase, glue:BatchCreatePartition, glue:BatchUpdatePartition) — restricting to only the actions the crawler actually performs during normal operation</li>
                 <li><span class="option-label">C.</span> Replace with the AWS managed policy AWSGlueServiceRole which includes all necessary permissions</li>
                 <li><span class="option-label">D.</span> Add a Deny statement for DeleteTable but keep CreateDatabase for potential future use</li>
@@ -1722,7 +1722,7 @@
             <div class="question-number">105</div><span class="skill-tag">Skill 4.3.1</span>
             <div class="question-text">A streaming data pipeline using Amazon Kinesis Data Streams receives customer events containing email addresses. A downstream analytics consumer needs event data but should NOT receive raw email addresses — they need a consistent pseudonymous identifier for cohort analysis. The masking must happen in-stream without adding significant latency. Which architecture implements this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Store all raw data first, then run a batch masking job nightly</li>
+                <li><span class="option-label">A.</span> Store all raw data first, then run a batch masking job nightly with fully managed infrastructure and automatic scaling</li>
                 <li><span class="option-label">B.</span> Use a Kinesis Data Streams consumer (Lambda or KDA/Managed Flink) that reads raw events, applies HMAC-based tokenization to the email field using a secret stored in Secrets Manager, then publishes masked events to a separate "clean" Kinesis stream consumed by analytics. Raw stream is restricted to authorized PII-handlers only</li>
                 <li><span class="option-label">C.</span> Configure Kinesis server-side encryption to mask email fields automatically</li>
                 <li><span class="option-label">D.</span> Use a Kinesis Firehose transformation to delete the email field entirely</li>
@@ -1741,7 +1741,7 @@
                 <li><span class="option-label">A.</span> Use S3 SSE-KMS which automatically encrypts only sensitive columns</li>
                 <li><span class="option-label">B.</span> Implement client-side field-level encryption in the Glue job: call KMS GenerateDataKey to get a data key, use it to encrypt specific column values with AES-256 before writing the DataFrame to S3. Store the encrypted data key alongside the ciphertext in the column (or as metadata). The downstream service calls KMS Decrypt on the encrypted data key, then decrypts the field values locally — both services need kms:Decrypt permission on the same KMS key</li>
                 <li><span class="option-label">C.</span> Store sensitive columns in a separate encrypted S3 bucket and non-sensitive columns in an unencrypted bucket</li>
-                <li><span class="option-label">D.</span> Use Redshift column-level encryption for S3-stored data</li>
+                <li><span class="option-label">D.</span> Use Redshift column-level encryption for S3-stored data with AES-256 before writing the DataFrame</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1754,7 +1754,7 @@
             <div class="question-number">107</div><span class="skill-tag">Skill 4.3.3</span>
             <div class="question-text">A data engineer in Account B attempts to use aws s3 cp to copy an encrypted object from Account A's bucket to a local file. The copy fails with "An error occurred (AccessDenied) when calling the GetObject operation". The S3 bucket policy allows Account B's role for s3:GetObject. What is the MOST likely missing piece?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The S3 bucket doesn't support cross-account downloads</li>
+                <li><span class="option-label">A.</span> The S3 bucket doesn't support cross-account downloads with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> The bucket uses SSE-KMS encryption and Account A's KMS key policy does NOT include Account B's role as an allowed principal for kms:Decrypt — even though S3 bucket policy allows GetObject, the actual object decryption requires a separate KMS Decrypt call that fails without key policy permission. The error manifests as S3 AccessDenied (not a KMS error) because S3 wraps the KMS failure into its own error response</li>
                 <li><span class="option-label">C.</span> Account B needs to enable S3 Transfer Acceleration for cross-account downloads</li>
                 <li><span class="option-label">D.</span> The aws s3 cp command doesn't support cross-account operations</li>
@@ -1773,7 +1773,7 @@
                 <li><span class="option-label">A.</span> Configure S3 server-side encryption with a stronger cipher — SSE provides before-transit encryption</li>
                 <li><span class="option-label">B.</span> Implement client-side encryption (CSE) — encrypt the data locally using the AWS Encryption SDK or S3 Encryption Client BEFORE calling S3 PutObject. The data is encrypted in the application's memory using either a KMS-managed key (CSE-KMS) or a client-managed master key (CSE-C). The encrypted ciphertext is what travels over HTTPS to S3. S3 stores the already-encrypted object. Only the intended recipient with the correct key can decrypt, regardless of S3 permissions</li>
                 <li><span class="option-label">C.</span> Use a VPN connection to S3 which provides double encryption</li>
-                <li><span class="option-label">D.</span> Enable S3 Transfer Acceleration which adds an extra encryption layer</li>
+                <li><span class="option-label">D.</span> Enable S3 Transfer Acceleration which adds an extra encryption layer with the correct key can decrypt</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1786,7 +1786,7 @@
             <div class="question-number">109</div><span class="skill-tag">Skill 4.4.1</span>
             <div class="question-text">A data engineer is configuring CloudTrail for a new AWS account that will host a data analytics platform. The platform uses Amazon Redshift, AWS Glue, Amazon EMR, and Amazon Athena. The engineer needs to ensure that both control plane operations (like CreateCluster, StartJobRun) and data plane operations (like Redshift query execution) are logged. Which statement about CloudTrail event types is CORRECT?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Management events capture both control plane and data plane operations for all AWS services</li>
+                <li><span class="option-label">A.</span> Management events capture both control plane and data plane operations for all AWS services with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> Data events must be enabled separately and are available for S3, Lambda, DynamoDB, and other supported services, but not all services support data events</li>
                 <li><span class="option-label">C.</span> CloudTrail automatically logs all API calls including data plane operations without additional configuration</li>
                 <li><span class="option-label">D.</span> Management events are free and data events are always charged, regardless of the number of trails</li>
@@ -1805,7 +1805,7 @@
                 <li><span class="option-label">A.</span> Create separate log groups per tenant (/app/tenant/{tenant_id}) and use IAM policies with conditions on the log group ARN to restrict tenant access</li>
                 <li><span class="option-label">B.</span> Keep a single log group and use CloudWatch Logs Insights queries filtered by tenant_id for each tenant's access</li>
                 <li><span class="option-label">C.</span> Create separate log streams per tenant within one log group and use stream-level IAM permissions</li>
-                <li><span class="option-label">D.</span> Use subscription filters per tenant to copy relevant logs to tenant-specific log groups</li>
+                <li><span class="option-label">D.</span> Use subscription filters per tenant to copy relevant logs to tenant-specific log groups with conditions on the log group ARN</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1818,7 +1818,7 @@
             <div class="question-number">111</div><span class="skill-tag">Skill 4.4.3</span>
             <div class="question-text">A company is evaluating CloudTrail Lake pricing for their organization with 50 accounts. They estimate 500 million management events and 2 billion data events per month. They need 7-year retention. Which pricing consideration is MOST critical for their cost estimation?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> CloudTrail Lake charges per query executed, so the number of analysts running queries will be the primary cost driver</li>
+                <li><span class="option-label">A.</span> CloudTrail Lake charges per query executed, so the number of analysts running queries will be the primary cost driver with 2 billion data events monthly at 7-year retention</li>
                 <li><span class="option-label">B.</span> CloudTrail Lake charges for ingestion and retention — with 2 billion data events monthly at 7-year retention, the cumulative storage cost will be the primary cost driver</li>
                 <li><span class="option-label">C.</span> The first copy of management events is free in CloudTrail Lake, so only the 2 billion data events incur ingestion charges</li>
                 <li><span class="option-label">D.</span> CloudTrail Lake has a flat monthly fee per organization regardless of event volume, making it predictable for budgeting</li>
@@ -1836,7 +1836,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> CloudWatch Metrics with high-resolution custom metrics and dimension filtering</li>
                 <li><span class="option-label">B.</span> CloudWatch Contributor Insights with rules matching error status codes and grouping by endpoint, IP, and user agent</li>
-                <li><span class="option-label">C.</span> CloudWatch Logs Insights with stats command and sort by count descending</li>
+                <li><span class="option-label">C.</span> CloudWatch Logs Insights with stats command and sort by count descending and grouping by endpoint, IP, and user agent</li>
                 <li><span class="option-label">D.</span> CloudWatch Anomaly Detection to identify unusual patterns in error rates per dimension</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1868,7 +1868,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Use Redshift data sharing with a Redshift Serverless endpoint in the consumer account as the consumer</li>
                 <li><span class="option-label">B.</span> Create a scheduled UNLOAD job from Redshift to S3 and register the data in the consumer's Glue Data Catalog</li>
-                <li><span class="option-label">C.</span> Use AWS Data Exchange to publish the Redshift data as a product that the consumer subscribes to</li>
+                <li><span class="option-label">C.</span> Use AWS Data Exchange to publish the Redshift data as a product that the consumer subscribes</li>
                 <li><span class="option-label">D.</span> Use Redshift federated query to create a link between the producer's Redshift and the consumer's Athena</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1885,7 +1885,7 @@
                 <li><span class="option-label">A.</span> Enable all Macie managed data identifiers which cover all CCPA PII categories including behavioral and inference data</li>
                 <li><span class="option-label">B.</span> Use Macie managed data identifiers for standard PII (names, emails, SSN) combined with custom data identifiers for CCPA-specific categories like geolocation coordinates and device identifiers</li>
                 <li><span class="option-label">C.</span> Use only custom data identifiers to create regex patterns for all CCPA-defined PII categories</li>
-                <li><span class="option-label">D.</span> Deploy a third-party DLP solution since Macie cannot detect non-standard PII types required by CCPA</li>
+                <li><span class="option-label">D.</span> Deploy a third-party DLP solution since Macie cannot detect non-standard PII types required by CCPA with custom data identifiers for CCPA-specific categories like geolocation coordinates and device identifiers</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -1900,7 +1900,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create the SCP with a Deny effect and add a NotAction list containing global service actions (iam:*, organizations:*, route53:*, cloudfront:*, etc.) so these services are excluded from the region restriction</li>
                 <li><span class="option-label">B.</span> Create two SCPs: one allowing all actions in EU regions, and another explicitly allowing global services in us-east-1</li>
-                <li><span class="option-label">C.</span> Add a condition to the SCP that checks if the service is a global service before applying the region restriction</li>
+                <li><span class="option-label">C.</span> Add a condition to the SCP that checks if the service is a global service before applying the region restriction with a Deny effect</li>
                 <li><span class="option-label">D.</span> Use StringNotEquals on aws:RequestedRegion with only the non-EU regions listed in the condition, rather than allowed regions</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1916,7 +1916,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create the managed Config rule rds-storage-encrypted in each account with a Config Aggregator in central account, and configure SNS notification from the aggregator when NON_COMPLIANT</li>
                 <li><span class="option-label">B.</span> Deploy Config rule rds-storage-encrypted via Organization conformance pack, configure EventBridge rule in each account to forward compliance change events to a central event bus, which triggers SNS</li>
-                <li><span class="option-label">C.</span> Use CloudTrail organizational trail to detect CreateDBInstance API calls and filter for unencrypted configurations via CloudWatch Logs Insights</li>
+                <li><span class="option-label">C.</span> Use CloudTrail organizational trail to detect CreateDBInstance API calls and filter for unencrypted configurations via CloudWatch Logs Insights configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Deploy a periodic Lambda function that calls DescribeDBInstances across all accounts every 5 minutes and checks encryption status</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1932,7 +1932,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Restrict CloudFormation StackSets deployment targets to ap-southeast-2 only in the StackSet configuration</li>
                 <li><span class="option-label">B.</span> Apply an SCP that denies ALL actions (using NotAction for global services) when aws:RequestedRegion is not ap-southeast-2, apply to all OUs containing workload accounts</li>
-                <li><span class="option-label">C.</span> Use IAM permission boundaries in every account limiting region access to ap-southeast-2</li>
+                <li><span class="option-label">C.</span> Use IAM permission boundaries in every account limiting region access to ap-southeast-2 configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Configure AWS Organizations to disable all regions except ap-southeast-2 in account settings</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1948,7 +1948,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> DataZone only supports structured data; unstructured S3 objects cannot be cataloged or governed</li>
                 <li><span class="option-label">B.</span> Register the S3 location as a DataZone asset with appropriate metadata, publish to catalog. Upon subscription approval, DataZone grants S3 access (via IAM/bucket policies) to the consumer project's environment role, allowing them to access the S3 objects</li>
-                <li><span class="option-label">C.</span> DataZone automatically converts unstructured data to structured format before granting access</li>
+                <li><span class="option-label">C.</span> DataZone automatically converts unstructured data to structured format before granting access with appropriate metadata</li>
                 <li><span class="option-label">D.</span> Unstructured data must be registered through a separate AWS service (Kendra) before DataZone can govern it</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -1964,7 +1964,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> They are at the highest maturity level since encryption and access controls are implemented</li>
                 <li><span class="option-label">B.</span> They are at Level 2 (Managed/Reactive) — basic security controls exist but governance is not proactive. To advance to Level 3 (Defined/Proactive): implement data cataloging (DataZone/Glue Catalog), define data quality rules (Glue Data Quality), establish data lineage (OpenLineage/DataZone), create governance policies, and assign data stewardship roles</li>
-                <li><span class="option-label">C.</span> They don't need further governance investment since security controls are sufficient</li>
+                <li><span class="option-label">C.</span> They don't need further governance investment since security controls are sufficient and assign data stewardship roles</li>
                 <li><span class="option-label">D.</span> They are at Level 1 (Initial/Ad-hoc) and should immediately implement all governance capabilities simultaneously</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
