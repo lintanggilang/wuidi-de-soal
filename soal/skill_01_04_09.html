@@ -37,7 +37,7 @@
                 <li><span class="option-label">A.</span> Use AWS CodePipeline with three stages: Source (CodeCommit/GitHub triggers on merge to main), Build (CodeBuild runs unit tests on Glue scripts using pytest with local Spark, lints code, and packages artifacts), and Deploy (CodeBuild or CloudFormation deploys updated Glue job configurations and uploads scripts to S3)</li>
                 <li><span class="option-label">B.</span> Create a Lambda function triggered by S3 upload that automatically updates Glue job configurations</li>
                 <li><span class="option-label">C.</span> Use Step Functions to orchestrate manual approval and deployment steps</li>
-                <li><span class="option-label">D.</span> Write a cron job on an EC2 instance that periodically checks for code changes and deploys them</li>
+                <li><span class="option-label">D.</span> Write a cron job on an EC2 instance that periodically checks for code changes and deploys them with three stages: Source (CodeCommit/GitHub triggers on merge</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -53,7 +53,7 @@
                 <li><span class="option-label">A.</span> Implement a multi-layer testing approach: unit tests with mocked data (pytest + local Spark) to validate transformation logic, integration tests with synthetic data that mirrors production schema structure, and data quality assertion tests that validate output schema, null handling, data type conformity, and row count expectations</li>
                 <li><span class="option-label">B.</span> Copy a sample of production healthcare data to the test environment and run the ETL job against it</li>
                 <li><span class="option-label">C.</span> Skip testing in the CI pipeline and rely on manual QA review of output data in production</li>
-                <li><span class="option-label">D.</span> Run only syntax checks (pylint/flake8) without any functional testing of transformations</li>
+                <li><span class="option-label">D.</span> Run only syntax checks (pylint/flake8) without any functional testing of transformations with mocked data (pytest + local Spark)</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -67,7 +67,7 @@
             <div class="question-text">A data pipeline processes financial transactions and must maintain zero data loss during deployments. The current deployment process requires stopping the pipeline, deploying new code, and restarting — creating a 15-minute data processing gap. The team needs a deployment strategy that eliminates this gap. Which approach provides zero-downtime deployment for the data pipeline?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Implement blue/green deployment: deploy the new version (green) alongside the old version (blue) with both processing from the same Kinesis stream using separate consumer groups. Validate green output against blue output. Once confirmed, switch the downstream consumers to read from green's output and decommission blue</li>
-                <li><span class="option-label">B.</span> Deploy during a maintenance window at 3 AM when data volume is lowest</li>
+                <li><span class="option-label">B.</span> Deploy during a maintenance window at 3 AM when data volume is lowest with both processing from the same Kinesis stream using separate consumer groups and decommission blue</li>
                 <li><span class="option-label">C.</span> Speed up the deployment process to reduce the gap from 15 minutes to 5 minutes</li>
                 <li><span class="option-label">D.</span> Buffer incoming data in S3 during deployment and process the backlog after the new version starts</li>
             </ul>
@@ -83,7 +83,7 @@
             <div class="question-text">A company's data engineering team uses CodePipeline to deploy Glue jobs across dev, staging, and production accounts. A recent deployment to production introduced a bug that caused incorrect aggregations, affecting reporting for 4 hours before detection. The team needs a faster rollback mechanism. Which CI/CD enhancement provides the quickest recovery?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> Maintain versioned Glue job scripts in S3 with versioning enabled. In CodePipeline, after each successful production deployment, tag the current working version. For rollback, trigger a pipeline action that points the Glue job to the previous S3 script version — restoring the last-known-good state in under 1 minute without a full redeployment cycle</li>
-                <li><span class="option-label">B.</span> Run the entire CI/CD pipeline again with the previous code commit to redeploy</li>
+                <li><span class="option-label">B.</span> Run the entire CI/CD pipeline again with the previous code commit to redeploy for rollback</li>
                 <li><span class="option-label">C.</span> Manually edit the Glue job script in the console to fix the bug immediately</li>
                 <li><span class="option-label">D.</span> Disable the Glue job trigger and wait for the engineering team to fix the code</li>
             </ul>
@@ -101,7 +101,7 @@
                 <li><span class="option-label">A.</span> Create a CodePipeline with sequential stages: first deploy infrastructure (CloudFormation/CDK stack with the new IAM role), then deploy application code (upload Glue scripts, deploy Lambda). Use pipeline artifacts to pass stack outputs (role ARN) to the application deployment stage. A source action monitors both repositories and triggers the pipeline when either changes</li>
                 <li><span class="option-label">B.</span> Maintain two completely independent pipelines and rely on developers to trigger them in the correct order</li>
                 <li><span class="option-label">C.</span> Combine all infrastructure and application code into a single repository to avoid ordering issues</li>
-                <li><span class="option-label">D.</span> Add retry logic in the application code to handle missing IAM roles gracefully</li>
+                <li><span class="option-label">D.</span> Add retry logic in the application code to handle missing IAM roles gracefully with sequential stages: first deploy infrastructure (CloudFormation/CDK stack with the new IAM role) and triggers the pipeline when either changes</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -117,7 +117,7 @@
                 <li><span class="option-label">A.</span> Define the CodePipeline and CodeBuild projects using CDK Pipelines (aws_cdk.pipelines module), which enables self-mutating pipelines that update themselves when the pipeline definition changes. Store buildspec.yml in the source repository alongside application code. The pipeline definition is version-controlled and reviewable via pull requests</li>
                 <li><span class="option-label">B.</span> Document the pipeline configuration steps in a wiki for other teams to follow</li>
                 <li><span class="option-label">C.</span> Export the existing pipeline as a CloudFormation template and store it without version control</li>
-                <li><span class="option-label">D.</span> Use the CodePipeline CLI to script pipeline creation without storing the script</li>
+                <li><span class="option-label">D.</span> Use the CodePipeline CLI to script pipeline creation without storing the script and CodeBuild projects using CDK Pipelines (aws_cdk</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -132,7 +132,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Create a custom Docker image with all dependencies pre-installed (PySpark, pandas, boto3, pytest) and use it as the CodeBuild custom build environment. Dependencies are baked into the image and available immediately — eliminating the 8-minute installation phase and reducing builds to approximately 4 minutes</li>
                 <li><span class="option-label">B.</span> Use a larger CodeBuild compute type (BUILD_GENERAL1_2XLARGE) to speed up pip install</li>
-                <li><span class="option-label">C.</span> Cache the Python virtual environment in S3 between builds</li>
+                <li><span class="option-label">C.</span> Cache the Python virtual environment in S3 between builds with all dependencies pre-installed (PySpark and use it as the CodeBuild custom build environment</li>
                 <li><span class="option-label">D.</span> Skip dependency installation by removing the install phase from buildspec.yml</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -148,7 +148,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Add a post-deployment stage in CodePipeline that triggers a canary test: run the Glue job against a small known dataset in production, validate output row counts, checksums, and schema against expected values. If validation fails, automatically trigger rollback to the previous version. Use CloudWatch custom metrics to track deployment success rate</li>
                 <li><span class="option-label">B.</span> Send a Slack notification after deployment and ask team members to manually check output data</li>
-                <li><span class="option-label">C.</span> Consider the deployment successful if CloudFormation stack update completes without errors</li>
+                <li><span class="option-label">C.</span> Consider the deployment successful if CloudFormation stack update completes without errors and schema against expected values</li>
                 <li><span class="option-label">D.</span> Wait for downstream consumers to report data quality issues within 24 hours</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -165,7 +165,7 @@
                 <li><span class="option-label">A.</span> Add a Manual Approval action in CodePipeline between the staging and production deploy stages. Configure SNS to notify approvers. The approval action records who approved, when, and includes optional comments. CloudTrail logs all CodePipeline API calls including approval actions. Store CloudTrail logs in S3 with a lifecycle policy retaining them for 7 years with Glacier archival</li>
                 <li><span class="option-label">B.</span> Require team leads to send an email saying "approved" before the engineer deploys manually</li>
                 <li><span class="option-label">C.</span> Use IAM policies that require MFA for production deployments without any approval workflow</li>
-                <li><span class="option-label">D.</span> Add a Jira ticket approval step that blocks deployment until the ticket is marked "Done"</li>
+                <li><span class="option-label">D.</span> Add a Jira ticket approval step that blocks deployment until the ticket is marked "Done" with a lifecycle policy retaining them for 7 years with Glacier archival and production deploy stages</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -180,7 +180,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Store all CloudFormation/CDK templates in Git. Configure CodePipeline to trigger on commits. Add a pre-deployment stage that runs CloudFormation drift detection — if drift is detected, the pipeline first reverts manual changes by redeploying the current Git state before applying new changes. Use AWS Config rules to continuously monitor for out-of-band changes and trigger remediation via Systems Manager Automation</li>
                 <li><span class="option-label">B.</span> Use Git webhooks to trigger Lambda functions that run AWS CLI commands for each resource change</li>
-                <li><span class="option-label">C.</span> Store infrastructure configurations in Git and manually run cdk deploy when changes are made</li>
+                <li><span class="option-label">C.</span> Store infrastructure configurations in Git and manually run cdk deploy when changes are made and trigger remediation via Systems Manager Automation</li>
                 <li><span class="option-label">D.</span> Use pull requests for approval but still deploy by running scripts locally from developer laptops</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
