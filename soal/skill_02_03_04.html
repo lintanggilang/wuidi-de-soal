@@ -89,7 +89,7 @@
                 <li><span class="option-label">A.</span> Use the S3 console to view object versions, identify the correct version ID, then use GetObject with the versionId parameter</li>
                 <li><span class="option-label">B.</span> Use S3 Inventory to find the version ID and then restore using S3 Batch Operations</li>
                 <li><span class="option-label">C.</span> Use S3 Replication Time Control to restore the previous version</li>
-                <li><span class="option-label">D.</span> Use aws s3 cp with the --restore flag to retrieve the previous version</li>
+                <li><span class="option-label">D.</span> Use aws s3 cp with the --restore flag to retrieve the previous version with native S3 integration and optimized data transfer</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
@@ -105,7 +105,7 @@
             <ul class="options">
                 <li><span class="option-label">A.</span> Schedule a Lambda function to scan the table hourly and move items older than 90 days to S3 before they expire</li>
                 <li><span class="option-label">B.</span> Enable DynamoDB Streams on the table, filter for TTL-deleted events (REMOVE with userIdentity.type = "Service"), and use Lambda to write to S3</li>
-                <li><span class="option-label">C.</span> Use DynamoDB Export to S3 feature daily to export the full table, then let TTL handle deletion</li>
+                <li><span class="option-label">C.</span> Use DynamoDB Export to S3 feature daily to export the full table, then let TTL handle deletion with userIdentity and use Lambda to write to S3</li>
                 <li><span class="option-label">D.</span> Create a Global Secondary Index on the TTL attribute and periodically query items near expiration to copy to S3</li>
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -120,7 +120,7 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer suspends versioning on an S3 bucket that previously had versioning enabled. What happens when a new object is uploaded with the same key as an existing versioned object?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The upload fails because the bucket previously had versioning enabled</li>
+                <li><span class="option-label">A.</span> The upload fails because the bucket previously had versioning enabled with a null version ID is created and the previous null version</li>
                 <li><span class="option-label">B.</span> A new version with a null version ID is created, and all previous versions are retained</li>
                 <li><span class="option-label">C.</span> The new object overwrites the current version and all previous versions are permanently deleted</li>
                 <li><span class="option-label">D.</span> A new version with a null version ID is created, and the previous null version ID object (if any) is overwritten</li>
@@ -138,7 +138,7 @@
             <div class="question-text">A company stores machine learning model artifacts in a versioned S3 bucket. The bucket has accumulated thousands of noncurrent versions over two years. The team wants to keep only the 3 most recent noncurrent versions and delete older ones. Which S3 feature should the data engineer use?</div>
             <ul class="options">
                 <li><span class="option-label">A.</span> S3 Lifecycle rule with NoncurrentVersionExpiration and NewerNoncurrentVersions set to 3</li>
-                <li><span class="option-label">B.</span> S3 Intelligent-Tiering with version management enabled</li>
+                <li><span class="option-label">B.</span> S3 Intelligent-Tiering with version management enabled and NewerNoncurrentVersions set to 3</li>
                 <li><span class="option-label">C.</span> S3 Lifecycle rule with AbortIncompleteMultipartUpload set to 3 versions</li>
                 <li><span class="option-label">D.</span> S3 Batch Operations to delete all but the 3 most recent versions per object</li>
             </ul>
@@ -154,7 +154,7 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer observes that DynamoDB TTL is not deleting expired items immediately at the specified expiration time. Some items remain in the table for several hours after their TTL timestamp has passed. The application queries are returning stale data. What is the MOST appropriate solution?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Increase the table's write capacity units to speed up TTL deletions</li>
+                <li><span class="option-label">A.</span> Increase the table's write capacity units to speed up TTL deletions configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> Add a filter expression in application queries to exclude items where the TTL attribute is less than the current time</li>
                 <li><span class="option-label">C.</span> Disable and re-enable TTL to reset the background deletion process</li>
                 <li><span class="option-label">D.</span> Contact AWS Support to increase the TTL deletion throughput for the table</li>
@@ -171,7 +171,7 @@
             <div class="question-number">9</div>
             <div class="question-text">A healthcare company stores patient records in a versioned S3 bucket. Due to a regulatory requirement, they must ensure that once an object version is deleted, it cannot be recovered. Currently, when users delete objects, only delete markers are created. What must the data engineer do to permanently remove specific object versions?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Disable versioning on the bucket, then delete the objects</li>
+                <li><span class="option-label">A.</span> Disable versioning on the bucket, then delete the objects for each version to be permanently deleted</li>
                 <li><span class="option-label">B.</span> Issue DeleteObject requests specifying the exact version ID for each version to be permanently deleted</li>
                 <li><span class="option-label">C.</span> Create a lifecycle rule with an Expiration action targeting the specific objects</li>
                 <li><span class="option-label">D.</span> Use S3 Batch Operations with the DeleteObject operation without specifying version IDs</li>
