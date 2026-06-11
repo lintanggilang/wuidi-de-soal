@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belajar - Skill 3.2.6: Aggregation, rolling average, pivoting</title>
+<style>
+:root{--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-2:#475569;--text-3:#94a3b8;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,.1);--shadow-lg:0 10px 15px rgba(0,0,0,.1)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--bg-card:#1e293b;--text:#f1f5f9;--text-2:#94a3b8;--text-3:#64748b;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 15px rgba(0,0,0,.3)}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+.navbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;font-size:.85rem;font-weight:600;text-decoration:none;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-2);transition:all .2s;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-hover);color:#fff}
+.btn.disabled{opacity:.4;pointer-events:none}
+.btn svg{width:15px;height:15px}
+.header{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;box-shadow:var(--shadow-lg)}
+.header .domain{font-size:.8rem;color:var(--text-3);margin-bottom:.4rem}
+.header h1{font-size:1.5rem;color:var(--accent);margin-bottom:.5rem}
+.header .services{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.tag{font-size:.7rem;font-weight:500;color:var(--text-2);background:var(--bg);border:1px solid var(--border);padding:.2rem .6rem;border-radius:100px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.card h2{font-size:1.05rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.intro{color:var(--text-2);font-size:.95rem}
+.svc{padding:.7rem .9rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);margin-bottom:.6rem}
+.svc .svc-name{font-weight:700;font-size:.9rem;color:var(--text)}
+.svc .svc-desc{font-size:.86rem;color:var(--text-2);margin-top:.15rem}
+ul.points{list-style:none}
+ul.points li{position:relative;padding:.55rem 0 .55rem 1.5rem;font-size:.9rem;color:var(--text-2);border-bottom:1px solid var(--border)}
+ul.points li:last-child{border-bottom:none}
+ul.points li::before{content:'';position:absolute;left:.2rem;top:1rem;width:7px;height:7px;border-radius:50%;background:var(--success)}
+ul.points.warn li::before{background:#d97706;border-radius:2px}
+.footer{text-align:center;padding:2rem 1rem;margin-top:1rem;border-top:1px solid var(--border);color:var(--text-3);font-size:.78rem}
+@media(max-width:640px){.container{padding:1.25rem 1rem}.card{padding:1.25rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="navbar"><a class="btn" href="skill_03_02_05.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_03_03_01.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_03_02_06.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="header">
+<div class="domain">Domain 3: Operations & Support &mdash; Task 3.2: Analyze data by using AWS services</div>
+<h1>Skill 3.2.6: Aggregation, rolling average, pivoting</h1>
+<div class="services"><span class="tag">aggregation</span><span class="tag">rolling</span><span class="tag">average</span><span class="tag">PIVOT</span></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Ringkasan</h2>
+<p class="intro">Skill ini termasuk dalam <strong>Domain 3: Operations & Support</strong> (Task 3.2: Analyze data by using AWS services), dengan fokus pada <strong>aggregation, rolling average, pivoting</strong>. Materi berikut merangkum layanan AWS yang relevan beserta konsep penting yang perlu kamu kuasai untuk topik ini.</p>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Layanan &amp; Konsep Utama</h2>
+<div class="svc"><div class="svc-desc">Lihat poin-poin kunci di bawah.</div></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Poin-Poin Kunci</h2>
+<ul class="points"><li>AVG() dengan ROWS BETWEEN 6 PRECEDING AND CURRENT ROW menghitung rata-rata dari maximum 7 rows (6 sebelumnya + current). AVG() secara otomatis membagi dengan jumlah rows yang ada dalam window, jadi untuk 6 hari pertama akan menggunakan jumlah data yang tersedia.</li><li>GROUPING SETS memberikan kontrol eksplisit atas level agregasi yang diinginkan. (quarter, category) memberikan detail per quarter per category, (quarter) memberikan subtotal per quarter, dan () memberikan grand total. Ini persis memenuhi requirement.</li><li>Conditional aggregation dengan CASE WHEN adalah teknik pivot yang paling reliable dan widely supported di Amazon Redshift. Setiap kolom output didefinisikan sebagai aggregate dengan CASE yang memfilter region tertentu.</li><li>APPROXIMATE COUNT(DISTINCT) di Redshift menggunakan HyperLogLog algorithm yang memberikan estimasi cardinality dengan error rate sekitar 2% sambil jauh lebih cepat dari exact count distinct. Ini ideal untuk dashboard real-time dimana speed lebih penting dari exact precision.</li><li>Window function dengan rangeBetween(-3600, 0) pada kolom timestamp (dalam detik) menghitung rolling average 1 jam untuk setiap row, looking back 3600 seconds dari current row. partitionBy("sensor_id") memastikan kalkulasi per sensor. Ini memberikan true rolling average bukan tumbling window.</li><li>Mengkonversi timestamp ke unix time (seconds), membagi dengan 900 (15 menit × 60 detik), floor untuk rounding down, lalu kali kembali 900 dan konversi ke timestamp. Ini memberikan 15-minute aligned buckets yang akurat. Digunakan dengan GROUP BY untuk aggregation.</li><li>COALESCE(SUM(quantity), 0) menangani kasus dimana SUM() mengembalikan NULL (ketika semua values dalam group adalah NULL). SUM() di SQL mengabaikan NULLs, dan jika SEMUA values adalah NULL, hasilnya NULL. COALESCE mengkonversi NULL final menjadi 0.</li><li>Conditional aggregation (MAX/MIN with CASE WHEN) adalah teknik standar untuk pivoting di Athena (Trino/Presto). Setiap metric_name menjadi satu CASE expression. Tantangannya adalah 50 kolom membuat query panjang tapi tetap efisien karena single table scan. MAX digunakan karena setiap sensor_id + metric_name combination hanya memiliki satu value.</li><li>LAG(revenue, 12) OVER (ORDER BY month_date) efisien karena mengakses row 12 posisi sebelumnya (12 bulan = 1 tahun) dalam single pass. Kemudian (revenue - LAG(revenue,12)) / LAG(revenue,12) * 100 memberikan growth percentage. Window functions di Redshift sangat optimized.</li><li>PySpark groupBy().agg() dengan multiple aggregate functions menghitung semua metrik dalam single shuffle operation. sum(), avg(), countDistinct(), dan max() semua dikomputasi dalam satu pass setelah groupBy. datediff dengan max(purchase_date) memberikan days since last purchase. Ini paling efisien karena hanya satu shuffle.</li></ul>
+</div>
+<div class="card"><h2><span class="dot" style="background:#d97706"></span>Miskonsepsi &amp; Jebakan Umum</h2><ul class="points warn"><li>Selalu membagi dengan 7 meskipun kurang dari 7 data points tersedia, menghasilkan rata-rata yang salah untuk hari-hari pertama.</li><li>Menggunakan RANGE yang di Redshift memiliki behavior berbeda dengan ROWS untuk date types.</li><li>Akan menghasilkan subtotals hierarchical dari kanan: (quarter, category), (quarter), () yang sebenarnya juga benar dalam kasus ini - namun GROUPING SETS lebih eksplisit.</li><li>Menghasilkan semua kemungkinan kombinasi termasuk (category) alone yang tidak diminta.</li><li>Memerlukan multiple passes dan UNION yang kurang efisien.</li><li>Melakukan kebalikan dari yang diminta.</li><li>Tersedia di beberapa database (SQL Server, Oracle) dan Redshift baru saja menambahkan dukungannya, namun conditional aggregation tetap menjadi pendekatan paling portable dan well-understood.</li><li>Memerlukan refresh time dan storage, serta still slow to compute initially.</li><li>Memberikan estimasi yang tidak akurat dan tidak representative.</li><li>Bukan teknik statistik yang valid.</li><li>Hanya memberikan overall average, bukan rolling.</li><li>Menggunakan tumbling window (fixed 1-hour windows) bukan rolling window.</li><li>Mengubah shape data, bukan menghitung rolling average.</li><li>Menghasilkan string bukan timestamp, kehilangan temporal ordering.</li><li>Hanya truncate ke menit, memerlukan logic tambahan yang rumit.</li><li>Secara konseptual benar tapi syntax integer division di Athena (Presto) memerlukan CAST yang membuat kurang clean.</li><li>Equivalent dengan COALESCE di Redshift dan juga benar - namun COALESCE lebih standar SQL.</li><li>Akan menampilkan NULL untuk all-NULL categories.</li><li>Mengubah setiap NULL menjadi 0 sebelum SUM - ini menghasilkan 0 juga tapi mengubah semantics karena NULLs yang seharusnya diabaikan malah dihitung sebagai 0.</li><li>Sangat tidak efisien dan menghasilkan narrow format, bukan wide.</li><li>Salah karena Athena (Trino) tidak memiliki PIVOT clause native dengan dynamic columns.</li><li>Melakukan kebalikan - wide ke narrow.</li><li>Lebih verbose dan kurang efisien dibanding single window function pass.</li><li>Memerlukan full table scan dua kali.</li><li>Sangat tidak efisien untuk large tables.</li><li>Menghasilkan 4 shuffle operations dan 3 joins tambahan.</li><li>Tidak mengagregasi rows, hanya menambah kolom ke setiap row.</li><li>Akan gagal pada large datasets karena memory constraints.</li></ul></div>
+<div class="navbar"><a class="btn" href="skill_03_02_05.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_03_03_01.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_03_02_06.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="footer">AWS Data Engineer Associate (DEA-C01) &mdash; Materi Belajar<br>Created by Lintang Gilang and Kiro Agent</div>
+</div>
+</body>
+</html>

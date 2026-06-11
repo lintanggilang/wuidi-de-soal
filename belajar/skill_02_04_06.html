@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belajar - Skill 2.4.6: Vectorization concepts</title>
+<style>
+:root{--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-2:#475569;--text-3:#94a3b8;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,.1);--shadow-lg:0 10px 15px rgba(0,0,0,.1)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--bg-card:#1e293b;--text:#f1f5f9;--text-2:#94a3b8;--text-3:#64748b;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 15px rgba(0,0,0,.3)}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+.navbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;font-size:.85rem;font-weight:600;text-decoration:none;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-2);transition:all .2s;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-hover);color:#fff}
+.btn.disabled{opacity:.4;pointer-events:none}
+.btn svg{width:15px;height:15px}
+.header{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;box-shadow:var(--shadow-lg)}
+.header .domain{font-size:.8rem;color:var(--text-3);margin-bottom:.4rem}
+.header h1{font-size:1.5rem;color:var(--accent);margin-bottom:.5rem}
+.header .services{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.tag{font-size:.7rem;font-weight:500;color:var(--text-2);background:var(--bg);border:1px solid var(--border);padding:.2rem .6rem;border-radius:100px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.card h2{font-size:1.05rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.intro{color:var(--text-2);font-size:.95rem}
+.svc{padding:.7rem .9rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);margin-bottom:.6rem}
+.svc .svc-name{font-weight:700;font-size:.9rem;color:var(--text)}
+.svc .svc-desc{font-size:.86rem;color:var(--text-2);margin-top:.15rem}
+ul.points{list-style:none}
+ul.points li{position:relative;padding:.55rem 0 .55rem 1.5rem;font-size:.9rem;color:var(--text-2);border-bottom:1px solid var(--border)}
+ul.points li:last-child{border-bottom:none}
+ul.points li::before{content:'';position:absolute;left:.2rem;top:1rem;width:7px;height:7px;border-radius:50%;background:var(--success)}
+ul.points.warn li::before{background:#d97706;border-radius:2px}
+.footer{text-align:center;padding:2rem 1rem;margin-top:1rem;border-top:1px solid var(--border);color:var(--text-3);font-size:.78rem}
+@media(max-width:640px){.container{padding:1.25rem 1rem}.card{padding:1.25rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="navbar"><a class="btn" href="skill_02_04_05.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_03_01_01.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_02_04_06.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="header">
+<div class="domain">Domain 2: Data Store Management &mdash; Task 2.4: Design data models and schema evolution</div>
+<h1>Skill 2.4.6: Vectorization concepts</h1>
+<div class="services"><span class="tag">vectorization</span><span class="tag">Bedrock</span><span class="tag">embeddings</span></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Ringkasan</h2>
+<p class="intro">Skill ini termasuk dalam <strong>Domain 2: Data Store Management</strong> (Task 2.4: Design data models and schema evolution), dengan fokus pada <strong>vectorization concepts</strong>. Materi berikut merangkum layanan AWS yang relevan beserta konsep penting yang perlu kamu kuasai untuk topik ini.</p>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Layanan &amp; Konsep Utama</h2>
+<div class="svc"><div class="svc-name">Amazon Bedrock</div><div class="svc-desc">Akses model fondasi (LLM) terkelola untuk embedding dan generative AI.</div></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Poin-Poin Kunci</h2>
+<ul class="points"><li>Amazon Bedrock Knowledge Bases menyediakan solusi RAG end-to-end yang otomatis: memecah dokumen menjadi chunks, membuat vector embeddings, menyimpannya di vector store, dan melakukan semantic search pada query time untuk menemukan konteks relevan yang dikirim ke foundation model.</li><li>Semantic chunking memecah dokumen berdasarkan batas topik yang dideteksi oleh perubahan signifikan dalam embedding similarity antar kalimat berurutan. Ini ideal untuk corpus campuran karena secara otomatis menyesuaikan ukuran chunk berdasarkan konten — FAQ pendek mungkin menjadi satu chunk, sementara manual teknis dipecah di batas topik alami.</li><li>Amazon Titan Text Embeddings V2 mendukung multilingual content dan memiliki fitur configurable output dimensions (256, 512, atau 1024) yang memungkinkan tradeoff antara storage efficiency dan quality. Dimensi 256 sangat cocok untuk use case dengan storage constraints sambil tetap mempertahankan kualitas yang baik untuk retrieval.</li><li>Amazon OpenSearch Serverless dengan vector search collection type dirancang untuk high-concurrency, low-latency vector similarity search. Serverless mode otomatis scales untuk menangani 10,000 concurrent users, dan arsitektur-nya dioptimalkan untuk approximate nearest neighbor (ANN) search pada scale besar (50M vectors).</li><li>Cosine similarity mengukur sudut antara dua vektor, tidak bergantung pada magnitude (panjang) vektor. Ini ideal ketika Anda ingin membandingkan "arah" atau makna semantik tanpa dipengaruhi oleh panjang deskripsi. Produk yang dideskripsikan singkat vs detail akan memiliki vectors dengan magnitude berbeda tapi arah yang sama jika kontennya serupa.</li><li>Amazon Bedrock Knowledge Bases mendukung data source syncing yang dapat dijadwalkan atau dipicu secara manual. Proses sync mendeteksi dokumen baru, yang diubah, dan yang dihapus, kemudian memperbarui embeddings di vector store sesuai perubahan.</li><li>Change data capture (CDC) pattern untuk mendeteksi dokumen yang berubah, kemudian hanya memproses perubahan melalui embedding pipeline dan melakukan upsert ke vector store, adalah pendekatan paling efisien. Ini menghindari re-processing dokumen yang tidak berubah, menghemat waktu dan biaya embedding API calls.</li><li>Ketika chunks terlalu besar, satu embedding mewakili multiple topics yang dicampur bersama, menghasilkan "diluted" vector yang kurang spesifik untuk topik manapun. Ini menyebabkan irrelevant results karena embedding tidak cukup terfokus pada satu topik (seperti drug interactions). Solusinya adalah menggunakan chunks yang lebih kecil dan terfokus.</li><li>Amazon OpenSearch Service secara native mendukung hybrid search yang mengkombinasikan k-NN vector search (semantic) dengan BM25 text scoring (keyword) dalam single query. Score normalization memungkinkan penggabungan results dari kedua metode secara seamless.</li><li>HNSW (Hierarchical Navigable Small World) index adalah algoritma ANN (Approximate Nearest Neighbor) yang membuat graph structure multi-layer untuk navigasi cepat menuju neighbors terdekat. Dengan HNSW index, pgvector dapat melakukan similarity search dalam sub-second pada 10M vectors dengan accuracy trade-off minimal (recall &gt;95%).</li></ul>
+</div>
+<div class="card"><h2><span class="dot" style="background:#d97706"></span>Miskonsepsi &amp; Jebakan Umum</h2><ul class="points warn"><li>Mahal, memerlukan waktu lama, dan tidak update otomatis saat dokumen berubah.</li><li>Kurang efektif untuk semantic understanding dibandingkan vector similarity search.</li><li>Tidak mungkin karena context window memiliki batas token yang tidak bisa menampung 10,000 dokumen.</li><li>Membuat embeddings terlalu general untuk dokumen panjang, kehilangan detail spesifik.</li><li>Akan memecah FAQ secara tidak tepat dan mungkin memotong konteks di manual.</li><li>Berguna tapi lebih kompleks dan belum tentu menangani variasi ukuran dokumen sebaik semantic chunking.</li><li>Hanya optimal untuk English, tidak multilingual.</li><li>Memiliki fixed 1536 dimensions yang boros storage.</li><li>Dirancang untuk image+text, overkill untuk text-only queries.</li><li>Baik untuk smaller scales tapi akan struggle dengan 50M vectors pada 10K concurrent users tanpa significant tuning.</li><li>Tidak memiliki native vector similarity search capabilities.</li><li>Tidak bisa memberikan sub-100ms latency untuk similarity search pada 50M vectors.</li><li>Juga magnitude-dependent dan kurang umum untuk semantic similarity.</li><li>Dipengaruhi oleh magnitude sehingga deskripsi panjang vs pendek akan terlihat "jauh".</li><li>Salah — S3 versioning saja tidak memicu re-embedding otomatis tanpa proses sync.</li><li>Sangat tidak efisien dan menyebabkan downtime.</li><li>Terlalu kompleks dan Knowledge Base sudah menyediakan built-in sync mechanism.</li><li>Sangat wasteful untuk large corpus yang jarang berubah seluruhnya.</li><li>Tidak realistis — vector databases umumnya tidak generate embeddings secara internal.</li><li>Menambahkan latensi signifikan ke setiap query.</li><li>Tidak diperlukan — Titan V2 capable untuk medical text jika chunking benar.</li><li>Salah — mengurangi dimensi justru kehilangan informasi.</li><li>Bisa membantu sedikit tapi tidak menyelesaikan root cause bahwa embeddings sendiri kurang spesifik.</li><li>Salah — DynamoDB tidak mendukung native vector search atau full-text search.</li><li>Bisa dilakukan tapi memerlukan custom logic untuk menggabungkan scores dari dua tipe query yang berbeda.</li><li>Menambah latency dan complexity dalam result merging.</li><li>Membantu sedikit tapi exact search tetap O(n) yang tidak scalable.</li><li>Mengurangi kualitas retrieval secara signifikan dan masih memerlukan linear scan tanpa index.</li><li>Membantu jika ada filter yang baik tapi tidak menyelesaikan masalah dasar exact search.</li></ul></div>
+<div class="navbar"><a class="btn" href="skill_02_04_05.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_03_01_01.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_02_04_06.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="footer">AWS Data Engineer Associate (DEA-C01) &mdash; Materi Belajar<br>Created by Lintang Gilang and Kiro Agent</div>
+</div>
+</body>
+</html>

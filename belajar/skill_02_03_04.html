@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belajar - Skill 2.3.4: S3 versioning and DynamoDB TTL</title>
+<style>
+:root{--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-2:#475569;--text-3:#94a3b8;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,.1);--shadow-lg:0 10px 15px rgba(0,0,0,.1)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--bg-card:#1e293b;--text:#f1f5f9;--text-2:#94a3b8;--text-3:#64748b;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 15px rgba(0,0,0,.3)}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+.navbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;font-size:.85rem;font-weight:600;text-decoration:none;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-2);transition:all .2s;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-hover);color:#fff}
+.btn.disabled{opacity:.4;pointer-events:none}
+.btn svg{width:15px;height:15px}
+.header{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;box-shadow:var(--shadow-lg)}
+.header .domain{font-size:.8rem;color:var(--text-3);margin-bottom:.4rem}
+.header h1{font-size:1.5rem;color:var(--accent);margin-bottom:.5rem}
+.header .services{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.tag{font-size:.7rem;font-weight:500;color:var(--text-2);background:var(--bg);border:1px solid var(--border);padding:.2rem .6rem;border-radius:100px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.card h2{font-size:1.05rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.intro{color:var(--text-2);font-size:.95rem}
+.svc{padding:.7rem .9rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);margin-bottom:.6rem}
+.svc .svc-name{font-weight:700;font-size:.9rem;color:var(--text)}
+.svc .svc-desc{font-size:.86rem;color:var(--text-2);margin-top:.15rem}
+ul.points{list-style:none}
+ul.points li{position:relative;padding:.55rem 0 .55rem 1.5rem;font-size:.9rem;color:var(--text-2);border-bottom:1px solid var(--border)}
+ul.points li:last-child{border-bottom:none}
+ul.points li::before{content:'';position:absolute;left:.2rem;top:1rem;width:7px;height:7px;border-radius:50%;background:var(--success)}
+ul.points.warn li::before{background:#d97706;border-radius:2px}
+.footer{text-align:center;padding:2rem 1rem;margin-top:1rem;border-top:1px solid var(--border);color:var(--text-3);font-size:.78rem}
+@media(max-width:640px){.container{padding:1.25rem 1rem}.card{padding:1.25rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="navbar"><a class="btn" href="skill_02_03_03.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_02_03_05.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_02_03_04.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="header">
+<div class="domain">Domain 2: Data Store Management &mdash; Task 2.3: Manage the lifecycle of data</div>
+<h1>Skill 2.3.4: S3 versioning and DynamoDB TTL</h1>
+<div class="services"><span class="tag">versioning</span><span class="tag">DynamoDB</span><span class="tag">TTL</span></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Ringkasan</h2>
+<p class="intro">Skill ini termasuk dalam <strong>Domain 2: Data Store Management</strong> (Task 2.3: Manage the lifecycle of data), dengan fokus pada <strong>s3 versioning and dynamodb ttl</strong>. Materi berikut merangkum layanan AWS yang relevan beserta konsep penting yang perlu kamu kuasai untuk topik ini.</p>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Layanan &amp; Konsep Utama</h2>
+<div class="svc"><div class="svc-name">Amazon S3</div><div class="svc-desc">Object storage tahan lama; dasar data lake, mendukung event notification, versioning, dan lifecycle.</div></div><div class="svc"><div class="svc-name">Amazon DynamoDB</div><div class="svc-desc">Database NoSQL key-value latensi rendah; skala horizontal, mendukung TTL dan Streams.</div></div><div class="svc"><div class="svc-name">DynamoDB TTL</div><div class="svc-desc">Menghapus item otomatis setelah timestamp kedaluwarsa tanpa biaya tambahan.</div></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Poin-Poin Kunci</h2>
+<ul class="points"><li>Lifecycle rule untuk menghapus noncurrent versions setelah 30 hari memungkinkan pemulihan file yang tertimpa dalam waktu 30 hari sambil secara otomatis membersihkan versi lama untuk mengontrol biaya.</li><li>DynamoDB TTL membandingkan nilai atribut TTL (Unix epoch timestamp) dengan waktu saat ini. Item dihapus ketika current time &gt; TTL value. Tidak ada "offset" yang bisa dikonfigurasi — atribut TTL harus berisi waktu ekspirasi absolut. Oleh karena itu, atribut terpisah "expirationTime" yang berisi lastActivity + 86400 (24 jam dalam detik) adalah implementasi yang benar.</li><li>MFA Delete mengharuskan autentikasi multi-faktor untuk menghapus versi objek secara permanen atau mengubah status versioning bucket. Ini mencegah penghapusan permanen tanpa MFA, bahkan oleh root account.</li><li>Untuk mengambil versi spesifik, gunakan ListObjectVersions API atau S3 console untuk melihat semua versi objek beserta version ID-nya, kemudian gunakan GetObject dengan parameter versionId untuk mengunduh versi yang diinginkan.</li><li>DynamoDB Streams menangkap TTL deletions sebagai event REMOVE dengan userIdentity.type = "Service" dan userIdentity.principalId = "dynamodb.amazonaws.com". Lambda consumer dapat memfilter event ini dan menulis data ke S3 untuk archival. Ini fully event-driven dan minimal overhead.</li><li>Ketika versioning di-suspend, objek baru yang diupload mendapat null version ID. Jika sudah ada objek dengan null version ID, objek tersebut ditimpa. Versi-versi sebelumnya yang memiliki version ID non-null tetap dipertahankan.</li><li>S3 Lifecycle rules mendukung NoncurrentVersionExpiration dengan parameter NewerNoncurrentVersions yang memungkinkan menyimpan sejumlah N versi noncurrent terbaru dan menghapus yang lebih lama. Ini adalah solusi native S3 yang paling efisien.</li><li>DynamoDB TTL tidak menjamin penghapusan instan — item biasanya dihapus dalam waktu 48 jam setelah expiration (umumnya dalam beberapa jam). Ini by design dan tidak bisa dipercepat. Solusi yang benar adalah menambahkan filter expression di query aplikasi untuk mengecualikan item yang sudah expired (TTL &lt; current_time).</li><li>Untuk menghapus versi objek secara permanen di bucket dengan versioning enabled, Anda harus mengirim DeleteObject request dengan version ID spesifik. Tanpa version ID, S3 hanya membuat delete marker.</li><li>DynamoDB TTL deletions sepenuhnya gratis — tidak mengonsumsi write capacity units dan tidak dikenakan biaya. Ini menjadikan TTL cara yang paling cost-effective untuk menghapus data yang sudah expired secara otomatis.</li></ul>
+</div>
+<div class="card"><h2><span class="dot" style="background:#d97706"></span>Miskonsepsi &amp; Jebakan Umum</h2><ul class="points warn"><li>Salah karena transition ke Glacier terjadi sebelum expiration, tapi lifecycle rule untuk noncurrent versions harus menggunakan NoncurrentVersionExpiration, bukan Expiration.</li><li>Tidak menghapus versi yang ada dan menghilangkan proteksi ke depan.</li><li>Tidak mungkin — versioning hanya bisa di-suspend, tidak di-disable, dan CRR membutuhkan versioning enabled.</li><li>Salah karena menggunakan lastActivity langsung berarti item langsung expired.</li><li>Tidak ada — DynamoDB tidak memiliki fitur TTL offset.</li><li>Menambah kompleksitas yang tidak perlu.</li><li>Tidak mencegah penghapusan manual. Pertanyaan spesifik menyebut "tanpa multi-factor authentication" yang langsung mengarah ke MFA Delete.</li><li>Bisa di-bypass oleh root account yang bisa mengubah policy.</li><li>Mencegah penghapusan selama retention period tapi tidak memerlukan MFA — ia memblokir semua penghapusan termasuk root.</li><li>Digunakan untuk restore dari Glacier, bukan untuk mengakses versi sebelumnya.</li><li>Untuk mengontrol SLA replikasi, bukan untuk restore.</li><li>Tidak real-time dan membutuhkan waktu untuk generate report.</li><li>Sangat mahal untuk tabel besar dan menghasilkan data duplikat.</li><li>Tidak efisien — GSI tidak bisa digunakan untuk query items berdasarkan waktu mendekati TTL secara efektif.</li><li>Memerlukan scan yang mahal dan berisiko race condition dengan TTL.</li><li>Salah — upload tetap berhasil.</li><li>Hampir benar tapi tidak menyebutkan bahwa null version ID sebelumnya ditimpa.</li><li>Salah — versi sebelumnya tidak dihapus otomatis. Ini penting dipahami: suspend versioning TIDAK menghapus versi yang sudah ada.</li><li>Untuk multipart upload yang tidak selesai, bukan versi.</li><li>Bisa dilakukan tapi membutuhkan pengelolaan manual dan tidak otomatis.</li><li>Mengelola storage class bukan jumlah versi.</li><li>Salah — TTL deletion menggunakan background proses yang terpisah dari WCU provisioned.</li><li>Tidak ada mekanisme untuk meningkatkan TTL throughput secara manual.</li><li>Tidak akan mempercepat proses.</li><li>Tanpa version ID hanya akan membuat delete markers, bukan penghapusan permanen.</li><li>Tidak bisa menargetkan objek spesifik berdasarkan key.</li><li>Salah — versioning tidak bisa di-disable, hanya di-suspend, dan itu tidak menghapus versi yang ada.</li><li>Salah — TTL menggunakan background proses terpisah yang tidak mempengaruhi WCU.</li><li>Salah — TTL deletions yang tercatat di DynamoDB Streams juga tidak menimbulkan biaya tambahan di luar biaya normal Streams (biaya read dari stream tetap berlaku jika ada consumer).</li><li>Tidak ada skema biaya seperti ini.</li></ul></div>
+<div class="navbar"><a class="btn" href="skill_02_03_03.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_02_03_05.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_02_03_04.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="footer">AWS Data Engineer Associate (DEA-C01) &mdash; Materi Belajar<br>Created by Lintang Gilang and Kiro Agent</div>
+</div>
+</body>
+</html>

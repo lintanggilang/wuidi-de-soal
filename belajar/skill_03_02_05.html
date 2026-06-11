@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belajar - Skill 3.2.5: Provisioned vs serverless tradeoffs</title>
+<style>
+:root{--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-2:#475569;--text-3:#94a3b8;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,.1);--shadow-lg:0 10px 15px rgba(0,0,0,.1)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--bg-card:#1e293b;--text:#f1f5f9;--text-2:#94a3b8;--text-3:#64748b;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 15px rgba(0,0,0,.3)}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+.navbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;font-size:.85rem;font-weight:600;text-decoration:none;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-2);transition:all .2s;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-hover);color:#fff}
+.btn.disabled{opacity:.4;pointer-events:none}
+.btn svg{width:15px;height:15px}
+.header{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;box-shadow:var(--shadow-lg)}
+.header .domain{font-size:.8rem;color:var(--text-3);margin-bottom:.4rem}
+.header h1{font-size:1.5rem;color:var(--accent);margin-bottom:.5rem}
+.header .services{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.tag{font-size:.7rem;font-weight:500;color:var(--text-2);background:var(--bg);border:1px solid var(--border);padding:.2rem .6rem;border-radius:100px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.card h2{font-size:1.05rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.intro{color:var(--text-2);font-size:.95rem}
+.svc{padding:.7rem .9rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);margin-bottom:.6rem}
+.svc .svc-name{font-weight:700;font-size:.9rem;color:var(--text)}
+.svc .svc-desc{font-size:.86rem;color:var(--text-2);margin-top:.15rem}
+ul.points{list-style:none}
+ul.points li{position:relative;padding:.55rem 0 .55rem 1.5rem;font-size:.9rem;color:var(--text-2);border-bottom:1px solid var(--border)}
+ul.points li:last-child{border-bottom:none}
+ul.points li::before{content:'';position:absolute;left:.2rem;top:1rem;width:7px;height:7px;border-radius:50%;background:var(--success)}
+ul.points.warn li::before{background:#d97706;border-radius:2px}
+.footer{text-align:center;padding:2rem 1rem;margin-top:1rem;border-top:1px solid var(--border);color:var(--text-3);font-size:.78rem}
+@media(max-width:640px){.container{padding:1.25rem 1rem}.card{padding:1.25rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="navbar"><a class="btn" href="skill_03_02_04.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_03_02_06.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_03_02_05.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="header">
+<div class="domain">Domain 3: Operations & Support &mdash; Task 3.2: Analyze data by using AWS services</div>
+<h1>Skill 3.2.5: Provisioned vs serverless tradeoffs</h1>
+<div class="services"><span class="tag">provisioned</span><span class="tag">serverless</span><span class="tag">tradeoffs</span></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Ringkasan</h2>
+<p class="intro">Skill ini termasuk dalam <strong>Domain 3: Operations & Support</strong> (Task 3.2: Analyze data by using AWS services), dengan fokus pada <strong>provisioned vs serverless tradeoffs</strong>. Materi berikut merangkum layanan AWS yang relevan beserta konsep penting yang perlu kamu kuasai untuk topik ini.</p>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Layanan &amp; Konsep Utama</h2>
+<div class="svc"><div class="svc-desc">Lihat poin-poin kunci di bawah.</div></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Poin-Poin Kunci</h2>
+<ul class="points"><li>Untuk workload yang predictable, consistent, dan berjalan setiap hari sepanjang tahun, Reserved Instances memberikan diskon hingga 72% dibanding On-Demand pricing. EMR on EC2 dengan RI ideal untuk sustained utilization pattern. EMR Serverless mengenakan premium untuk convenience dan lebih cost-effective untuk sporadic/unpredictable workloads.</li><li>Redshift Serverless secara otomatis scales compute resources berdasarkan workload demand. Pada hari tanpa query, biaya mendekati nol (hanya storage). Pada hari sibuk, resources scale up sesuai kebutuhan. RPU base capacity memungkinkan warm state untuk response cepat.</li><li>Untuk spikes yang diketahui sebelumnya (game launches dijadwalkan), scheduled scaling pada provisioned capacity adalah pilihan paling cost-effective. Table di-scale up sebelum launch dan scale down setelah traffic kembali normal.</li><li>Keuntungan utama serverless (Glue) adalah eliminasi operational overhead. Tim tidak perlu mengelola cluster lifecycle (start/stop/resize), OS patching, security updates, atau capacity planning. Untuk tim dengan limited DevOps, ini sangat signifikan.</li><li>Amazon EMR on EC2 dengan long-running Spark Structured Streaming application selalu aktif dan ready to process data tanpa cold start. Application terus polling sumber data dan memproses dalam micro-batches (bisa serendah 100ms trigger interval). Zero cold start karena cluster selalu running.</li><li>Arsitektur hybrid memberikan optimasi terbaik: Redshift Serverless handles complex analytical queries dengan performa tinggi dan auto-scales berdasarkan demand (hemat saat volume rendah). Athena handles simple ad-hoc queries dengan biaya per-scan yang minimal. Ini memberikan cost-effectiveness karena kedua service hanya charge saat digunakan.</li><li>Amazon EMR on EC2 menyediakan fleksibilitas maksimum: mendukung semua framework Hadoop ecosystem (Spark, Hive, Presto, HBase), memungkinkan custom AMIs, bootstrap actions untuk konfigurasi spesifik, dan kontrol penuh atas versi framework. Ini paling mirip dengan on-premises Hadoop.</li><li>AWS serverless data services (Glue, Athena, Redshift Serverless, EMR Serverless) semuanya mendukung VPC deployment, KMS customer-managed keys, dan CloudTrail logging. Keamanan bukan lagi differentiator utama antara provisioned dan serverless.</li><li>EMR Serverless pre-initialized capacity (pre-warmed workers) menjaga pool of initialized workers yang ready to execute, menghilangkan cold start time. Workers tetap warm dan bisa langsung mulai processing. Biaya pre-initialized workers lebih rendah dari running cluster tapi menghilangkan 4-5 menit cold start.</li><li>TCO comparison antara provisioned (RI) dan serverless bergantung pada average utilization. Provisioned RI memberikan fixed cost regardless of usage, sehingga semakin tinggi utilization semakin cost-effective. Weighted average utilization: (8h × 80% + 4h × 40% + 12h × 5%) / 24h ≈ 37%. Dengan RI discounts (hingga 72% off on-demand), provisioned menjadi lebih murah di titik ini dibanding serverless yang charges per-RPU-hour consumed.</li></ul>
+</div>
+<div class="card"><h2><span class="dot" style="background:#d97706"></span>Miskonsepsi &amp; Jebakan Umum</h2><ul class="points warn"><li>Berisiko interruption yang bisa menggagalkan 3-hour job.</li><li>Berlaku tapi cost advantage tidak berlaku untuk steady predictable workload.</li><li>Benar tapi per-compute-hour rate lebih mahal dari RI.</li><li>Sangat wasteful untuk workload unpredictable.</li><li>Memerlukan prediksi kapan query akan dijalankan, tidak cocok untuk truly unpredictable patterns.</li><li>Adalah solusi berbeda yang mungkin tidak memenuhi kebutuhan performa sub-second untuk complex queries.</li><li>Sangat wasteful untuk 1,000 WCU normal usage.</li><li>Lebih mahal per request dan memiliki throttling pada initial spike jika previous peak belum mencapai level tersebut.</li><li>Memiliki lag time yang bisa menyebabkan throttling saat traffic naik 100x secara tiba-tiba (auto-scaling reacts, doesn't predict).</li><li>Salah karena EMR mendukung lebih banyak framework/format.</li><li>Salah karena EMR bisa lebih cepat dengan konfigurasi optimal.</li><li>Salah karena EMR juga terintegrasi dengan Glue Data Catalog secara native.</li><li>Memiliki cold start dan tidak mendukung complex Spark transformations.</li><li>Memiliki cold start 1-2 menit bahkan dengan pre-initialized workers.</li><li>Juga always-on tapi memiliki higher startup time jika job perlu di-restart.</li><li>Kurang optimal untuk complex multi-join queries yang berjalan 30 menit.</li><li>Memerlukan cluster management dan tidak cost-optimal untuk variable workloads.</li><li>Wasteful pada hari dengan 5 queries.</li><li>Memecah ke multiple services yang memerlukan rewrite signifikan.</li><li>Berbeda paradigma dan tidak mendukung HBase/Spark workloads.</li><li>Hanya mendukung Spark dan Hive, bukan Presto atau HBase.</li><li>Partially true tapi granular network controls juga tersedia di serverless melalui VPC configurations dan security groups.</li><li>Salah karena Glue mendukung VPC connections, EMR Serverless mendukung VPC, dll.</li><li>Oversimplifies (patching bukan satu-satunya aspek security).</li><li>Salah karena Glue juga memiliki startup time.</li><li>Menambah latency untuk individual datasets.</li><li>Berfungsi tapi lebih kompleks secara operasional dengan dua systems berbeda.</li><li>Salah karena utilization pattern (bukan hanya query count) menentukan cost.</li></ul></div>
+<div class="navbar"><a class="btn" href="skill_03_02_04.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_03_02_06.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_03_02_05.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="footer">AWS Data Engineer Associate (DEA-C01) &mdash; Materi Belajar<br>Created by Lintang Gilang and Kiro Agent</div>
+</div>
+</body>
+</html>
