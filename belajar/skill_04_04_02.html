@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belajar - Skill 4.4.2: CloudWatch Logs for audit</title>
+<style>
+:root{--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-2:#475569;--text-3:#94a3b8;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,.1);--shadow-lg:0 10px 15px rgba(0,0,0,.1)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--bg-card:#1e293b;--text:#f1f5f9;--text-2:#94a3b8;--text-3:#64748b;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 15px rgba(0,0,0,.3)}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+.navbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;font-size:.85rem;font-weight:600;text-decoration:none;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-2);transition:all .2s;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-hover);color:#fff}
+.btn.disabled{opacity:.4;pointer-events:none}
+.btn svg{width:15px;height:15px}
+.header{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;box-shadow:var(--shadow-lg)}
+.header .domain{font-size:.8rem;color:var(--text-3);margin-bottom:.4rem}
+.header h1{font-size:1.5rem;color:var(--accent);margin-bottom:.5rem}
+.header .services{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.tag{font-size:.7rem;font-weight:500;color:var(--text-2);background:var(--bg);border:1px solid var(--border);padding:.2rem .6rem;border-radius:100px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.card h2{font-size:1.05rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.intro{color:var(--text-2);font-size:.95rem}
+.svc{padding:.7rem .9rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);margin-bottom:.6rem}
+.svc .svc-name{font-weight:700;font-size:.9rem;color:var(--text)}
+.svc .svc-desc{font-size:.86rem;color:var(--text-2);margin-top:.15rem}
+ul.points{list-style:none}
+ul.points li{position:relative;padding:.55rem 0 .55rem 1.5rem;font-size:.9rem;color:var(--text-2);border-bottom:1px solid var(--border)}
+ul.points li:last-child{border-bottom:none}
+ul.points li::before{content:'';position:absolute;left:.2rem;top:1rem;width:7px;height:7px;border-radius:50%;background:var(--success)}
+ul.points.warn li::before{background:#d97706;border-radius:2px}
+.footer{text-align:center;padding:2rem 1rem;margin-top:1rem;border-top:1px solid var(--border);color:var(--text-3);font-size:.78rem}
+@media(max-width:640px){.container{padding:1.25rem 1rem}.card{padding:1.25rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="navbar"><a class="btn" href="skill_04_04_01.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_04_04_03.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_04_04_02.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="header">
+<div class="domain">Domain 4: Security & Governance &mdash; Task 4.4: Prepare logs for audit</div>
+<h1>Skill 4.4.2: CloudWatch Logs for audit</h1>
+<div class="services"><span class="tag">CloudWatch</span><span class="tag">Logs</span><span class="tag">audit</span></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Ringkasan</h2>
+<p class="intro">Skill ini termasuk dalam <strong>Domain 4: Security & Governance</strong> (Task 4.4: Prepare logs for audit), dengan fokus pada <strong>cloudwatch logs for audit</strong>. Materi berikut merangkum layanan AWS yang relevan beserta konsep penting yang perlu kamu kuasai untuk topik ini.</p>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Layanan &amp; Konsep Utama</h2>
+<div class="svc"><div class="svc-name">CloudWatch Logs</div><div class="svc-desc">Pengumpulan &amp; penyimpanan log; CloudWatch Logs Insights untuk query log.</div></div><div class="svc"><div class="svc-name">Amazon CloudWatch</div><div class="svc-desc">Monitoring metrik, alarm, dan dashboard untuk sumber daya &amp; aplikasi AWS.</div></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Poin-Poin Kunci</h2>
+<ul class="points"><li>Naming convention /aws/glue/{environment}/{job-name} memberikan organisasi hierarkis yang jelas. Retention 1827 hari (≈5 tahun) memenuhi compliance requirement secara tepat. CloudWatch Logs mendukung asosiasi customer-managed KMS key per log group menggunakan API associate-kms-key.</li><li>Subscription filter ke Firehose memberikan near real-time streaming ke S3 dengan prefiks terstruktur secara otomatis, minimal operational overhead, dan tidak memerlukan scheduled jobs. Firehose mendukung dynamic partitioning berdasarkan waktu.</li><li>CloudWatch cross-account observability memungkinkan monitoring account (sink) untuk melihat logs dari source accounts (links) tanpa menyalin data. Ketika dikelola via Organizations, konfigurasi diterapkan secara terpusat dan member accounts tidak bisa memodifikasi sharing configuration. Source accounts tetap memiliki akses baca ke logs mereka sendiri.</li><li>Subscription filters memungkinkan streaming real-time log events yang cocok dengan pola filter tertentu (seperti "DataCorruptionException") langsung ke Kinesis Data Streams. Ini memberikan full log event data ke downstream system.</li><li>Memisahkan logs berdasarkan pola akses ke dua log classes adalah pendekatan paling cost-effective. Infrequent Access class memiliki biaya ingestion lebih rendah (~50% lebih murah) tapi tidak mendukung semua fitur (misalnya subscription filters, Live Tail dibatasi). Logs yang sering di-query tetap di Standard class untuk fungsionalitas penuh.</li><li>Service Control Policies (SCPs) memberikan perlindungan terkuat karena diterapkan di level Organizations dan tidak bisa di-override oleh administrator di member accounts, termasuk yang memiliki AdministratorAccess policy. SCP bisa menggunakan kondisi pada resource ARN untuk menargetkan log groups spesifik.</li><li>CloudWatch Logs menggunakan envelope encryption. Service principal memerlukan kms:GenerateDataKey* untuk membuat data encryption key saat menulis logs, dan kms:Decrypt untuk membaca kembali (untuk fitur seperti filter patterns). IAM roles yang perlu membaca logs memerlukan kms:Decrypt untuk mendekripsi log data.</li><li>Log groups terpisah per tenant memungkinkan IAM policies yang membatasi akses berdasarkan log group ARN (arn:aws:logs:region:account:log-group:/app/tenant/{tenant_id}:*). Ini memberikan isolasi yang kuat dan auditable. Platform team bisa memiliki akses ke semua log groups.</li><li>AWS Lambda Advanced Logging Controls memungkinkan pengaturan log level di level fungsi (DEBUG, INFO, WARN, ERROR). Mengatur ke WARN akan mencegah DEBUG dan INFO logs dikirim ke CloudWatch Logs sama sekali, mengurangi ingestion costs langsung di source.</li><li>S3 Object Lock Compliance mode memberikan immutability yang dapat dibuktikan secara teknis — tidak ada user, termasuk root, yang bisa menghapus atau memodifikasi objek selama retention period. Dikombinasikan dengan CloudTrail evidence yang menunjukkan tidak ada PutLogEvents yang overwrote data, ini memberikan bukti terkuat.</li></ul>
+</div>
+<div class="card"><h2><span class="dot" style="background:#d97706"></span>Miskonsepsi &amp; Jebakan Umum</h2><ul class="points warn"><li>Menyebut AWS-managed KMS yang tidak memenuhi syarat customer-managed key.</li><li>Menghapus log groups setelah export yang berisiko kehilangan data jika export gagal dan tidak memungkinkan query real-time.</li><li>Menggunakan satu log group yang sulit dikelola dan SSE-S3 bukan customer-managed KMS.</li><li>Tidak ada fitur automatic export bawaan di CloudWatch Logs — export harus dilakukan secara manual atau via API.</li><li>Tidak mendukung CloudWatch Logs sebagai source.</li><li>Berfungsi tapi memiliki keterbatasan: hanya satu export task per log group pada satu waktu, memerlukan maintenance Lambda, dan ada delay.</li><li>Tidak real-time dan tidak memberikan kemampuan query langsung dari CloudWatch console.</li><li>Memerlukan konfigurasi subscription filter di setiap source account yang bisa diubah admin lokal.</li><li>Memerlukan konfigurasi di source accounts dan tidak mencegah modifikasi oleh admin lokal.</li><li>Hanya menghasilkan numeric metrics dan alarm notifications — tidak meneruskan actual log event content ke Kinesis.</li><li>Bersifat batch dan memiliki delay, bukan real-time.</li><li>Mendeteksi deviasi dari baseline metrics, bukan pattern matching pada log content, dan tidak meneruskan log events.</li><li>Menambah kompleksitas dan menghilangkan kemampuan CloudWatch Logs Insights query.</li><li>Salah karena CloudWatch Logs sudah melakukan kompresi internal — pengguna tidak bisa mengirim data pre-compressed.</li><li>Menempatkan semua di Infrequent Access, yang membatasi kemampuan query untuk 10% logs yang sering diakses.</li><li>Bisa diubah oleh administrator dalam akun tersebut.</li><li>Berfungsi untuk masking sensitive data dalam logs, bukan untuk mencegah deletion log groups.</li><li>Bisa dimodifikasi oleh siapapun dengan permission logs:PutResourcePolicy.</li><li>Salah karena CloudWatch Logs memerlukan GenerateDataKey, bukan Encrypt langsung.</li><li>Terlalu permissive dan tidak membatasi decrypt access.</li><li>Memberikan Encrypt yang tidak diperlukan — CloudWatch Logs menggunakan GenerateDataKey untuk envelope encryption, bukan Encrypt.</li><li>Salah karena IAM permissions CloudWatch Logs tidak mendukung granularitas level log stream — permissions berlaku di level log group.</li><li>Menambah kompleksitas dan biaya (double ingestion) dan subscription filters memiliki limit per log group.</li><li>Tidak memberikan isolasi nyata — tenant dengan permission FilterLogEvents bisa melihat semua logs di log group.</li><li>Mengurangi storage costs tapi tidak ingestion costs — biaya terbesar biasanya ada di ingestion.</li><li>Tetap mengingestion semua logs — metric filters hanya memproses data yang sudah di-ingest.</li><li>Juga tidak mengurangi ingestion karena logs sudah masuk ke log group pertama sebelum difilter.</li><li>Mempertahankan versi tapi tidak mencegah deletion — delete markers bisa ditambahkan.</li><li>Bisa diubah kapan saja dan tidak memberikan bukti retroaktif.</li><li>Tidak mencegah manual deletion oleh administrator, hanya mencegah auto-deletion.</li></ul></div>
+<div class="navbar"><a class="btn" href="skill_04_04_01.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_04_04_03.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_04_04_02.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="footer">AWS Data Engineer Associate (DEA-C01) &mdash; Materi Belajar<br>Created by Lintang Gilang and Kiro Agent</div>
+</div>
+</body>
+</html>

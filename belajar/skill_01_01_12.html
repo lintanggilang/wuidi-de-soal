@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belajar - Skill 1.1.12: Stateful and stateless transactions</title>
+<style>
+:root{--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-2:#475569;--text-3:#94a3b8;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,.1);--shadow-lg:0 10px 15px rgba(0,0,0,.1)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--bg-card:#1e293b;--text:#f1f5f9;--text-2:#94a3b8;--text-3:#64748b;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 15px rgba(0,0,0,.3)}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+.navbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;font-size:.85rem;font-weight:600;text-decoration:none;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-2);transition:all .2s;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-hover);color:#fff}
+.btn.disabled{opacity:.4;pointer-events:none}
+.btn svg{width:15px;height:15px}
+.header{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;box-shadow:var(--shadow-lg)}
+.header .domain{font-size:.8rem;color:var(--text-3);margin-bottom:.4rem}
+.header h1{font-size:1.5rem;color:var(--accent);margin-bottom:.5rem}
+.header .services{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.tag{font-size:.7rem;font-weight:500;color:var(--text-2);background:var(--bg);border:1px solid var(--border);padding:.2rem .6rem;border-radius:100px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.card h2{font-size:1.05rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.intro{color:var(--text-2);font-size:.95rem}
+.svc{padding:.7rem .9rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);margin-bottom:.6rem}
+.svc .svc-name{font-weight:700;font-size:.9rem;color:var(--text)}
+.svc .svc-desc{font-size:.86rem;color:var(--text-2);margin-top:.15rem}
+ul.points{list-style:none}
+ul.points li{position:relative;padding:.55rem 0 .55rem 1.5rem;font-size:.9rem;color:var(--text-2);border-bottom:1px solid var(--border)}
+ul.points li:last-child{border-bottom:none}
+ul.points li::before{content:'';position:absolute;left:.2rem;top:1rem;width:7px;height:7px;border-radius:50%;background:var(--success)}
+ul.points.warn li::before{background:#d97706;border-radius:2px}
+.footer{text-align:center;padding:2rem 1rem;margin-top:1rem;border-top:1px solid var(--border);color:var(--text-3);font-size:.78rem}
+@media(max-width:640px){.container{padding:1.25rem 1rem}.card{padding:1.25rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="navbar"><a class="btn" href="skill_01_01_11.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_01_02_01.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_01_01_12.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="header">
+<div class="domain">Domain 1: Ingestion & Transformation &mdash; Task 1.1: Perform data ingestion</div>
+<h1>Skill 1.1.12: Stateful and stateless transactions</h1>
+<div class="services"><span class="tag">stateful</span><span class="tag">stateless</span><span class="tag">Flink</span></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Ringkasan</h2>
+<p class="intro">Skill ini termasuk dalam <strong>Domain 1: Ingestion & Transformation</strong> (Task 1.1: Perform data ingestion), dengan fokus pada <strong>stateful and stateless transactions</strong>. Materi berikut merangkum layanan AWS yang relevan beserta konsep penting yang perlu kamu kuasai untuk topik ini.</p>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Layanan &amp; Konsep Utama</h2>
+<div class="svc"><div class="svc-name">Amazon Managed Service for Apache Flink</div><div class="svc-desc">Pemrosesan stream stateful (windowing, agregasi) berbasis Apache Flink secara terkelola.</div></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Poin-Poin Kunci</h2>
+<ul class="points"><li>Running average membutuhkan akumulasi nilai dari multiple events sebelumnya (sum dan count). State ini harus dipertahankan antar pemrosesan event. Ini adalah definisi klasik stateful processing — output bergantung pada input saat ini DAN state dari input sebelumnya.</li><li>Processing ini stateless karena setiap event diproses secara independen — output (enriched record) hanya bergantung pada input saat ini (coordinates), bukan pada event sebelumnya. External API call dan DynamoDB write tidak membuat processing stateful; mereka adalah side effects. Stateful berarti output bergantung pada accumulated state dari multiple events.</li><li>Apache Flink excels at stateful stream processing. Keyed state (grouped by user_id) memungkinkan Flink melacak jumlah transaksi per user dalam windowed time frame. Event-time processing menangani late-arriving events. Flink mengelola state secara internal dengan checkpointing untuk fault tolerance.</li><li>Konversi format tanggal adalah operasi per-record yang hanya membutuhkan data dalam record itu sendiri. Tidak perlu context dari record lain — ini stateless.</li><li>Lambda tumbling windows mengelola state per shard secara internal. Setiap invocation menerima state sebelumnya via event payload (field 'state') dan mengembalikan state yang diperbarui di response. Lambda service mengelola penyimpanan state antar invocations. State ini per-shard sehingga tidak terpengaruh scaling.</li><li>Checkpointing adalah mekanisme utama untuk fault-tolerant stateful processing. Framework seperti Apache Flink melakukan periodic checkpoints yang menyimpan state ke durable storage (S3). Setelah failure, processing resume dari checkpoint terakhir dengan state yang intact.</li><li>Pipeline A melakukan transformasi per-record (type casting, rename) — setiap record diproses independen dari yang lain = stateless processing. Pipeline B menghitung session metrics yang membutuhkan tracking events per user session over time = stateful processing.</li><li>Flink's exactly-once semantics membutuhkan: (1) Checkpointing dalam exactly-once mode yang menjamin state consistency, (2) Two-phase commit (2PC) sink connectors yang mengoordinasikan commit ke external systems dengan Flink checkpoints. Kombinasi ini memastikan setiap record diproses dan output tepat satu kali.</li><li>Transfer antar akun adalah stateful transaction — state (account balances) harus berubah secara atomik. DynamoDB TransactWriteItems menjamin atomicity: semua operasi dalam transaksi sukses atau semua dibatalkan. Ini ACID (Atomic, Consistent, Isolated, Durable).</li><li>Apache Flink dirancang untuk stateful stream processing. State per-key disimpan locally (RocksDB) di memory/disk worker, memberikan low-latency access. Checkpointing menjamin durability. Window operators (sliding 30-min window) built-in. Lambda BISA melakukan stateful processing (tumbling windows) tapi terbatas — hanya tumbling bukan sliding windows, membutuhkan external state store (DynamoDB) untuk custom state, yang menambah latency pada setiap event.</li></ul>
+</div>
+<div class="card"><h2><span class="dot" style="background:#d97706"></span>Miskonsepsi &amp; Jebakan Umum</h2><ul class="points warn"><li>Contradictory — external lookup bisa stateful.</li><li>Bisa stateless tapi pertanyaannya tentang real-time pipeline.</li><li>Salah karena setiap event tidak bisa diproses tanpa context dari event sebelumnya.</li><li>Alasannya tidak tepat — Lambda bisa melakukan stateful processing jika menggunakan external state store.</li><li>Salah — external dependency bukan definisi stateful.</li><li>Salah — writing output bukan state.</li><li>Hanya untuk transformasi record-by-record stateless.</li><li>Tidak memiliki state management yang robust.</li><li>Bisa bekerja tapi menambah latency DynamoDB lookup setiap transaction dan race conditions.</li><li>Membutuhkan tracking sequence events sebelumnya (state).</li><li>Membutuhkan akumulasi dari semua purchases (state).</li><li>Membutuhkan tracking unique users (state).</li><li>Salah — state diteruskan melalui event.</li><li>Salah karena Lambda service menyimpan state di antara invocations.</li><li>Tidak menjamin state preservation.</li><li>Mengirim ulang records tapi state yang terakumulasi tetap hilang tanpa checkpoint.</li><li>Salah — managed services bisa stateful.</li><li>Salah — writing to storage adalah output, bukan definisi stateful processing.</li><li>Salah — job bookmarks adalah metadata tracking untuk incremental processing, bukan processing state dalam konteks stateful transactions.</li><li>Bekerja tapi bukan exactly-once native.</li><li>Tanpa checkpointing, Flink tidak bisa recover state.</li><li>Tidak menjamin exactly-once tanpa checkpointing.</li><li>Bisa menyebabkan temporary inconsistency yang tidak acceptable untuk transfers.</li><li>Salah — kedua operasi saling bergantung (bukan independent).</li><li>Adalah property terpisah dari transactional semantics.</li><li>Salah — Lambda bisa consume Kinesis.</li><li>Salah — Lambda mendukung tumbling window state.</li></ul></div>
+<div class="navbar"><a class="btn" href="skill_01_01_11.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_01_02_01.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_01_01_12.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="footer">AWS Data Engineer Associate (DEA-C01) &mdash; Materi Belajar<br>Created by Lintang Gilang and Kiro Agent</div>
+</div>
+</body>
+</html>

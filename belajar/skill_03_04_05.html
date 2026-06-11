@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belajar - Skill 3.4.5: Data skew mechanisms</title>
+<style>
+:root{--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-2:#475569;--text-3:#94a3b8;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,.1);--shadow-lg:0 10px 15px rgba(0,0,0,.1)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--bg-card:#1e293b;--text:#f1f5f9;--text-2:#94a3b8;--text-3:#64748b;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 15px rgba(0,0,0,.3)}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+.navbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;font-size:.85rem;font-weight:600;text-decoration:none;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-2);transition:all .2s;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-hover);color:#fff}
+.btn.disabled{opacity:.4;pointer-events:none}
+.btn svg{width:15px;height:15px}
+.header{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;box-shadow:var(--shadow-lg)}
+.header .domain{font-size:.8rem;color:var(--text-3);margin-bottom:.4rem}
+.header h1{font-size:1.5rem;color:var(--accent);margin-bottom:.5rem}
+.header .services{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.tag{font-size:.7rem;font-weight:500;color:var(--text-2);background:var(--bg);border:1px solid var(--border);padding:.2rem .6rem;border-radius:100px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.card h2{font-size:1.05rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.intro{color:var(--text-2);font-size:.95rem}
+.svc{padding:.7rem .9rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);margin-bottom:.6rem}
+.svc .svc-name{font-weight:700;font-size:.9rem;color:var(--text)}
+.svc .svc-desc{font-size:.86rem;color:var(--text-2);margin-top:.15rem}
+ul.points{list-style:none}
+ul.points li{position:relative;padding:.55rem 0 .55rem 1.5rem;font-size:.9rem;color:var(--text-2);border-bottom:1px solid var(--border)}
+ul.points li:last-child{border-bottom:none}
+ul.points li::before{content:'';position:absolute;left:.2rem;top:1rem;width:7px;height:7px;border-radius:50%;background:var(--success)}
+ul.points.warn li::before{background:#d97706;border-radius:2px}
+.footer{text-align:center;padding:2rem 1rem;margin-top:1rem;border-top:1px solid var(--border);color:var(--text-3);font-size:.78rem}
+@media(max-width:640px){.container{padding:1.25rem 1rem}.card{padding:1.25rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="navbar"><a class="btn" href="skill_03_04_04.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_04_01_01.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_03_04_05.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="header">
+<div class="domain">Domain 3: Operations & Support &mdash; Task 3.4: Ensure data quality</div>
+<h1>Skill 3.4.5: Data skew mechanisms</h1>
+<div class="services"><span class="tag">skew</span><span class="tag">salting</span><span class="tag">AQE</span></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Ringkasan</h2>
+<p class="intro">Skill ini termasuk dalam <strong>Domain 3: Operations & Support</strong> (Task 3.4: Ensure data quality), dengan fokus pada <strong>data skew mechanisms</strong>. Materi berikut merangkum layanan AWS yang relevan beserta konsep penting yang perlu kamu kuasai untuk topik ini.</p>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Layanan &amp; Konsep Utama</h2>
+<div class="svc"><div class="svc-name">Apache Spark</div><div class="svc-desc">Engine komputasi terdistribusi in-memory; inti Glue ETL dan EMR.</div></div>
+</div>
+<div class="card">
+<h2><span class="dot"></span>Poin-Poin Kunci</h2>
+<ul class="points"><li>Gejala yang ditunjukkan — sebagian besar task selesai cepat tetapi beberapa task memakan waktu sangat lama (long-tail tasks) dengan memory spill — adalah indikator klasik data skew pada join key. Salting technique menambahkan suffix acak pada key yang skewed, mendistribusikan data secara merata ke lebih banyak partisi.</li><li>Karena device_metadata hanya 50 MB, broadcast join adalah solusi paling efektif dan memerlukan minimal code changes. Broadcast join mengirim tabel kecil ke semua executors, menghindari shuffle sepenuhnya sehingga data skew tidak menjadi masalah.</li><li>Untuk mengaktifkan AQE skew join optimization, dua konfigurasi diperlukan: spark.sql.adaptive.enabled=true (mengaktifkan AQE secara keseluruhan) dan spark.sql.adaptive.skewJoin.enabled=true (mengaktifkan fitur penanganan skew secara spesifik). AQE akan mendeteksi partisi yang jauh lebih besar dari median dan memecahnya menjadi sub-partisi.</li><li>Write sharding dengan menambahkan random suffix pada partition key mendistribusikan writes secara merata ke beberapa physical partitions. Untuk "pending" status, key menjadi "pending_0", "pending_1", ..., "pending_9", membagi load ke 10 partisi. Reads dilakukan dengan scatter-gather query pada semua suffix.</li><li>Masalah utama adalah partition key yang tidak terdistribusi merata (user_country). Kinesis menggunakan MD5 hash pada partition key untuk menentukan shard assignment. Jika hanya ada ~200 negara dan 2 negara dominan, hash-nya akan selalu mengarah ke shard yang sama. Menggunakan user_id atau composite key (country + random suffix) menciptakan distribusi hash yang lebih merata.</li><li>Salting technique yang benar: (1) Tambahkan kolom salt acak (0 sampai N-1) ke tabel kiri (yang besar/skewed). (2) Explode/replicate tabel kanan N kali, masing-masing dengan salt value berbeda. (3) Join pada kombinasi key asli DAN salt column. Ini mendistribusikan rows dari key yang skewed ke N partisi berbeda.</li><li>Indikator paling jelas dari data skew di Spark UI adalah disparitas besar antara median dan maximum pada Shuffle Read Size/Records per task. Jika median 50 MB tetapi max 8 GB, ini menunjukkan distribusi data yang sangat tidak merata antar partisi.</li><li>Two-phase aggregation (juga disebut partial aggregation with salting) adalah teknik standar untuk mengatasi skew pada operasi aggregation. Fase 1: tambahkan salt column, lakukan partial aggregation per (store_id, salt) — ini mendistribusikan data flagship stores ke beberapa partisi. Fase 2: hapus salt column dan lakukan final aggregation per store_id.</li><li>Spark AQE menggunakan dua parameter untuk menentukan apakah sebuah partisi dianggap skewed: (1) skewedPartitionFactor (default 5) — partisi dianggap skewed jika ukurannya lebih besar dari median × factor ini. (2) skewedPartitionThresholdInBytes (default 256 MB) — ukuran minimum agar partisi dipertimbangkan untuk split. Keduanya harus terpenuhi.</li><li>Menggunakan ExplicitHashKey memungkinkan producer mengontrol distribusi records secara langsung ke shard tertentu, bypass MD5 hash dari partition key. Dengan menghitung hash yang mendistribusikan records secara merata (misalnya round-robin atau random hash), hot shard problem dapat diatasi sambil tetap mempertahankan session_id sebagai partition key untuk consumer ordering.</li></ul>
+</div>
+<div class="card"><h2><span class="dot" style="background:#d97706"></span>Miskonsepsi &amp; Jebakan Umum</h2><ul class="points warn"><li>Hanya menyembunyikan masalah tanpa menyelesaikan distribusi data yang tidak merata.</li><li>Tidak berhubungan dengan distribusi data di partisi.</li><li>Tidak membantu jika satu key memiliki data sangat besar — data key tersebut tetap akan masuk ke satu partisi.</li><li>Berfungsi tapi memerlukan perubahan kode signifikan dan logika pemeliharaan yang lebih kompleks.</li><li>Bisa membantu tapi memerlukan konfigurasi threshold yang tepat dan menambahkan overhead.</li><li>Tidak menyelesaikan skew karena 80% data tetap akan terkonsentrasi di 5 partisi device_id.</li><li>Terkait coalescing partisi, bukan skew handling.</li><li>Tidak cukup karena AQE harus diaktifkan terlebih dahulu.</li><li>Terkait broadcast join threshold, bukan skew join handling.</li><li>Membutuhkan partition key berbeda dan tidak langsung menyelesaikan hot partition pada base table.</li><li>Tidak efektif karena DynamoDB membagi WCU secara merata antar partisi — hot partition tetap throttled.</li><li>Tetap memiliki limit per-partition sebesar 1000 WCU.</li><li>Menangani scaling otomatis tapi tidak mengubah distribusi data antar shard.</li><li>Tidak efektif karena hash dari "US" dan "IN" tetap akan masuk ke shard tertentu.</li><li>Meningkatkan read throughput, bukan write distribution.</li><li>Tidak menyelesaikan skew karena satu key tetap masuk ke satu partisi.</li><li>Tidak berhasil karena salt acak di kedua sisi tidak akan cocok — baris yang seharusnya join tidak akan menemukan pasangannya.</li><li>Menghasilkan distribusi yang sama seperti key asli.</li><li>Bisa disebabkan oleh banyak faktor selain skew (misalnya cache yang besar, broadcast variables).</li><li>Mengindikasikan resource contention, bukan data distribution.</li><li>Bisa menjadi efek samping dari skew tapi juga disebabkan oleh hal lain (memory leak, cache pressure).</li><li>Adalah RDD-level API yang tidak langsung applicable untuk DataFrame groupBy, dan menambah partitions tidak membantu jika key-nya sama.</li><li>Hanya menangani symptom, bukan root cause, dan tidak scalable untuk data yang terus bertumbuh.</li><li>Bukan solusi untuk skew pada aggregation.</li><li>Terkait hash join threshold dan jumlah shuffle partitions.</li><li>Terkait advisory partition size untuk coalescing.</li><li>Hanya mengaktifkan fitur, bukan mengontrol kapan partisi dianggap skewed.</li><li>Meningkatkan read throughput tetapi masalahnya adalah write distribution.</li><li>Hanya membagi hot shard menjadi 2, yang mungkin tidak cukup, dan UpdateShardCount mengubah jumlah total shard, bukan shard individual.</li><li>Tidak diperlukan karena masalahnya ada pada partition key strategy, bukan limitasi Kinesis.</li></ul></div>
+<div class="navbar"><a class="btn" href="skill_03_04_04.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</a><a class="btn" href="skill_04_01_01.html">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a><a class="btn" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Back to Home</a><a class="btn primary" href="../soal/skill_03_04_05.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Go Exam</a></div>
+<div class="footer">AWS Data Engineer Associate (DEA-C01) &mdash; Materi Belajar<br>Created by Lintang Gilang and Kiro Agent</div>
+</div>
+</body>
+</html>
