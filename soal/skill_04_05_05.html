@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A Singapore-based financial institution must comply with the Personal Data Protection Act (PDPA) which requires that personal data of Singapore citizens remains within Singapore or in countries with adequate data protection. They deploy workloads in ap-southeast-1. However, their global DevOps team occasionally needs to access monitoring data. Which architecture maintains data sovereignty while allowing operational access?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Store all personal data in ap-southeast-1, replicate only anonymized/aggregated operational metrics to a global monitoring region, and use SCPs to prevent personal data movement outside ap-southeast-1</li>
-                <li><span class="option-label">B.</span> Allow full replication to any region since monitoring access is considered a legitimate business purpose under PDPA</li>
+                
+                <li><span class="option-label">A.</span> Allow full replication to any region since monitoring access is considered a legitimate business purpose under PDPA</li>
+                <li><span class="option-label">B.</span> Encrypt data with customer-managed KMS keys and allow global access since encrypted data is not considered personal data</li>
                 <li><span class="option-label">C.</span> Use AWS Outposts deployed in Singapore for all data storage and deny all cloud region access configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Encrypt data with customer-managed KMS keys and allow global access since encrypted data is not considered personal data</li>
+                <li><span class="option-label">D.</span> Store all personal data in ap-southeast-1, replicate only anonymized/aggregated operational metrics to a global monitoring region, and use SCPs to prevent personal data movement outside ap-southeast-1</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Pendekatan yang benar adalah memisahkan personal data (harus tetap di ap-southeast-1) dari operational metrics (bisa di-share globally setelah anonymized/aggregated). SCPs memastikan personal data tidak bisa di-replicate atau di-copy ke region lain secara teknis. DevOps team bisa melihat aggregated metrics (CPU usage, error rates, throughput) tanpa exposure personal data. Opsi B — PDPA tidak mengizinkan transfer personal data hanya karena "business purpose"; adequate protection level di destination diperlukan. Opsi C — Outposts terlalu extreme dan menghilangkan benefit cloud services; PDPA tidak mewajibkan on-premises — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — encrypted data masih dianggap personal data di bawah kebanyakan data protection laws termasuk PDPA; encryption bukan exemption dari sovereignty requirements.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Pendekatan yang benar adalah memisahkan personal data (harus tetap di ap-southeast-1) dari operational metrics (bisa di-share globally setelah anonymized/aggregated). SCPs memastikan personal data tidak bisa di-replicate atau di-copy ke region lain secara teknis. DevOps team bisa melihat aggregated metrics (CPU usage, error rates, throughput) tanpa exposure personal data.<br><br>Opsi A: SALAH. PDPA tidak mengizinkan transfer personal data hanya karena "business purpose"; adequate protection level di destination diperlukan.<br>Opsi B: SALAH. Encrypted data masih dianggap personal data di bawah kebanyakan data protection laws termasuk PDPA; encryption bukan exemption dari sovereignty requirements.<br>Opsi C: SALAH. Outposts terlalu extreme dan menghilangkan benefit cloud services; PDPA tidak mewajibkan on-premises — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A Brazilian healthcare company must comply with LGPD (Lei Geral de Proteção de Dados) which requires patient data to be stored in Brazil. They use AWS KMS for encryption. The security architect argues that KMS keys used to encrypt patient data must also be in the same region as the data. Why is this important for data sovereignty, and what happens if the KMS key is in a different region?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> KMS keys are global and can be used from any region, so key location doesn't matter for sovereignty with a key in us-east-1</li>
-                <li><span class="option-label">B.</span> KMS keys are regional. If data is in sa-east-1 but encrypted with a key in us-east-1, decryption requests must reach us-east-1, creating a technical dependency on a foreign jurisdiction and potentially violating sovereignty requirements if the foreign region becomes inaccessible</li>
-                <li><span class="option-label">C.</span> KMS keys automatically replicate to the region where data is stored, so there's no sovereignty concern</li>
-                <li><span class="option-label">D.</span> Key location only matters for performance (latency), not for sovereignty compliance</li>
+                
+                <li><span class="option-label">A.</span> KMS keys automatically replicate to the region where data is stored, so there's no sovereignty concern</li>
+                <li><span class="option-label">B.</span> Key location only matters for performance (latency), not for sovereignty compliance</li>
+                <li><span class="option-label">C.</span> KMS keys are global and can be used from any region, so key location doesn't matter for sovereignty with a key in us-east-1</li>
+                <li><span class="option-label">D.</span> KMS keys are regional. If data is in sa-east-1 but encrypted with a key in us-east-1, decryption requests must reach us-east-1, creating a technical dependency on a foreign jurisdiction and potentially violating sovereignty requirements if the foreign region becomes inaccessible</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">KMS keys bersifat REGIONAL — key yang dibuat di us-east-1 hanya bisa digunakan di us-east-1. Jika data di sa-east-1 (São Paulo) dienkripsi dengan key di us-east-1, setiap decrypt operation memerlukan cross-region call ke us-east-1. Ini menciptakan: (1) dependency jurisdiksi asing — jika US government issues order terkait key di us-east-1, ini bisa mempengaruhi akses ke data Brasil, (2) availability risk — jika koneksi ke us-east-1 terputus, data di sa-east-1 tidak bisa didekripsi. Untuk sovereignty, key HARUS berada di region yang sama dengan data. Opsi A salah — KMS keys tidak global — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah — KMS keys tidak auto-replicate (multi-Region keys ada tapi harus explicitly configured). Opsi D — selain performance, sovereignty dan jurisdictional control adalah concern utama.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">KMS keys bersifat REGIONAL — key yang dibuat di us-east-1 hanya bisa digunakan di us-east-1. Jika data di sa-east-1 (São Paulo) dienkripsi dengan key di us-east-1, setiap decrypt operation memerlukan cross-region call ke us-east-1. Ini menciptakan: (1) dependency jurisdiksi asing — jika US government issues order terkait key di us-east-1, ini bisa mempengaruhi akses ke data Brasil, (2) availability risk — jika koneksi ke us-east-1 terputus, data di sa-east-1 tidak bisa didekripsi. Untuk sovereignty, key HARUS berada di region yang sama dengan data.<br><br>Opsi A: SALAH. Salah — KMS keys tidak auto-replicate (multi-Region keys ada tapi harus explicitly configured).<br>Opsi B: SALAH. Selain performance, sovereignty dan jurisdictional control adalah concern utama.<br>Opsi C: SALAH. Salah — KMS keys tidak global — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A European company uses multiple AWS global services (IAM, Route 53, CloudFront, WAF Global) which technically process requests through endpoints in us-east-1. Their legal team raises concern about GDPR compliance since metadata about EU resources traverses US infrastructure. How does AWS address this concern and what should the architect recommend?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Avoid all global services and use only regional equivalents to ensure no data touches US infrastructure</li>
-                <li><span class="option-label">B.</span> Global services process control plane metadata, not customer data content. AWS's infrastructure provides data processing agreements and standard contractual clauses covering these services. The architect should document this in their data processing assessment and use regional services for actual data storage</li>
-                <li><span class="option-label">C.</span> Move all workloads to AWS Europe (Paris) Local Zone to ensure complete EU data sovereignty and standard contractual clauses covering these services for actual data storage</li>
-                <li><span class="option-label">D.</span> Use AWS GovCloud which guarantees no data leaves specified geographic boundaries</li>
+                
+                <li><span class="option-label">A.</span> Global services process control plane metadata, not customer data content. AWS's infrastructure provides data processing agreements and standard contractual clauses covering these services. The architect should document this in their data processing assessment and use regional services for actual data storage</li>
+                <li><span class="option-label">B.</span> Use AWS GovCloud which guarantees no data leaves specified geographic boundaries</li>
+                <li><span class="option-label">C.</span> Avoid all global services and use only regional equivalents to ensure no data touches US infrastructure</li>
+                <li><span class="option-label">D.</span> Move all workloads to AWS Europe (Paris) Local Zone to ensure complete EU data sovereignty and standard contractual clauses covering these services for actual data storage</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS global services (IAM, Route 53, dll) memproses control plane metadata — bukan customer data content (actual customer records, PII). AWS menyediakan Data Processing Addendum (DPA), Standard Contractual Clauses (SCCs), dan compliance certifications yang mencakup global services. GDPR Article 28 mensyaratkan data processing agreement yang AWS sudah sediakan. Architect harus: (1) memastikan actual data (S3, RDS, etc) di EU regions, (2) document bahwa global services hanya memproses metadata, (3) ensure DPA signed with AWS. Opsi A — menghindari IAM/Route53 tidak practical karena semua AWS deployments memerlukan mereka. Opsi C — Local Zones tetap menggunakan global services; tidak menyelesaikan concern — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — GovCloud untuk US government workloads, bukan EU data sovereignty.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">AWS global services (IAM, Route 53, dll) memproses control plane metadata — bukan customer data content (actual customer records, PII). AWS menyediakan Data Processing Addendum (DPA), Standard Contractual Clauses (SCCs), dan compliance certifications yang mencakup global services. GDPR Article 28 mensyaratkan data processing agreement yang AWS sudah sediakan. Architect harus: (1) memastikan actual data (S3, RDS, etc) di EU regions, (2) document bahwa global services hanya memproses metadata, (3) ensure DPA signed with AWS.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. GovCloud untuk US government workloads, bukan EU data sovereignty.<br>Opsi C: SALAH. Menghindari IAM/Route53 tidak practical karena semua AWS deployments memerlukan mereka.<br>Opsi D: SALAH. Local Zones tetap menggunakan global services; tidak menyelesaikan concern — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A government agency in India requires complete data sovereignty for citizen data under the proposed Data Protection Bill. They need to ensure that even AWS support personnel cannot access their data without explicit authorization. Which combination of AWS features provides the strongest data sovereignty control?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use customer-managed KMS keys in ap-south-1, enable AWS CloudTrail for all API access, and deploy resources only in Mumbai region with CloudHSM for on-premises key management</li>
-                <li><span class="option-label">B.</span> Use AWS Nitro System instances with customer-managed KMS keys, enable AWS CloudHSM for key management, configure KMS key policies denying AWS service principals, and use SCP to restrict all operations to ap-south-1</li>
-                <li><span class="option-label">C.</span> Use AWS Dedicated Hosts to ensure physical isolation and standard KMS encryption</li>
-                <li><span class="option-label">D.</span> Deploy on AWS Outposts in their own data center in India with CloudHSM for on-premises key management, combined with SCPs restricting region access to only the Outpost</li>
+                
+                <li><span class="option-label">A.</span> Use AWS Dedicated Hosts to ensure physical isolation and standard KMS encryption</li>
+                <li><span class="option-label">B.</span> Deploy on AWS Outposts in their own data center in India with CloudHSM for on-premises key management, combined with SCPs restricting region access to only the Outpost</li>
+                <li><span class="option-label">C.</span> Use customer-managed KMS keys in ap-south-1, enable AWS CloudTrail for all API access, and deploy resources only in Mumbai region with CloudHSM for on-premises key management</li>
+                <li><span class="option-label">D.</span> Use AWS Nitro System instances with customer-managed KMS keys, enable AWS CloudHSM for key management, configure KMS key policies denying AWS service principals, and use SCP to restrict all operations to ap-south-1</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">Untuk maximum data sovereignty dimana bahkan cloud provider access harus dibatasi: AWS Outposts memberikan AWS infrastructure di customer's own data center — data physically stays on-premises dalam jurisdiksi India. CloudHSM memberikan dedicated HSMs dimana customer memiliki full control atas keys (AWS tidak bisa access HSM keys). SCPs memastikan tidak ada accidental deployment ke cloud regions. Ini adalah level tertinggi sovereignty yang AWS tawarkan. Opsi A — standard KMS keys di cloud regions masih technically accessible oleh AWS (meskipun heavily audited dan restricted). Opsi B — Nitro dan CloudHSM di cloud region memberikan strong control tapi data masih di AWS data center. Opsi C — Dedicated Hosts memberikan physical isolation dari tenants lain tapi data tetap di AWS facility.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Untuk maximum data sovereignty dimana bahkan cloud provider access harus dibatasi: AWS Outposts memberikan AWS infrastructure di customer's own data center — data physically stays on-premises dalam jurisdiksi India. CloudHSM memberikan dedicated HSMs dimana customer memiliki full control atas keys (AWS tidak bisa access HSM keys). SCPs memastikan tidak ada accidental deployment ke cloud regions. Ini adalah level tertinggi sovereignty yang AWS tawarkan.<br><br>Opsi A: SALAH. Dedicated Hosts memberikan physical isolation dari tenants lain tapi data tetap di AWS facility.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Standard KMS keys di cloud regions masih technically accessible oleh AWS (meskipun heavily audited dan restricted).<br>Opsi D: SALAH. Nitro dan CloudHSM di cloud region memberikan strong control tapi data masih di AWS data center.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A multinational company operates in the EU (GDPR), Brazil (LGPD), and Japan (APPI). Each regulation has different requirements for data localization. Their data lake contains customer data from all three regions stored in S3. They need to architect a solution where each country's citizen data stays in its respective region while allowing global analytics on aggregated data. Which architecture achieves this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Single centralized data lake in eu-central-1 with row-level security policies separating data by country configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Three regional data lakes (eu-central-1, sa-east-1, ap-northeast-1) containing raw PII data localized per regulation, with a global analytics layer using only anonymized/aggregated datasets replicated to a central analytics account</li>
-                <li><span class="option-label">C.</span> Single global data lake with encryption using region-specific KMS keys to logically separate data</li>
-                <li><span class="option-label">D.</span> Three regional data lakes with full cross-region replication enabled for disaster recovery and a global Redshift cluster for analytics</li>
+                
+                <li><span class="option-label">A.</span> Three regional data lakes (eu-central-1, sa-east-1, ap-northeast-1) containing raw PII data localized per regulation, with a global analytics layer using only anonymized/aggregated datasets replicated to a central analytics account</li>
+                <li><span class="option-label">B.</span> Single centralized data lake in eu-central-1 with row-level security policies separating data by country configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Three regional data lakes with full cross-region replication enabled for disaster recovery and a global Redshift cluster for analytics</li>
+                <li><span class="option-label">D.</span> Single global data lake with encryption using region-specific KMS keys to logically separate data</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Architecture yang benar memisahkan concerns: (1) Raw PII data stays localized di region yang sesuai regulasi masing-masing — EU citizen data di eu-central-1, Brazilian di sa-east-1, Japanese di ap-northeast-1. (2) Untuk global analytics, data di-anonymized/aggregated di local region terlebih dahulu (menghilangkan PII), kemudian aggregated data di-replicate ke central analytics layer. Anonymized data bukan personal data sehingga bisa di-share globally. Opsi A — centralized lake melanggar data localization semua tiga regulasi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — encryption tidak exempts dari sovereignty; data masih physically outside required jurisdiction. Opsi D — full cross-region replication menduplikasi PII data ke region lain, melanggar localization requirements.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Architecture yang benar memisahkan concerns: (1) Raw PII data stays localized di region yang sesuai regulasi masing-masing — EU citizen data di eu-central-1, Brazilian di sa-east-1, Japanese di ap-northeast-1. (2) Untuk global analytics, data di-anonymized/aggregated di local region terlebih dahulu (menghilangkan PII), kemudian aggregated data di-replicate ke central analytics layer. Anonymized data bukan personal data sehingga bisa di-share globally.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Centralized lake melanggar data localization semua tiga regulasi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Full cross-region replication menduplikasi PII data ke region lain, melanggar localization requirements.<br>Opsi D: SALAH. Encryption tidak exempts dari sovereignty; data masih physically outside required jurisdiction.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A company needs to implement data sovereignty for their VPC-based data processing workloads. They want to ensure that when their EC2 instances and Lambda functions make API calls to AWS services, the traffic never leaves the specified AWS Region. Which networking configuration ensures API traffic stays within the region?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use VPC Interface Endpoints (AWS PrivateLink) for all AWS service calls, combined with VPC endpoint policies restricting access to only resources in the local region</li>
-                <li><span class="option-label">B.</span> Configure VPC route tables to block all internet-bound traffic and use only NAT Gateway for AWS API calls</li>
-                <li><span class="option-label">C.</span> Use AWS Direct Connect with private VIF to ensure all AWS API calls traverse private network for all AWS service calls</li>
-                <li><span class="option-label">D.</span> Configure security groups to only allow outbound traffic to IP ranges of the local AWS region</li>
+                
+                <li><span class="option-label">A.</span> Use AWS Direct Connect with private VIF to ensure all AWS API calls traverse private network for all AWS service calls</li>
+                <li><span class="option-label">B.</span> Configure security groups to only allow outbound traffic to IP ranges of the local AWS region</li>
+                <li><span class="option-label">C.</span> Use VPC Interface Endpoints (AWS PrivateLink) for all AWS service calls, combined with VPC endpoint policies restricting access to only resources in the local region</li>
+                <li><span class="option-label">D.</span> Configure VPC route tables to block all internet-bound traffic and use only NAT Gateway for AWS API calls</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">VPC Interface Endpoints (PrivateLink) membuat private connectivity antara VPC dan AWS services tanpa traffic meninggalkan AWS network. Endpoint tetap di region tersebut. VPC endpoint policies bisa membatasi akses: misalnya, S3 endpoint policy bisa restrict ke hanya bucket ARNs di region yang sama, mencegah EC2/Lambda dari mengakses S3 di region lain. Ini memastikan data plane traffic untuk AWS service calls stays within-region. Opsi B — NAT Gateway mengirim traffic ke internet kemudian ke AWS public endpoints; traffic technically keluar VPC ke internet. Opsi C — Direct Connect memberikan private connection ke AWS tapi tidak inherently restrict ke single region; traffic bisa route ke multiple regions via Direct Connect — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Security groups bekerja di IP level; AWS regional IP ranges overlap dan berubah — ini fragile dan sulit di-maintain.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">VPC Interface Endpoints (PrivateLink) membuat private connectivity antara VPC dan AWS services tanpa traffic meninggalkan AWS network. Endpoint tetap di region tersebut. VPC endpoint policies bisa membatasi akses: misalnya, S3 endpoint policy bisa restrict ke hanya bucket ARNs di region yang sama, mencegah EC2/Lambda dari mengakses S3 di region lain. Ini memastikan data plane traffic untuk AWS service calls stays within-region.<br><br>Opsi A: SALAH. Direct Connect memberikan private connection ke AWS tapi tidak inherently restrict ke single region; traffic bisa route ke multiple regions via Direct Connect — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Security groups bekerja di IP level; AWS regional IP ranges overlap dan berubah — ini fragile dan sulit di-maintain.<br>Opsi C: BENAR.<br>Opsi D: SALAH. NAT Gateway mengirim traffic ke internet kemudian ke AWS public endpoints; traffic technically keluar VPC ke internet.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A company's legal team asks whether using Amazon S3 Transfer Acceleration violates their data sovereignty agreement. Transfer Acceleration uses AWS CloudFront edge locations globally to speed up uploads. Customer data in-transit would pass through edge locations potentially in other countries. What is the correct assessment?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> S3 Transfer Acceleration violates sovereignty because data passes through global edge locations; the company should disable it and use standard S3 uploads</li>
-                <li><span class="option-label">B.</span> Transfer Acceleration only caches data at edge locations temporarily; once the edge location is in the same continent, sovereignty is maintained</li>
-                <li><span class="option-label">C.</span> S3 Transfer Acceleration routes data through the optimal network path to the destination bucket's region. Data transits edge locations but is encrypted in-flight (TLS) and is NOT stored at edge locations. The bucket remains in the specified region. Most sovereignty frameworks consider in-transit data through encrypted channels differently from data at-rest storage location</li>
-                <li><span class="option-label">D.</span> Transfer Acceleration stores a copy at each edge location for 24 hours for retry purposes, which violates data sovereignty and is NOT stored at edge locations</li>
+                
+                <li><span class="option-label">A.</span> Transfer Acceleration only caches data at edge locations temporarily; once the edge location is in the same continent, sovereignty is maintained</li>
+                <li><span class="option-label">B.</span> S3 Transfer Acceleration routes data through the optimal network path to the destination bucket's region. Data transits edge locations but is encrypted in-flight (TLS) and is NOT stored at edge locations. The bucket remains in the specified region. Most sovereignty frameworks consider in-transit data through encrypted channels differently from data at-rest storage location</li>
+                <li><span class="option-label">C.</span> Transfer Acceleration stores a copy at each edge location for 24 hours for retry purposes, which violates data sovereignty and is NOT stored at edge locations</li>
+                <li><span class="option-label">D.</span> S3 Transfer Acceleration violates sovereignty because data passes through global edge locations; the company should disable it and use standard S3 uploads</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">S3 Transfer Acceleration menggunakan CloudFront edge locations sebagai network optimization points — data TRANSIT melalui edge locations tetapi TIDAK disimpan disana. Data dienkripsi dengan TLS selama transit dan final destination (storage) tetap di bucket yang berada di region yang ditentukan. Kebanyakan data sovereignty frameworks (termasuk GDPR) membedakan antara data-at-rest location dan encrypted in-transit routing. Namun, untuk organisasi dengan interpretasi sovereignty yang sangat strict, mereka mungkin memilih disable Transfer Acceleration. Assessment harus dilakukan dengan legal counsel. Opsi A — terlalu absolute; most frameworks allow encrypted transit. Opsi B — "same continent" bukan standard sovereignty measure. Opsi D — Transfer Acceleration TIDAK menyimpan data di edge locations — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">S3 Transfer Acceleration menggunakan CloudFront edge locations sebagai network optimization points — data TRANSIT melalui edge locations tetapi TIDAK disimpan disana. Data dienkripsi dengan TLS selama transit dan final destination (storage) tetap di bucket yang berada di region yang ditentukan. Kebanyakan data sovereignty frameworks (termasuk GDPR) membedakan antara data-at-rest location dan encrypted in-transit routing. Namun, untuk organisasi dengan interpretasi sovereignty yang sangat strict, mereka mungkin memilih disable Transfer Acceleration. Assessment harus dilakukan dengan legal counsel.<br><br>Opsi A: SALAH. "same continent" bukan standard sovereignty measure.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Transfer Acceleration TIDAK menyimpan data di edge locations — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Terlalu absolute; most frameworks allow encrypted transit.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">An Australian government agency has contractual obligations specifying that their data must ONLY be stored and processed in AWS Sydney region (ap-southeast-2). They discover that AWS CloudFormation StackSets could potentially deploy resources to other regions if misconfigured. How should they implement technical controls to enforce this contractual obligation at the organizational level?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Restrict CloudFormation StackSets deployment targets to ap-southeast-2 only in the StackSet configuration</li>
-                <li><span class="option-label">B.</span> Apply an SCP that denies ALL actions (using NotAction for global services) when aws:RequestedRegion is not ap-southeast-2, apply to all OUs containing workload accounts</li>
+                
+                <li><span class="option-label">A.</span> Apply an SCP that denies ALL actions (using NotAction for global services) when aws:RequestedRegion is not ap-southeast-2, apply to all OUs containing workload accounts</li>
+                <li><span class="option-label">B.</span> Configure AWS Organizations to disable all regions except ap-southeast-2 in account settings</li>
                 <li><span class="option-label">C.</span> Use IAM permission boundaries in every account limiting region access to ap-southeast-2 configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Configure AWS Organizations to disable all regions except ap-southeast-2 in account settings</li>
+                <li><span class="option-label">D.</span> Restrict CloudFormation StackSets deployment targets to ap-southeast-2 only in the StackSet configuration</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">SCP dengan region restriction adalah organizational-level control yang tidak bisa di-bypass oleh any user termasuk account administrators. Deny ALL actions (menggunakan NotAction untuk exempt global services) ketika aws:RequestedRegion bukan ap-southeast-2 memastikan tidak ada resource yang bisa dibuat di region lain — termasuk via CloudFormation, console, CLI, atau SDK. Ini adalah preventive control tertinggi di AWS Organizations. Opsi A — StackSet target restriction hanya mencegah StackSet-deployed resources; tidak mencegah direct resource creation via other means (console, CLI). Opsi C — IAM permission boundaries bisa di-override oleh admin yang creates new policies tanpa boundary; juga memerlukan enforcement per-account — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Anda hanya bisa opt-in/opt-out regions yang bukan default; ap-southeast-2 dan most standard regions are default dan cannot be disabled.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">SCP dengan region restriction adalah organizational-level control yang tidak bisa di-bypass oleh any user termasuk account administrators. Deny ALL actions (menggunakan NotAction untuk exempt global services) ketika aws:RequestedRegion bukan ap-southeast-2 memastikan tidak ada resource yang bisa dibuat di region lain — termasuk via CloudFormation, console, CLI, atau SDK. Ini adalah preventive control tertinggi di AWS Organizations.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Anda hanya bisa opt-in/opt-out regions yang bukan default; ap-southeast-2 dan most standard regions are default dan cannot be disabled.<br>Opsi C: SALAH. IAM permission boundaries bisa di-override oleh admin yang creates new policies tanpa boundary; juga memerlukan enforcement per-account — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. StackSet target restriction hanya mencegah StackSet-deployed resources; tidak mencegah direct resource creation via other means (console, CLI).</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A company in the Middle East needs to maintain data sovereignty but also requires disaster recovery capability. Their primary region is me-south-1 (Bahrain). The nearest alternative region that meets their sovereignty requirements (data must stay in Middle East/GCC countries) is me-central-1 (UAE). How should they architect their DR strategy while maintaining sovereignty?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use S3 Cross-Region Replication from me-south-1 to me-central-1, RDS read replicas in me-central-1, and SCPs allowing only these two regions</li>
-                <li><span class="option-label">B.</span> Use S3 Cross-Region Replication to eu-south-1 (Milan) as it's geographically close and has strong data protection laws</li>
+                
+                <li><span class="option-label">A.</span> Store data in both me-south-1 and us-east-1 using KMS with sovereignty-tagged keys</li>
+                <li><span class="option-label">B.</span> Use S3 Cross-Region Replication from me-south-1 to me-central-1, RDS read replicas in me-central-1, and SCPs allowing only these two regions</li>
                 <li><span class="option-label">C.</span> Use multi-AZ deployments within me-south-1 only and accept single-region DR risk to maintain strict sovereignty and SCPs allowing only these two regions</li>
-                <li><span class="option-label">D.</span> Store data in both me-south-1 and us-east-1 using KMS with sovereignty-tagged keys</li>
+                <li><span class="option-label">D.</span> Use S3 Cross-Region Replication to eu-south-1 (Milan) as it's geographically close and has strong data protection laws</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">me-south-1 (Bahrain) dan me-central-1 (UAE) keduanya berada di GCC countries yang memenuhi Middle East sovereignty requirements. Menggunakan CRR ke me-central-1 memberikan geographic DR tanpa melanggar sovereignty. RDS read replicas di me-central-1 memberikan database DR. SCPs yang hanya allow kedua regions ini memastikan tidak ada accidental deployment ke region lain. Opsi B — eu-south-1 (Italy/Milan) di luar Middle East/GCC; meskipun secara geografi relatively dekat, tidak memenuhi GCC sovereignty requirement. Opsi C — Multi-AZ di single region protects dari AZ failure tapi tidak dari region-level disaster; ini unnecessarily risky ketika me-central-1 tersedia — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — us-east-1 jelas di luar Middle East dan melanggar sovereignty; "sovereignty-tagged keys" bukan konsep yang ada di AWS.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">me-south-1 (Bahrain) dan me-central-1 (UAE) keduanya berada di GCC countries yang memenuhi Middle East sovereignty requirements. Menggunakan CRR ke me-central-1 memberikan geographic DR tanpa melanggar sovereignty. RDS read replicas di me-central-1 memberikan database DR. SCPs yang hanya allow kedua regions ini memastikan tidak ada accidental deployment ke region lain.<br><br>Opsi A: SALAH. Us-east-1 jelas di luar Middle East dan melanggar sovereignty; "sovereignty-tagged keys" bukan konsep yang ada di AWS.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Multi-AZ di single region protects dari AZ failure tapi tidak dari region-level disaster; ini unnecessarily risky ketika me-central-1 tersedia — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Eu-south-1 (Italy/Milan) di luar Middle East/GCC; meskipun secara geografi relatively dekat, tidak memenuhi GCC sovereignty requirement.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A multinational corporation is implementing data sovereignty across their AWS Organization. They use AWS Control Tower for governance. Different business units have different sovereignty requirements: EU BU must keep data in EU, APAC BU in Singapore, and US BU has no regional restrictions. How should they structure their Control Tower environment to enforce these varying sovereignty requirements?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create a single SCP at the organization root restricting all accounts to the union of all allowed regions (EU + Singapore + US)</li>
-                <li><span class="option-label">B.</span> Create separate Organizational Units (OUs) for each BU (EU-OU, APAC-OU, US-OU) and apply region-restrictive SCPs at the OU level — EU-OU gets EU-only regions SCP, APAC-OU gets ap-southeast-1 SCP, US-OU has no region restriction SCP</li>
-                <li><span class="option-label">C.</span> Apply region restrictions at the individual account level using IAM policies rather than SCPs for each BU (EU-OU</li>
-                <li><span class="option-label">D.</span> Use a single shared OU with tag-based SCP conditions differentiating resources by business unit</li>
+                
+                <li><span class="option-label">A.</span> Use a single shared OU with tag-based SCP conditions differentiating resources by business unit</li>
+                <li><span class="option-label">B.</span> Apply region restrictions at the individual account level using IAM policies rather than SCPs for each BU (EU-OU</li>
+                <li><span class="option-label">C.</span> Create separate Organizational Units (OUs) for each BU (EU-OU, APAC-OU, US-OU) and apply region-restrictive SCPs at the OU level — EU-OU gets EU-only regions SCP, APAC-OU gets ap-southeast-1 SCP, US-OU has no region restriction SCP</li>
+                <li><span class="option-label">D.</span> Create a single SCP at the organization root restricting all accounts to the union of all allowed regions (EU + Singapore + US)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS Organizations OU structure memungkinkan different policies di different levels. Dengan membuat OUs per BU sovereignty requirement: EU-OU mendapat SCP yang restrict ke eu-central-1, eu-west-1, dll; APAC-OU mendapat SCP restricting ke ap-southeast-1; US-OU tidak perlu region restriction. Accounts di-place di OU sesuai sovereignty requirement mereka. SCPs di OU level inherited oleh semua accounts di bawahnya. Ini adalah pattern yang direkomendasikan Control Tower untuk varying governance requirements. Opsi A — union of all regions (EU+SG+US) means EU accounts bisa create resources di Singapore, violating EU sovereignty. Opsi C — IAM policies bisa di-override oleh admin; SCPs tidak bisa — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — SCPs tidak mendukung resource tag-based conditions untuk region restriction; SCP conditions terbatas pada global condition keys.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">AWS Organizations OU structure memungkinkan different policies di different levels. Dengan membuat OUs per BU sovereignty requirement: EU-OU mendapat SCP yang restrict ke eu-central-1, eu-west-1, dll; APAC-OU mendapat SCP restricting ke ap-southeast-1; US-OU tidak perlu region restriction. Accounts di-place di OU sesuai sovereignty requirement mereka. SCPs di OU level inherited oleh semua accounts di bawahnya. Ini adalah pattern yang direkomendasikan Control Tower untuk varying governance requirements.<br><br>Opsi A: SALAH. SCPs tidak mendukung resource tag-based conditions untuk region restriction; SCP conditions terbatas pada global condition keys.<br>Opsi B: SALAH. IAM policies bisa di-override oleh admin; SCPs tidak bisa — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Union of all regions (EU+SG+US) means EU accounts bisa create resources di Singapore, violating EU sovereignty.</div>
             </div>
         </div>
         

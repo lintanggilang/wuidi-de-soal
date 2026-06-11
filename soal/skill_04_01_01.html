@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer needs to configure an AWS Glue connection to access an Amazon RDS PostgreSQL database in a private subnet. The Glue job fails with a connection timeout error. The RDS security group allows inbound traffic on port 5432 from the Glue connection's security group. What additional security group configuration is required to resolve this issue?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Add an outbound rule to the RDS security group allowing all traffic to the Glue security group</li>
-                <li><span class="option-label">B.</span> Add a self-referencing inbound rule to the Glue connection's security group allowing all TCP traffic from itself</li>
-                <li><span class="option-label">C.</span> Add an inbound rule to the Glue security group allowing traffic on port 5432 from the RDS security group</li>
-                <li><span class="option-label">D.</span> Add an outbound rule to the Glue security group allowing traffic only on port 5432 to the RDS subnet CIDR</li>
+                
+                <li><span class="option-label">A.</span> Add an outbound rule to the Glue security group allowing traffic only on port 5432 to the RDS subnet CIDR</li>
+                <li><span class="option-label">B.</span> Add an outbound rule to the RDS security group allowing all traffic to the Glue security group</li>
+                <li><span class="option-label">C.</span> Add a self-referencing inbound rule to the Glue connection's security group allowing all TCP traffic from itself</li>
+                <li><span class="option-label">D.</span> Add an inbound rule to the Glue security group allowing traffic on port 5432 from the RDS security group</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS Glue memerlukan self-referencing inbound rule pada security group yang digunakan oleh Glue connection. Ini diperlukan karena Glue ENIs (Elastic Network Interfaces) perlu berkomunikasi satu sama lain untuk koordinasi tugas dalam cluster. Tanpa self-referencing rule ini, Glue executors tidak dapat berkomunikasi dan job akan timeout. Opsi A tidak diperlukan karena security groups bersifat stateful — outbound response traffic otomatis diizinkan. Opsi C tidak diperlukan karena Glue yang melakukan koneksi ke RDS, bukan sebaliknya. Opsi D tidak cukup karena masalah utamanya adalah komunikasi antar Glue ENI.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">AWS Glue memerlukan self-referencing inbound rule pada security group yang digunakan oleh Glue connection. Ini diperlukan karena Glue ENIs (Elastic Network Interfaces) perlu berkomunikasi satu sama lain untuk koordinasi tugas dalam cluster. Tanpa self-referencing rule ini, Glue executors tidak dapat berkomunikasi dan job akan timeout.<br><br>Opsi A: SALAH. Tidak cukup karena masalah utamanya adalah komunikasi antar Glue ENI.<br>Opsi B: SALAH. Tidak diperlukan karena security groups bersifat stateful — outbound response traffic otomatis diizinkan.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Tidak diperlukan karena Glue yang melakukan koneksi ke RDS, bukan sebaliknya.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A company has an Amazon Redshift cluster in a VPC that needs to be accessed by data analysts from the corporate network (10.0.0.0/8) and by AWS Glue ETL jobs. The data engineer needs to configure the Redshift cluster's security group. Which set of inbound rules provides the MOST secure configuration?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Allow port 5439 from 0.0.0.0/0 configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Allow port 5439 from 10.0.0.0/8 and allow port 5439 from the Glue connection's security group ID</li>
-                <li><span class="option-label">C.</span> Allow all TCP ports from 10.0.0.0/8 and allow all TCP ports from the Glue security group ID</li>
+                
+                <li><span class="option-label">A.</span> Allow port 5439 from 10.0.0.0/8 and allow port 5439 from the Glue connection's security group ID</li>
+                <li><span class="option-label">B.</span> Allow all TCP ports from 10.0.0.0/8 and allow all TCP ports from the Glue security group ID</li>
+                <li><span class="option-label">C.</span> Allow port 5439 from 0.0.0.0/0 configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Allow port 5439 from 10.0.0.0/8 and allow all traffic from the VPC CIDR range</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Konfigurasi paling aman adalah memberikan akses hanya pada port yang diperlukan (5439 untuk Redshift) dari sumber yang spesifik: CIDR corporate network untuk analysts dan security group ID untuk Glue. Security group referencing (SG-to-SG) lebih aman daripada CIDR karena hanya resource yang terhubung ke security group tersebut yang diizinkan. Opsi A (0.0.0.0/0) terlalu permissive dan membuka Redshift ke internet — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (semua TCP ports) melanggar prinsip least privilege. Opsi D (all traffic dari VPC CIDR) terlalu broad — semua resource di VPC akan bisa akses.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Konfigurasi paling aman adalah memberikan akses hanya pada port yang diperlukan (5439 untuk Redshift) dari sumber yang spesifik: CIDR corporate network untuk analysts dan security group ID untuk Glue. Security group referencing (SG-to-SG) lebih aman daripada CIDR karena hanya resource yang terhubung ke security group tersebut yang diizinkan.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Melanggar prinsip least privilege.<br>Opsi C: SALAH. Terlalu permissive dan membuka Redshift ke internet — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Terlalu broad — semua resource di VPC akan bisa akses.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data engineer deploys a Lambda function in a VPC to process data from an RDS MySQL instance. The Lambda function can successfully connect to RDS but cannot access Amazon S3 to write processed results. The VPC has no internet gateway or NAT gateway. Which solution allows the Lambda function to access S3 without exposing traffic to the public internet?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Add an outbound rule in the Lambda security group allowing HTTPS (port 443) to 0.0.0.0/0</li>
-                <li><span class="option-label">B.</span> Create a VPC Gateway Endpoint for S3 and update the route table associated with the Lambda subnet</li>
-                <li><span class="option-label">C.</span> Attach an elastic IP to the Lambda function's ENI for internet access with the Lambda subnet and update the route</li>
-                <li><span class="option-label">D.</span> Create a VPC Interface Endpoint for S3 and modify the Lambda security group to allow outbound traffic to the endpoint</li>
+                
+                <li><span class="option-label">A.</span> Create a VPC Gateway Endpoint for S3 and update the route table associated with the Lambda subnet</li>
+                <li><span class="option-label">B.</span> Add an outbound rule in the Lambda security group allowing HTTPS (port 443) to 0.0.0.0/0</li>
+                <li><span class="option-label">C.</span> Create a VPC Interface Endpoint for S3 and modify the Lambda security group to allow outbound traffic to the endpoint</li>
+                <li><span class="option-label">D.</span> Attach an elastic IP to the Lambda function's ENI for internet access with the Lambda subnet and update the route</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">VPC Gateway Endpoint untuk S3 memungkinkan akses ke S3 melalui AWS private network tanpa internet gateway atau NAT gateway. Gateway endpoint tidak memerlukan perubahan security group karena traffic di-route melalui route table. Ini gratis dan menyediakan akses private ke S3. Opsi A tidak akan berhasil karena tanpa internet gateway/NAT, tidak ada path ke internet meskipun security group mengizinkan. Opsi C tidak possible — Lambda ENI tidak bisa memiliki elastic IP secara langsung — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Interface Endpoint) juga bisa berfungsi tetapi Gateway Endpoint untuk S3 lebih sederhana, lebih murah (gratis), dan direkomendasikan AWS.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">VPC Gateway Endpoint untuk S3 memungkinkan akses ke S3 melalui AWS private network tanpa internet gateway atau NAT gateway. Gateway endpoint tidak memerlukan perubahan security group karena traffic di-route melalui route table. Ini gratis dan menyediakan akses private ke S3.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Tidak akan berhasil karena tanpa internet gateway/NAT, tidak ada path ke internet meskipun security group mengizinkan.<br>Opsi C: SALAH. Juga bisa berfungsi tetapi Gateway Endpoint untuk S3 lebih sederhana, lebih murah (gratis), dan direkomendasikan AWS.<br>Opsi D: SALAH. Tidak possible — Lambda ENI tidak bisa memiliki elastic IP secara langsung — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">An Amazon EMR cluster runs in a VPC private subnet and processes data from multiple sources. The cluster needs to communicate with Amazon S3, Amazon DynamoDB, and an external API on the internet. The data engineer needs to configure security groups for the EMR master and core nodes. Which security group configuration follows AWS best practices for EMR?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> One security group for master with all ports open from core nodes SG, one for core nodes with all ports open from master SG, and a NAT gateway for internet access</li>
-                <li><span class="option-label">B.</span> A single shared security group for both master and core nodes allowing all internal traffic, with VPC endpoints for all services</li>
-                <li><span class="option-label">C.</span> Separate security groups for master and core nodes with required inter-node communication ports, VPC Gateway Endpoints for S3 and DynamoDB, and a NAT gateway for the external API</li>
-                <li><span class="option-label">D.</span> Default EMR-managed security groups with an internet gateway attached to the subnet for all external communications with native S3 integration and optimized data transfer</li>
+                
+                <li><span class="option-label">A.</span> Default EMR-managed security groups with an internet gateway attached to the subnet for all external communications with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">B.</span> Separate security groups for master and core nodes with required inter-node communication ports, VPC Gateway Endpoints for S3 and DynamoDB, and a NAT gateway for the external API</li>
+                <li><span class="option-label">C.</span> One security group for master with all ports open from core nodes SG, one for core nodes with all ports open from master SG, and a NAT gateway for internet access</li>
+                <li><span class="option-label">D.</span> A single shared security group for both master and core nodes allowing all internal traffic, with VPC endpoints for all services</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Best practice untuk EMR adalah: (1) Separate security groups untuk master dan core/task nodes dengan port-port spesifik yang diperlukan untuk inter-node communication (misalnya port 8443 untuk cluster management). (2) VPC Gateway Endpoints untuk S3 dan DynamoDB (gratis, traffic tetap di AWS network). (3) NAT gateway untuk akses ke external API yang memerlukan internet. Opsi A (all ports open) terlalu permissive meskipun antar SG sendiri. Opsi B (single shared SG) tidak memungkinkan granular control antara master dan core. Opsi D (internet gateway + public subnet) membuat nodes accessible dari internet — kurang aman untuk private subnet pattern — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Best practice untuk EMR adalah: (1) Separate security groups untuk master dan core/task nodes dengan port-port spesifik yang diperlukan untuk inter-node communication (misalnya port 8443 untuk cluster management). (2) VPC Gateway Endpoints untuk S3 dan DynamoDB (gratis, traffic tetap di AWS network). (3) NAT gateway untuk akses ke external API yang memerlukan internet.<br><br>Opsi A: SALAH. Membuat nodes accessible dari internet — kurang aman untuk private subnet pattern — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Terlalu permissive meskipun antar SG sendiri.<br>Opsi D: SALAH. Tidak memungkinkan granular control antara master dan core.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer is troubleshooting connectivity between an AWS Glue job and an Amazon Redshift Serverless endpoint. Both are in the same VPC. The Glue job uses security group sg-glue and Redshift Serverless uses security group sg-redshift. The current configuration has: sg-redshift inbound allows port 5439 from sg-glue, and sg-glue has default outbound (all traffic allowed). The job still fails to connect. What should the engineer check FIRST?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Whether the Glue connection's security group (sg-glue) has a self-referencing inbound rule for all TCP traffic</li>
+                
+                <li><span class="option-label">A.</span> Whether the VPC has DNS resolution and DNS hostnames enabled</li>
                 <li><span class="option-label">B.</span> Whether the Redshift Serverless workgroup is configured to be publicly accessible</li>
-                <li><span class="option-label">C.</span> Whether the VPC has DNS resolution and DNS hostnames enabled</li>
-                <li><span class="option-label">D.</span> Whether the subnet route table has a route to an internet gateway for all TCP traffic</li>
+                <li><span class="option-label">C.</span> Whether the subnet route table has a route to an internet gateway for all TCP traffic</li>
+                <li><span class="option-label">D.</span> Whether the Glue connection's security group (sg-glue) has a self-referencing inbound rule for all TCP traffic</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Masalah paling umum saat Glue connection gagal adalah tidak adanya self-referencing inbound rule pada security group Glue. AWS Glue membutuhkan ENI-nya untuk berkomunikasi satu sama lain (inter-node communication), yang memerlukan inbound rule dari security group itu sendiri (self-referencing). Ini adalah persyaratan spesifik Glue yang sering terlewat. Opsi B (publicly accessible) tidak relevan karena keduanya dalam VPC yang sama. Opsi C (DNS settings) penting tapi biasanya sudah enabled by default di VPC. Opsi D (internet gateway) tidak diperlukan untuk komunikasi intra-VPC — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Masalah paling umum saat Glue connection gagal adalah tidak adanya self-referencing inbound rule pada security group Glue. AWS Glue membutuhkan ENI-nya untuk berkomunikasi satu sama lain (inter-node communication), yang memerlukan inbound rule dari security group itu sendiri (self-referencing). Ini adalah persyaratan spesifik Glue yang sering terlewat.<br><br>Opsi A: SALAH. Penting tapi biasanya sudah enabled by default di VPC.<br>Opsi B: SALAH. Tidak relevan karena keduanya dalam VPC yang sama.<br>Opsi C: SALAH. Tidak diperlukan untuk komunikasi intra-VPC — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A company has reached the limit of 60 inbound rules on a security group attached to their Amazon RDS instance. Multiple data processing services from different VPC CIDR blocks need access to the database. The engineer cannot increase the limit further. Which approach allows additional services to connect while maintaining security?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Replace individual CIDR-based rules with security group references, grouping multiple services under shared security groups</li>
-                <li><span class="option-label">B.</span> Create a second RDS instance with a different security group for the overflow connections</li>
-                <li><span class="option-label">C.</span> Use a Network ACL (NACL) to allow the additional IP ranges instead of security group rules</li>
-                <li><span class="option-label">D.</span> Create a managed prefix list containing all the CIDR blocks and reference it in a single security group rule</li>
+                
+                <li><span class="option-label">A.</span> Use a Network ACL (NACL) to allow the additional IP ranges instead of security group rules</li>
+                <li><span class="option-label">B.</span> Create a managed prefix list containing all the CIDR blocks and reference it in a single security group rule</li>
+                <li><span class="option-label">C.</span> Create a second RDS instance with a different security group for the overflow connections</li>
+                <li><span class="option-label">D.</span> Replace individual CIDR-based rules with security group references, grouping multiple services under shared security groups</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">AWS Managed Prefix Lists memungkinkan pengelompokan beberapa CIDR blocks ke dalam satu objek yang bisa direferensikan dalam satu security group rule. Ini secara efektif mengurangi jumlah rules yang diperlukan. Satu rule dengan prefix list bisa mencakup banyak CIDR ranges. Opsi A (SG references) bagus jika services berada di VPC yang sama, tapi tidak berfungsi untuk CIDR dari VPC berbeda atau on-premises. Opsi B (RDS kedua) mahal dan menambah kompleksitas manajemen data. Opsi C (NACL) bersifat stateless dan apply pada subnet level, kurang granular dibanding security groups, dan memiliki limit yang sama.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">AWS Managed Prefix Lists memungkinkan pengelompokan beberapa CIDR blocks ke dalam satu objek yang bisa direferensikan dalam satu security group rule. Ini secara efektif mengurangi jumlah rules yang diperlukan. Satu rule dengan prefix list bisa mencakup banyak CIDR ranges.<br><br>Opsi A: SALAH. Bersifat stateless dan apply pada subnet level, kurang granular dibanding security groups, dan memiliki limit yang sama.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Mahal dan menambah kompleksitas manajemen data.<br>Opsi D: SALAH. Bagus jika services berada di VPC yang sama, tapi tidak berfungsi untuk CIDR dari VPC berbeda atau on-premises.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer needs to update the security group of a production Amazon Redshift cluster to add a new data pipeline's access without causing any downtime. The current security group has rules allowing access from 3 existing ETL services. Which statement about security group updates is CORRECT?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Security group changes require a cluster reboot to take effect, so maintenance window should be scheduled</li>
-                <li><span class="option-label">B.</span> Security group rule changes take effect immediately on all existing and new connections without requiring restart</li>
-                <li><span class="option-label">C.</span> New inbound rules take effect immediately, but removal of existing rules only affects new connections</li>
-                <li><span class="option-label">D.</span> Security group changes propagate within 60 seconds and temporarily block all traffic during propagation</li>
+                
+                <li><span class="option-label">A.</span> New inbound rules take effect immediately, but removal of existing rules only affects new connections</li>
+                <li><span class="option-label">B.</span> Security group changes require a cluster reboot to take effect, so maintenance window should be scheduled</li>
+                <li><span class="option-label">C.</span> Security group changes propagate within 60 seconds and temporarily block all traffic during propagation</li>
+                <li><span class="option-label">D.</span> Security group rule changes take effect immediately on all existing and new connections without requiring restart</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Perubahan security group rule di AWS take effect immediately tanpa restart, reboot, atau downtime. Ini berlaku untuk penambahan maupun penghapusan rules, dan mempengaruhi semua koneksi (existing dan new). Security groups bersifat stateful — jika aturan dihapus, koneksi yang sudah terestablish juga akan terputus karena return traffic tidak lagi diizinkan. Opsi A salah — tidak perlu reboot. Opsi C salah — penghapusan rule juga mempengaruhi existing connections. Opsi D salah — tidak ada blocking period selama propagation.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Perubahan security group rule di AWS take effect immediately tanpa restart, reboot, atau downtime. Ini berlaku untuk penambahan maupun penghapusan rules, dan mempengaruhi semua koneksi (existing dan new). Security groups bersifat stateful — jika aturan dihapus, koneksi yang sudah terestablish juga akan terputus karena return traffic tidak lagi diizinkan.<br><br>Opsi A: SALAH. Salah — penghapusan rule juga mempengaruhi existing connections.<br>Opsi B: SALAH. Salah — tidak perlu reboot.<br>Opsi C: SALAH. Salah — tidak ada blocking period selama propagation.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data team has a multi-tier architecture where Lambda functions (tier 1) write to an RDS Aurora instance (tier 2), and a Glue job (tier 3) reads from the same Aurora instance. The security requirement states that tier 1 and tier 3 should not be able to communicate directly with each other. How should the security groups be configured?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use one security group for all three tiers with rules restricting port-based access</li>
-                <li><span class="option-label">B.</span> Create three separate security groups. Aurora SG allows inbound 3306 from Lambda SG and Glue SG. Lambda SG and Glue SG have no rules referencing each other.</li>
-                <li><span class="option-label">C.</span> Create two security groups — one for Lambda and Glue, another for Aurora. Aurora SG allows inbound from the shared SG.</li>
+                
+                <li><span class="option-label">A.</span> Create two security groups — one for Lambda and Glue, another for Aurora. Aurora SG allows inbound from the shared SG.</li>
+                <li><span class="option-label">B.</span> Use one security group for all three tiers with rules restricting port-based access</li>
+                <li><span class="option-label">C.</span> Create three separate security groups. Aurora SG allows inbound 3306 from Lambda SG and Glue SG. Lambda SG and Glue SG have no rules referencing each other.</li>
                 <li><span class="option-label">D.</span> Use Network ACLs to block traffic between Lambda and Glue subnets, with a single security group for all services and Glue SG</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Tiga security groups terpisah memberikan isolasi yang diperlukan: Aurora SG mengizinkan port 3306 dari Lambda SG dan Glue SG secara terpisah. Lambda SG dan Glue SG tidak memiliki rules yang mereferensikan satu sama lain, sehingga tidak bisa berkomunikasi langsung. Opsi A (satu SG) tidak memungkinkan isolasi antar tier karena semua resource dalam SG yang sama bisa berkomunikasi. Opsi C (shared SG untuk Lambda dan Glue) membuat keduanya berada dalam security group yang sama — jika ada self-referencing rule, mereka bisa berkomunikasi. Opsi D (NACL) bisa bekerja tapi lebih sulit di-manage dan stateless — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Tiga security groups terpisah memberikan isolasi yang diperlukan: Aurora SG mengizinkan port 3306 dari Lambda SG dan Glue SG secara terpisah. Lambda SG dan Glue SG tidak memiliki rules yang mereferensikan satu sama lain, sehingga tidak bisa berkomunikasi langsung.<br><br>Opsi A: SALAH. Membuat keduanya berada dalam security group yang sama — jika ada self-referencing rule, mereka bisa berkomunikasi.<br>Opsi B: SALAH. Tidak memungkinkan isolasi antar tier karena semua resource dalam SG yang sama bisa berkomunikasi.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Bisa bekerja tapi lebih sulit di-manage dan stateless — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer configures an Amazon EMR cluster with a custom security group. The EMR cluster needs to access an Amazon RDS MySQL database on port 3306. After launching the cluster, the EMR steps fail to connect to RDS. The engineer verifies that the RDS security group allows inbound port 3306 from the EMR security group. VPC flow logs show that outbound traffic from EMR to RDS is being rejected. What is the MOST likely cause?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The EMR security group's outbound rules have been modified to restrict traffic, preventing outbound connections to port 3306</li>
-                <li><span class="option-label">B.</span> EMR requires an additional managed security group that was not attached to the cluster</li>
-                <li><span class="option-label">C.</span> The RDS instance is in a different Availability Zone than the EMR cluster</li>
+                
+                <li><span class="option-label">A.</span> The RDS instance is in a different Availability Zone than the EMR cluster</li>
+                <li><span class="option-label">B.</span> The EMR security group's outbound rules have been modified to restrict traffic, preventing outbound connections to port 3306</li>
+                <li><span class="option-label">C.</span> EMR requires an additional managed security group that was not attached to the cluster</li>
                 <li><span class="option-label">D.</span> The Network ACL on the EMR subnet is blocking outbound traffic to the RDS subnet configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Secara default, security groups mengizinkan semua outbound traffic. Namun, jika engineer menggunakan custom security group dan memodifikasi outbound rules (misalnya hanya mengizinkan port tertentu), koneksi outbound ke port 3306 bisa diblok. VPC flow logs mengkonfirmasi bahwa traffic outbound yang ditolak — ini menunjukkan masalah pada outbound rules di security group EMR atau NACL. Karena soal menyebutkan "outbound traffic from EMR is being rejected" dan security group memiliki custom rules, kemungkinan besar outbound rule EMR SG yang restrictive. Opsi B (managed SG) tidak menyebabkan outbound rejection. Opsi C (AZ berbeda) tidak mempengaruhi connectivity. Opsi D bisa jadi penyebab, tetapi custom SG outbound restriction adalah penyebab paling umum — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Secara default, security groups mengizinkan semua outbound traffic. Namun, jika engineer menggunakan custom security group dan memodifikasi outbound rules (misalnya hanya mengizinkan port tertentu), koneksi outbound ke port 3306 bisa diblok. VPC flow logs mengkonfirmasi bahwa traffic outbound yang ditolak — ini menunjukkan masalah pada outbound rules di security group EMR atau NACL. Karena soal menyebutkan "outbound traffic from EMR is being rejected" dan security group memiliki custom rules, kemungkinan besar outbound rule EMR SG yang restrictive.<br><br>Opsi A: SALAH. Tidak mempengaruhi connectivity.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Tidak menyebabkan outbound rejection.<br>Opsi D: SALAH. Bisa jadi penyebab, tetapi custom SG outbound restriction adalah penyebab paling umum — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A company is deploying a data lake architecture where multiple AWS services need to access an Amazon Redshift cluster: AWS Glue for ETL, Amazon QuickSight for visualization, and Lambda functions for data validation. The security team requires that each service has its own security group and only port 5439 is allowed. The engineer wants to simplify security group management as new services are added. Which approach provides the MOST maintainable solution?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Create a single inbound rule on the Redshift security group using the VPC CIDR range on port 5439</li>
-                <li><span class="option-label">B.</span> Create individual inbound rules on the Redshift security group referencing each service's security group ID on port 5439</li>
+                <li><span class="option-label">B.</span> Use AWS Resource Access Manager to share the Redshift security group with all service accounts configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Create a common "data-access" security group, assign it as an additional security group to all services that need Redshift access, and add one inbound rule on Redshift SG referencing this common SG</li>
-                <li><span class="option-label">D.</span> Use AWS Resource Access Manager to share the Redshift security group with all service accounts configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Create individual inbound rules on the Redshift security group referencing each service's security group ID on port 5439</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Membuat common "data-access" security group dan menambahkannya sebagai additional SG ke setiap service adalah pendekatan paling maintainable. Redshift SG hanya memerlukan satu inbound rule (port 5439 dari data-access SG). Ketika service baru ditambahkan, cukup attach data-access SG ke service tersebut tanpa memodifikasi Redshift SG. Opsi A (VPC CIDR) terlalu broad — semua resource di VPC bisa akses. Opsi B (individual rules) berfungsi tapi memerlukan penambahan rule baru setiap kali ada service baru — kurang scalable dan bisa hit rule limit. Opsi D (RAM) bukan untuk sharing security groups antar services dalam account yang sama — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">Membuat common "data-access" security group dan menambahkannya sebagai additional SG ke setiap service adalah pendekatan paling maintainable. Redshift SG hanya memerlukan satu inbound rule (port 5439 dari data-access SG). Ketika service baru ditambahkan, cukup attach data-access SG ke service tersebut tanpa memodifikasi Redshift SG.<br><br>Opsi A: SALAH. Terlalu broad — semua resource di VPC bisa akses.<br>Opsi B: SALAH. Bukan untuk sharing security groups antar services dalam account yang sama — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Berfungsi tapi memerlukan penambahan rule baru setiap kali ada service baru — kurang scalable dan bisa hit rule limit.</div>
             </div>
         </div>
         

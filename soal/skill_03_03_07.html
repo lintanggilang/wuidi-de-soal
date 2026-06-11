@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineering team runs multiple AWS Glue ETL jobs that process sensitive financial data. The team needs to enable continuous logging for their Glue jobs to troubleshoot failures in near real-time while ensuring logs do not contain any personally identifiable information (PII). Which approach BEST meets these requirements?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable Glue continuous logging with the --enable-continuous-cloudwatch-log argument, then create a CloudWatch Logs subscription filter that sends logs to a Lambda function for PII redaction before forwarding to a separate sanitized log group.</li>
-                <li><span class="option-label">B.</span> Configure Glue job parameters with --continuous-log-logGroup and write custom PII redaction logic inside the ETL script's logging statements before they are emitted.</li>
-                <li><span class="option-label">C.</span> Enable CloudWatch Logs data protection policies on the Glue job's log group to automatically detect and mask PII data types like credit card numbers and social security numbers.</li>
-                <li><span class="option-label">D.</span> Disable Glue continuous logging and instead write logs to S3 using a custom logger, then use Macie to scan the S3 log files for PII after job completion.</li>
+                
+                <li><span class="option-label">A.</span> Enable CloudWatch Logs data protection policies on the Glue job's log group to automatically detect and mask PII data types like credit card numbers and social security numbers.</li>
+                <li><span class="option-label">B.</span> Enable Glue continuous logging with the --enable-continuous-cloudwatch-log argument, then create a CloudWatch Logs subscription filter that sends logs to a Lambda function for PII redaction before forwarding to a separate sanitized log group.</li>
+                <li><span class="option-label">C.</span> Disable Glue continuous logging and instead write logs to S3 using a custom logger, then use Macie to scan the S3 log files for PII after job completion.</li>
+                <li><span class="option-label">D.</span> Configure Glue job parameters with --continuous-log-logGroup and write custom PII redaction logic inside the ETL script's logging statements before they are emitted.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">CloudWatch Logs data protection policies provide automatic, real-time detection and masking of sensitive data (PII) within log groups. This is the most operationally efficient approach because it works automatically without custom code and applies consistently to all log events in the group. Option A: While functional, it adds complexity with Lambda processing and a separate log group, introducing latency and additional failure points. Option B: Writing PII redaction logic in the ETL script mixes concerns and may miss PII in framework-generated log messages. Option D: Post-processing with Macie doesn't protect PII in real-time and delays troubleshooting since logs go to S3 instead of CloudWatch.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">CloudWatch Logs data protection policies provide automatic, real-time detection and masking of sensitive data (PII) within log groups. This is the most operationally efficient approach because it works automatically without custom code and applies consistently to all log events in the group. Option A: While functional, it adds complexity with Lambda processing and a separate log group, introducing latency and additional failure points. Option B: Writing PII redaction logic in the ETL script mixes concerns and may miss PII in framework-generated log messages. Option D: Post-processing with Macie doesn't protect PII in real-time and delays troubleshooting since logs go to S3 instead of CloudWatch.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH.<br>Opsi C: SALAH.<br>Opsi D: SALAH.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A company operates a data pipeline that ingests IoT sensor data through Kinesis Data Streams. The processing Lambda function writes structured JSON logs to CloudWatch Logs. The operations team needs to create a CloudWatch alarm that triggers when more than 100 records per minute fail schema validation. Which solution is MOST cost-effective?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Create a CloudWatch Logs metric filter with a filter pattern that matches the JSON field for validation failures (e.g., { $.status = "VALIDATION_FAILED" }), publish a custom metric, and create a CloudWatch alarm on that metric with a 1-minute period.</li>
-                <li><span class="option-label">B.</span> Use CloudWatch Logs Insights to run a scheduled query every minute that counts validation failures, then use EventBridge to trigger an alarm when the count exceeds 100.</li>
-                <li><span class="option-label">C.</span> Configure the Lambda function to publish a custom CloudWatch metric using the PutMetricData API for each validation failure, then create an alarm on that metric.</li>
-                <li><span class="option-label">D.</span> Create a CloudWatch Logs subscription filter to stream logs to another Lambda function that counts failures and publishes a composite alarm with a filter pattern that matches the JSON field for validation failures (e for validation failures</li>
+                <li><span class="option-label">B.</span> Create a CloudWatch Logs subscription filter to stream logs to another Lambda function that counts failures and publishes a composite alarm with a filter pattern that matches the JSON field for validation failures (e for validation failures</li>
+                <li><span class="option-label">C.</span> Use CloudWatch Logs Insights to run a scheduled query every minute that counts validation failures, then use EventBridge to trigger an alarm when the count exceeds 100.</li>
+                <li><span class="option-label">D.</span> Configure the Lambda function to publish a custom CloudWatch metric using the PutMetricData API for each validation failure, then create an alarm on that metric.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudWatch Logs metric filters extract metric data from log events at no additional cost beyond the standard CloudWatch metrics pricing. They process logs in real-time, support JSON filter patterns for structured logs, and integrate directly with CloudWatch Alarms. This is the most cost-effective approach. Option B: CloudWatch Logs Insights queries incur per-query charges based on data scanned, making scheduled queries expensive at high frequency. Option C: PutMetricData API calls from Lambda add latency to processing and incur costs per API call; at high volume this becomes expensive. Option D: A subscription filter to Lambda adds Lambda invocation costs and operational complexity for a simple counting task. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="explanation">CloudWatch Logs metric filters extract metric data from log events at no additional cost beyond the standard CloudWatch metrics pricing. They process logs in real-time, support JSON filter patterns for structured logs, and integrate directly with CloudWatch Alarms. This is the most cost-effective approach. Option B: CloudWatch Logs Insights queries incur per-query charges based on data scanned, making scheduled queries expensive at high frequency. Option C: PutMetricData API calls from Lambda add latency to processing and incur costs per API call; at high volume this becomes expensive. Option D: A subscription filter to Lambda adds Lambda invocation costs and operational complexity for a simple counting task.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi C: SALAH.<br>Opsi D: SALAH.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data engineer needs to configure CloudWatch Logs retention for an organization that runs 200+ Glue ETL jobs. Compliance requires that production job logs are retained for 1 year, staging logs for 90 days, and development logs for 14 days. New log groups are created automatically when new Glue jobs run. How should the engineer automate retention policy management?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create an EventBridge rule that triggers on the CloudWatch Logs CreateLogGroup API event (via CloudTrail), invoking a Lambda function that inspects the log group name pattern and applies the appropriate retention policy using PutRetentionPolicy.</li>
-                <li><span class="option-label">B.</span> Use AWS Config with a custom rule to detect log groups without retention policies and auto-remediate using Systems Manager Automation.</li>
+                
+                <li><span class="option-label">A.</span> Use AWS Config with a custom rule to detect log groups without retention policies and auto-remediate using Systems Manager Automation.</li>
+                <li><span class="option-label">B.</span> Create an EventBridge rule that triggers on the CloudWatch Logs CreateLogGroup API event (via CloudTrail), invoking a Lambda function that inspects the log group name pattern and applies the appropriate retention policy using PutRetentionPolicy.</li>
                 <li><span class="option-label">C.</span> Create a scheduled Lambda function that runs daily, lists all log groups using DescribeLogGroups, and sets retention policies based on naming conventions.</li>
                 <li><span class="option-label">D.</span> Set a default retention policy at the account level using AWS Organizations Service Control Policies (SCPs) that applies to all new log groups. configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Using EventBridge with CloudTrail to detect CreateLogGroup events provides real-time, event-driven automation. The Lambda function can parse the log group name (e.g., /aws-glue/jobs/prod-*, /aws-glue/jobs/dev-*) and immediately apply the correct retention policy. This ensures no log group exists without a policy, even briefly. Option B: AWS Config rules work but introduce delay between detection and remediation, and add complexity with multiple services. Option C: A daily scheduled function creates a window where new log groups have no retention policy (up to 24 hours of unlimited retention). Option D: SCPs cannot set CloudWatch Logs retention policies; they only restrict API actions. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Using EventBridge with CloudTrail to detect CreateLogGroup events provides real-time, event-driven automation. The Lambda function can parse the log group name (e.g., /aws-glue/jobs/prod-*, /aws-glue/jobs/dev-*) and immediately apply the correct retention policy. This ensures no log group exists without a policy, even briefly. Option B: AWS Config rules work but introduce delay between detection and remediation, and add complexity with multiple services. Option C: A daily scheduled function creates a window where new log groups have no retention policy (up to 24 hours of unlimited retention). Option D: SCPs cannot set CloudWatch Logs retention policies; they only restrict API actions.<br><br>Opsi A: SALAH.<br>Opsi B: BENAR.<br>Opsi C: SALAH.<br>Opsi D: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data platform team needs to ship CloudWatch Logs from their data pipeline accounts (Account A, B, C) to a centralized security account (Account D) for compliance analysis. The logs must arrive in near real-time and the solution must support future addition of new source accounts without modifying the destination configuration. Which architecture is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> In Account D, create a CloudWatch Logs destination with a resource policy allowing the organization ID. In each source account, create subscription filters that send logs to the cross-account destination.</li>
-                <li><span class="option-label">B.</span> Enable CloudWatch cross-account observability with Account D as the monitoring account and configure each source account as a source account using organization-level linking.</li>
-                <li><span class="option-label">C.</span> Configure each source account to export logs to S3 using CreateExportTask on a schedule, then replicate the S3 buckets to Account D using cross-account replication.</li>
-                <li><span class="option-label">D.</span> Use Kinesis Data Firehose in each source account to stream logs from CloudWatch to an S3 bucket in Account D using cross-account delivery, with a resource policy allowing the organization ID</li>
+                
+                <li><span class="option-label">A.</span> Use Kinesis Data Firehose in each source account to stream logs from CloudWatch to an S3 bucket in Account D using cross-account delivery, with a resource policy allowing the organization ID</li>
+                <li><span class="option-label">B.</span> Configure each source account to export logs to S3 using CreateExportTask on a schedule, then replicate the S3 buckets to Account D using cross-account replication.</li>
+                <li><span class="option-label">C.</span> Enable CloudWatch cross-account observability with Account D as the monitoring account and configure each source account as a source account using organization-level linking.</li>
+                <li><span class="option-label">D.</span> In Account D, create a CloudWatch Logs destination with a resource policy allowing the organization ID. In each source account, create subscription filters that send logs to the cross-account destination.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudWatch Logs cross-account subscription filters with a destination in the central account provide near real-time log shipping. The destination's resource policy can use aws:PrincipalOrgID condition to allow any account in the organization, enabling new accounts to send logs without modifying the destination. The destination can back to Kinesis Data Streams or Firehose for processing. Option B: Cross-account observability enables querying across accounts but doesn't physically ship logs to the central account for compliance storage. Option C: CreateExportTask is batch-oriented (not near real-time) and has a limit of one concurrent export per account. Option D: While functional, this requires Firehose configuration in every source account and doesn't leverage the native cross-account subscription mechanism designed for this use case. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">CloudWatch Logs cross-account subscription filters with a destination in the central account provide near real-time log shipping. The destination's resource policy can use aws:PrincipalOrgID condition to allow any account in the organization, enabling new accounts to send logs without modifying the destination. The destination can back to Kinesis Data Streams or Firehose for processing. Option B: Cross-account observability enables querying across accounts but doesn't physically ship logs to the central account for compliance storage. Option C: CreateExportTask is batch-oriented (not near real-time) and has a limit of one concurrent export per account. Option D: While functional, this requires Firehose configuration in every source account and doesn't leverage the native cross-account subscription mechanism designed for this use case.<br><br>Opsi A: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi B: SALAH.<br>Opsi C: SALAH.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer configures an AWS Glue ETL job with continuous logging enabled. The job processes 500 GB of data daily and generates verbose Apache Spark driver and executor logs. After one month, the CloudWatch Logs costs have become unexpectedly high. Which combination of actions will MOST effectively reduce costs while maintaining troubleshooting capability?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Set the --continuous-log-logGroup to a custom log group with a 7-day retention policy, and add --continuous-log-logStreamPrefix with --continuous-log-conversionPattern to filter only ERROR and WARN level messages from the continuous log output.</li>
-                <li><span class="option-label">B.</span> Disable continuous logging entirely and rely on the default Glue job output logs that are generated after job completion, with a 7-day retention policy</li>
-                <li><span class="option-label">C.</span> Keep continuous logging but create a subscription filter to export all logs immediately to S3 Glacier for cheaper storage.</li>
-                <li><span class="option-label">D.</span> Switch to using --enable-spark-ui instead of continuous logging, storing Spark event logs in S3 for post-hoc analysis.</li>
+                
+                <li><span class="option-label">A.</span> Keep continuous logging but create a subscription filter to export all logs immediately to S3 Glacier for cheaper storage.</li>
+                <li><span class="option-label">B.</span> Switch to using --enable-spark-ui instead of continuous logging, storing Spark event logs in S3 for post-hoc analysis.</li>
+                <li><span class="option-label">C.</span> Set the --continuous-log-logGroup to a custom log group with a 7-day retention policy, and add --continuous-log-logStreamPrefix with --continuous-log-conversionPattern to filter only ERROR and WARN level messages from the continuous log output.</li>
+                <li><span class="option-label">D.</span> Disable continuous logging entirely and rely on the default Glue job output logs that are generated after job completion, with a 7-day retention policy</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">The combination of a short retention policy and log-level filtering addresses both storage costs (retention) and ingestion costs (fewer log events). Glue continuous logging supports a custom conversion pattern that can filter log levels, dramatically reducing the volume of ingested data while retaining critical error information. Option B: Disabling continuous logging eliminates near real-time troubleshooting capability, which contradicts the requirement. Option C: CloudWatch Logs charges primarily for ingestion ($0.50/GB), not just storage; exporting to Glacier doesn't reduce the dominant cost. Option D: Spark UI provides execution metrics but lacks application-level log messages needed for debugging data quality issues or business logic errors. Opsi B meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">The combination of a short retention policy and log-level filtering addresses both storage costs (retention) and ingestion costs (fewer log events). Glue continuous logging supports a custom conversion pattern that can filter log levels, dramatically reducing the volume of ingested data while retaining critical error information. Option B: Disabling continuous logging eliminates near real-time troubleshooting capability, which contradicts the requirement. Option C: CloudWatch Logs charges primarily for ingestion ($0.50/GB), not just storage; exporting to Glacier doesn't reduce the dominant cost. Option D: Spark UI provides execution metrics but lacks application-level log messages needed for debugging data quality issues or business logic errors.<br><br>Opsi A: SALAH.<br>Opsi B: SALAH.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A streaming data pipeline uses Amazon Kinesis Data Streams with a Lambda consumer. The Lambda function processes records and logs processing results as structured JSON to CloudWatch Logs. The team wants to create a real-time dashboard showing the count of processed records by data source, using only CloudWatch native features. Which approach achieves this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create a CloudWatch Logs metric filter for each data source with a JSON filter pattern like { $.dataSource = "source_name" && $.status = "processed" }, publish each as a separate CloudWatch metric dimension, and build a CloudWatch dashboard with these metrics.</li>
+                
+                <li><span class="option-label">A.</span> Configure CloudWatch Contributor Insights rules on the log group to identify the top data sources by processed record count, then add the Contributor Insights widget to a dashboard.</li>
                 <li><span class="option-label">B.</span> Use CloudWatch Logs Insights to create a scheduled query that groups processed records by data source, then pin the query results to a CloudWatch dashboard.</li>
-                <li><span class="option-label">C.</span> Configure CloudWatch Contributor Insights rules on the log group to identify the top data sources by processed record count, then add the Contributor Insights widget to a dashboard.</li>
+                <li><span class="option-label">C.</span> Create a CloudWatch Logs metric filter for each data source with a JSON filter pattern like { $.dataSource = "source_name" && $.status = "processed" }, publish each as a separate CloudWatch metric dimension, and build a CloudWatch dashboard with these metrics.</li>
                 <li><span class="option-label">D.</span> Use CloudWatch Embedded Metric Format (EMF) in the Lambda function to emit metrics with a dataSource dimension directly from the structured log output.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">CloudWatch Embedded Metric Format (EMF) allows you to embed metric data within structured JSON log entries. When CloudWatch Logs receives EMF-formatted logs, it automatically extracts the metrics with dimensions—no separate metric filters needed. This is ideal for Lambda since you get both searchable logs and high-cardinality metrics with dimensions (like dataSource) in a single write. Option A: Metric filters work but require creating a separate filter for each data source, making it difficult to scale when new sources are added. Option B: Logs Insights queries aren't truly real-time and incur per-query costs; they're better for ad-hoc analysis. Option C: Contributor Insights identifies top-N contributors but doesn't provide precise per-source counts as standard metrics for alarming.</div>
+                <div class="explanation">CloudWatch Embedded Metric Format (EMF) allows you to embed metric data within structured JSON log entries. When CloudWatch Logs receives EMF-formatted logs, it automatically extracts the metrics with dimensions—no separate metric filters needed. This is ideal for Lambda since you get both searchable logs and high-cardinality metrics with dimensions (like dataSource) in a single write. Option A: Metric filters work but require creating a separate filter for each data source, making it difficult to scale when new sources are added. Option B: Logs Insights queries aren't truly real-time and incur per-query costs; they're better for ad-hoc analysis. Option C: Contributor Insights identifies top-N contributors but doesn't provide precise per-source counts as standard metrics for alarming.<br><br>Opsi A: SALAH.<br>Opsi B: SALAH.<br>Opsi C: SALAH.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A company requires that all CloudWatch Logs data for their data pipeline be encrypted using a customer-managed AWS KMS key. The pipeline includes Glue jobs, Lambda functions, and EMR clusters that all write to CloudWatch Logs. After associating a KMS key with existing log groups, the data engineer notices that new log events from Glue jobs are failing to write. What is the MOST likely cause?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> The KMS key policy does not include a statement allowing the CloudWatch Logs service principal (logs.region.amazonaws.com) to perform kms:Encrypt, kms:Decrypt, kms:GenerateDataKey*, and kms:DescribeKey actions.</li>
-                <li><span class="option-label">B.</span> The Glue job's IAM execution role does not have kms:Encrypt permission for the KMS key used by the log group. and kms:DescribeKey actions</li>
+                <li><span class="option-label">B.</span> The log group encryption can only be set at creation time; associating a KMS key with an existing log group does not encrypt new events.</li>
                 <li><span class="option-label">C.</span> The KMS key is in a different AWS Region than the CloudWatch Logs log group, and cross-region encryption is not supported.</li>
-                <li><span class="option-label">D.</span> The log group encryption can only be set at creation time; associating a KMS key with an existing log group does not encrypt new events.</li>
+                <li><span class="option-label">D.</span> The Glue job's IAM execution role does not have kms:Encrypt permission for the KMS key used by the log group. and kms:DescribeKey actions</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudWatch Logs encrypts data using the associated KMS key on behalf of the service. The KMS key policy must explicitly grant the CloudWatch Logs service principal (logs.REGION.amazonaws.com) permissions to use the key. Without this, CloudWatch Logs cannot encrypt incoming log events, causing write failures. The producing service (Glue) doesn't directly interact with the KMS key—CloudWatch Logs does. Option B: The Glue role writes to CloudWatch Logs, not directly to KMS; CloudWatch Logs handles encryption transparently. Option C: The KMS key must be in the same region, but if it were cross-region, the AssociateKmsKey call would have failed initially. Option D: You can associate KMS keys with existing log groups; the encryption applies to all new events going forward. Opsi B meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="explanation">CloudWatch Logs encrypts data using the associated KMS key on behalf of the service. The KMS key policy must explicitly grant the CloudWatch Logs service principal (logs.REGION.amazonaws.com) permissions to use the key. Without this, CloudWatch Logs cannot encrypt incoming log events, causing write failures. The producing service (Glue) doesn't directly interact with the KMS key—CloudWatch Logs does. Option B: The Glue role writes to CloudWatch Logs, not directly to KMS; CloudWatch Logs handles encryption transparently. Option C: The KMS key must be in the same region, but if it were cross-region, the AssociateKmsKey call would have failed initially. Option D: You can associate KMS keys with existing log groups; the encryption applies to all new events going forward.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH.<br>Opsi C: SALAH.<br>Opsi D: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data pipeline processes customer orders and writes detailed processing logs in structured JSON format to CloudWatch Logs. The team needs to query these logs to find all orders from a specific customer that took longer than 5 seconds to process in the last 24 hours. Which CloudWatch Logs Insights query correctly retrieves this information?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> fields @timestamp, orderId, customerId, processingTimeMs | filter customerId = "CUST-12345" and processingTimeMs > 5000 | sort @timestamp desc</li>
-                <li><span class="option-label">B.</span> SELECT timestamp, orderId, customerId FROM logs WHERE customerId = 'CUST-12345' AND processingTimeMs > 5000 ORDER BY timestamp DESC</li>
-                <li><span class="option-label">C.</span> fields @timestamp, orderId | filter @message like "CUST-12345" | filter @message like "processingTimeMs" and processingTimeMs > 5000 | sort @timestamp desc</li>
+                
+                <li><span class="option-label">A.</span> fields @timestamp, orderId | filter @message like "CUST-12345" | filter @message like "processingTimeMs" and processingTimeMs > 5000 | sort @timestamp desc</li>
+                <li><span class="option-label">B.</span> fields @timestamp, orderId, customerId, processingTimeMs | filter customerId = "CUST-12345" and processingTimeMs > 5000 | sort @timestamp desc</li>
+                <li><span class="option-label">C.</span> SELECT timestamp, orderId, customerId FROM logs WHERE customerId = 'CUST-12345' AND processingTimeMs > 5000 ORDER BY timestamp DESC</li>
                 <li><span class="option-label">D.</span> stats count(*) as slowOrders by customerId | filter processingTimeMs > 5000 | having customerId = "CUST-12345"</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudWatch Logs Insights uses a pipe-delimited query syntax with commands like fields, filter, sort, stats, and parse. For structured JSON logs, it automatically discovers fields, allowing direct field references in filter conditions. The correct syntax uses | to chain commands and supports comparison operators for numeric fields. Option B: SQL syntax is not supported by CloudWatch Logs Insights; it uses its own query language. Option C: Using @message with "like" for string matching is imprecise and doesn't perform numeric comparison on processing time. Option D: The stats command aggregates results, but the query puts filter after stats (incorrect order) and "having" is not a valid Logs Insights command. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">CloudWatch Logs Insights uses a pipe-delimited query syntax with commands like fields, filter, sort, stats, and parse. For structured JSON logs, it automatically discovers fields, allowing direct field references in filter conditions. The correct syntax uses | to chain commands and supports comparison operators for numeric fields. Option B: SQL syntax is not supported by CloudWatch Logs Insights; it uses its own query language. Option C: Using @message with "like" for string matching is imprecise and doesn't perform numeric comparison on processing time. Option D: The stats command aggregates results, but the query puts filter after stats (incorrect order) and "having" is not a valid Logs Insights command.<br><br>Opsi A: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH.<br>Opsi D: SALAH.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">An EMR cluster running Spark jobs needs to send custom application logs (not YARN/Spark framework logs) to CloudWatch Logs. The application generates logs using Log4j to a custom file path on each node. The solution must capture logs from both master and core nodes with minimal operational overhead. Which approach is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Install and configure the CloudWatch agent on EMR nodes using an EMR bootstrap action. Define the custom log file path in the CloudWatch agent configuration file, specifying the log group and stream naming convention that includes the instance ID.</li>
-                <li><span class="option-label">B.</span> Configure the EMR cluster's log4j.properties to use a custom CloudWatch Logs appender that writes directly to the CloudWatch Logs API, with real-time processing and low-latency data delivery</li>
-                <li><span class="option-label">C.</span> Enable EMR native log publishing to S3, then create a Lambda function triggered by S3 events to ingest the logs into CloudWatch Logs.</li>
+                
+                <li><span class="option-label">A.</span> Configure the EMR cluster's log4j.properties to use a custom CloudWatch Logs appender that writes directly to the CloudWatch Logs API, with real-time processing and low-latency data delivery</li>
+                <li><span class="option-label">B.</span> Enable EMR native log publishing to S3, then create a Lambda function triggered by S3 events to ingest the logs into CloudWatch Logs.</li>
+                <li><span class="option-label">C.</span> Install and configure the CloudWatch agent on EMR nodes using an EMR bootstrap action. Define the custom log file path in the CloudWatch agent configuration file, specifying the log group and stream naming convention that includes the instance ID.</li>
                 <li><span class="option-label">D.</span> Use a cron job on each node that periodically runs the aws logs put-log-events CLI command to push log file contents to CloudWatch Logs.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">The CloudWatch agent (unified agent) is the recommended approach for sending custom log files to CloudWatch Logs from EC2-based instances, including EMR nodes. Using a bootstrap action ensures the agent is installed and configured on every node automatically. The agent handles log rotation, buffering, and retries natively. Option B: Custom Log4j appenders for CloudWatch require additional library dependencies and may introduce performance issues in the Spark execution path. Option C: S3 log publishing introduces significant latency (logs are pushed to S3 after completion) and adds Lambda processing complexity. Option D: Cron-based CLI approaches are fragile, don't handle log rotation properly, and require managing sequence tokens manually. Opsi B meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">The CloudWatch agent (unified agent) is the recommended approach for sending custom log files to CloudWatch Logs from EC2-based instances, including EMR nodes. Using a bootstrap action ensures the agent is installed and configured on every node automatically. The agent handles log rotation, buffering, and retries natively. Option B: Custom Log4j appenders for CloudWatch require additional library dependencies and may introduce performance issues in the Spark execution path. Option C: S3 log publishing introduces significant latency (logs are pushed to S3 after completion) and adds Lambda processing complexity. Option D: Cron-based CLI approaches are fragile, don't handle log rotation properly, and require managing sequence tokens manually.<br><br>Opsi A: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi B: SALAH.<br>Opsi C: BENAR.<br>Opsi D: SALAH.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data platform team wants to implement a subscription filter on a high-volume CloudWatch Logs log group (50 GB/day ingestion) to stream specific log events to an Amazon OpenSearch Service cluster for real-time analytics. The filter should only forward logs containing error events from their ETL pipeline. After configuring the subscription filter with a Kinesis Data Firehose delivery stream as the destination, they notice significant data loss. What is the MOST likely cause?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The subscription filter is exceeding the CloudWatch Logs subscription throughput quota of 2 MB/second per log group for Firehose destinations, causing throttling. The team should request a quota increase or split the log group into multiple groups.</li>
-                <li><span class="option-label">B.</span> The Firehose delivery stream buffer size is too small, causing frequent flushes that exceed the OpenSearch cluster's bulk indexing capacity.</li>
-                <li><span class="option-label">C.</span> The CloudWatch Logs subscription filter pattern is incorrectly configured, matching too many log events and overwhelming the destination.</li>
-                <li><span class="option-label">D.</span> The IAM role for the subscription filter does not have sufficient permissions to write to the Kinesis Data Firehose delivery stream. configured for optimal performance and minimal operational overhead</li>
+                
+                <li><span class="option-label">A.</span> The Firehose delivery stream buffer size is too small, causing frequent flushes that exceed the OpenSearch cluster's bulk indexing capacity.</li>
+                <li><span class="option-label">B.</span> The subscription filter is exceeding the CloudWatch Logs subscription throughput quota of 2 MB/second per log group for Firehose destinations, causing throttling. The team should request a quota increase or split the log group into multiple groups.</li>
+                <li><span class="option-label">C.</span> The IAM role for the subscription filter does not have sufficient permissions to write to the Kinesis Data Firehose delivery stream. configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> The CloudWatch Logs subscription filter pattern is incorrectly configured, matching too many log events and overwhelming the destination.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">CloudWatch Logs subscription filters have a throughput quota (default 2 MB/second per log group for Firehose destinations). With 50 GB/day (~580 KB/second average), bursts can easily exceed this limit during peak processing periods, causing CloudWatch to throttle and drop events. The solution is requesting a quota increase or distributing logs across multiple log groups. Option B: Firehose buffer configuration affects delivery latency to the destination but doesn't cause data loss from the CloudWatch side. Option C: If the filter pattern matches too broadly, all matched events would be forwarded; it wouldn't cause selective data loss. Option D: Permission issues would cause the entire subscription to fail with errors, not partial data loss. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">CloudWatch Logs subscription filters have a throughput quota (default 2 MB/second per log group for Firehose destinations). With 50 GB/day (~580 KB/second average), bursts can easily exceed this limit during peak processing periods, causing CloudWatch to throttle and drop events. The solution is requesting a quota increase or distributing logs across multiple log groups. Option B: Firehose buffer configuration affects delivery latency to the destination but doesn't cause data loss from the CloudWatch side. Option C: If the filter pattern matches too broadly, all matched events would be forwarded; it wouldn't cause selective data loss. Option D: Permission issues would cause the entire subscription to fail with errors, not partial data loss.<br><br>Opsi A: SALAH.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi D: SALAH.</div>
             </div>
         </div>
         

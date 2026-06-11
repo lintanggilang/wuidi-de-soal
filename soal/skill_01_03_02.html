@@ -34,15 +34,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data pipeline ingests data from 10 different source systems. If one source is unavailable, the entire pipeline currently fails and no data from any source is processed. How should the pipeline be redesigned for better fault tolerance?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Decouple source ingestion into independent parallel tasks with individual error handling — if one source fails, others continue processing. Failed sources are retried separately without blocking the pipeline</li>
-                <li><span class="option-label">B.</span> Add a retry loop around the entire pipeline to retry all 10 sources when one fails with individual error handling — if one source fails</li>
-                <li><span class="option-label">C.</span> Add a health check before the pipeline starts and cancel the run if any source is unavailable</li>
-                <li><span class="option-label">D.</span> Increase the pipeline timeout to give failed sources more time to recover</li>
+                
+                <li><span class="option-label">A.</span> Increase the pipeline timeout to give failed sources more time to recover</li>
+                <li><span class="option-label">B.</span> Add a health check before the pipeline starts and cancel the run if any source is unavailable</li>
+                <li><span class="option-label">C.</span> Decouple source ingestion into independent parallel tasks with individual error handling — if one source fails, others continue processing. Failed sources are retried separately without blocking the pipeline</li>
+                <li><span class="option-label">D.</span> Add a retry loop around the entire pipeline to retry all 10 sources when one fails with individual error handling — if one source fails</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Decoupling sources into independent tasks (bulkhead pattern) isolates failures. 9 out of 10 sources can succeed even when one fails. Failed source retries independently without impacting others. This maximizes data freshness for available sources. Opsi B (retry all) wastes time re-processing successful sources — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (cancel all) guarantees zero data when one source has issues. Opsi D (longer timeout) doesn't fix the dependency problem.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Decoupling sources into independent tasks (bulkhead pattern) isolates failures. 9 out of 10 sources can succeed even when one fails. Failed source retries independently without impacting others. This maximizes data freshness for available sources.<br><br>Opsi A: SALAH. Doesn't fix the dependency problem.<br>Opsi B: SALAH. Guarantees zero data when one source has issues.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Wastes time re-processing successful sources — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -50,15 +52,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A critical data pipeline must achieve 99.9% availability. The pipeline consists of: Kinesis Data Streams → Lambda → S3 → Glue ETL → Redshift. Which component represents the BIGGEST availability risk and how should it be mitigated?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Amazon Redshift (single-AZ provisioned cluster) — mitigate by using Multi-AZ deployment or Redshift Serverless which distributes across AZs</li>
-                <li><span class="option-label">B.</span> Amazon S3 — add replication to another bucket</li>
+                <li><span class="option-label">B.</span> Amazon Kinesis — increase retention period</li>
                 <li><span class="option-label">C.</span> AWS Lambda — add reserved concurrency with fully managed infrastructure and automatic scaling</li>
-                <li><span class="option-label">D.</span> Amazon Kinesis — increase retention period</li>
+                <li><span class="option-label">D.</span> Amazon S3 — add replication to another bucket</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Kinesis (99.9% SLA), Lambda (99.95%), S3 (99.99%), Glue (serverless) are all highly available by design across AZs. Provisioned Redshift cluster in a single AZ is the weakest link — if that AZ fails, the cluster is unavailable. Multi-AZ Redshift atau Redshift Serverless distributes across AZs. Opsi B — S3 already 99.99% durable and available. Opsi C — Lambda reserved concurrency is for throttling prevention, not availability — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Kinesis retention doesn't affect availability.</div>
+                <div class="explanation">Kinesis (99.9% SLA), Lambda (99.95%), S3 (99.99%), Glue (serverless) are all highly available by design across AZs. Provisioned Redshift cluster in a single AZ is the weakest link — if that AZ fails, the cluster is unavailable. Multi-AZ Redshift atau Redshift Serverless distributes across AZs.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Kinesis retention doesn't affect availability.<br>Opsi C: SALAH. Lambda reserved concurrency is for throttling prevention, not availability — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. S3 already 99.99% durable and available.</div>
             </div>
         </div>
 
@@ -66,15 +70,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data pipeline currently processes 100 GB daily and is expected to grow to 10 TB within a year. The pipeline uses a fixed-size EMR cluster. Which design change ensures the pipeline scales with data growth without manual intervention?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable EMR Managed Scaling with minimum and maximum node counts, allowing the cluster to automatically add nodes as data volume increases</li>
-                <li><span class="option-label">B.</span> Pre-provision a cluster sized for 10 TB from day one with minimum</li>
-                <li><span class="option-label">C.</span> Manually resize the cluster each quarter based on projections</li>
+                
+                <li><span class="option-label">A.</span> Manually resize the cluster each quarter based on projections</li>
+                <li><span class="option-label">B.</span> Enable EMR Managed Scaling with minimum and maximum node counts, allowing the cluster to automatically add nodes as data volume increases</li>
+                <li><span class="option-label">C.</span> Pre-provision a cluster sized for 10 TB from day one with minimum</li>
                 <li><span class="option-label">D.</span> Switch to Lambda for automatic scaling</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EMR Managed Scaling automatically adjusts cluster size based on workload metrics (YARN pending containers). As data grows and more processing is needed, nodes are added automatically up to the maximum. When load decreases, nodes are removed. No manual intervention needed. Opsi B (pre-provision 10TB) wastes money for months while data is only 100 GB — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (manual quarterly) reactive and may miss growth spikes. Opsi D (Lambda) cannot process 10 TB datasets.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">EMR Managed Scaling automatically adjusts cluster size based on workload metrics (YARN pending containers). As data grows and more processing is needed, nodes are added automatically up to the maximum. When load decreases, nodes are removed. No manual intervention needed.<br><br>Opsi A: SALAH. Reactive and may miss growth spikes.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Wastes money for months while data is only 100 GB — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Cannot process 10 TB datasets.</div>
             </div>
         </div>
 
@@ -82,15 +88,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A streaming pipeline must guarantee that no data is lost even if the processing Lambda function fails or the destination (DynamoDB) is temporarily unavailable. Which combination of mechanisms provides this data durability guarantee?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Kinesis retention (24h+) as the durable source, Lambda event source mapping with retry and bisect-on-error, and an on-failure destination (SQS DLQ) for records that exhaust retries</li>
-                <li><span class="option-label">B.</span> Lambda reserved concurrency to prevent throttling</li>
-                <li><span class="option-label">C.</span> DynamoDB with strong consistency reads for records that exhaust retries</li>
-                <li><span class="option-label">D.</span> CloudWatch alarms to alert when failures occur</li>
+                
+                <li><span class="option-label">A.</span> Lambda reserved concurrency to prevent throttling</li>
+                <li><span class="option-label">B.</span> Kinesis retention (24h+) as the durable source, Lambda event source mapping with retry and bisect-on-error, and an on-failure destination (SQS DLQ) for records that exhaust retries</li>
+                <li><span class="option-label">C.</span> CloudWatch alarms to alert when failures occur</li>
+                <li><span class="option-label">D.</span> DynamoDB with strong consistency reads for records that exhaust retries</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Layered durability: (1) Kinesis retains data for 24h+ — data survives temporary failures. (2) Lambda retries failed batches automatically. (3) BisectBatchOnError isolates bad records without losing good ones. (4) DLQ captures records that fail all retries for later processing. No data is permanently lost. Opsi B (concurrency) prevents throttling but not failure handling. Opsi C (strong reads) is about read consistency, not write durability — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (alarms) notify but don't prevent data loss.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Layered durability: (1) Kinesis retains data for 24h+ — data survives temporary failures. (2) Lambda retries failed batches automatically. (3) BisectBatchOnError isolates bad records without losing good ones. (4) DLQ captures records that fail all retries for later processing. No data is permanently lost.<br><br>Opsi A: SALAH. Prevents throttling but not failure handling.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Notify but don't prevent data loss.<br>Opsi D: SALAH. Is about read consistency, not write durability — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -98,15 +106,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data pipeline runs an AWS Glue ETL job that takes 4 hours. Occasionally the job fails at hour 3 and must restart from the beginning, wasting 3 hours of work. How can the pipeline be made more resilient to these mid-job failures?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Break the monolithic Glue job into smaller checkpointed stages that write intermediate results to S3. Each stage can be retried independently from its last successful output</li>
                 <li><span class="option-label">B.</span> Increase the Glue job timeout and add more DPUs</li>
-                <li><span class="option-label">C.</span> Enable Glue job bookmarks</li>
-                <li><span class="option-label">D.</span> Run the job in a different AWS Region with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">C.</span> Run the job in a different AWS Region with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">D.</span> Enable Glue job bookmarks</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Checkpointing through intermediate S3 writes creates "save points." If stage 3 fails, only stage 3 reruns (using stage 2's output from S3), not stages 1-2. This reduces wasted compute from 3 hours to minutes. Orchestrator (Step Functions/MWAA) manages stage-level retries. Opsi B (timeout/DPUs) doesn't prevent failures or reduce restart cost. Opsi C (bookmarks) for incremental source reads, not mid-job checkpointing. Opsi D (different Region) doesn't prevent failures — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">Checkpointing through intermediate S3 writes creates "save points." If stage 3 fails, only stage 3 reruns (using stage 2's output from S3), not stages 1-2. This reduces wasted compute from 3 hours to minutes. Orchestrator (Step Functions/MWAA) manages stage-level retries.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Doesn't prevent failures or reduce restart cost.<br>Opsi C: SALAH. Doesn't prevent failures — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. For incremental source reads, not mid-job checkpointing.</div>
             </div>
         </div>
 
@@ -114,15 +124,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A company needs a data pipeline with disaster recovery capabilities. The pipeline's data must be recoverable within 4 hours (RTO) if the primary AWS Region becomes unavailable. Processing is in us-east-1 with data in S3 and metadata in Glue Data Catalog. Which DR strategy meets the RTO?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Configure S3 Cross-Region Replication to us-west-2, export Glue Data Catalog periodically to the DR region, and maintain infrastructure-as-code to deploy pipeline components in the DR region when needed</li>
-                <li><span class="option-label">B.</span> Take daily EBS snapshots and copy to another region</li>
-                <li><span class="option-label">C.</span> Run identical pipelines in both regions simultaneously (active-active)</li>
-                <li><span class="option-label">D.</span> Rely on AWS's built-in multi-region redundancy for all services with native S3 integration and optimized data transfer</li>
+                
+                <li><span class="option-label">A.</span> Take daily EBS snapshots and copy to another region</li>
+                <li><span class="option-label">B.</span> Configure S3 Cross-Region Replication to us-west-2, export Glue Data Catalog periodically to the DR region, and maintain infrastructure-as-code to deploy pipeline components in the DR region when needed</li>
+                <li><span class="option-label">C.</span> Rely on AWS's built-in multi-region redundancy for all services with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">D.</span> Run identical pipelines in both regions simultaneously (active-active)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">S3 CRR ensures data is replicated continuously to DR region. Glue Catalog export maintains metadata availability. IaC (CloudFormation/CDK) enables rapid deployment of pipeline infrastructure in DR region within hours (meets 4-hour RTO). This is "warm standby" approach — data ready, compute deployable. Opsi B (EBS snapshots) — pipeline doesn't use EBS primarily. Opsi C (active-active) meets RTO but doubles cost unnecessarily. Opsi D — not all services have automatic multi-region; S3 doesn't replicate across regions by default — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">S3 CRR ensures data is replicated continuously to DR region. Glue Catalog export maintains metadata availability. IaC (CloudFormation/CDK) enables rapid deployment of pipeline infrastructure in DR region within hours (meets 4-hour RTO). This is "warm standby" approach — data ready, compute deployable.<br><br>Opsi A: SALAH. Pipeline doesn't use EBS primarily.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Not all services have automatic multi-region; S3 doesn't replicate across regions by default — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Meets RTO but doubles cost unnecessarily.</div>
             </div>
         </div>
 
@@ -130,15 +142,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A pipeline processes 1 million records per batch. Occasionally, 1-2 malformed records cause the entire batch to fail. This results in 999,998 valid records being delayed. How should the pipeline handle poison pill records while maintaining throughput?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Implement a dead-letter pattern: validate records before processing, route invalid records to a quarantine location (DLQ/S3 prefix), and continue processing valid records without interruption</li>
                 <li><span class="option-label">B.</span> Add data validation at the source to prevent bad records from entering the pipeline and continue processing valid records without interruption</li>
-                <li><span class="option-label">C.</span> Increase error tolerance by wrapping all processing in try-catch and silently discarding errors</li>
-                <li><span class="option-label">D.</span> Process records one at a time to isolate failures</li>
+                <li><span class="option-label">C.</span> Process records one at a time to isolate failures</li>
+                <li><span class="option-label">D.</span> Increase error tolerance by wrapping all processing in try-catch and silently discarding errors</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Dead-letter pattern separates bad records from good ones without stopping processing. Validate → route invalid to quarantine → process valid records. Invalid records are available for investigation and manual fixing. Throughput maintained for 999,998 valid records. Opsi B (source validation) ideal but not always possible (external sources) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (silent discard) loses data without audit trail. Opsi D (one at a time) destroys throughput.</div>
+                <div class="explanation">Dead-letter pattern separates bad records from good ones without stopping processing. Validate → route invalid to quarantine → process valid records. Invalid records are available for investigation and manual fixing. Throughput maintained for 999,998 valid records.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Ideal but not always possible (external sources) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Destroys throughput.<br>Opsi D: SALAH. Loses data without audit trail.</div>
             </div>
         </div>
 
@@ -146,15 +160,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data pipeline's performance degrades as data volume grows. Currently it processes 100 GB in 1 hour but performance is linear — 200 GB takes 2 hours, 1 TB would take 10 hours. The SLA requires processing within 2 hours regardless of volume. Which architectural change enables sub-linear scaling?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Partition the data and process partitions in parallel using auto-scaling compute (e.g., EMR Managed Scaling or Glue Auto Scaling). Double the data = double the workers, maintaining constant wall-clock time</li>
-                <li><span class="option-label">B.</span> Optimize the processing code to be 10x faster with fully managed infrastructure and automatic scaling</li>
+                
+                <li><span class="option-label">A.</span> Optimize the processing code to be 10x faster with fully managed infrastructure and automatic scaling</li>
+                <li><span class="option-label">B.</span> Process only a sample of the data when volume is high</li>
                 <li><span class="option-label">C.</span> Pre-provision compute for maximum expected volume</li>
-                <li><span class="option-label">D.</span> Process only a sample of the data when volume is high</li>
+                <li><span class="option-label">D.</span> Partition the data and process partitions in parallel using auto-scaling compute (e.g., EMR Managed Scaling or Glue Auto Scaling). Double the data = double the workers, maintaining constant wall-clock time</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Horizontal scaling with auto-scaling compute maintains constant processing time regardless of volume. Data is partitioned (by date, key, etc.) and processed in parallel. If data doubles, cluster doubles workers automatically — wall-clock time stays ~1 hour. This is the fundamental principle of distributed data processing. Opsi B (10x faster) only delays the problem — 1 TB still takes 1 hour — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (pre-provision max) wastes money. Opsi D (sampling) loses data completeness.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Horizontal scaling with auto-scaling compute maintains constant processing time regardless of volume. Data is partitioned (by date, key, etc.) and processed in parallel. If data doubles, cluster doubles workers automatically — wall-clock time stays ~1 hour. This is the fundamental principle of distributed data processing.<br><br>Opsi A: SALAH. Only delays the problem — 1 TB still takes 1 hour — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Loses data completeness.<br>Opsi C: SALAH. Wastes money.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -162,15 +178,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer designs a pipeline where Step Functions orchestrates: Glue Job A → Glue Job B → Redshift load. If Job A succeeds but Job B fails, the pipeline retries Job B. After 3 retries of Job B, the engineer wants to: (1) skip Job B, (2) log the failure, (3) still attempt the Redshift load with Job A's output. Which Step Functions feature enables this "continue despite partial failure" pattern?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use a Catch block on Job B's Task state with a fallback state that logs the failure, then transitions to the Redshift load state (partial success path)</li>
+                
+                <li><span class="option-label">A.</span> Use a Parallel state to run Job B and Redshift load simultaneously</li>
                 <li><span class="option-label">B.</span> Set MaxAttempts to infinity so Job B eventually succeeds with a fallback state that logs the failure</li>
-                <li><span class="option-label">C.</span> Remove Job B from the pipeline</li>
-                <li><span class="option-label">D.</span> Use a Parallel state to run Job B and Redshift load simultaneously</li>
+                <li><span class="option-label">C.</span> Use a Catch block on Job B's Task state with a fallback state that logs the failure, then transitions to the Redshift load state (partial success path)</li>
+                <li><span class="option-label">D.</span> Remove Job B from the pipeline</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Catch blocks handle errors after retries are exhausted. The Catch redirects to a "handle failure" state that logs details, then transitions to Redshift load instead of failing the entire workflow. This implements graceful degradation — pipeline continues with partial results. Job A output still gets loaded. Opsi B (infinite retries) could run forever — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (remove Job B) loses functionality. Opsi D (Parallel) doesn't wait for Job A output that Redshift might need.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Catch blocks handle errors after retries are exhausted. The Catch redirects to a "handle failure" state that logs details, then transitions to Redshift load instead of failing the entire workflow. This implements graceful degradation — pipeline continues with partial results. Job A output still gets loaded.<br><br>Opsi A: SALAH. Doesn't wait for Job A output that Redshift might need.<br>Opsi B: SALAH. Could run forever — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Loses functionality.</div>
             </div>
         </div>
 
@@ -178,15 +196,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A streaming pipeline uses Kinesis → Lambda → DynamoDB. During a deployment of new Lambda code, there's a 2-minute window where the function might be unavailable or buggy. How should the pipeline be designed to be resilient during deployments?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use Lambda aliases with weighted routing for canary deployments (10% → new version, 90% → stable version), with automatic rollback via CloudWatch alarms if error rate increases</li>
-                <li><span class="option-label">B.</span> Stop the Kinesis stream during deployment with weighted routing for canary deployments (10% → new version</li>
-                <li><span class="option-label">C.</span> Deploy during a maintenance window when no data flows</li>
-                <li><span class="option-label">D.</span> Use $LATEST alias for all event source mappings</li>
+                
+                <li><span class="option-label">A.</span> Deploy during a maintenance window when no data flows</li>
+                <li><span class="option-label">B.</span> Use $LATEST alias for all event source mappings</li>
+                <li><span class="option-label">C.</span> Stop the Kinesis stream during deployment with weighted routing for canary deployments (10% → new version</li>
+                <li><span class="option-label">D.</span> Use Lambda aliases with weighted routing for canary deployments (10% → new version, 90% → stable version), with automatic rollback via CloudWatch alarms if error rate increases</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda aliases with weighted routing enable canary deployments: shift small traffic to new version, monitor errors, auto-rollback if issues detected. Kinesis never stops — old version handles 90% of traffic during validation. CodeDeploy integration automates this. Opsi B (stop stream) causes data backlog and potential loss — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (maintenance window) — streaming pipelines have no natural maintenance windows. Opsi D ($LATEST) — all traffic immediately goes to new code without safety net.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Lambda aliases with weighted routing enable canary deployments: shift small traffic to new version, monitor errors, auto-rollback if issues detected. Kinesis never stops — old version handles 90% of traffic during validation. CodeDeploy integration automates this.<br><br>Opsi A: SALAH. Streaming pipelines have no natural maintenance windows.<br>Opsi B: SALAH. All traffic immediately goes to new code without safety net.<br>Opsi C: SALAH. Causes data backlog and potential loss — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
         

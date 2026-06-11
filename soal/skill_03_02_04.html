@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data analyst wants to interactively explore a large dataset stored in Amazon S3 and cataloged in the AWS Glue Data Catalog. The analyst needs to use PySpark for complex transformations but does not want to manage any infrastructure or wait for cluster provisioning. The exploration requires reading data from the Glue Data Catalog directly. Which solution meets these requirements?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Launch an Amazon EMR cluster with Jupyter Notebooks and connect to the Glue Data Catalog</li>
-                <li><span class="option-label">B.</span> Use Amazon Athena Spark notebooks which provide serverless Spark sessions integrated with the Glue Data Catalog</li>
-                <li><span class="option-label">C.</span> Use AWS Glue interactive sessions in a SageMaker notebook with the Glue Data Catalog</li>
-                <li><span class="option-label">D.</span> Deploy a Spark cluster on Amazon EKS with notebook access</li>
+                
+                <li><span class="option-label">A.</span> Use Amazon Athena Spark notebooks which provide serverless Spark sessions integrated with the Glue Data Catalog</li>
+                <li><span class="option-label">B.</span> Launch an Amazon EMR cluster with Jupyter Notebooks and connect to the Glue Data Catalog</li>
+                <li><span class="option-label">C.</span> Deploy a Spark cluster on Amazon EKS with notebook access</li>
+                <li><span class="option-label">D.</span> Use AWS Glue interactive sessions in a SageMaker notebook with the Glue Data Catalog</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Amazon Athena Spark notebooks menyediakan sesi Spark yang fully serverless tanpa perlu provisioning atau manajemen infrastruktur. Notebooks ini terintegrasi secara native dengan AWS Glue Data Catalog, memungkinkan pembacaan tabel langsung menggunakan spark.sql() atau spark.table(). Sesi dimulai dalam hitungan detik. Opsi A (EMR) memerlukan provisioning cluster dan management. Opsi C (Glue interactive sessions) memerlukan setup tambahan dan tidak se-seamless Athena notebooks — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (EKS) memerlukan pengelolaan Kubernetes cluster.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Amazon Athena Spark notebooks menyediakan sesi Spark yang fully serverless tanpa perlu provisioning atau manajemen infrastruktur. Notebooks ini terintegrasi secara native dengan AWS Glue Data Catalog, memungkinkan pembacaan tabel langsung menggunakan spark.sql() atau spark.table(). Sesi dimulai dalam hitungan detik.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Memerlukan provisioning cluster dan management.<br>Opsi C: SALAH. Memerlukan pengelolaan Kubernetes cluster.<br>Opsi D: SALAH. Memerlukan setup tambahan dan tidak se-seamless Athena notebooks — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A data engineer is using Athena Spark notebooks to explore a dataset and has written a PySpark transformation that cleans and enriches the data. After validating the results interactively, the engineer wants to save the processed DataFrame as a new Parquet table in S3 that's accessible via Athena SQL queries. What is the correct approach?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Use df.write.mode("overwrite").parquet("s3://bucket/output/") and manually create a Glue table pointing to that location</li>
-                <li><span class="option-label">B.</span> Use df.write.saveAsTable("database.table_name") which automatically registers the table in the Glue Data Catalog</li>
-                <li><span class="option-label">C.</span> Export the DataFrame to CSV and upload to S3 using boto3 configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Use spark.sql("CREATE TABLE AS SELECT ...") which only works in Athena SQL mode, not Spark mode</li>
+                <li><span class="option-label">B.</span> Export the DataFrame to CSV and upload to S3 using boto3 configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Use spark.sql("CREATE TABLE AS SELECT ...") which only works in Athena SQL mode, not Spark mode</li>
+                <li><span class="option-label">D.</span> Use df.write.saveAsTable("database.table_name") which automatically registers the table in the Glue Data Catalog</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Dalam Athena Spark notebooks, menggunakan df.write.saveAsTable() akan otomatis menulis data ke S3 dan mendaftarkan tabel di AWS Glue Data Catalog. Tabel yang terdaftar ini langsung queryable dari Athena SQL. Ini adalah pendekatan paling seamless yang memanfaatkan integrasi Spark-Glue Catalog. Opsi A memerlukan langkah manual untuk registrasi tabel. Opsi C (CSV export via boto3) kehilangan benefit Parquet dan metadata registration — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D salah karena spark.sql() BISA menjalankan DDL statements dalam Spark mode di Athena.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Dalam Athena Spark notebooks, menggunakan df.write.saveAsTable() akan otomatis menulis data ke S3 dan mendaftarkan tabel di AWS Glue Data Catalog. Tabel yang terdaftar ini langsung queryable dari Athena SQL. Ini adalah pendekatan paling seamless yang memanfaatkan integrasi Spark-Glue Catalog.<br><br>Opsi A: SALAH. Memerlukan langkah manual untuk registrasi tabel.<br>Opsi B: SALAH. Kehilangan benefit Parquet dan metadata registration — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Salah karena spark.sql() BISA menjalankan DDL statements dalam Spark mode di Athena.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A team of 5 data analysts regularly uses Athena Spark notebooks for ad-hoc data exploration. The team lead notices that costs are escalating because analysts leave notebook sessions idle for hours. Each session uses the default DPU configuration. How should the team lead control costs while maintaining usability?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Reduce the DPU allocation per session and configure shorter idle timeout values in the notebook session settings</li>
-                <li><span class="option-label">B.</span> Create a shared notebook session that all 5 analysts use concurrently</li>
-                <li><span class="option-label">C.</span> Switch all analysts to Athena SQL queries instead of Spark notebooks configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Set up a Lambda function to terminate all Athena sessions at end of business day</li>
+                
+                <li><span class="option-label">A.</span> Switch all analysts to Athena SQL queries instead of Spark notebooks configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> Set up a Lambda function to terminate all Athena sessions at end of business day</li>
+                <li><span class="option-label">C.</span> Create a shared notebook session that all 5 analysts use concurrently</li>
+                <li><span class="option-label">D.</span> Reduce the DPU allocation per session and configure shorter idle timeout values in the notebook session settings</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena Spark notebook sessions memiliki konfigurasi untuk DPU count dan idle timeout. Mengurangi DPU allocation (minimum bisa serendah yang diperlukan) dan memperpendek idle timeout (dari default 45 menit ke misalnya 10-15 menit) secara langsung mengurangi biaya. Session otomatis terminated setelah idle timeout. Opsi B (shared session) tidak didukung, setiap user memiliki session terpisah. Opsi C menghilangkan capability PySpark yang diperlukan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Lambda termination) terlalu kasar dan bisa mengganggu work-in-progress.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Athena Spark notebook sessions memiliki konfigurasi untuk DPU count dan idle timeout. Mengurangi DPU allocation (minimum bisa serendah yang diperlukan) dan memperpendek idle timeout (dari default 45 menit ke misalnya 10-15 menit) secara langsung mengurangi biaya. Session otomatis terminated setelah idle timeout.<br><br>Opsi A: SALAH. Menghilangkan capability PySpark yang diperlukan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Terlalu kasar dan bisa mengganggu work-in-progress.<br>Opsi C: SALAH. Tidak didukung, setiap user memiliki session terpisah.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data engineer needs to perform exploratory analysis on a 500 GB dataset in S3. The analysis involves computing complex statistical aggregations and joining multiple tables. The engineer is deciding between using Athena SQL and Athena Spark notebooks. Under which scenario would Athena Spark notebooks be the BETTER choice over Athena SQL?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Running a simple COUNT(*) with GROUP BY on a single partitioned table</li>
-                <li><span class="option-label">B.</span> Performing iterative analysis where intermediate results inform the next step, combined with custom Python libraries for statistical calculations</li>
-                <li><span class="option-label">C.</span> Creating a view that downstream BI tools will query repeatedly</li>
-                <li><span class="option-label">D.</span> Running a scheduled query that executes the same SQL daily with custom Python libraries for statistical calculations</li>
+                
+                <li><span class="option-label">A.</span> Performing iterative analysis where intermediate results inform the next step, combined with custom Python libraries for statistical calculations</li>
+                <li><span class="option-label">B.</span> Running a simple COUNT(*) with GROUP BY on a single partitioned table</li>
+                <li><span class="option-label">C.</span> Running a scheduled query that executes the same SQL daily with custom Python libraries for statistical calculations</li>
+                <li><span class="option-label">D.</span> Creating a view that downstream BI tools will query repeatedly</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Athena Spark notebooks unggul untuk analisis iteratif dimana hasil satu langkah menentukan langkah berikutnya, karena state (DataFrames) dipertahankan antar cell executions. Ditambah kemampuan menggunakan library Python (pandas, scipy, matplotlib) membuat Spark notebooks ideal untuk statistical exploration. Opsi A (simple aggregation) lebih efisien dengan Athena SQL. Opsi C (views untuk BI) adalah use case SQL murni. Opsi D (scheduled queries) tidak memerlukan interaktivitas notebook — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Athena Spark notebooks unggul untuk analisis iteratif dimana hasil satu langkah menentukan langkah berikutnya, karena state (DataFrames) dipertahankan antar cell executions. Ditambah kemampuan menggunakan library Python (pandas, scipy, matplotlib) membuat Spark notebooks ideal untuk statistical exploration.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Lebih efisien dengan Athena SQL.<br>Opsi C: SALAH. Tidak memerlukan interaktivitas notebook — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Adalah use case SQL murni.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer is using an Athena Spark notebook and needs to read a table from the AWS Glue Data Catalog in database "analytics_db" and table "user_events". The engineer also wants to apply a filter on event_date for only the last 30 days to minimize data scanned. What is the correct PySpark code to achieve this in Athena notebooks?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> df = spark.sql("SELECT * FROM analytics_db.user_events WHERE event_date >= date_add(current_date(), -30)")</li>
-                <li><span class="option-label">B.</span> df = spark.read.format("glue").option("database", "analytics_db").option("table", "user_events").load().filter(col("event_date") >= "2024-01-01")</li>
+                
+                <li><span class="option-label">A.</span> df = AwsGlueContext.create_dynamic_frame("analytics_db", "user_events").toDF() configured for optimal performance and minimal</li>
+                <li><span class="option-label">B.</span> df = spark.sql("SELECT * FROM analytics_db.user_events WHERE event_date >= date_add(current_date(), -30)")</li>
                 <li><span class="option-label">C.</span> df = spark.read.parquet("s3://bucket/analytics_db/user_events/").filter("event_date >= current_date - 30")</li>
-                <li><span class="option-label">D.</span> df = AwsGlueContext.create_dynamic_frame("analytics_db", "user_events").toDF() configured for optimal performance and minimal</li>
+                <li><span class="option-label">D.</span> df = spark.read.format("glue").option("database", "analytics_db").option("table", "user_events").load().filter(col("event_date") >= "2024-01-01")</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Dalam Athena Spark notebooks, spark.sql() langsung mengakses Glue Data Catalog dan mendukung SQL standard. Query dengan database.table notation membaca dari catalog, dan predicate pada partition column (event_date) mendapatkan partition pruning sehingga hanya data relevan yang di-scan. Opsi B menggunakan format "glue" yang bukan API standar Spark. Opsi C (direct parquet read) melewatkan catalog metadata dan partitioning. Opsi D (GlueContext) adalah API AWS Glue ETL, bukan Athena Spark notebooks — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Dalam Athena Spark notebooks, spark.sql() langsung mengakses Glue Data Catalog dan mendukung SQL standard. Query dengan database.table notation membaca dari catalog, dan predicate pada partition column (event_date) mendapatkan partition pruning sehingga hanya data relevan yang di-scan.<br><br>Opsi A: SALAH. Adalah API AWS Glue ETL, bukan Athena Spark notebooks — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Melewatkan catalog metadata dan partitioning.<br>Opsi D: SALAH. Menggunakan format "glue" yang bukan API standar Spark.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer is working in an Athena Spark notebook and needs to perform a complex multi-step transformation: (1) read from two Glue Catalog tables, (2) join them, (3) apply a custom Python UDF for text normalization, (4) compute window function aggregates, and (5) write results back. During step 4, the notebook cell runs out of memory. What should the engineer do?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Increase the DPU allocation for the Athena Spark session by modifying the notebook session configuration</li>
-                <li><span class="option-label">B.</span> Add more EC2 instances to the Athena cluster</li>
-                <li><span class="option-label">C.</span> Persist intermediate results to S3 between steps to reduce memory pressure configured for optimal performance and minimal</li>
-                <li><span class="option-label">D.</span> Switch to Athena SQL for the window function step and combine results later</li>
+                
+                <li><span class="option-label">A.</span> Persist intermediate results to S3 between steps to reduce memory pressure configured for optimal performance and minimal</li>
+                <li><span class="option-label">B.</span> Increase the DPU allocation for the Athena Spark session by modifying the notebook session configuration</li>
+                <li><span class="option-label">C.</span> Switch to Athena SQL for the window function step and combine results later</li>
+                <li><span class="option-label">D.</span> Add more EC2 instances to the Athena cluster</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena Spark notebook sessions dapat dikonfigurasi dengan jumlah DPU (Data Processing Units) yang lebih besar. Meningkatkan DPU memberikan lebih banyak memory dan compute resources untuk operasi intensif seperti window functions pada data besar. Konfigurasi ini dilakukan saat memulai atau memodifikasi session. Opsi B salah karena Athena Spark adalah serverless, tidak ada EC2 yang dikelola user. Opsi C bisa membantu tapi menambah I/O overhead dan tidak menyelesaikan masalah memory untuk window function itu sendiri — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D menambah kompleksitas dan kehilangan keuntungan pipeline Spark terintegrasi.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Athena Spark notebook sessions dapat dikonfigurasi dengan jumlah DPU (Data Processing Units) yang lebih besar. Meningkatkan DPU memberikan lebih banyak memory dan compute resources untuk operasi intensif seperti window functions pada data besar. Konfigurasi ini dilakukan saat memulai atau memodifikasi session.<br><br>Opsi A: SALAH. Bisa membantu tapi menambah I/O overhead dan tidak menyelesaikan masalah memory untuk window function itu sendiri — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Menambah kompleksitas dan kehilangan keuntungan pipeline Spark terintegrasi.<br>Opsi D: SALAH. Salah karena Athena Spark adalah serverless, tidak ada EC2 yang dikelola user.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data science team uses Athena Spark notebooks for collaborative data exploration. One team member has developed a useful set of data cleaning functions in a notebook that other team members want to reuse. How can the team BEST share and reuse this code across multiple Athena Spark notebooks?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Copy and paste the functions into each team member's notebook with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">B.</span> Package the functions as a Python module, upload to S3, and import in notebooks using --additional-python-modules session parameter</li>
+                
+                <li><span class="option-label">A.</span> Package the functions as a Python module, upload to S3, and import in notebooks using --additional-python-modules session parameter</li>
+                <li><span class="option-label">B.</span> Convert the functions to Athena UDFs (User Defined Functions) in SQL</li>
                 <li><span class="option-label">C.</span> Store the functions in a shared DynamoDB table and load them at runtime</li>
-                <li><span class="option-label">D.</span> Convert the functions to Athena UDFs (User Defined Functions) in SQL</li>
+                <li><span class="option-label">D.</span> Copy and paste the functions into each team member's notebook with native S3 integration and optimized data transfer</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Athena Spark sessions mendukung parameter --additional-python-modules yang memungkinkan loading custom Python packages dari S3. Tim bisa mengemas utility functions sebagai Python package (.whl atau .zip), upload ke S3, dan semua notebook bisa mengimport module tersebut. Ini memberikan version control dan single source of truth. Opsi A tidak maintainable dan prone to divergence — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (DynamoDB) bukan mekanisme yang tepat untuk code sharing. Opsi D (Athena UDFs) terbatas pada SQL context dan tidak mendukung arbitrary Python logic.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Athena Spark sessions mendukung parameter --additional-python-modules yang memungkinkan loading custom Python packages dari S3. Tim bisa mengemas utility functions sebagai Python package (.whl atau .zip), upload ke S3, dan semua notebook bisa mengimport module tersebut. Ini memberikan version control dan single source of truth.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Terbatas pada SQL context dan tidak mendukung arbitrary Python logic.<br>Opsi C: SALAH. Bukan mekanisme yang tepat untuk code sharing.<br>Opsi D: SALAH. Tidak maintainable dan prone to divergence — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer is using Athena Spark notebooks to explore data quality issues in a large dataset. The engineer wants to use Spark DataFrames to identify records where multiple columns have correlated anomalies (e.g., when order_amount is negative AND shipping_date is before order_date simultaneously). After identifying these records, the engineer needs to generate a summary report. Which Spark DataFrame approach is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use df.filter() with multiple conditions combined using & operator, then use df.describe() and df.count() for summary statistics</li>
+                
+                <li><span class="option-label">A.</span> Convert the entire DataFrame to pandas and use pandas profiling library</li>
                 <li><span class="option-label">B.</span> Use df.where() with a single string condition and write results to a CSV file and df for summary statistics</li>
-                <li><span class="option-label">C.</span> Convert the entire DataFrame to pandas and use pandas profiling library</li>
+                <li><span class="option-label">C.</span> Use df.filter() with multiple conditions combined using & operator, then use df.describe() and df.count() for summary statistics</li>
                 <li><span class="option-label">D.</span> Use Spark SQL CASE WHEN statements to flag anomalies and aggregate with GROUP</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Spark DataFrame df.filter() dengan multiple conditions menggunakan & (logical AND) memungkinkan identifikasi records dengan correlated anomalies secara efisien. Kemudian df.describe() memberikan statistik summary dan df.count() menunjukkan volume anomalies. Ini memanfaatkan distributed processing Spark. Opsi B (single string condition) kurang readable untuk complex multi-column conditions — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (convert to pandas) akan gagal pada large datasets karena memory constraints. Opsi D berfungsi tapi kurang interaktif dibanding DataFrame operations untuk exploratory analysis — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Spark DataFrame df.filter() dengan multiple conditions menggunakan & (logical AND) memungkinkan identifikasi records dengan correlated anomalies secara efisien. Kemudian df.describe() memberikan statistik summary dan df.count() menunjukkan volume anomalies. Ini memanfaatkan distributed processing Spark.<br><br>Opsi A: SALAH. Akan gagal pada large datasets karena memory constraints.<br>Opsi B: SALAH. Kurang readable untuk complex multi-column conditions — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Berfungsi tapi kurang interaktif dibanding DataFrame operations untuk exploratory analysis — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer starts an Athena Spark notebook session and notices it takes approximately 60 seconds before the first cell can be executed. This startup time is impacting productivity during rapid exploration cycles. The engineer needs to understand and potentially reduce this latency. What explains this behavior and what can be done?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The delay is due to Spark driver and executor initialization which is inherent to serverless Spark sessions; it cannot be eliminated but can be reduced by keeping sessions alive with shorter idle timeouts replaced by longer ones</li>
-                <li><span class="option-label">B.</span> The delay is caused by downloading notebook dependencies from S3; pre-loading packages will eliminate it</li>
-                <li><span class="option-label">C.</span> The delay is due to Glue Data Catalog metadata synchronization; reducing catalog size will help</li>
-                <li><span class="option-label">D.</span> The delay is caused by IAM permission evaluation; simplifying the IAM policy will reduce startup time with shorter idle timeouts replaced by longer ones</li>
+                
+                <li><span class="option-label">A.</span> The delay is due to Glue Data Catalog metadata synchronization; reducing catalog size will help</li>
+                <li><span class="option-label">B.</span> The delay is caused by IAM permission evaluation; simplifying the IAM policy will reduce startup time with shorter idle timeouts replaced by longer ones</li>
+                <li><span class="option-label">C.</span> The delay is due to Spark driver and executor initialization which is inherent to serverless Spark sessions; it cannot be eliminated but can be reduced by keeping sessions alive with shorter idle timeouts replaced by longer ones</li>
+                <li><span class="option-label">D.</span> The delay is caused by downloading notebook dependencies from S3; pre-loading packages will eliminate it</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Athena Spark sessions memiliki cold start time untuk inisialisasi Spark runtime (driver, executors, JVM). Ini inherent pada serverless Spark. Untuk mengurangi dampak, engineer bisa mengonfigurasi idle timeout lebih panjang sehingga session tetap aktif selama working hours, menghindari repeated cold starts. Opsi B (package download) hanya relevan jika ada additional packages, bukan penyebab utama 60 detik. Opsi C (catalog sync) tidak terjadi saat session start. Opsi D (IAM) memakan milliseconds, bukan puluhan detik — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Athena Spark sessions memiliki cold start time untuk inisialisasi Spark runtime (driver, executors, JVM). Ini inherent pada serverless Spark. Untuk mengurangi dampak, engineer bisa mengonfigurasi idle timeout lebih panjang sehingga session tetap aktif selama working hours, menghindari repeated cold starts.<br><br>Opsi A: SALAH. Tidak terjadi saat session start.<br>Opsi B: SALAH. Memakan milliseconds, bukan puluhan detik — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Hanya relevan jika ada additional packages, bukan penyebab utama 60 detik.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data engineer has completed an exploratory analysis in an Athena Spark notebook that identified a useful data transformation pattern. The engineer now wants to operationalize this transformation as a scheduled production job that runs daily. What is the RECOMMENDED path to move from Athena Spark notebook exploration to production?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Schedule the Athena notebook session to run daily using Amazon EventBridge</li>
-                <li><span class="option-label">B.</span> Export the notebook logic as a Python script and deploy it as an AWS Glue ETL job with a scheduled trigger</li>
-                <li><span class="option-label">C.</span> Keep the notebook as-is and have a Lambda function that programmatically executes notebook cells via API</li>
-                <li><span class="option-label">D.</span> Convert the Spark code to Athena SQL views for production use with a scheduled trigger and deploy it as an AWS Glue ETL job</li>
+                
+                <li><span class="option-label">A.</span> Keep the notebook as-is and have a Lambda function that programmatically executes notebook cells via API</li>
+                <li><span class="option-label">B.</span> Convert the Spark code to Athena SQL views for production use with a scheduled trigger and deploy it as an AWS Glue ETL job</li>
+                <li><span class="option-label">C.</span> Export the notebook logic as a Python script and deploy it as an AWS Glue ETL job with a scheduled trigger</li>
+                <li><span class="option-label">D.</span> Schedule the Athena notebook session to run daily using Amazon EventBridge</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Best practice adalah memindahkan logic dari notebook explorasi ke production-grade service. AWS Glue ETL jobs mendukung PySpark dan memiliki scheduling triggers, error handling, job bookmarks, dan monitoring bawaan yang diperlukan untuk production. Notebook dimaksudkan untuk exploration, bukan scheduled production workloads. Opsi A (scheduled notebook) tidak robust untuk production (tidak ada retry logic, monitoring terbatas). Opsi C (Lambda execute cells) sangat fragile dan anti-pattern. Opsi D mungkin kehilangan custom Python logic yang tidak bisa direplikasi di SQL — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Best practice adalah memindahkan logic dari notebook explorasi ke production-grade service. AWS Glue ETL jobs mendukung PySpark dan memiliki scheduling triggers, error handling, job bookmarks, dan monitoring bawaan yang diperlukan untuk production. Notebook dimaksudkan untuk exploration, bukan scheduled production workloads.<br><br>Opsi A: SALAH. Sangat fragile dan anti-pattern.<br>Opsi B: SALAH. Mungkin kehilangan custom Python logic yang tidak bisa direplikasi di SQL — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Tidak robust untuk production (tidak ada retry logic, monitoring terbatas).</div>
             </div>
         </div>
         

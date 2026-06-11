@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A financial services company stores customer data across 500 S3 buckets. The compliance team requires automated discovery of all PII (names, credit card numbers, Social Security numbers) within these buckets and needs findings categorized by severity. They also want continuous monitoring as new data arrives. Which Amazon Macie configuration provides the MOST comprehensive PII detection?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable Macie and create a one-time classification job scanning all 500 buckets, then manually re-run monthly for the account</li>
-                <li><span class="option-label">B.</span> Enable Macie, configure automated sensitive data discovery for the account, and create scheduled classification jobs running daily for comprehensive coverage</li>
+                
+                <li><span class="option-label">A.</span> Enable Macie, configure automated sensitive data discovery for the account, and create scheduled classification jobs running daily for comprehensive coverage</li>
+                <li><span class="option-label">B.</span> Enable Macie and create a one-time classification job scanning all 500 buckets, then manually re-run monthly for the account</li>
                 <li><span class="option-label">C.</span> Use S3 event notifications to trigger a Lambda function that calls Macie's API for each new object uploaded</li>
                 <li><span class="option-label">D.</span> Enable Macie with automated sensitive data discovery only, relying on its statistical sampling approach for all detection needs</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Kombinasi automated sensitive data discovery dan scheduled classification jobs memberikan coverage paling komprehensif. Automated sensitive data discovery melakukan sampling berkelanjutan terhadap bucket untuk membuat overview, sementara scheduled classification jobs memastikan setiap objek baru di-scan secara sistematis setiap hari. Ini memberikan both continuous monitoring dan comprehensive deep scanning. Opsi A (one-time + monthly manual) melewatkan data yang masuk antara scan dan memerlukan manual intervention — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Lambda per-object) bukan cara Macie bekerja — Macie menggunakan jobs, bukan per-object API calls. Opsi D (automated discovery only) menggunakan sampling dan mungkin melewatkan beberapa objek — tidak cukup untuk compliance requirement yang memerlukan detection di semua data.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Kombinasi automated sensitive data discovery dan scheduled classification jobs memberikan coverage paling komprehensif. Automated sensitive data discovery melakukan sampling berkelanjutan terhadap bucket untuk membuat overview, sementara scheduled classification jobs memastikan setiap objek baru di-scan secara sistematis setiap hari. Ini memberikan both continuous monitoring dan comprehensive deep scanning.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Melewatkan data yang masuk antara scan dan memerlukan manual intervention — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Bukan cara Macie bekerja — Macie menggunakan jobs, bukan per-object API calls.<br>Opsi D: SALAH. Menggunakan sampling dan mungkin melewatkan beberapa objek — tidak cukup untuk compliance requirement yang memerlukan detection di semua data.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A healthcare company receives patient intake forms in PDF and CSV format uploaded to S3. They have specific formats for medical record numbers (MRN) that follow the pattern "MRN-XXXXXX-YY" where X is digits and Y is letters. Macie's built-in managed data identifiers do not recognize this custom format. How should the data engineer configure Macie to detect these custom identifiers?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create a custom data identifier in Macie using the regex pattern MRN-\d{6}-[A-Z]{2} with keywords ["medical record", "patient"] and a maximum match distance of 50 characters</li>
-                <li><span class="option-label">B.</span> Submit a request to AWS to add the MRN pattern to the managed data identifiers list with keywords ["medical record" and a maximum match distance of 50 characters</li>
-                <li><span class="option-label">C.</span> Create an allow list in Macie containing all valid MRN patterns so Macie classifies matches as sensitive</li>
-                <li><span class="option-label">D.</span> Use AWS Glue sensitive data detection with custom PII entity types instead of Macie</li>
+                
+                <li><span class="option-label">A.</span> Create an allow list in Macie containing all valid MRN patterns so Macie classifies matches as sensitive</li>
+                <li><span class="option-label">B.</span> Use AWS Glue sensitive data detection with custom PII entity types instead of Macie</li>
+                <li><span class="option-label">C.</span> Submit a request to AWS to add the MRN pattern to the managed data identifiers list with keywords ["medical record" and a maximum match distance of 50 characters</li>
+                <li><span class="option-label">D.</span> Create a custom data identifier in Macie using the regex pattern MRN-\d{6}-[A-Z]{2} with keywords ["medical record", "patient"] and a maximum match distance of 50 characters</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Macie custom data identifiers memungkinkan pengguna mendefinisikan regex patterns untuk format data sensitif yang unik bagi organisasi. Konfigurasi mencakup: regex pattern (MRN-\d{6}-[A-Z]{2}), keywords untuk mengurangi false positives (harus muncul dalam proximity tertentu), dan maximum match distance yang menentukan seberapa dekat keyword harus berada dari match. Opsi B — AWS tidak menerima request untuk menambah managed identifiers untuk format proprietary perusahaan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — allow lists digunakan untuk MENGECUALIKAN known non-sensitive matches (false positives), bukan untuk mendeteksi data sensitif baru. Opsi D — Glue sensitive data detection ada tapi pertanyaan spesifik tentang Macie dan custom identifiers adalah fitur built-in Macie.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Macie custom data identifiers memungkinkan pengguna mendefinisikan regex patterns untuk format data sensitif yang unik bagi organisasi. Konfigurasi mencakup: regex pattern (MRN-\d{6}-[A-Z]{2}), keywords untuk mengurangi false positives (harus muncul dalam proximity tertentu), dan maximum match distance yang menentukan seberapa dekat keyword harus berada dari match.<br><br>Opsi A: SALAH. Allow lists digunakan untuk MENGECUALIKAN known non-sensitive matches (false positives), bukan untuk mendeteksi data sensitif baru.<br>Opsi B: SALAH. Glue sensitive data detection ada tapi pertanyaan spesifik tentang Macie dan custom identifiers adalah fitur built-in Macie.<br>Opsi C: SALAH. AWS tidak menerima request untuk menambah managed identifiers untuk format proprietary perusahaan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data engineering team receives Macie findings showing HIGH severity PII detections in an S3 bucket used by their data lake. They want to automatically restrict access to the affected objects and notify the security team when PII is detected. Which architecture provides automated remediation?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Macie → SNS → Security team email notification, then manual access restriction</li>
-                <li><span class="option-label">B.</span> Macie → EventBridge rule (filter on HIGH severity findings) → Lambda function (adds restrictive bucket policy for affected prefix and tags objects) + SNS notification to security team</li>
-                <li><span class="option-label">C.</span> Macie → CloudWatch Alarm → Auto Scaling action to move objects to Glacier and tags objects) + SNS notification to security team</li>
-                <li><span class="option-label">D.</span> Macie → AWS Config rule → Systems Manager Automation to delete affected objects</li>
+                
+                <li><span class="option-label">A.</span> Macie → CloudWatch Alarm → Auto Scaling action to move objects to Glacier and tags objects) + SNS notification to security team</li>
+                <li><span class="option-label">B.</span> Macie → SNS → Security team email notification, then manual access restriction</li>
+                <li><span class="option-label">C.</span> Macie → AWS Config rule → Systems Manager Automation to delete affected objects</li>
+                <li><span class="option-label">D.</span> Macie → EventBridge rule (filter on HIGH severity findings) → Lambda function (adds restrictive bucket policy for affected prefix and tags objects) + SNS notification to security team</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Macie terintegrasi native dengan Amazon EventBridge, mengirimkan findings sebagai events. EventBridge rule dapat mem-filter berdasarkan severity (HIGH) dan trigger Lambda function untuk automated remediation — misalnya menambahkan deny policy pada bucket untuk prefix tertentu, menambahkan object tags (classification=pii), atau memindahkan ke quarantine bucket. Parallel SNS notification memberitahu security team. Opsi A hanya notification tanpa automation. Opsi C — Macie tidak mengirim metrics ke CloudWatch Alarms secara langsung, dan Auto Scaling + Glacier bukan remediation yang tepat — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — AWS Config rules tidak directly triggered oleh Macie findings, dan menghapus objects terlalu agresif (mungkin masih diperlukan tapi perlu restricted access).</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Macie terintegrasi native dengan Amazon EventBridge, mengirimkan findings sebagai events. EventBridge rule dapat mem-filter berdasarkan severity (HIGH) dan trigger Lambda function untuk automated remediation — misalnya menambahkan deny policy pada bucket untuk prefix tertentu, menambahkan object tags (classification=pii), atau memindahkan ke quarantine bucket. Parallel SNS notification memberitahu security team.<br><br>Opsi A: SALAH. Macie tidak mengirim metrics ke CloudWatch Alarms secara langsung, dan Auto Scaling + Glacier bukan remediation yang tepat — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Hanya notification tanpa automation.<br>Opsi C: SALAH. AWS Config rules tidak directly triggered oleh Macie findings, dan menghapus objects terlalu agresif (mungkin masih diperlukan tapi perlu restricted access).<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A company runs Macie across a multi-account AWS Organization. The security team notices that Macie is generating many false positive findings for a test bucket that contains synthetic data with realistic-looking credit card numbers. These false positives overwhelm the genuine findings. What is the MOST appropriate way to reduce these false positives without disabling Macie?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Create an allow list in Macie containing the specific synthetic credit card numbers so they are ignored in future scans</li>
                 <li><span class="option-label">B.</span> Exclude the test bucket from Macie classification jobs by adding it to the job's S3 bucket criteria exclusion</li>
                 <li><span class="option-label">C.</span> Suppress the findings using a findings filter with auto-archive action for the specific bucket</li>
                 <li><span class="option-label">D.</span> Disable the CREDIT_CARD_NUMBER managed data identifier for the entire account</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Suppression rules (findings filters with auto-archive) adalah cara paling tepat untuk menangani false positives dari bucket tertentu. Rule dapat dikonfigurasi untuk automatically archive findings dari bucket spesifik tersebut, sehingga tidak muncul di default findings view tapi tetap tersimpan untuk audit. Macie tetap scanning bucket tersebut (berguna jika real PII accidentally masuk ke test bucket). Opsi A (allow list) memerlukan Anda memasukkan setiap synthetic number — tidak scalable jika ratusan test records. Opsi B (exclude bucket) menghentikan scanning entirely — jika real PII masuk ke test bucket, tidak akan terdeteksi. Opsi D (disable managed identifier) mempengaruhi SEMUA buckets, bukan hanya test bucket — credit card detection hilang di production buckets juga.</div>
+                <div class="explanation">Suppression rules (findings filters with auto-archive) adalah cara paling tepat untuk menangani false positives dari bucket tertentu. Rule dapat dikonfigurasi untuk automatically archive findings dari bucket spesifik tersebut, sehingga tidak muncul di default findings view tapi tetap tersimpan untuk audit. Macie tetap scanning bucket tersebut (berguna jika real PII accidentally masuk ke test bucket).<br><br>Opsi A: SALAH. Memerlukan Anda memasukkan setiap synthetic number — tidak scalable jika ratusan test records.<br>Opsi B: SALAH. Menghentikan scanning entirely — jika real PII masuk ke test bucket, tidak akan terdeteksi.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Mempengaruhi SEMUA buckets, bukan hanya test bucket — credit card detection hilang di production buckets juga.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A European insurance company must comply with GDPR requirements for PII identification and data protection. They use Amazon Macie for PII discovery in their S3 data lake and AWS Lake Formation for access control. When Macie identifies objects containing EU citizen PII, the objects must automatically be tagged and Lake Formation permissions must restrict access to only the Data Protection Officer (DPO) team. Which integration approach achieves this?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Macie finding → EventBridge → Lambda that: (1) adds S3 object tag "contains-eu-pii=true", (2) registers the S3 location in Lake Formation, (3) grants Lake Formation permissions only to the DPO team's IAM role</li>
-                <li><span class="option-label">B.</span> Macie finding → SNS → SQS → Lambda that moves objects to a separate "pii-quarantine" S3 bucket managed by Lake Formation with DPO-only permissions</li>
-                <li><span class="option-label">C.</span> Configure Lake Formation to automatically read Macie findings and apply tag-based access control based on sensitivity levels with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">B.</span> Configure Lake Formation to automatically read Macie findings and apply tag-based access control based on sensitivity levels with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">C.</span> Macie finding → SNS → SQS → Lambda that moves objects to a separate "pii-quarantine" S3 bucket managed by Lake Formation with DPO-only permissions</li>
                 <li><span class="option-label">D.</span> Use Macie's built-in Lake Formation integration to automatically restrict permissions when PII is detected</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Integrasi Macie-Lake Formation memerlukan orchestration melalui EventBridge dan Lambda karena tidak ada native direct integration. Lambda function melakukan: (1) tagging S3 object untuk classification tracking, (2) mendaftarkan S3 location di Lake Formation jika belum registered, (3) menggunakan Lake Formation API untuk GRANT permissions hanya ke DPO role dan REVOKE dari yang lain. Ini memenuhi GDPR requirement untuk access restriction segera setelah PII teridentifikasi. Opsi B (quarantine bucket) menambah data movement overhead dan bisa mengganggu downstream pipelines yang referencing original path. Opsi C — Lake Formation tidak memiliki kemampuan membaca Macie findings secara otomatis — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — tidak ada built-in direct integration antara Macie dan Lake Formation.</div>
+                <div class="explanation">Integrasi Macie-Lake Formation memerlukan orchestration melalui EventBridge dan Lambda karena tidak ada native direct integration. Lambda function melakukan: (1) tagging S3 object untuk classification tracking, (2) mendaftarkan S3 location di Lake Formation jika belum registered, (3) menggunakan Lake Formation API untuk GRANT permissions hanya ke DPO role dan REVOKE dari yang lain. Ini memenuhi GDPR requirement untuk access restriction segera setelah PII teridentifikasi.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Lake Formation tidak memiliki kemampuan membaca Macie findings secara otomatis — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Menambah data movement overhead dan bisa mengganggu downstream pipelines yang referencing original path.<br>Opsi D: SALAH. Tidak ada built-in direct integration antara Macie dan Lake Formation.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer is configuring a Macie classification job for a data lake bucket containing millions of objects in various formats (CSV, JSON, Parquet, PDF, XLSX). The job needs to complete within a 4-hour maintenance window each night. Previous runs exceeded 8 hours. Which configuration changes would MOST effectively reduce job runtime while maintaining comprehensive PII detection?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Increase the sampling depth to scan more objects per run but limit the number of bytes scanned per object</li>
-                <li><span class="option-label">B.</span> Configure the job with object criteria to include only objects modified since the last successful run (incremental scanning) and set a sampling depth percentage</li>
-                <li><span class="option-label">C.</span> Split into multiple parallel jobs — one per file format — and run all simultaneously with object criteria and set a sampling depth percentage</li>
-                <li><span class="option-label">D.</span> Reduce the number of managed data identifiers to scan only for the most critical PII types</li>
+                
+                <li><span class="option-label">A.</span> Reduce the number of managed data identifiers to scan only for the most critical PII types</li>
+                <li><span class="option-label">B.</span> Split into multiple parallel jobs — one per file format — and run all simultaneously with object criteria and set a sampling depth percentage</li>
+                <li><span class="option-label">C.</span> Increase the sampling depth to scan more objects per run but limit the number of bytes scanned per object</li>
+                <li><span class="option-label">D.</span> Configure the job with object criteria to include only objects modified since the last successful run (incremental scanning) and set a sampling depth percentage</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Macie classification jobs mendukung object criteria filtering termasuk berdasarkan last modified date. Dengan hanya scanning objects yang berubah sejak last successful run, volume scanning berkurang drastis. Sampling depth mengontrol persentase eligible objects yang di-scan per run. Kombinasi incremental approach + appropriate sampling memastikan job selesai dalam window tanpa melewatkan data baru. Opsi A — meningkatkan sampling depth memperbanyak objects yang di-scan sehingga memperlama runtime, bukan mengurangi. Opsi C — multiple parallel jobs tidak mempercepat karena Macie memiliki account-level concurrency limits — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — mengurangi identifiers mengurangi coverage dan bisa menyebabkan compliance gaps; runtime reduction-nya juga minimal karena bottleneck biasanya di object reading bukan pattern matching.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Macie classification jobs mendukung object criteria filtering termasuk berdasarkan last modified date. Dengan hanya scanning objects yang berubah sejak last successful run, volume scanning berkurang drastis. Sampling depth mengontrol persentase eligible objects yang di-scan per run. Kombinasi incremental approach + appropriate sampling memastikan job selesai dalam window tanpa melewatkan data baru.<br><br>Opsi A: SALAH. Mengurangi identifiers mengurangi coverage dan bisa menyebabkan compliance gaps; runtime reduction-nya juga minimal karena bottleneck biasanya di object reading bukan pattern matching.<br>Opsi B: SALAH. Multiple parallel jobs tidak mempercepat karena Macie memiliki account-level concurrency limits — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Meningkatkan sampling depth memperbanyak objects yang di-scan sehingga memperlama runtime, bukan mengurangi.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A retail company uses Macie to scan their customer data lake. They notice Macie correctly identifies credit card numbers but assigns them as MEDIUM severity. According to their internal policy, any credit card data detection should be treated as HIGH severity and trigger immediate remediation. How can the team ensure credit card findings are escalated appropriately?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Modify Macie's severity scoring configuration to change CREDIT_CARD_NUMBER findings from MEDIUM to HIGH</li>
+                
+                <li><span class="option-label">A.</span> Create a custom data identifier for credit cards with a higher severity threshold setting and trigger the HIGH-priority remediation workflow</li>
                 <li><span class="option-label">B.</span> Create an EventBridge rule that matches Macie findings containing the CREDIT_CARD_NUMBER data identifier regardless of severity, and trigger the HIGH-priority remediation workflow</li>
-                <li><span class="option-label">C.</span> Create a custom data identifier for credit cards with a higher severity threshold setting and trigger the HIGH-priority remediation workflow</li>
+                <li><span class="option-label">C.</span> Modify Macie's severity scoring configuration to change CREDIT_CARD_NUMBER findings from MEDIUM to HIGH</li>
                 <li><span class="option-label">D.</span> Use AWS Security Hub to customize the severity of Macie findings before they reach EventBridge</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Macie severity levels ditentukan secara internal berdasarkan jumlah occurrences dan jenis data — pengguna tidak bisa mengubah severity scoring logic. Solusi yang tepat adalah membuat EventBridge rule yang memfilter berdasarkan tipe data identifier (classificationDetails.result.sensitiveData.detections.type = "CREDIT_CARD_NUMBER") tanpa memperhatikan severity field. Rule ini kemudian trigger remediation workflow yang sesuai policy internal (HIGH priority). Opsi A — Macie tidak menyediakan konfigurasi untuk mengubah severity scoring per identifier type. Opsi C — custom data identifiers tidak memiliki "severity threshold setting" — severity tetap dihitung oleh Macie berdasarkan volume detections — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Security Hub tidak bisa memodifikasi severity findings sebelum EventBridge; findings flow ke EventBridge langsung dari Macie.</div>
+                <div class="explanation">Macie severity levels ditentukan secara internal berdasarkan jumlah occurrences dan jenis data — pengguna tidak bisa mengubah severity scoring logic. Solusi yang tepat adalah membuat EventBridge rule yang memfilter berdasarkan tipe data identifier (classificationDetails.result.sensitiveData.detections.type = "CREDIT_CARD_NUMBER") tanpa memperhatikan severity field. Rule ini kemudian trigger remediation workflow yang sesuai policy internal (HIGH priority).<br><br>Opsi A: SALAH. Custom data identifiers tidak memiliki "severity threshold setting" — severity tetap dihitung oleh Macie berdasarkan volume detections — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Macie tidak menyediakan konfigurasi untuk mengubah severity scoring per identifier type.<br>Opsi D: SALAH. Security Hub tidak bisa memodifikasi severity findings sebelum EventBridge; findings flow ke EventBridge langsung dari Macie.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A multinational company needs to implement PII detection that covers California Consumer Privacy Act (CCPA) requirements. CCPA defines PII more broadly than traditional definitions, including IP addresses, browsing history, geolocation data, and inferences drawn from other data. Which Macie configuration provides the MOST complete CCPA PII coverage?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable all Macie managed data identifiers which cover all CCPA PII categories including behavioral and inference data</li>
-                <li><span class="option-label">B.</span> Use Macie managed data identifiers for standard PII (names, emails, SSN) combined with custom data identifiers for CCPA-specific categories like geolocation coordinates and device identifiers</li>
-                <li><span class="option-label">C.</span> Use only custom data identifiers to create regex patterns for all CCPA-defined PII categories</li>
+                
+                <li><span class="option-label">A.</span> Use only custom data identifiers to create regex patterns for all CCPA-defined PII categories</li>
+                <li><span class="option-label">B.</span> Enable all Macie managed data identifiers which cover all CCPA PII categories including behavioral and inference data</li>
+                <li><span class="option-label">C.</span> Use Macie managed data identifiers for standard PII (names, emails, SSN) combined with custom data identifiers for CCPA-specific categories like geolocation coordinates and device identifiers</li>
                 <li><span class="option-label">D.</span> Deploy a third-party DLP solution since Macie cannot detect non-standard PII types required by CCPA with custom data identifiers for CCPA-specific categories like geolocation coordinates and device identifiers</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">CCPA mendefinisikan personal information sangat luas. Macie managed data identifiers mencakup banyak standard PII (names, addresses, SSN, credit cards, emails, phone numbers) tetapi tidak mencakup semua kategori CCPA seperti geolocation coordinates, device IDs, atau browsing patterns. Solusi terbaik adalah kombinasi: managed identifiers untuk standard PII + custom data identifiers untuk format CCPA-specific yang tidak di-cover. Custom identifiers bisa mendeteksi patterns seperti koordinat GPS (regex untuk lat/long), MAC addresses, advertising IDs, dll. Opsi A — managed identifiers tidak cover SEMUA kategori CCPA (terutama behavioral data). Opsi C — menggunakan custom saja berarti membuat ulang detection yang sudah ada di managed identifiers (duplikasi effort). Opsi D — Macie bisa mendeteksi sebagian besar dengan managed + custom; third-party tidak diperlukan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">CCPA mendefinisikan personal information sangat luas. Macie managed data identifiers mencakup banyak standard PII (names, addresses, SSN, credit cards, emails, phone numbers) tetapi tidak mencakup semua kategori CCPA seperti geolocation coordinates, device IDs, atau browsing patterns. Solusi terbaik adalah kombinasi: managed identifiers untuk standard PII + custom data identifiers untuk format CCPA-specific yang tidak di-cover. Custom identifiers bisa mendeteksi patterns seperti koordinat GPS (regex untuk lat/long), MAC addresses, advertising IDs, dll.<br><br>Opsi A: SALAH. Menggunakan custom saja berarti membuat ulang detection yang sudah ada di managed identifiers (duplikasi effort).<br>Opsi B: SALAH. Managed identifiers tidak cover SEMUA kategori CCPA (terutama behavioral data).<br>Opsi C: BENAR.<br>Opsi D: SALAH. Macie bisa mendeteksi sebagian besar dengan managed + custom; third-party tidak diperlukan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer is reviewing Macie's automated sensitive data discovery results for their organization's S3 buckets. The sensitivity score for one bucket shows 85/100 with the breakdown showing 60% of sampled objects contain PII. The bucket is used by an ETL pipeline as a staging area before data is loaded into Redshift. What action should the data engineer take based on this finding?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Immediately delete all objects in the staging bucket since they contain PII</li>
-                <li><span class="option-label">B.</span> Run a targeted classification job on the bucket to get complete findings, then implement data masking or tokenization in the ETL pipeline before data reaches the staging bucket</li>
-                <li><span class="option-label">C.</span> Reduce the bucket's sensitivity score by adding it to Macie's exclusion list configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Move the staging bucket to a different AWS Region where Macie is not enabled</li>
+                
+                <li><span class="option-label">A.</span> Move the staging bucket to a different AWS Region where Macie is not enabled</li>
+                <li><span class="option-label">B.</span> Immediately delete all objects in the staging bucket since they contain PII</li>
+                <li><span class="option-label">C.</span> Run a targeted classification job on the bucket to get complete findings, then implement data masking or tokenization in the ETL pipeline before data reaches the staging bucket</li>
+                <li><span class="option-label">D.</span> Reduce the bucket's sensitivity score by adding it to Macie's exclusion list configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Automated sensitive data discovery menggunakan sampling, jadi sensitivity score adalah estimasi. Langkah proper adalah: (1) Run targeted classification job untuk mendapatkan complete picture (object-by-object detail), (2) Berdasarkan findings, implementasi data masking/tokenization/encryption di ETL pipeline SEBELUM data landing di staging — ini memastikan PII tidak ada di staging area. Pendekatan ini mengatasi root cause (PII di staging) bukan gejalanya. Opsi A — deleting data mengganggu ETL pipeline dan mungkin menghapus data yang masih diperlukan. Opsi C — exclusion list menyembunyikan masalah, bukan menyelesaikan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — memindahkan ke region tanpa Macie adalah security by obscurity yang tidak menyelesaikan PII exposure risk.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Automated sensitive data discovery menggunakan sampling, jadi sensitivity score adalah estimasi. Langkah proper adalah: (1) Run targeted classification job untuk mendapatkan complete picture (object-by-object detail), (2) Berdasarkan findings, implementasi data masking/tokenization/encryption di ETL pipeline SEBELUM data landing di staging — ini memastikan PII tidak ada di staging area. Pendekatan ini mengatasi root cause (PII di staging) bukan gejalanya.<br><br>Opsi A: SALAH. Memindahkan ke region tanpa Macie adalah security by obscurity yang tidak menyelesaikan PII exposure risk.<br>Opsi B: SALAH. Deleting data mengganggu ETL pipeline dan mungkin menghapus data yang masih diperlukan.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Exclusion list menyembunyikan masalah, bukan menyelesaikan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A company uses Macie for PII detection across 50 AWS accounts managed through AWS Organizations. The delegated Macie administrator account receives findings from all member accounts. The security team wants to generate a monthly compliance report showing: PII findings per account, remediation status, and trending data. They also want to aggregate findings with other security tools. Which architecture supports this reporting requirement?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Export Macie findings to the delegated administrator's S3 bucket using Macie's findings export configuration, then use Athena to query findings for the report</li>
-                <li><span class="option-label">B.</span> Use Macie's built-in reporting dashboard to generate monthly PDF compliance reports</li>
-                <li><span class="option-label">C.</span> Configure each member account to independently export findings to a centralized S3 bucket with Athena and QuickSight</li>
-                <li><span class="option-label">D.</span> Enable AWS Security Hub integration to aggregate Macie findings, then use Security Hub's export to S3 for cross-service reporting with Athena and QuickSight</li>
+                
+                <li><span class="option-label">A.</span> Configure each member account to independently export findings to a centralized S3 bucket with Athena and QuickSight</li>
+                <li><span class="option-label">B.</span> Enable AWS Security Hub integration to aggregate Macie findings, then use Security Hub's export to S3 for cross-service reporting with Athena and QuickSight</li>
+                <li><span class="option-label">C.</span> Export Macie findings to the delegated administrator's S3 bucket using Macie's findings export configuration, then use Athena to query findings for the report</li>
+                <li><span class="option-label">D.</span> Use Macie's built-in reporting dashboard to generate monthly PDF compliance reports</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">Security Hub adalah central aggregation point untuk security findings termasuk Macie. Dengan enabling Security Hub integration: (1) Macie findings dari semua member accounts otomatis flow ke Security Hub, (2) Security Hub juga menerima findings dari services lain (GuardDuty, Inspector, dll) memungkinkan cross-service reporting, (3) Security Hub findings bisa di-export ke S3 untuk querying dengan Athena dan visualization dengan QuickSight. Ini memberikan trending, per-account breakdown, dan aggregation yang diminta. Opsi A (Macie export ke S3) bisa bekerja tapi hanya untuk Macie findings — tidak mengaggregasi dengan security tools lain. Opsi B — Macie tidak memiliki built-in PDF reporting dashboard. Opsi C — per-account configuration tidak diperlukan jika menggunakan delegated administrator model; juga menambah management overhead — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Security Hub adalah central aggregation point untuk security findings termasuk Macie. Dengan enabling Security Hub integration: (1) Macie findings dari semua member accounts otomatis flow ke Security Hub, (2) Security Hub juga menerima findings dari services lain (GuardDuty, Inspector, dll) memungkinkan cross-service reporting, (3) Security Hub findings bisa di-export ke S3 untuk querying dengan Athena dan visualization dengan QuickSight. Ini memberikan trending, per-account breakdown, dan aggregation yang diminta.<br><br>Opsi A: SALAH. Per-account configuration tidak diperlukan jika menggunakan delegated administrator model; juga menambah management overhead — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Bisa bekerja tapi hanya untuk Macie findings — tidak mengaggregasi dengan security tools lain.<br>Opsi D: SALAH. Macie tidak memiliki built-in PDF reporting dashboard.</div>
             </div>
         </div>
         

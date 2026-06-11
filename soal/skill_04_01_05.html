@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A company has a shared S3 data lake bucket accessed by three different teams: Analytics, Machine Learning, and Data Engineering. Each team needs access to different prefixes within the bucket. The bucket policy has become extremely complex with over 50 statements. Which solution simplifies access management while maintaining per-team isolation?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Split the data into three separate S3 buckets, one per team, and replicate shared data with each Access Point having its own policy that restricts access</li>
                 <li><span class="option-label">B.</span> Create S3 Access Points for each team, with each Access Point having its own policy that restricts access to the team's specific prefixes</li>
                 <li><span class="option-label">C.</span> Use IAM policies only and remove the bucket policy entirely</li>
                 <li><span class="option-label">D.</span> Create IAM groups per team with inline policies that restrict access to specific key prefixes using conditions</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">S3 Access Points dirancang khusus untuk menyederhanakan access management pada shared buckets. Setiap Access Point memiliki hostname unik dan access point policy tersendiri yang bisa membatasi akses ke prefix tertentu. Tim Analytics mengakses melalui access-point-analytics, ML melalui access-point-ml, dll. Ini menggantikan satu bucket policy yang kompleks dengan multiple simple policies. Opsi A (split buckets) menambah biaya storage dan complexity sinkronisasi shared data — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (IAM only) tidak memungkinkan resource-based control dan sulit mengelola untuk banyak tim. Opsi D (IAM groups) hanya mengontrol dari sisi identity, tidak memberikan resource-level simplification yang sama.</div>
+                <div class="explanation">S3 Access Points dirancang khusus untuk menyederhanakan access management pada shared buckets. Setiap Access Point memiliki hostname unik dan access point policy tersendiri yang bisa membatasi akses ke prefix tertentu. Tim Analytics mengakses melalui access-point-analytics, ML melalui access-point-ml, dll. Ini menggantikan satu bucket policy yang kompleks dengan multiple simple policies.<br><br>Opsi A: SALAH. Menambah biaya storage dan complexity sinkronisasi shared data — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Tidak memungkinkan resource-based control dan sulit mengelola untuk banyak tim.<br>Opsi D: SALAH. Hanya mengontrol dari sisi identity, tidak memberikan resource-level simplification yang sama.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A data engineer configures a VPC endpoint for Amazon S3 (Gateway type) and wants to restrict the endpoint so that it can only access two specific S3 buckets: a data lake bucket and a code artifacts bucket. Which policy should be applied?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Apply a VPC endpoint policy that allows s3:* only on the two specific bucket ARNs and their objects</li>
-                <li><span class="option-label">B.</span> Modify the S3 bucket policy to deny access from all VPC endpoints except the specific endpoint ID</li>
-                <li><span class="option-label">C.</span> Apply a security group on the VPC endpoint to restrict traffic to the S3 bucket IP ranges</li>
+                
+                <li><span class="option-label">A.</span> Modify the S3 bucket policy to deny access from all VPC endpoints except the specific endpoint ID</li>
+                <li><span class="option-label">B.</span> Apply a security group on the VPC endpoint to restrict traffic to the S3 bucket IP ranges</li>
+                <li><span class="option-label">C.</span> Apply a VPC endpoint policy that allows s3:* only on the two specific bucket ARNs and their objects</li>
                 <li><span class="option-label">D.</span> Modify the VPC route table to only route traffic for the two bucket IP addresses through the endpoint</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">VPC endpoint policies control API calls yang diperbolehkan melalui endpoint tersebut. Dengan membatasi resource ke ARN dua bucket spesifik (arn:aws:s3:::data-lake-bucket dan arn:aws:s3:::data-lake-bucket/*), semua request S3 melalui endpoint ini hanya bisa mengakses kedua bucket tersebut. Ini memberikan defense-in-depth tambahan. Opsi B (bucket policy) bisa jadi defense-in-depth tambahan tapi tidak membatasi endpoint itu sendiri — resources di VPC masih bisa mencoba akses bucket lain. Opsi C salah — Gateway endpoints tidak memiliki security groups (hanya Interface endpoints yang punya). Opsi D salah — S3 Gateway endpoint menggunakan prefix list di route table, bukan per-bucket IP routing.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">VPC endpoint policies control API calls yang diperbolehkan melalui endpoint tersebut. Dengan membatasi resource ke ARN dua bucket spesifik (arn:aws:s3:::data-lake-bucket dan arn:aws:s3:::data-lake-bucket/*), semua request S3 melalui endpoint ini hanya bisa mengakses kedua bucket tersebut. Ini memberikan defense-in-depth tambahan.<br><br>Opsi A: SALAH. Bisa jadi defense-in-depth tambahan tapi tidak membatasi endpoint itu sendiri — resources di VPC masih bisa mencoba akses bucket lain.<br>Opsi B: SALAH. Salah — Gateway endpoints tidak memiliki security groups (hanya Interface endpoints yang punya).<br>Opsi C: BENAR.<br>Opsi D: SALAH. Salah — S3 Gateway endpoint menggunakan prefix list di route table, bukan per-bucket IP routing.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A company needs to ensure that their S3 data lake bucket can ONLY be accessed from within their VPC — no access from the internet or other VPCs should be allowed, even if IAM policies permit it. Which approach enforces this network-level restriction?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable S3 Block Public Access at the account level with a Deny statement using the condition "aws:SourceVpc" not equal</li>
-                <li><span class="option-label">B.</span> Add a bucket policy with a Deny statement using the condition "aws:SourceVpc" not equal to the company's VPC ID</li>
-                <li><span class="option-label">C.</span> Remove all IAM policies that allow access from outside the VPC</li>
-                <li><span class="option-label">D.</span> Configure the S3 bucket as a VPC endpoint target</li>
+                
+                <li><span class="option-label">A.</span> Remove all IAM policies that allow access from outside the VPC</li>
+                <li><span class="option-label">B.</span> Configure the S3 bucket as a VPC endpoint target</li>
+                <li><span class="option-label">C.</span> Add a bucket policy with a Deny statement using the condition "aws:SourceVpc" not equal to the company's VPC ID</li>
+                <li><span class="option-label">D.</span> Enable S3 Block Public Access at the account level with a Deny statement using the condition "aws:SourceVpc" not equal</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Bucket policy dengan explicit Deny menggunakan condition "aws:SourceVpc" memastikan bahwa SEMUA requests yang tidak berasal dari VPC yang ditentukan akan ditolak, terlepas dari IAM permissions yang ada. Statement: {"Effect": "Deny", "Principal": "*", "Action": "s3:*", "Resource": ["bucket-arn", "bucket-arn/*"], "Condition": {"StringNotEquals": {"aws:SourceVpc": "vpc-12345"}}}. Explicit Deny selalu override Allow. Opsi A (Block Public Access) hanya memblokir public access via ACLs/policies, bukan access dari other VPCs atau AWS accounts — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (remove IAM policies) tidak scalable dan tidak mencegah policies ditambahkan kembali. Opsi D bukan konsep yang valid — S3 bukan "target" endpoint.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Bucket policy dengan explicit Deny menggunakan condition "aws:SourceVpc" memastikan bahwa SEMUA requests yang tidak berasal dari VPC yang ditentukan akan ditolak, terlepas dari IAM permissions yang ada. Statement: {"Effect": "Deny", "Principal": "*", "Action": "s3:*", "Resource": ["bucket-arn", "bucket-arn/*"], "Condition": {"StringNotEquals": {"aws:SourceVpc": "vpc-12345"}}}. Explicit Deny selalu override Allow.<br><br>Opsi A: SALAH. Tidak scalable dan tidak mencegah policies ditambahkan kembali.<br>Opsi B: SALAH. Bukan konsep yang valid — S3 bukan "target" endpoint.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Hanya memblokir public access via ACLs/policies, bukan access dari other VPCs atau AWS accounts — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data engineer implements AWS PrivateLink to allow a data processing service in VPC-A to access a third-party SaaS data provider's API without traversing the public internet. The SaaS provider has set up a VPC endpoint service (NLB-backed). What must the data engineer configure in VPC-A to use this PrivateLink connection?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Create a VPC Interface Endpoint in VPC-A pointing to the SaaS provider's endpoint service name, and configure security groups on the endpoint to allow outbound traffic</li>
-                <li><span class="option-label">B.</span> Create a VPC peering connection between VPC-A and the SaaS provider's VPC</li>
-                <li><span class="option-label">C.</span> Create a Transit Gateway attachment to reach the SaaS provider's VPC configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Create a VPN connection from VPC-A to the SaaS provider's on-premises endpoint</li>
+                <li><span class="option-label">B.</span> Create a Transit Gateway attachment to reach the SaaS provider's VPC configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Create a VPN connection from VPC-A to the SaaS provider's on-premises endpoint</li>
+                <li><span class="option-label">D.</span> Create a VPC peering connection between VPC-A and the SaaS provider's VPC</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS PrivateLink menggunakan Interface Endpoints (powered by ENIs) di consumer VPC yang terhubung ke provider's VPC Endpoint Service (backed by NLB). Engineer perlu: (1) Create Interface Endpoint di VPC-A dengan service name yang diberikan provider (com.amazonaws.vpce.region.vpce-svc-xxxxx). (2) Accept the connection (provider mungkin perlu approve). (3) Configure security group pada endpoint ENI untuk allow traffic dari data processing service. Data mengalir melalui AWS private network. Opsi B (VPC peering) memerlukan kooperasi provider dan membuka akses lebih luas. Opsi C (Transit Gateway) berlebihan untuk single service connection — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (VPN) menggunakan internet dan lebih lambat.</div>
+                <div class="explanation">AWS PrivateLink menggunakan Interface Endpoints (powered by ENIs) di consumer VPC yang terhubung ke provider's VPC Endpoint Service (backed by NLB). Engineer perlu: (1) Create Interface Endpoint di VPC-A dengan service name yang diberikan provider (com.amazonaws.vpce.region.vpce-svc-xxxxx). (2) Accept the connection (provider mungkin perlu approve). (3) Configure security group pada endpoint ENI untuk allow traffic dari data processing service. Data mengalir melalui AWS private network.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Berlebihan untuk single service connection — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Menggunakan internet dan lebih lambat.<br>Opsi D: SALAH. Memerlukan kooperasi provider dan membuka akses lebih luas.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer needs to restrict access to an S3 bucket so that it can only be accessed by principals within the same AWS Organization (org-id: o-abc123def). The bucket contains shared datasets used by multiple accounts in the organization. Which bucket policy condition provides this restriction?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Condition: {"StringEquals": {"aws:PrincipalOrgID": "o-abc123def"}}</li>
-                <li><span class="option-label">B.</span> Condition: {"StringEquals": {"aws:SourceAccount": "o-abc123def"}}</li>
-                <li><span class="option-label">C.</span> Condition: {"StringEquals": {"aws:PrincipalAccount": "management-account-id"}}</li>
-                <li><span class="option-label">D.</span> Condition: {"ArnLike": {"aws:PrincipalArn": "arn:aws:organizations::*:organization/o-abc123def"}}</li>
+                
+                <li><span class="option-label">A.</span> Condition: {"ArnLike": {"aws:PrincipalArn": "arn:aws:organizations::*:organization/o-abc123def"}}</li>
+                <li><span class="option-label">B.</span> Condition: {"StringEquals": {"aws:PrincipalAccount": "management-account-id"}}</li>
+                <li><span class="option-label">C.</span> Condition: {"StringEquals": {"aws:SourceAccount": "o-abc123def"}}</li>
+                <li><span class="option-label">D.</span> Condition: {"StringEquals": {"aws:PrincipalOrgID": "o-abc123def"}}</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">aws:PrincipalOrgID adalah global condition key yang memeriksa apakah calling principal berasal dari AWS Organization tertentu. Dengan menambahkan Allow statement bersyarat pada aws:PrincipalOrgID, hanya principals dari accounts yang merupakan member organization o-abc123def yang mendapat akses. Ini sangat berguna untuk shared resources — saat account baru ditambahkan ke organization, mereka otomatis mendapat akses tanpa perlu mengupdate bucket policy. Opsi B salah — aws:SourceAccount hanya tersedia untuk service-to-service calls, bukan langsung applicable untuk org ID. Opsi C (PrincipalAccount) hanya memeriksa satu account, bukan seluruh organization. Opsi D menggunakan format ARN yang salah untuk org condition.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">aws:PrincipalOrgID adalah global condition key yang memeriksa apakah calling principal berasal dari AWS Organization tertentu. Dengan menambahkan Allow statement bersyarat pada aws:PrincipalOrgID, hanya principals dari accounts yang merupakan member organization o-abc123def yang mendapat akses. Ini sangat berguna untuk shared resources — saat account baru ditambahkan ke organization, mereka otomatis mendapat akses tanpa perlu mengupdate bucket policy.<br><br>Opsi A: SALAH. Menggunakan format ARN yang salah untuk org condition.<br>Opsi B: SALAH. Hanya memeriksa satu account, bukan seluruh organization.<br>Opsi C: SALAH. Salah — aws:SourceAccount hanya tersedia untuk service-to-service calls, bukan langsung applicable untuk org ID.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer is implementing a multi-layer security model for an S3 bucket. The bucket has: an IAM policy on the Glue role allowing s3:GetObject on the bucket, an S3 bucket policy allowing the Glue role, and a VPC endpoint policy that does NOT include this bucket. The Glue job runs in a VPC and accesses S3 through the VPC endpoint. What is the result when the Glue job tries to read from the bucket?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Access is allowed because the IAM policy and bucket policy both grant access and the endpoint policy acts as an additional filter</li>
-                <li><span class="option-label">B.</span> Access is denied because the VPC endpoint policy does not allow access to the bucket, and the endpoint policy acts as an additional filter</li>
+                
+                <li><span class="option-label">A.</span> Access is denied because the VPC endpoint policy does not allow access to the bucket, and the endpoint policy acts as an additional filter</li>
+                <li><span class="option-label">B.</span> Access is allowed because the IAM policy and bucket policy both grant access and the endpoint policy acts as an additional filter</li>
                 <li><span class="option-label">C.</span> Access is allowed because VPC endpoint policies are advisory only and do not enforce restrictions</li>
                 <li><span class="option-label">D.</span> The request bypasses the VPC endpoint and goes directly to S3 over the internet when the endpoint policy denies access</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">VPC endpoint policies berfungsi sebagai additional access control layer (filter). Request harus diizinkan oleh SEMUA policies yang relevan: IAM policy, resource policy (bucket policy), DAN VPC endpoint policy. Jika VPC endpoint policy tidak mengizinkan akses ke bucket tersebut, request akan ditolak meskipun IAM dan bucket policy mengizinkan. VPC endpoint policy bersifat intersectional — request hanya berhasil jika diizinkan oleh semua layer. Opsi A salah — endpoint policy juga harus allow — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah — endpoint policies bersifat enforcing, bukan advisory. Opsi D salah — jika traffic diroute melalui endpoint (via route table), tidak ada fallback ke internet path; request akan fail.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">VPC endpoint policies berfungsi sebagai additional access control layer (filter). Request harus diizinkan oleh SEMUA policies yang relevan: IAM policy, resource policy (bucket policy), DAN VPC endpoint policy. Jika VPC endpoint policy tidak mengizinkan akses ke bucket tersebut, request akan ditolak meskipun IAM dan bucket policy mengizinkan. VPC endpoint policy bersifat intersectional — request hanya berhasil jika diizinkan oleh semua layer.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Salah — endpoint policy juga harus allow — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Salah — endpoint policies bersifat enforcing, bukan advisory.<br>Opsi D: SALAH. Salah — jika traffic diroute melalui endpoint (via route table), tidak ada fallback ke internet path; request akan fail.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer needs to grant cross-account access to an S3 bucket for a specific Lambda function in Account B (account 222222222222). The Lambda function's role ARN is arn:aws:iam::222222222222:role/DataProcessorRole. The engineer wants to use a resource-based policy. Which S3 bucket policy statement correctly grants this access?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> {"Effect": "Allow", "Principal": {"AWS": "222222222222"}, "Action": "s3:GetObject", "Resource": "arn:aws:s3:::mybucket/*"} with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">B.</span> {"Effect": "Allow", "Principal": {"AWS": "arn:aws:iam::222222222222:role/DataProcessorRole"}, "Action": "s3:GetObject", "Resource": "arn:aws:s3:::mybucket/*"}</li>
-                <li><span class="option-label">C.</span> {"Effect": "Allow", "Principal": {"Service": "lambda.amazonaws.com"}, "Action": "s3:GetObject", "Resource": "arn:aws:s3:::mybucket/*"}</li>
+                
+                <li><span class="option-label">A.</span> {"Effect": "Allow", "Principal": {"Service": "lambda.amazonaws.com"}, "Action": "s3:GetObject", "Resource": "arn:aws:s3:::mybucket/*"}</li>
+                <li><span class="option-label">B.</span> {"Effect": "Allow", "Principal": {"AWS": "222222222222"}, "Action": "s3:GetObject", "Resource": "arn:aws:s3:::mybucket/*"} with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">C.</span> {"Effect": "Allow", "Principal": {"AWS": "arn:aws:iam::222222222222:role/DataProcessorRole"}, "Action": "s3:GetObject", "Resource": "arn:aws:s3:::mybucket/*"}</li>
                 <li><span class="option-label">D.</span> {"Effect": "Allow", "Principal": "*", "Action": "s3:GetObject", "Resource": "arn:aws:s3:::mybucket/*", "Condition": {"StringEquals": {"aws:SourceAccount": "222222222222"}}}</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Untuk memberikan cross-account access ke specific role, gunakan role ARN sebagai Principal. Ini memberikan akses hanya ke DataProcessorRole di Account B, bukan semua entities di account tersebut. Ini adalah pendekatan paling restrictive dan mengikuti least privilege. Opsi A (account root) memberikan akses ke SEMUA principals di Account B yang memiliki IAM permission — kurang restrictive — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (lambda.amazonaws.com service) mengizinkan ALL Lambda functions dari semua accounts — sangat tidak aman. Opsi D (Principal *) dengan SourceAccount condition masih terlalu broad — mengizinkan semua principals di Account B, dan aws:SourceAccount condition tidak selalu tersedia untuk direct API calls.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Untuk memberikan cross-account access ke specific role, gunakan role ARN sebagai Principal. Ini memberikan akses hanya ke DataProcessorRole di Account B, bukan semua entities di account tersebut. Ini adalah pendekatan paling restrictive dan mengikuti least privilege.<br><br>Opsi A: SALAH. Mengizinkan ALL Lambda functions dari semua accounts — sangat tidak aman.<br>Opsi B: SALAH. Memberikan akses ke SEMUA principals di Account B yang memiliki IAM permission — kurang restrictive — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Dengan SourceAccount condition masih terlalu broad — mengizinkan semua principals di Account B, dan aws:SourceAccount condition tidak selalu tersedia untuk direct API calls.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A company's security policy requires that S3 buckets storing sensitive data must NEVER be publicly accessible, regardless of any bucket policy changes made by developers. The data engineer needs to implement a preventive control that enforces this across all S3 buckets in the account. Which approach provides the STRONGEST preventive control?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable S3 Block Public Access at the account level (s3:PutAccountPublicAccessBlock) to block all current and future public access configurations</li>
-                <li><span class="option-label">B.</span> Create an AWS Config rule to detect public S3 buckets and automatically remediate</li>
-                <li><span class="option-label">C.</span> Use Amazon Macie to scan for publicly exposed buckets and alert the security team</li>
-                <li><span class="option-label">D.</span> Add a Deny statement in every bucket policy preventing public access and future public access configurations</li>
+                
+                <li><span class="option-label">A.</span> Create an AWS Config rule to detect public S3 buckets and automatically remediate</li>
+                <li><span class="option-label">B.</span> Enable S3 Block Public Access at the account level (s3:PutAccountPublicAccessBlock) to block all current and future public access configurations</li>
+                <li><span class="option-label">C.</span> Add a Deny statement in every bucket policy preventing public access and future public access configurations</li>
+                <li><span class="option-label">D.</span> Use Amazon Macie to scan for publicly exposed buckets and alert the security team</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">S3 Block Public Access di account level adalah preventive control paling kuat. Saat diaktifkan, ini secara otomatis memblokir semua konfigurasi public access pada SEMUA buckets di account — termasuk public bucket policies, public ACLs, dan new public bucket/access point policies. Bahkan jika developer menambahkan bucket policy dengan Principal "*", Block Public Access akan override dan tetap memblokir public access. Opsi B (AWS Config) adalah detective control (deteksi + remediate) — ada window dimana bucket sudah public sebelum remediation. Opsi C (Macie) hanya detection dan alerting, bukan prevention. Opsi D (per-bucket Deny) memerlukan penerapan di setiap bucket dan bisa dihapus oleh developer — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">S3 Block Public Access di account level adalah preventive control paling kuat. Saat diaktifkan, ini secara otomatis memblokir semua konfigurasi public access pada SEMUA buckets di account — termasuk public bucket policies, public ACLs, dan new public bucket/access point policies. Bahkan jika developer menambahkan bucket policy dengan Principal "*", Block Public Access akan override dan tetap memblokir public access.<br><br>Opsi A: SALAH. Adalah detective control (deteksi + remediate) — ada window dimana bucket sudah public sebelum remediation.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Memerlukan penerapan di setiap bucket dan bisa dihapus oleh developer — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Hanya detection dan alerting, bukan prevention.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer sets up an S3 Access Point for the analytics team. The Access Point policy allows the team's IAM role to perform s3:GetObject and s3:ListBucket. However, the underlying bucket policy has a Deny statement that blocks the team's role from s3:GetObject. What happens when the analytics team accesses the bucket through the Access Point?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Access is allowed because the Access Point policy overrides the bucket policy</li>
-                <li><span class="option-label">B.</span> Access is denied because the bucket policy Deny still applies — Access Points cannot override explicit Deny statements in bucket policies</li>
-                <li><span class="option-label">C.</span> Only s3:ListBucket works (via Access Point policy) but s3:GetObject is denied (by bucket policy)</li>
-                <li><span class="option-label">D.</span> The Access Point becomes invalid because it conflicts with the bucket policy configured for optimal performance and minimal operational overhead</li>
+                
+                <li><span class="option-label">A.</span> Access is denied because the bucket policy Deny still applies — Access Points cannot override explicit Deny statements in bucket policies</li>
+                <li><span class="option-label">B.</span> Access is allowed because the Access Point policy overrides the bucket policy</li>
+                <li><span class="option-label">C.</span> The Access Point becomes invalid because it conflicts with the bucket policy configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Only s3:ListBucket works (via Access Point policy) but s3:GetObject is denied (by bucket policy)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">S3 Access Points tidak override bucket policies. Access dikontrol oleh INTERSECTION dari Access Point policy dan bucket policy (plus IAM policy). Explicit Deny di bucket policy selalu menang — ini adalah prinsip fundamental IAM policy evaluation. Access Points dimaksudkan untuk menyederhanakan policy management, bukan untuk bypass existing restrictions. Jika bucket policy explicitly deny akses dari role tertentu, Access Point tidak bisa memberikan akses tersebut. Opsi A salah — Access Points tidak override. Opsi C salah jika Deny diterapkan pada semua S3 actions (tergantung apa yang di-deny di bucket policy). Opsi D salah — Access Point tetap valid, hanya permissions yang terbatas — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">S3 Access Points tidak override bucket policies. Access dikontrol oleh INTERSECTION dari Access Point policy dan bucket policy (plus IAM policy). Explicit Deny di bucket policy selalu menang — ini adalah prinsip fundamental IAM policy evaluation. Access Points dimaksudkan untuk menyederhanakan policy management, bukan untuk bypass existing restrictions. Jika bucket policy explicitly deny akses dari role tertentu, Access Point tidak bisa memberikan akses tersebut.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Salah — Access Points tidak override.<br>Opsi C: SALAH. Salah — Access Point tetap valid, hanya permissions yang terbatas — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Salah jika Deny diterapkan pada semua S3 actions (tergantung apa yang di-deny di bucket policy).</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data engineer is implementing defense-in-depth for a data pipeline that processes sensitive financial data. The pipeline uses Lambda functions in a VPC accessing S3 through a Gateway Endpoint. The engineer wants to ensure that even if a Lambda function is compromised, it can only access designated S3 buckets and cannot exfiltrate data to external locations. Which combination of policies provides the MOST comprehensive data exfiltration protection?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> IAM policy on Lambda role restricting S3 access to specific bucket ARNs only with aws:SourceVpce condition allowing only the specific VPC endpoint</li>
-                <li><span class="option-label">B.</span> IAM policy restricting to specific buckets + VPC endpoint policy limiting S3 access to those same buckets + S3 bucket policy with aws:SourceVpce condition allowing only the specific VPC endpoint</li>
-                <li><span class="option-label">C.</span> VPC endpoint policy restricting to specific buckets + Network ACLs blocking all outbound traffic except to S3 IP ranges</li>
-                <li><span class="option-label">D.</span> S3 bucket policy with aws:SourceIp condition restricting to the Lambda function's private IP addresses</li>
+                
+                <li><span class="option-label">A.</span> VPC endpoint policy restricting to specific buckets + Network ACLs blocking all outbound traffic except to S3 IP ranges</li>
+                <li><span class="option-label">B.</span> IAM policy on Lambda role restricting S3 access to specific bucket ARNs only with aws:SourceVpce condition allowing only the specific VPC endpoint</li>
+                <li><span class="option-label">C.</span> S3 bucket policy with aws:SourceIp condition restricting to the Lambda function's private IP addresses</li>
+                <li><span class="option-label">D.</span> IAM policy restricting to specific buckets + VPC endpoint policy limiting S3 access to those same buckets + S3 bucket policy with aws:SourceVpce condition allowing only the specific VPC endpoint</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Defense-in-depth memerlukan multiple layers of control: (1) IAM policy — controls what the Lambda role can do (only specific buckets). (2) VPC endpoint policy — controls what can be accessed through the endpoint (only same specific buckets). Bahkan jika attacker mendapat credentials berbeda, endpoint hanya mengizinkan traffic ke designated buckets. (3) S3 bucket policy with aws:SourceVpce — ensures bucket hanya accessible dari VPC endpoint tertentu, mencegah akses dari lokasi lain. Ketiga layer bersama-sama membuat exfiltration sangat sulit. Opsi A (IAM only) — single layer, jika credentials compromised, bisa digunakan dari mana saja — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C kurang IAM restriction dan NACLs tidak bisa distinguish antar S3 buckets. Opsi D — Lambda private IPs bersifat dynamic dan berubah setiap invocation.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Defense-in-depth memerlukan multiple layers of control: (1) IAM policy — controls what the Lambda role can do (only specific buckets). (2) VPC endpoint policy — controls what can be accessed through the endpoint (only same specific buckets). Bahkan jika attacker mendapat credentials berbeda, endpoint hanya mengizinkan traffic ke designated buckets. (3) S3 bucket policy with aws:SourceVpce — ensures bucket hanya accessible dari VPC endpoint tertentu, mencegah akses dari lokasi lain. Ketiga layer bersama-sama membuat exfiltration sangat sulit.<br><br>Opsi A: SALAH. Kurang IAM restriction dan NACLs tidak bisa distinguish antar S3 buckets.<br>Opsi B: SALAH. Single layer, jika credentials compromised, bisa digunakan dari mana saja — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Lambda private IPs bersifat dynamic dan berubah setiap invocation.<br>Opsi D: BENAR.</div>
             </div>
         </div>
         

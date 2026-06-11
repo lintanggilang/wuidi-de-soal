@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineering team maintains an Apache Iceberg table in their S3 data lake. The upstream application team announces they will add 5 new columns to their event schema next week. The data engineer needs to ensure existing queries continue working without modification after the schema change. Which Iceberg capability addresses this requirement?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Iceberg schema evolution allows adding columns without rewriting existing data files — new columns return NULL for historical data</li>
                 <li><span class="option-label">B.</span> Iceberg requires a full table rewrite when columns are added to maintain consistency for historical data</li>
-                <li><span class="option-label">C.</span> Iceberg only supports schema changes through table recreation with the new schema</li>
-                <li><span class="option-label">D.</span> Iceberg schema evolution requires downstream consumers to update their queries immediately after any change</li>
+                <li><span class="option-label">C.</span> Iceberg schema evolution requires downstream consumers to update their queries immediately after any change</li>
+                <li><span class="option-label">D.</span> Iceberg only supports schema changes through table recreation with the new schema</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Apache Iceberg mendukung schema evolution yang aman: columns bisa ditambahkan tanpa menulis ulang data files yang ada. Data files lama yang tidak memiliki kolom baru akan mengembalikan NULL untuk kolom-kolom tersebut. Iceberg menggunakan unique column IDs (bukan nama atau posisi) untuk mapping, sehingga existing queries tetap berfungsi tanpa modifikasi. Opsi B salah — Iceberg tidak perlu rewrite — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah — schema evolution in-place didukung. Opsi D salah — backward compatibility adalah fitur utama Iceberg schema evolution.</div>
+                <div class="explanation">Apache Iceberg mendukung schema evolution yang aman: columns bisa ditambahkan tanpa menulis ulang data files yang ada. Data files lama yang tidak memiliki kolom baru akan mengembalikan NULL untuk kolom-kolom tersebut. Iceberg menggunakan unique column IDs (bukan nama atau posisi) untuk mapping, sehingga existing queries tetap berfungsi tanpa modifikasi.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Salah — Iceberg tidak perlu rewrite — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Salah — backward compatibility adalah fitur utama Iceberg schema evolution.<br>Opsi D: SALAH. Salah — schema evolution in-place didukung.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A streaming data pipeline uses AWS Glue Schema Registry with Avro format. The producer team wants to change a field from "int" to "long" type. Consumers are deployed separately and cannot be updated simultaneously with the producer. Which schema compatibility mode should be configured to allow this change safely?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> NONE — no compatibility checking, any change is allowed configured for optimal performance</li>
-                <li><span class="option-label">B.</span> BACKWARD — new schema can read data written by the old schema</li>
-                <li><span class="option-label">C.</span> FORWARD — old schema (consumers) can read data written by the new schema (producers)</li>
-                <li><span class="option-label">D.</span> FULL — both backward and forward compatible changes only</li>
+                
+                <li><span class="option-label">A.</span> FULL — both backward and forward compatible changes only</li>
+                <li><span class="option-label">B.</span> NONE — no compatibility checking, any change is allowed configured for optimal performance</li>
+                <li><span class="option-label">C.</span> BACKWARD — new schema can read data written by the old schema</li>
+                <li><span class="option-label">D.</span> FORWARD — old schema (consumers) can read data written by the new schema (producers)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Ketika producer berubah terlebih dahulu dan consumers belum diupdate, diperlukan FORWARD compatibility — artinya consumer dengan schema lama masih bisa membaca data yang ditulis dengan schema baru. Type promotion int→long adalah forward compatible di Avro karena consumer yang mengharapkan int bisa membaca long (dengan truncation risk tapi secara Avro resolution rules, long bisa di-read sebagai compatible). Opsi A (NONE) tidak aman untuk production — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi B (BACKWARD) memastikan consumer baru bisa baca data lama — tapi tidak menjamin consumer lama bisa baca data baru. Opsi D (FULL) paling restrictive tapi int→long memenuhi full compatibility di Avro.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Ketika producer berubah terlebih dahulu dan consumers belum diupdate, diperlukan FORWARD compatibility — artinya consumer dengan schema lama masih bisa membaca data yang ditulis dengan schema baru. Type promotion int→long adalah forward compatible di Avro karena consumer yang mengharapkan int bisa membaca long (dengan truncation risk tapi secara Avro resolution rules, long bisa di-read sebagai compatible).<br><br>Opsi A: SALAH. Paling restrictive tapi int→long memenuhi full compatibility di Avro.<br>Opsi B: SALAH. Tidak aman untuk production — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Memastikan consumer baru bisa baca data lama — tapi tidak menjamin consumer lama bisa baca data baru.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data engineer manages a Parquet-based data lake. The business team requests renaming a column from "customer_name" to "client_name" in the analytics tables. The table has 2 years of historical data (500 TB). Which approach handles this column rename with MINIMAL operational impact?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Rewrite all 500 TB of Parquet files with the renamed column configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Use Apache Iceberg's column rename operation which updates metadata only without rewriting data files</li>
-                <li><span class="option-label">C.</span> Create a view in Athena that aliases "customer_name" as "client_name" and direct users to the view</li>
+                
+                <li><span class="option-label">A.</span> Create a view in Athena that aliases "customer_name" as "client_name" and direct users to the view</li>
+                <li><span class="option-label">B.</span> Rewrite all 500 TB of Parquet files with the renamed column configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Use Apache Iceberg's column rename operation which updates metadata only without rewriting data files</li>
                 <li><span class="option-label">D.</span> Add a new column "client_name" and copy data from "customer_name" using a Glue job</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Apache Iceberg mendukung column rename sebagai metadata-only operation. Karena Iceberg menggunakan column IDs (bukan nama) untuk mapping ke data files, rename hanya mengubah metadata table tanpa perlu menulis ulang file data. Ini instan terlepas dari ukuran tabel. Opsi A (rewrite 500TB) sangat mahal dan memakan waktu berhari-hari — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (view) adalah workaround yang tidak mengubah source of truth dan menambah layer abstraksi. Opsi D (copy column) menggandakan data dan storage cost. Jika menggunakan Iceberg, rename adalah pilihan terbaik.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Apache Iceberg mendukung column rename sebagai metadata-only operation. Karena Iceberg menggunakan column IDs (bukan nama) untuk mapping ke data files, rename hanya mengubah metadata table tanpa perlu menulis ulang file data. Ini instan terlepas dari ukuran tabel.<br><br>Opsi A: SALAH. Adalah workaround yang tidak mengubah source of truth dan menambah layer abstraksi.<br>Opsi B: SALAH. Sangat mahal dan memakan waktu berhari-hari — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Menggandakan data dan storage cost. Jika menggunakan Iceberg, rename adalah pilihan terbaik.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data engineer needs to add a new required column "processing_status" (with default value "pending") to an existing Amazon Redshift table with 2 billion rows. The table is actively used for both read and write operations 24/7. Which approach minimizes disruption to production workloads?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> ALTER TABLE ADD COLUMN with DEFAULT value — Redshift applies the default to existing rows without full table rewrite</li>
-                <li><span class="option-label">B.</span> Create a new table with the additional column, COPY data using INSERT INTO...SELECT, then rename tables</li>
+                
+                <li><span class="option-label">A.</span> Create a new table with the additional column, COPY data using INSERT INTO...SELECT, then rename tables</li>
+                <li><span class="option-label">B.</span> ALTER TABLE ADD COLUMN with DEFAULT value — Redshift applies the default to existing rows without full table rewrite</li>
                 <li><span class="option-label">C.</span> Use UPDATE statement to set the new column value for all 2 billion rows after adding the column</li>
                 <li><span class="option-label">D.</span> Export table to S3, modify schema, and reload using COPY command with DEFAULT value — Redshift applies the default</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon Redshift mengoptimasi ALTER TABLE ADD COLUMN dengan DEFAULT value — kolom baru ditambahkan sebagai metadata operation dan default value diterapkan secara virtual tanpa menulis ulang seluruh tabel. Ini sangat cepat bahkan untuk tabel miliaran rows dan tidak memblokir operasi lain. Opsi B (deep copy) memerlukan downtime saat swap dan double storage sementara. Opsi C (UPDATE 2B rows) mengonsumsi resources signifikan, memerlukan VACUUM setelahnya, dan memblokir concurrent operations. Opsi D (export/reimport) memerlukan downtime terlama — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Amazon Redshift mengoptimasi ALTER TABLE ADD COLUMN dengan DEFAULT value — kolom baru ditambahkan sebagai metadata operation dan default value diterapkan secara virtual tanpa menulis ulang seluruh tabel. Ini sangat cepat bahkan untuk tabel miliaran rows dan tidak memblokir operasi lain.<br><br>Opsi A: SALAH. Memerlukan downtime saat swap dan double storage sementara.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Mengonsumsi resources signifikan, memerlukan VACUUM setelahnya, dan memblokir concurrent operations.<br>Opsi D: SALAH. Memerlukan downtime terlama — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data pipeline uses AWS Glue Schema Registry to manage Avro schemas for Kafka messages. A developer accidentally registers a schema version that removes a required field, breaking all consumers. Which Schema Registry feature should have been configured to prevent this?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Schema versioning with rollback capability configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Compatibility mode set to BACKWARD or FULL to reject incompatible schema versions at registration time</li>
+                <li><span class="option-label">B.</span> CloudWatch alarms on schema registration events</li>
                 <li><span class="option-label">C.</span> IAM policies restricting who can register new schema versions</li>
-                <li><span class="option-label">D.</span> CloudWatch alarms on schema registration events</li>
+                <li><span class="option-label">D.</span> Compatibility mode set to BACKWARD or FULL to reject incompatible schema versions at registration time</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS Glue Schema Registry mendukung compatibility modes (BACKWARD, FORWARD, FULL, NONE) yang secara otomatis menolak registrasi schema yang tidak compatible. Dengan BACKWARD compatibility, menghapus required field tanpa default value akan ditolak saat registrasi karena consumer baru tidak bisa membaca data lama yang memiliki field tersebut. Opsi A (rollback) mengatasi setelah masalah terjadi, bukan mencegah — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (IAM) membatasi siapa yang bisa register tapi tidak mengecek compatibility. Opsi D (CloudWatch) hanya monitoring, bukan prevention.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">AWS Glue Schema Registry mendukung compatibility modes (BACKWARD, FORWARD, FULL, NONE) yang secara otomatis menolak registrasi schema yang tidak compatible. Dengan BACKWARD compatibility, menghapus required field tanpa default value akan ditolak saat registrasi karena consumer baru tidak bisa membaca data lama yang memiliki field tersebut.<br><br>Opsi A: SALAH. Mengatasi setelah masalah terjadi, bukan mencegah — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Hanya monitoring, bukan prevention.<br>Opsi C: SALAH. Membatasi siapa yang bisa register tapi tidak mengecek compatibility.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A company's DynamoDB table was originally designed with a string attribute "price" storing values like "29.99". The business now needs to perform numeric calculations on this field. Unlike relational databases, DynamoDB does not support ALTER TABLE to change data types. How should the data engineer handle this schema change?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Add a new attribute "price_numeric" (Number type) and backfill with a migration script, then update applications to use the new attribute</li>
                 <li><span class="option-label">B.</span> Export the table, change data types in the export, and reimport to a new table</li>
                 <li><span class="option-label">C.</span> Use DynamoDB PartiQL CAST function to convert at query time</li>
                 <li><span class="option-label">D.</span> Delete the table and recreate with the correct attribute type configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DynamoDB adalah schemaless — setiap item bisa memiliki atribut berbeda. Pendekatan terbaik adalah menambah atribut baru "price_numeric" dengan tipe Number, backfill existing items secara gradual (menggunakan Scan+UpdateItem atau DynamoDB Streams), dan update aplikasi untuk menulis ke kedua atribut selama transisi. Setelah migrasi selesai, deprecated attribute bisa diabaikan. Opsi B (export/reimport) menyebabkan downtime dan kompleksitas tinggi. Opsi C salah — DynamoDB PartiQL tidak memiliki CAST function untuk type conversion. Opsi D menghapus semua data yang sangat berisiko — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">DynamoDB adalah schemaless — setiap item bisa memiliki atribut berbeda. Pendekatan terbaik adalah menambah atribut baru "price_numeric" dengan tipe Number, backfill existing items secara gradual (menggunakan Scan+UpdateItem atau DynamoDB Streams), dan update aplikasi untuk menulis ke kedua atribut selama transisi. Setelah migrasi selesai, deprecated attribute bisa diabaikan.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Menyebabkan downtime dan kompleksitas tinggi.<br>Opsi C: SALAH. Salah — DynamoDB PartiQL tidak memiliki CAST function untuk type conversion.<br>Opsi D: SALAH. Menghapus semua data yang sangat berisiko — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data lake team uses Apache Iceberg tables registered in AWS Glue Data Catalog. They need to widen a column type from INT to BIGINT to accommodate growing ID values that will exceed INT range. Which statement about Iceberg type widening is CORRECT?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Iceberg does NOT support type widening — a new table must be created configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Iceberg supports safe type promotions (int→long, float→double, decimal precision increase) as metadata-only operations</li>
-                <li><span class="option-label">C.</span> Iceberg supports type widening but requires rewriting all data files for consistency</li>
-                <li><span class="option-label">D.</span> Iceberg only supports type widening for string columns (VARCHAR length increase)</li>
+                
+                <li><span class="option-label">A.</span> Iceberg supports safe type promotions (int→long, float→double, decimal precision increase) as metadata-only operations</li>
+                <li><span class="option-label">B.</span> Iceberg supports type widening but requires rewriting all data files for consistency</li>
+                <li><span class="option-label">C.</span> Iceberg only supports type widening for string columns (VARCHAR length increase)</li>
+                <li><span class="option-label">D.</span> Iceberg does NOT support type widening — a new table must be created configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Apache Iceberg mendukung safe type promotions sebagai operasi metadata-only: int→long, float→double, dan peningkatan precision decimal. Data files yang ada tidak perlu ditulis ulang — Iceberg reader melakukan conversion secara otomatis saat membaca data files lama dengan tipe yang lebih sempit. Opsi A salah — Iceberg mendukung type promotion — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah — tidak perlu rewrite data files. Opsi D salah — type widening berlaku untuk numeric types, bukan hanya string.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Apache Iceberg mendukung safe type promotions sebagai operasi metadata-only: int→long, float→double, dan peningkatan precision decimal. Data files yang ada tidak perlu ditulis ulang — Iceberg reader melakukan conversion secara otomatis saat membaca data files lama dengan tipe yang lebih sempit.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Salah — tidak perlu rewrite data files.<br>Opsi C: SALAH. Salah — type widening berlaku untuk numeric types, bukan hanya string.<br>Opsi D: SALAH. Salah — Iceberg mendukung type promotion — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineering team receives JSON event data from 20 microservices. Each service evolves its schema independently, adding new fields weekly. The team uses AWS Glue for ETL. They notice that Glue Crawlers frequently update the Glue Data Catalog schema, causing inconsistencies in downstream Athena queries. What is the BEST approach to manage this schema instability?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Disable Glue Crawlers and manually define schemas in the Data Catalog</li>
-                <li><span class="option-label">B.</span> Configure Glue Crawlers with schema change policy set to "LOG" instead of "UPDATE" and review changes before applying</li>
-                <li><span class="option-label">C.</span> Use Glue Schema Registry to version schemas and configure Crawlers to align with registered schema versions</li>
-                <li><span class="option-label">D.</span> Create separate Glue databases per microservice and let each team manage their own schemas with schema change policy set</li>
+                
+                <li><span class="option-label">A.</span> Use Glue Schema Registry to version schemas and configure Crawlers to align with registered schema versions</li>
+                <li><span class="option-label">B.</span> Create separate Glue databases per microservice and let each team manage their own schemas with schema change policy set</li>
+                <li><span class="option-label">C.</span> Configure Glue Crawlers with schema change policy set to "LOG" instead of "UPDATE" and review changes before applying</li>
+                <li><span class="option-label">D.</span> Disable Glue Crawlers and manually define schemas in the Data Catalog</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Glue Crawlers dapat dikonfigurasi dengan SchemaChangePolicy yang menentukan behavior saat schema berubah. Setting "LOG" mencatat perubahan tanpa langsung mengupdate Data Catalog, memungkinkan review manual sebelum perubahan diterapkan. Ini mencegah schema instability dari mempengaruhi downstream queries. Opsi A (disable Crawlers + manual) tidak scalable untuk 20 services yang berubah weekly. Opsi C (Schema Registry) mengelola streaming schemas tapi tidak langsung mengontrol Crawler behavior. Opsi D (separate databases) tidak menyelesaikan masalah schema instability per-service — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Glue Crawlers dapat dikonfigurasi dengan SchemaChangePolicy yang menentukan behavior saat schema berubah. Setting "LOG" mencatat perubahan tanpa langsung mengupdate Data Catalog, memungkinkan review manual sebelum perubahan diterapkan. Ini mencegah schema instability dari mempengaruhi downstream queries.<br><br>Opsi A: SALAH. Mengelola streaming schemas tapi tidak langsung mengontrol Crawler behavior.<br>Opsi B: SALAH. Tidak menyelesaikan masalah schema instability per-service — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Tidak scalable untuk 20 services yang berubah weekly.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer is planning a migration from a single monolithic Parquet table to Apache Iceberg format. The table has 100 TB of historical data with a schema that has evolved over 3 years — older files have 50 columns while newer files have 85 columns. Which migration approach is MOST efficient?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Rewrite all 100 TB of Parquet files into Iceberg format with the latest 85-column schema</li>
-                <li><span class="option-label">B.</span> Use Iceberg's "migrate" procedure to register existing Parquet files as an Iceberg table without rewriting data</li>
+                <li><span class="option-label">B.</span> Use AWS Glue to convert each Parquet partition into Iceberg format one at a time configured for optimal performance and minimal</li>
                 <li><span class="option-label">C.</span> Create a new Iceberg table and incrementally COPY data using Spark over several days</li>
-                <li><span class="option-label">D.</span> Use AWS Glue to convert each Parquet partition into Iceberg format one at a time configured for optimal performance and minimal</li>
+                <li><span class="option-label">D.</span> Use Iceberg's "migrate" procedure to register existing Parquet files as an Iceberg table without rewriting data</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Apache Iceberg menyediakan "migrate" procedure (atau "add_files") yang mendaftarkan existing Parquet files sebagai Iceberg table tanpa menulis ulang data. Iceberg menangani perbedaan schema antar files melalui schema evolution metadata — files lama dengan 50 columns mengembalikan NULL untuk 35 columns yang tidak ada. Ini instan dan tanpa biaya rewrite. Opsi A (rewrite 100TB) memakan waktu berhari-hari dan biaya compute/storage signifikan. Opsi C (incremental copy) juga memerlukan waktu lama. Opsi D (Glue per-partition) masih melibatkan rewrite yang tidak perlu — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Apache Iceberg menyediakan "migrate" procedure (atau "add_files") yang mendaftarkan existing Parquet files sebagai Iceberg table tanpa menulis ulang data. Iceberg menangani perbedaan schema antar files melalui schema evolution metadata — files lama dengan 50 columns mengembalikan NULL untuk 35 columns yang tidak ada. Ini instan dan tanpa biaya rewrite.<br><br>Opsi A: SALAH. Memakan waktu berhari-hari dan biaya compute/storage signifikan.<br>Opsi B: SALAH. Masih melibatkan rewrite yang tidak perlu — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Juga memerlukan waktu lama.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A Redshift data warehouse team needs to change a column data type from VARCHAR(100) to VARCHAR(500) to accommodate longer product descriptions. The table has 500 million rows and is used in production dashboards. Which statement about this ALTER TABLE operation in Redshift is CORRECT?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> ALTER TABLE ALTER COLUMN can increase VARCHAR length in-place without table lock or data rewrite</li>
-                <li><span class="option-label">B.</span> Redshift does not support changing VARCHAR length — a deep copy (create new table, insert, rename) is required</li>
-                <li><span class="option-label">C.</span> ALTER TABLE ALTER COLUMN requires an exclusive table lock and full table rewrite</li>
+                
+                <li><span class="option-label">A.</span> ALTER TABLE ALTER COLUMN requires an exclusive table lock and full table rewrite</li>
+                <li><span class="option-label">B.</span> ALTER TABLE ALTER COLUMN can increase VARCHAR length in-place without table lock or data rewrite</li>
+                <li><span class="option-label">C.</span> Redshift does not support changing VARCHAR length — a deep copy (create new table, insert, rename) is required</li>
                 <li><span class="option-label">D.</span> VARCHAR length can only be decreased, not increased, using ALTER TABLE configured for optimal performance</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon Redshift mendukung ALTER TABLE ALTER COLUMN untuk meningkatkan panjang VARCHAR. Operasi ini hanya mengubah metadata dan tidak memerlukan rewrite data atau exclusive lock yang berkepanjangan. Ini karena Redshift menyimpan VARCHAR sebagai variable-length dan metadata length hanya digunakan untuk validasi input, bukan storage format. Opsi B salah — Redshift mendukung increase VARCHAR length sejak 2019. Opsi C salah — tidak ada full table rewrite. Opsi D salah — decrease tidak didukung (hanya increase) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Catatan: mengubah data type yang berbeda (misalnya INT ke VARCHAR) masih memerlukan deep copy.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Amazon Redshift mendukung ALTER TABLE ALTER COLUMN untuk meningkatkan panjang VARCHAR. Operasi ini hanya mengubah metadata dan tidak memerlukan rewrite data atau exclusive lock yang berkepanjangan. Ini karena Redshift menyimpan VARCHAR sebagai variable-length dan metadata length hanya digunakan untuk validasi input, bukan storage format.<br><br>Opsi A: SALAH. Salah — tidak ada full table rewrite.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Salah — Redshift mendukung increase VARCHAR length sejak 2019.<br>Opsi D: SALAH. Salah — decrease tidak didukung (hanya increase) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Catatan: mengubah data type yang berbeda (misalnya INT ke VARCHAR) masih memerlukan deep copy.</div>
             </div>
         </div>
         

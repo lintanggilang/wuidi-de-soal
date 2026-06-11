@@ -34,15 +34,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer needs to consume a third-party weather REST API that returns paginated JSON responses. The API has a rate limit of 100 requests per minute. The engineer must ingest 50,000 records and store them in Amazon S3. Which AWS service and approach is MOST suitable for this requirement?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> AWS Lambda with a Step Functions state machine implementing pagination and rate limiting with Wait states</li>
                 <li><span class="option-label">B.</span> Amazon AppFlow with a custom connector to the weather API and rate limiting with Wait states</li>
                 <li><span class="option-label">C.</span> AWS Glue Python Shell job with retry logic and sleep intervals</li>
                 <li><span class="option-label">D.</span> Amazon API Gateway with a direct integration to S3</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Step Functions dengan Lambda ideal untuk workflow yang membutuhkan pagination (Map state) dan rate limiting (Wait state). Lambda menangani setiap API call, Step Functions mengorkestrasikan loop pagination dan mengatur jeda antar batch. Ini serverless dan cost-effective. Opsi B (AppFlow) hanya mendukung SaaS connectors yang sudah ada, bukan custom REST APIs generik — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Glue Python Shell) bisa timeout untuk 50,000 records dengan rate limit. Opsi D (API Gateway) untuk menerima API calls, bukan consuming external APIs.</div>
+                <div class="explanation">Step Functions dengan Lambda ideal untuk workflow yang membutuhkan pagination (Map state) dan rate limiting (Wait state). Lambda menangani setiap API call, Step Functions mengorkestrasikan loop pagination dan mengatur jeda antar batch. Ini serverless dan cost-effective.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Hanya mendukung SaaS connectors yang sudah ada, bukan custom REST APIs generik — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Bisa timeout untuk 50,000 records dengan rate limit.<br>Opsi D: SALAH. Untuk menerima API calls, bukan consuming external APIs.</div>
             </div>
         </div>
 
@@ -50,15 +52,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A company uses Amazon API Gateway to expose a data API that returns customer analytics. The data engineer needs to ensure the API can handle burst traffic of 10,000 requests per second while maintaining data freshness within 5 minutes. The underlying data is stored in Amazon Redshift. Which architecture provides OPTIMAL performance?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> API Gateway → Lambda → Redshift Data API with API Gateway caching enabled (TTL 5 minutes)</li>
-                <li><span class="option-label">B.</span> API Gateway → Lambda → Direct Redshift JDBC connection</li>
-                <li><span class="option-label">C.</span> API Gateway → Lambda → ElastiCache (pre-populated from Redshift every 5 minutes)</li>
-                <li><span class="option-label">D.</span> API Gateway → Direct integration with Redshift Data API configured for optimal performance and minimal</li>
+                
+                <li><span class="option-label">A.</span> API Gateway → Lambda → Direct Redshift JDBC connection</li>
+                <li><span class="option-label">B.</span> API Gateway → Lambda → ElastiCache (pre-populated from Redshift every 5 minutes)</li>
+                <li><span class="option-label">C.</span> API Gateway → Direct integration with Redshift Data API configured for optimal performance and minimal</li>
+                <li><span class="option-label">D.</span> API Gateway → Lambda → Redshift Data API with API Gateway caching enabled (TTL 5 minutes)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">API Gateway caching menangani burst traffic tanpa membebani backend. Dengan TTL 5 menit, data tetap fresh sesuai requirement. Redshift Data API menghindari masalah connection pooling. Opsi B (direct JDBC) tidak bisa scale ke 10K rps karena connection limit. Opsi C (ElastiCache) menambah kompleksitas operasional untuk pre-populating cache. Opsi D tidak mendukung direct integration tanpa Lambda dan tidak bisa handle caching di layer API Gateway tanpa Lambda proxy — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">API Gateway caching menangani burst traffic tanpa membebani backend. Dengan TTL 5 menit, data tetap fresh sesuai requirement. Redshift Data API menghindari masalah connection pooling.<br><br>Opsi A: SALAH. Tidak bisa scale ke 10K rps karena connection limit.<br>Opsi B: SALAH. Menambah kompleksitas operasional untuk pre-populating cache.<br>Opsi C: SALAH. Tidak mendukung direct integration tanpa Lambda dan tidak bisa handle caching di layer API Gateway tanpa Lambda proxy — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -66,15 +70,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data engineer is building a pipeline that consumes data from an external partner's API. The API uses OAuth 2.0 authentication with token refresh. The access token expires every hour. Where should the data engineer securely store and manage the OAuth credentials?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> AWS Secrets Manager with automatic rotation configured using a Lambda rotation function</li>
-                <li><span class="option-label">B.</span> AWS Systems Manager Parameter Store as a SecureString parameter</li>
-                <li><span class="option-label">C.</span> Hard-coded in the Lambda function environment variables encrypted with KMS</li>
-                <li><span class="option-label">D.</span> Amazon DynamoDB table with encryption at rest enabled configured for optimal performance and minimal</li>
+                
+                <li><span class="option-label">A.</span> Amazon DynamoDB table with encryption at rest enabled configured for optimal performance and minimal</li>
+                <li><span class="option-label">B.</span> AWS Secrets Manager with automatic rotation configured using a Lambda rotation function</li>
+                <li><span class="option-label">C.</span> AWS Systems Manager Parameter Store as a SecureString parameter</li>
+                <li><span class="option-label">D.</span> Hard-coded in the Lambda function environment variables encrypted with KMS</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Secrets Manager dirancang khusus untuk mengelola credentials dengan fitur automatic rotation. Lambda rotation function dapat secara otomatis merefresh OAuth token sebelum expired. Opsi B (Parameter Store) bisa menyimpan credentials tapi tidak memiliki built-in rotation mechanism. Opsi C (environment variables) tidak aman untuk credentials yang berubah dan sulit di-rotate. Opsi D (DynamoDB) bukan tempat yang tepat untuk credential management — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">AWS Secrets Manager dirancang khusus untuk mengelola credentials dengan fitur automatic rotation. Lambda rotation function dapat secara otomatis merefresh OAuth token sebelum expired.<br><br>Opsi A: SALAH. Bukan tempat yang tepat untuk credential management — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Bisa menyimpan credentials tapi tidak memiliki built-in rotation mechanism.<br>Opsi D: SALAH. Tidak aman untuk credentials yang berubah dan sulit di-rotate.</div>
             </div>
         </div>
 
@@ -82,15 +88,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A media company needs to consume a video metadata API that returns large responses (up to 50 MB per request). The data must be processed and stored in S3. AWS Lambda has a payload size limit. Which approach handles this large API response scenario?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use Lambda to call the API with streaming response, write directly to S3 using multipart upload</li>
-                <li><span class="option-label">B.</span> Use an ECS Fargate task to call the API, process the response, and write to S3</li>
-                <li><span class="option-label">C.</span> Use API Gateway with a 50 MB payload limit configuration with native S3 integration and optimized</li>
-                <li><span class="option-label">D.</span> Use Lambda with /tmp storage (10 GB) to buffer the response before uploading to S3</li>
+                
+                <li><span class="option-label">A.</span> Use Lambda with /tmp storage (10 GB) to buffer the response before uploading to S3</li>
+                <li><span class="option-label">B.</span> Use API Gateway with a 50 MB payload limit configuration with native S3 integration and optimized</li>
+                <li><span class="option-label">C.</span> Use an ECS Fargate task to call the API, process the response, and write to S3</li>
+                <li><span class="option-label">D.</span> Use Lambda to call the API with streaming response, write directly to S3 using multipart upload</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">Lambda /tmp storage mendukung hingga 10 GB (jauh lebih besar dari 50 MB response). Lambda bisa streaming API response ke /tmp lalu upload ke S3. Ini adalah solusi serverless yang paling sederhana. Opsi A salah karena Lambda invocation payload limit adalah 6 MB (synchronous), bukan soal streaming. Opsi B bisa bekerja tapi lebih kompleks untuk dikelola. Opsi C (API Gateway) memiliki batas payload 10 MB dan bukan untuk consuming external API — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D paling tepat karena /tmp storage cukup untuk 50 MB.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Lambda /tmp storage mendukung hingga 10 GB (jauh lebih besar dari 50 MB response). Lambda bisa streaming API response ke /tmp lalu upload ke S3. Ini adalah solusi serverless yang paling sederhana.<br><br>Opsi A: BENAR. Paling tepat karena /tmp storage cukup untuk 50 MB.<br>Opsi B: SALAH. Memiliki batas payload 10 MB dan bukan untuk consuming external API — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Bisa bekerja tapi lebih kompleks untuk dikelola.<br>Opsi D: SALAH. Salah karena Lambda invocation payload limit adalah 6 MB (synchronous), bukan soal streaming.</div>
             </div>
         </div>
 
@@ -98,15 +106,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineering team needs to ingest data from multiple SaaS applications (Salesforce, ServiceNow, and Zendesk) into a centralized S3 data lake. Each source has different API protocols. Which approach provides the MOST unified and manageable solution?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Amazon AppFlow with pre-built connectors for each SaaS application</li>
-                <li><span class="option-label">B.</span> Separate Lambda functions for each API with custom integration code</li>
-                <li><span class="option-label">C.</span> AWS Glue ETL jobs with marketplace connectors for each SaaS</li>
-                <li><span class="option-label">D.</span> Amazon EventBridge with partner event sources for each application</li>
+                
+                <li><span class="option-label">A.</span> AWS Glue ETL jobs with marketplace connectors for each SaaS</li>
+                <li><span class="option-label">B.</span> Amazon EventBridge with partner event sources for each application</li>
+                <li><span class="option-label">C.</span> Amazon AppFlow with pre-built connectors for each SaaS application</li>
+                <li><span class="option-label">D.</span> Separate Lambda functions for each API with custom integration code</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon AppFlow memiliki pre-built connectors untuk Salesforce, ServiceNow, Zendesk, dan banyak SaaS lainnya. Ini memberikan unified interface untuk mengonfigurasi flows dari semua sources ke S3, dengan features seperti scheduling, data transformation, dan error handling built-in. Opsi B membutuhkan custom code untuk setiap source. Opsi C (Glue) tidak memiliki native connectors untuk semua SaaS ini. Opsi D (EventBridge) hanya untuk events, bukan data ingestion bulk.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Amazon AppFlow memiliki pre-built connectors untuk Salesforce, ServiceNow, Zendesk, dan banyak SaaS lainnya. Ini memberikan unified interface untuk mengonfigurasi flows dari semua sources ke S3, dengan features seperti scheduling, data transformation, dan error handling built-in.<br><br>Opsi A: SALAH. Tidak memiliki native connectors untuk semua SaaS ini.<br>Opsi B: SALAH. Hanya untuk events, bukan data ingestion bulk.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Membutuhkan custom code untuk setiap source.</div>
             </div>
         </div>
 
@@ -114,15 +124,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer needs to call the Amazon Redshift Data API asynchronously from a Lambda function to execute a long-running query. The query takes 10 minutes to complete. How should the engineer implement this to get the results?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Call ExecuteStatement, then use EventBridge to trigger another Lambda when the query completes via Redshift Data API state change events</li>
-                <li><span class="option-label">B.</span> Call ExecuteStatement and use a while loop with DescribeStatement to poll until completion</li>
-                <li><span class="option-label">C.</span> Call ExecuteStatement with synchronous mode enabled and wait for the result</li>
-                <li><span class="option-label">D.</span> Call BatchExecuteStatement and retrieve results immediately configured for optimal performance and minimal operational overhead</li>
+                
+                <li><span class="option-label">A.</span> Call ExecuteStatement with synchronous mode enabled and wait for the result</li>
+                <li><span class="option-label">B.</span> Call BatchExecuteStatement and retrieve results immediately configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Call ExecuteStatement, then use EventBridge to trigger another Lambda when the query completes via Redshift Data API state change events</li>
+                <li><span class="option-label">D.</span> Call ExecuteStatement and use a while loop with DescribeStatement to poll until completion</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Redshift Data API adalah asynchronous. ExecuteStatement mengembalikan query ID segera. EventBridge menangkap event ketika statement berubah status ke FINISHED, lalu memicu Lambda kedua yang mengambil hasil. Ini event-driven dan efisien. Opsi B (polling) akan timeout karena Lambda memiliki batas 15 menit dan query memakan 10 menit. Opsi C tidak ada mode synchronous di Redshift Data API. Opsi D (BatchExecuteStatement) tetap asynchronous dan tidak mengembalikan hasil langsung — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Redshift Data API adalah asynchronous. ExecuteStatement mengembalikan query ID segera. EventBridge menangkap event ketika statement berubah status ke FINISHED, lalu memicu Lambda kedua yang mengambil hasil. Ini event-driven dan efisien.<br><br>Opsi A: SALAH. Tidak ada mode synchronous di Redshift Data API.<br>Opsi B: SALAH. Tetap asynchronous dan tidak mengembalikan hasil langsung — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Akan timeout karena Lambda memiliki batas 15 menit dan query memakan 10 menit.</div>
             </div>
         </div>
 
@@ -130,15 +142,17 @@
             <div class="question-number">7</div>
             <div class="question-text">An e-commerce company exposes product data through a GraphQL API built on AWS AppSync. A partner company needs to consume this API to sync product catalogs daily. The partner processes data in batches of 1,000 items. Which approach allows the partner to efficiently consume the GraphQL API for batch data retrieval?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use GraphQL queries with pagination (cursor-based) and request only needed fields to minimize payload</li>
-                <li><span class="option-label">B.</span> Use GraphQL subscriptions to receive all product updates in real-time</li>
-                <li><span class="option-label">C.</span> Directly query the underlying DynamoDB table using the AWS SDK with pagination (cursor-based) and request only needed</li>
+                
+                <li><span class="option-label">A.</span> Directly query the underlying DynamoDB table using the AWS SDK with pagination (cursor-based) and request only needed</li>
+                <li><span class="option-label">B.</span> Use GraphQL queries with pagination (cursor-based) and request only needed fields to minimize payload</li>
+                <li><span class="option-label">C.</span> Use GraphQL subscriptions to receive all product updates in real-time</li>
                 <li><span class="option-label">D.</span> Use AppSync pipeline resolvers to batch all results in a single response</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">GraphQL dengan cursor-based pagination memungkinkan pengambilan data dalam batch (1,000 items per page). Pemilihan field (query projection) mengurangi ukuran response. Ini adalah pola standar untuk batch consumption dari GraphQL API. Opsi B (subscriptions) untuk real-time streaming, bukan batch retrieval. Opsi C melewati API layer yang melanggar security boundaries — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (pipeline resolvers) untuk composing multiple data sources server-side, bukan batch response.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">GraphQL dengan cursor-based pagination memungkinkan pengambilan data dalam batch (1,000 items per page). Pemilihan field (query projection) mengurangi ukuran response. Ini adalah pola standar untuk batch consumption dari GraphQL API.<br><br>Opsi A: SALAH. Melewati API layer yang melanggar security boundaries — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Untuk real-time streaming, bukan batch retrieval.<br>Opsi D: SALAH. Untuk composing multiple data sources server-side, bukan batch response.</div>
             </div>
         </div>
 
@@ -146,15 +160,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer is consuming a financial data API that occasionally returns HTTP 429 (Too Many Requests) errors. The pipeline must be resilient and eventually process all data. Which implementation pattern is MOST appropriate?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Implement exponential backoff with jitter and a maximum retry count with dead letter queue for failed requests</li>
                 <li><span class="option-label">B.</span> Immediately retry failed requests with no delay</li>
                 <li><span class="option-label">C.</span> Skip the failed requests and log them for manual retry later with jitter</li>
                 <li><span class="option-label">D.</span> Increase the concurrency of API calls to compensate for failed requests</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Exponential backoff with jitter adalah best practice untuk handling rate limiting (429 errors). Jitter mencegah thundering herd problem dimana semua retry terjadi bersamaan. Maximum retry count mencegah infinite loops. Dead letter queue menangkap requests yang gagal setelah semua retry untuk investigasi. Opsi B (immediate retry) memperburuk rate limiting. Opsi C kehilangan data — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (increase concurrency) justru menyebabkan lebih banyak 429 errors.</div>
+                <div class="explanation">Exponential backoff with jitter adalah best practice untuk handling rate limiting (429 errors). Jitter mencegah thundering herd problem dimana semua retry terjadi bersamaan. Maximum retry count mencegah infinite loops. Dead letter queue menangkap requests yang gagal setelah semua retry untuk investigasi.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Memperburuk rate limiting.<br>Opsi C: SALAH. Kehilangan data — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Justru menyebabkan lebih banyak 429 errors.</div>
             </div>
         </div>
 
@@ -162,15 +178,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer needs to consume data from Amazon DynamoDB using the DynamoDB API for a batch export. The table has 100 GB of data. The engineer wants to minimize the impact on the table's read capacity. Which API operation is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use DynamoDB Export to S3 feature which reads from the table's backup without consuming read capacity</li>
+                
+                <li><span class="option-label">A.</span> Use Query operation on each partition key sequentially with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> Use Scan operation with parallel scan and a rate limiter</li>
-                <li><span class="option-label">C.</span> Use Query operation on each partition key sequentially with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">C.</span> Use DynamoDB Export to S3 feature which reads from the table's backup without consuming read capacity</li>
                 <li><span class="option-label">D.</span> Use BatchGetItem with consistent reads enabled</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DynamoDB Export to S3 membaca dari point-in-time recovery (PITR) backup dan tidak mengonsumsi read capacity units pada tabel. Ini ideal untuk batch export tanpa impacting production. Opsi B (parallel Scan) mengonsumsi banyak RCU. Opsi C (sequential Query) lambat dan masih consume RCU — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (BatchGetItem) membutuhkan mengetahui semua keys terlebih dahulu dan juga consume RCU.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">DynamoDB Export to S3 membaca dari point-in-time recovery (PITR) backup dan tidak mengonsumsi read capacity units pada tabel. Ini ideal untuk batch export tanpa impacting production.<br><br>Opsi A: SALAH. Lambat dan masih consume RCU — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Mengonsumsi banyak RCU.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Membutuhkan mengetahui semua keys terlebih dahulu dan juga consume RCU.</div>
             </div>
         </div>
 
@@ -178,15 +196,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A healthcare company needs to consume a FHIR (Fast Healthcare Interoperability Resources) API from a hospital system. The API requires mutual TLS (mTLS) authentication. The data pipeline runs on AWS Lambda. How should the data engineer configure the client certificate for mTLS?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Store the client certificate and private key in AWS Secrets Manager, retrieve them in Lambda, and configure the HTTPS client</li>
-                <li><span class="option-label">B.</span> Attach the client certificate to the Lambda function's execution role</li>
+                
+                <li><span class="option-label">A.</span> Attach the client certificate to the Lambda function's execution role</li>
+                <li><span class="option-label">B.</span> Store the certificate in the Lambda deployment package as a static file configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Use AWS Certificate Manager (ACM) to generate the client certificate and associate it with Lambda</li>
-                <li><span class="option-label">D.</span> Store the certificate in the Lambda deployment package as a static file configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Store the client certificate and private key in AWS Secrets Manager, retrieve them in Lambda, and configure the HTTPS client</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Secrets Manager adalah tempat aman untuk menyimpan client certificates dan private keys. Lambda mengambil secret saat runtime dan mengonfigurasi HTTPS client (misalnya requests library di Python) dengan mTLS. Ini memungkinkan rotation tanpa redeploy. Opsi B (IAM role) tidak mendukung client certificates. Opsi C (ACM) hanya untuk server certificates di AWS services, bukan client certificates di Lambda outbound calls. Opsi D (static file) tidak aman karena private key terexpose di deployment package dan sulit di-rotate — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">AWS Secrets Manager adalah tempat aman untuk menyimpan client certificates dan private keys. Lambda mengambil secret saat runtime dan mengonfigurasi HTTPS client (misalnya requests library di Python) dengan mTLS. Ini memungkinkan rotation tanpa redeploy.<br><br>Opsi A: SALAH. Tidak mendukung client certificates.<br>Opsi B: SALAH. Tidak aman karena private key terexpose di deployment package dan sulit di-rotate — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Hanya untuk server certificates di AWS services, bukan client certificates di Lambda outbound calls.<br>Opsi D: BENAR.</div>
             </div>
         </div>
         

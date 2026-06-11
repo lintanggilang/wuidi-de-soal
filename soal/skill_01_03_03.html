@@ -34,15 +34,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer builds a serverless ETL workflow using Step Functions and Lambda. The workflow processes files uploaded to S3. During peak hours, 1,000 files arrive simultaneously. The Lambda function hits the account's concurrent execution limit (1,000), causing throttling. How should the workflow handle this without increasing the account limit?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Use Step Functions Map state with MaxConcurrency set to a value below the Lambda limit (e.g., 100) to control how many files are processed simultaneously</li>
-                <li><span class="option-label">B.</span> Add Wait states between each Lambda invocation with MaxConcurrency set</li>
-                <li><span class="option-label">C.</span> Process all files sequentially in a single Lambda invocation</li>
-                <li><span class="option-label">D.</span> Use reserved concurrency on the Lambda function set to 1,000</li>
+                <li><span class="option-label">B.</span> Process all files sequentially in a single Lambda invocation</li>
+                <li><span class="option-label">C.</span> Use reserved concurrency on the Lambda function set to 1,000</li>
+                <li><span class="option-label">D.</span> Add Wait states between each Lambda invocation with MaxConcurrency set</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">MaxConcurrency pada Map state membatasi berapa banyak iterations yang berjalan bersamaan. Dengan MaxConcurrency=100, hanya 100 Lambda invocations berjalan concurrent, jauh di bawah account limit. Files lain menunggu dalam queue dan diproses saat slots tersedia. Opsi B (Wait states) adds latency tanpa guaranteeing concurrency control — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (single Lambda) timeout 15 menit — 1,000 files mungkin tidak selesai. Opsi D (reserved 1,000) mengambil semua account concurrency dari functions lain.</div>
+                <div class="explanation">MaxConcurrency pada Map state membatasi berapa banyak iterations yang berjalan bersamaan. Dengan MaxConcurrency=100, hanya 100 Lambda invocations berjalan concurrent, jauh di bawah account limit. Files lain menunggu dalam queue dan diproses saat slots tersedia.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Timeout 15 menit — 1,000 files mungkin tidak selesai.<br>Opsi C: SALAH. Mengambil semua account concurrency dari functions lain.<br>Opsi D: SALAH. Adds latency tanpa guaranteeing concurrency control — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -50,15 +52,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A serverless data pipeline uses EventBridge → Lambda → S3. The Lambda function processes events but occasionally takes longer than 15 minutes for large datasets. The function hits the maximum timeout limit. Which serverless redesign resolves this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Replace the single Lambda with a Step Functions workflow that breaks processing into smaller chunks, each handled by a separate Lambda invocation within the 15-minute limit</li>
+                
+                <li><span class="option-label">A.</span> Switch to an EC2 instance for processing with a Step Functions workflow that breaks processing into smaller chunks</li>
                 <li><span class="option-label">B.</span> Increase Lambda timeout beyond 15 minutes</li>
-                <li><span class="option-label">C.</span> Use Lambda provisioned concurrency to run longer</li>
-                <li><span class="option-label">D.</span> Switch to an EC2 instance for processing with a Step Functions workflow that breaks processing into smaller chunks</li>
+                <li><span class="option-label">C.</span> Replace the single Lambda with a Step Functions workflow that breaks processing into smaller chunks, each handled by a separate Lambda invocation within the 15-minute limit</li>
+                <li><span class="option-label">D.</span> Use Lambda provisioned concurrency to run longer</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Step Functions can orchestrate multiple Lambda calls, each within the 15-minute limit. Pattern: first Lambda reads data and creates chunk list → Map state processes each chunk in separate Lambda invocations → final Lambda aggregates results. This remains fully serverless while removing the timeout constraint. Opsi B — 15 minutes is Lambda's hard limit, cannot be increased. Opsi C — provisioned concurrency doesn't change timeout. Opsi D — EC2 is not serverless, adds operational overhead — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Step Functions can orchestrate multiple Lambda calls, each within the 15-minute limit. Pattern: first Lambda reads data and creates chunk list → Map state processes each chunk in separate Lambda invocations → final Lambda aggregates results. This remains fully serverless while removing the timeout constraint.<br><br>Opsi A: SALAH. EC2 is not serverless, adds operational overhead — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. 15 minutes is Lambda's hard limit, cannot be increased.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Provisioned concurrency doesn't change timeout.</div>
             </div>
         </div>
 
@@ -66,15 +70,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A company has a serverless workflow that runs every hour via EventBridge Scheduler → Step Functions → Glue ETL. The Glue job costs significantly increase month-over-month. Analysis shows the job processes the same amount of data each run but worker utilization is low. Which serverless optimization reduces costs?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Enable AWS Glue Auto Scaling to dynamically reduce workers when utilization is low, and review if the number of workers can be reduced in the job configuration</li>
-                <li><span class="option-label">B.</span> Switch from Glue to a self-managed Spark cluster configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> Run the workflow less frequently (daily instead of hourly)</li>
-                <li><span class="option-label">D.</span> Increase the Glue job timeout to allow slower processing with fewer DPUs</li>
+                <li><span class="option-label">B.</span> Increase the Glue job timeout to allow slower processing with fewer DPUs</li>
+                <li><span class="option-label">C.</span> Switch from Glue to a self-managed Spark cluster configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Run the workflow less frequently (daily instead of hourly)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue Auto Scaling memungkinkan job menyesuaikan jumlah workers berdasarkan actual utilization. Jika utilization rendah, Auto Scaling mengurangi workers = fewer DPU-hours billed. Juga review NumberOfWorkers setting — mungkin over-provisioned dari awal. Opsi B (self-managed) menambah operational overhead, melanggar serverless principle — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C mengubah business requirement. Opsi D (longer timeout) tetap membayar DPU per jam minimum billing.</div>
+                <div class="explanation">Glue Auto Scaling memungkinkan job menyesuaikan jumlah workers berdasarkan actual utilization. Jika utilization rendah, Auto Scaling mengurangi workers = fewer DPU-hours billed. Juga review NumberOfWorkers setting — mungkin over-provisioned dari awal.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Tetap membayar DPU per jam minimum billing.<br>Opsi C: SALAH. Menambah operational overhead, melanggar serverless principle — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Mengubah business requirement.</div>
             </div>
         </div>
 
@@ -82,15 +88,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A serverless data pipeline needs to maintain state between processing steps. Step 1 produces a list of files to process, Step 2 processes each file, and Step 3 needs to know which files succeeded and which failed. In AWS Step Functions, how is this state management handled?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Step Functions automatically passes output from each state as input to the next state via the state machine's JSON data flow (InputPath, OutputPath, ResultPath)</li>
-                <li><span class="option-label">B.</span> Use DynamoDB to store state between steps</li>
-                <li><span class="option-label">C.</span> Use S3 to store intermediate state files configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Use environment variables shared across Lambda functions</li>
+                <li><span class="option-label">B.</span> Use environment variables shared across Lambda functions</li>
+                <li><span class="option-label">C.</span> Use DynamoDB to store state between steps</li>
+                <li><span class="option-label">D.</span> Use S3 to store intermediate state files configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Step Functions has built-in state management. Each state receives input JSON, produces output JSON, and passes it to the next state. InputPath selects which part of input to send to the task, ResultPath determines where task output is placed, OutputPath selects what passes to next state. Map state automatically collects results from all iterations. No external storage needed for workflow state. Opsi B/C (external storage) unnecessary complexity. Opsi D (env vars) cannot be shared between separate Lambda invocations. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="explanation">Step Functions has built-in state management. Each state receives input JSON, produces output JSON, and passes it to the next state. InputPath selects which part of input to send to the task, ResultPath determines where task output is placed, OutputPath selects what passes to next state. Map state automatically collects results from all iterations. No external storage needed for workflow state.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Cannot be shared between separate Lambda invocations.<br>Opsi C: SALAH. /C (external storage) unnecessary complexity.<br>Opsi D: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -98,15 +106,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer needs to implement a serverless workflow that processes data every 5 minutes. The workflow must: read new files from S3, transform them, and load to DynamoDB. The total processing time is under 1 minute. Which is the MOST cost-effective serverless implementation?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> EventBridge Scheduler (rate 5 minutes) → Lambda function that reads S3, transforms, and writes to DynamoDB</li>
-                <li><span class="option-label">B.</span> EventBridge Scheduler → Step Functions → Lambda with native S3 integration</li>
-                <li><span class="option-label">C.</span> S3 Event Notifications → Lambda (triggered on each file upload)</li>
-                <li><span class="option-label">D.</span> Glue ETL job scheduled every 5 minutes</li>
+                
+                <li><span class="option-label">A.</span> EventBridge Scheduler → Step Functions → Lambda with native S3 integration</li>
+                <li><span class="option-label">B.</span> EventBridge Scheduler (rate 5 minutes) → Lambda function that reads S3, transforms, and writes to DynamoDB</li>
+                <li><span class="option-label">C.</span> Glue ETL job scheduled every 5 minutes</li>
+                <li><span class="option-label">D.</span> S3 Event Notifications → Lambda (triggered on each file upload)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">S3 Event Notifications → Lambda is most cost-effective karena Lambda hanya dipanggil saat ada file baru (event-driven), bukan setiap 5 menit (polling). Jika tidak ada files, tidak ada cost. Processing under 1 minute easily fits Lambda limits. Opsi A (scheduled every 5 min) memicu Lambda bahkan ketika tidak ada new files. Opsi B (Step Functions) menambah cost tanpa benefit untuk simple single-step flow — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Glue) memiliki minimum billing dan startup overhead yang overkill untuk sub-minute processing.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">S3 Event Notifications → Lambda is most cost-effective karena Lambda hanya dipanggil saat ada file baru (event-driven), bukan setiap 5 menit (polling). Jika tidak ada files, tidak ada cost. Processing under 1 minute easily fits Lambda limits.<br><br>Opsi A: SALAH. Menambah cost tanpa benefit untuk simple single-step flow — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Memicu Lambda bahkan ketika tidak ada new files.<br>Opsi C: SALAH. Memiliki minimum billing dan startup overhead yang overkill untuk sub-minute processing.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -114,15 +124,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A serverless data pipeline uses Lambda functions. After a deployment, a Lambda function's cold start adds 10 seconds of latency to time-sensitive data processing. The function runs approximately every 30 seconds. How can cold starts be eliminated while maintaining serverless architecture?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Configure Provisioned Concurrency on the Lambda function to keep a specified number of execution environments warm and ready</li>
-                <li><span class="option-label">B.</span> Use a CloudWatch Events rule to "ping" the function every 5 minutes</li>
-                <li><span class="option-label">C.</span> Increase Lambda memory allocation to reduce cold start time and ready</li>
-                <li><span class="option-label">D.</span> Move the function to a container on ECS Fargate</li>
+                
+                <li><span class="option-label">A.</span> Move the function to a container on ECS Fargate</li>
+                <li><span class="option-label">B.</span> Configure Provisioned Concurrency on the Lambda function to keep a specified number of execution environments warm and ready</li>
+                <li><span class="option-label">C.</span> Use a CloudWatch Events rule to "ping" the function every 5 minutes</li>
+                <li><span class="option-label">D.</span> Increase Lambda memory allocation to reduce cold start time and ready</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Provisioned Concurrency keeps specified number of Lambda execution environments initialized and ready. Invocations go to pre-warmed environments with no cold start. Since the function runs every 30 seconds, Provisioned Concurrency of 1 ensures always-warm state. Opsi B (pinging) is unreliable — Lambda can still create new environments. Opsi C (more memory) reduces cold start time but doesn't eliminate it — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (ECS) leaves serverless paradigm and adds management overhead.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Provisioned Concurrency keeps specified number of Lambda execution environments initialized and ready. Invocations go to pre-warmed environments with no cold start. Since the function runs every 30 seconds, Provisioned Concurrency of 1 ensures always-warm state.<br><br>Opsi A: SALAH. Leaves serverless paradigm and adds management overhead.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Is unreliable — Lambda can still create new environments.<br>Opsi D: SALAH. Reduces cold start time but doesn't eliminate it — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -130,15 +142,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer maintains a serverless workflow deployed with AWS SAM. The workflow includes multiple Lambda functions, Step Functions, and DynamoDB tables. A recent deployment introduced a bug. The engineer needs to quickly revert to the previous working version. What is the FASTEST rollback approach?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use CloudFormation rollback — update the SAM stack to the previous template version or trigger automatic rollback via the CloudFormation console/CLI</li>
-                <li><span class="option-label">B.</span> Manually delete all resources and redeploy from the previous git commit</li>
+                
+                <li><span class="option-label">A.</span> Create a new stack with the previous version alongside the current one</li>
+                <li><span class="option-label">B.</span> Use CloudFormation rollback — update the SAM stack to the previous template version or trigger automatic rollback via the CloudFormation console/CLI</li>
                 <li><span class="option-label">C.</span> Update each Lambda function individually to the previous version configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Create a new stack with the previous version alongside the current one</li>
+                <li><span class="option-label">D.</span> Manually delete all resources and redeploy from the previous git commit</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SAM deploys via CloudFormation. CloudFormation supports stack rollback — reverting all resources to previous state atomically. This rolls back Lambda code, Step Functions definition, and DynamoDB config together. Fastest because it's one command and handles all resources. Opsi B (delete+redeploy) causes downtime and potential data loss. Opsi C (individual Lambda) doesn't revert Step Functions or other resources — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (new stack) creates resource conflicts and doesn't fix the broken one.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">SAM deploys via CloudFormation. CloudFormation supports stack rollback — reverting all resources to previous state atomically. This rolls back Lambda code, Step Functions definition, and DynamoDB config together. Fastest because it's one command and handles all resources.<br><br>Opsi A: SALAH. Creates resource conflicts and doesn't fix the broken one.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Doesn't revert Step Functions or other resources — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Causes downtime and potential data loss.</div>
             </div>
         </div>
 
@@ -146,15 +160,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A serverless ETL pipeline uses Step Functions Express Workflow for high-frequency, short-duration processing. The workflow is invoked 100,000 times per day, each execution lasting 10 seconds. The team notices unexpected costs. What is the MOST likely billing consideration they missed?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Express Workflows are billed per number of state transitions AND duration (memory × time), not just per execution. High state count per execution multiplied by 100K daily executions results in significant transition charges</li>
+                
+                <li><span class="option-label">A.</span> Step Functions charges for failed executions too and duration (memory × time), not just per execution</li>
                 <li><span class="option-label">B.</span> Standard Workflows would be cheaper at this scale</li>
-                <li><span class="option-label">C.</span> Step Functions charges for failed executions too and duration (memory × time), not just per execution</li>
-                <li><span class="option-label">D.</span> The Lambda invocations inside the workflow are double-billed</li>
+                <li><span class="option-label">C.</span> The Lambda invocations inside the workflow are double-billed</li>
+                <li><span class="option-label">D.</span> Express Workflows are billed per number of state transitions AND duration (memory × time), not just per execution. High state count per execution multiplied by 100K daily executions results in significant transition charges</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Express Workflows pricing = (number of requests) + (duration × memory). Duration is calculated per state transition multiplied by execution memory (64MB increments). For 100K executions/day × multiple state transitions each, costs accumulate. If each execution has 10 states × 10 seconds, that's billed differently than expected. Understanding the pricing model (transitions × duration × memory) is critical. Opsi B — depends on the specific case, at high volume Express is often cheaper. Opsi C — true but not the "missed" consideration — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — Lambda not double-billed.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Express Workflows pricing = (number of requests) + (duration × memory). Duration is calculated per state transition multiplied by execution memory (64MB increments). For 100K executions/day × multiple state transitions each, costs accumulate. If each execution has 10 states × 10 seconds, that's billed differently than expected. Understanding the pricing model (transitions × duration × memory) is critical.<br><br>Opsi A: SALAH. True but not the "missed" consideration — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Depends on the specific case, at high volume Express is often cheaper.<br>Opsi C: SALAH. Lambda not double-billed.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -162,15 +178,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A serverless workflow uses EventBridge Pipes to connect Amazon SQS (source) → Lambda (enrichment) → Step Functions (target). The engineer needs to filter messages so only orders above $100 are processed. Where should this filtering be applied for MAXIMUM cost efficiency?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Configure filtering in the EventBridge Pipe's filter criteria — messages not matching the filter are discarded before reaching the enrichment Lambda or target, saving Lambda invocation and Step Functions execution costs</li>
-                <li><span class="option-label">B.</span> Add filtering logic inside the Lambda enrichment function and Step Functions execution costs</li>
-                <li><span class="option-label">C.</span> Add a Choice state in Step Functions to discard low-value orders</li>
+                
+                <li><span class="option-label">A.</span> Add filtering logic inside the Lambda enrichment function and Step Functions execution costs</li>
+                <li><span class="option-label">B.</span> Add a Choice state in Step Functions to discard low-value orders</li>
+                <li><span class="option-label">C.</span> Configure filtering in the EventBridge Pipe's filter criteria — messages not matching the filter are discarded before reaching the enrichment Lambda or target, saving Lambda invocation and Step Functions execution costs</li>
                 <li><span class="option-label">D.</span> Configure SQS message filtering on the queue</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge Pipes filter criteria evaluates messages BEFORE enrichment and target. Messages that don't match are discarded at the pipe level — no Lambda invocation, no Step Functions execution. This is the earliest and cheapest filtering point. Opsi B (Lambda filter) — Lambda already invoked and billed before filtering — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Step Functions Choice) — Step Functions execution already started and billed. Opsi D — SQS doesn't have built-in message body filtering (only for SNS subscriptions).</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">EventBridge Pipes filter criteria evaluates messages BEFORE enrichment and target. Messages that don't match are discarded at the pipe level — no Lambda invocation, no Step Functions execution. This is the earliest and cheapest filtering point.<br><br>Opsi A: SALAH. Lambda already invoked and billed before filtering — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Step Functions execution already started and billed.<br>Opsi C: BENAR.<br>Opsi D: SALAH. SQS doesn't have built-in message body filtering (only for SNS subscriptions).</div>
             </div>
         </div>
 
@@ -178,15 +196,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data engineer is troubleshooting a serverless workflow. A Step Functions execution failed but the error details are unclear from the execution history. The Lambda function inside didn't log sufficient information. Which approach provides BEST observability for serverless workflows?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable Step Functions X-Ray tracing for distributed tracing, configure CloudWatch Logs for the state machine execution logs (ALL level), and add structured logging with correlation IDs in Lambda functions</li>
-                <li><span class="option-label">B.</span> Add print statements throughout the Lambda code with correlation IDs in Lambda functions for distributed tracing</li>
-                <li><span class="option-label">C.</span> Check the Step Functions console execution history only</li>
-                <li><span class="option-label">D.</span> Enable VPC Flow Logs for the Lambda function</li>
+                
+                <li><span class="option-label">A.</span> Check the Step Functions console execution history only</li>
+                <li><span class="option-label">B.</span> Enable VPC Flow Logs for the Lambda function</li>
+                <li><span class="option-label">C.</span> Enable Step Functions X-Ray tracing for distributed tracing, configure CloudWatch Logs for the state machine execution logs (ALL level), and add structured logging with correlation IDs in Lambda functions</li>
+                <li><span class="option-label">D.</span> Add print statements throughout the Lambda code with correlation IDs in Lambda functions for distributed tracing</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Comprehensive observability: X-Ray provides end-to-end distributed traces showing timing and errors across all services. CloudWatch Logs at ALL level captures every state transition with input/output. Structured logging with correlation IDs (execution ID) links Lambda logs to specific Step Functions execution. This gives full picture. Opsi B (print statements) unstructured and hard to correlate — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (console only) limited detail. Opsi D (VPC Flow Logs) for network traffic, not application logic.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Comprehensive observability: X-Ray provides end-to-end distributed traces showing timing and errors across all services. CloudWatch Logs at ALL level captures every state transition with input/output. Structured logging with correlation IDs (execution ID) links Lambda logs to specific Step Functions execution. This gives full picture.<br><br>Opsi A: SALAH. Limited detail.<br>Opsi B: SALAH. For network traffic, not application logic.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Unstructured and hard to correlate — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
         

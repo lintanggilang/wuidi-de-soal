@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer has a daily ETL pipeline that loads customer records from multiple sources into an Amazon S3 data lake. Before downstream analytics consumes this data, the engineer needs to automatically verify that no critical fields (customer_id, email, transaction_date) contain NULL values, and that transaction_amount falls within the range of $0.01 to $1,000,000. Which AWS service provides the MOST integrated and declarative approach for these checks?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Write an Amazon Athena query that counts NULLs and out-of-range values, triggered by a Lambda function</li>
+                
+                <li><span class="option-label">A.</span> Create a DataBrew recipe with validation steps and run it before the analytics pipeline</li>
                 <li><span class="option-label">B.</span> Use AWS Glue Data Quality rules defined in the Glue Data Catalog with automatic evaluation during ETL jobs</li>
-                <li><span class="option-label">C.</span> Create a DataBrew recipe with validation steps and run it before the analytics pipeline</li>
-                <li><span class="option-label">D.</span> Deploy a SageMaker Data Wrangler flow with data quality checks as processing steps configured for optimal performance</li>
+                <li><span class="option-label">C.</span> Deploy a SageMaker Data Wrangler flow with data quality checks as processing steps configured for optimal performance</li>
+                <li><span class="option-label">D.</span> Write an Amazon Athena query that counts NULLs and out-of-range values, triggered by a Lambda function</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS Glue Data Quality memungkinkan definisi rules secara deklaratif menggunakan Data Quality Definition Language (DQDL). Rules dapat dievaluasi secara otomatis selama ETL job execution dan terintegrasi langsung dengan Glue Data Catalog. Rules seperti Completeness, ColumnValues range check bisa didefinisikan tanpa coding. Opsi A memerlukan kode custom dan orchestration terpisah. Opsi C (DataBrew) lebih cocok untuk transformasi visual daripada automated quality gates. Opsi D (Data Wrangler) dirancang untuk ML data preparation, bukan pipeline data quality automation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">AWS Glue Data Quality memungkinkan definisi rules secara deklaratif menggunakan Data Quality Definition Language (DQDL). Rules dapat dievaluasi secara otomatis selama ETL job execution dan terintegrasi langsung dengan Glue Data Catalog. Rules seperti Completeness, ColumnValues range check bisa didefinisikan tanpa coding.<br><br>Opsi A: SALAH. Lebih cocok untuk transformasi visual daripada automated quality gates.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Dirancang untuk ML data preparation, bukan pipeline data quality automation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Memerlukan kode custom dan orchestration terpisah.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A company has a data lake with historical transaction records in Amazon S3. A data analyst suspects that some records have duplicate transaction_id values due to a bug in the upstream system. The analyst needs to quickly identify the scale of the duplication problem and find specific duplicate records. Which approach provides the FASTEST investigation with minimal setup?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Load data into Amazon Redshift and run GROUP BY with HAVING COUNT(*) > 1 with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">B.</span> Use Amazon Athena to run a SQL query with GROUP BY transaction_id HAVING COUNT(*) > 1 directly on S3</li>
-                <li><span class="option-label">C.</span> Create an AWS Glue ETL job that uses FindMatches ML transform to identify duplicates</li>
-                <li><span class="option-label">D.</span> Use Amazon QuickSight to create a visual showing transaction_id distribution</li>
+                
+                <li><span class="option-label">A.</span> Create an AWS Glue ETL job that uses FindMatches ML transform to identify duplicates</li>
+                <li><span class="option-label">B.</span> Load data into Amazon Redshift and run GROUP BY with HAVING COUNT(*) > 1 with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">C.</span> Use Amazon QuickSight to create a visual showing transaction_id distribution</li>
+                <li><span class="option-label">D.</span> Use Amazon Athena to run a SQL query with GROUP BY transaction_id HAVING COUNT(*) > 1 directly on S3</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Amazon Athena adalah solusi serverless yang bisa langsung query data di S3 tanpa loading atau provisioning. Query GROUP BY dengan HAVING COUNT > 1 akan segera menunjukkan skala duplikasi dan record spesifik. Ini paling cepat karena zero setup. Opsi A memerlukan loading data ke Redshift (waktu dan biaya) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (FindMatches) untuk fuzzy matching, bukan exact duplicate yang sudah bisa dideteksi dengan GROUP BY sederhana. Opsi D (QuickSight) tidak memberikan detail granular per record yang diperlukan untuk investigasi.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Amazon Athena adalah solusi serverless yang bisa langsung query data di S3 tanpa loading atau provisioning. Query GROUP BY dengan HAVING COUNT > 1 akan segera menunjukkan skala duplikasi dan record spesifik. Ini paling cepat karena zero setup.<br><br>Opsi A: SALAH. Untuk fuzzy matching, bukan exact duplicate yang sudah bisa dideteksi dengan GROUP BY sederhana.<br>Opsi B: SALAH. Memerlukan loading data ke Redshift (waktu dan biaya) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Tidak memberikan detail granular per record yang diperlukan untuk investigasi.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A streaming data pipeline ingests IoT sensor data into Amazon Kinesis Data Streams. Some sensors occasionally send malformed JSON or values outside physically possible ranges (e.g., temperature > 1000°C for room sensors). The data engineer needs to validate and filter these records in real-time before they reach the data lake. Which solution BEST addresses this requirement?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use an AWS Lambda function as a Kinesis consumer to validate JSON structure and value ranges, routing valid records to the data lake and invalid records to a dead-letter queue</li>
+                
+                <li><span class="option-label">A.</span> Write validation rules in AWS Glue streaming ETL to discard invalid records</li>
                 <li><span class="option-label">B.</span> Use Amazon Kinesis Data Analytics (Apache Flink) with in-application stream to filter anomalous values</li>
                 <li><span class="option-label">C.</span> Configure Amazon Data Firehose with a transformation Lambda that validates and cleans records</li>
-                <li><span class="option-label">D.</span> Write validation rules in AWS Glue streaming ETL to discard invalid records</li>
+                <li><span class="option-label">D.</span> Use an AWS Lambda function as a Kinesis consumer to validate JSON structure and value ranges, routing valid records to the data lake and invalid records to a dead-letter queue</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Amazon Data Firehose dengan transformation Lambda adalah solusi paling terintegrasi untuk validasi real-time sebelum data masuk ke data lake (S3). Lambda melakukan validasi JSON dan range check, mengembalikan status Ok untuk valid records dan ProcessingFailed untuk invalid records. Firehose secara otomatis memisahkan failed records ke error prefix. Opsi A memerlukan manajemen consumer dan DLQ terpisah. Opsi B (Flink) terlalu kompleks untuk simple validation. Opsi D (Glue streaming) memiliki startup time lebih lama dan kurang cocok untuk simple filtering.</div>
+                <div class="explanation">Amazon Data Firehose dengan transformation Lambda adalah solusi paling terintegrasi untuk validasi real-time sebelum data masuk ke data lake (S3). Lambda melakukan validasi JSON dan range check, mengembalikan status Ok untuk valid records dan ProcessingFailed untuk invalid records. Firehose secara otomatis memisahkan failed records ke error prefix.<br><br>Opsi A: SALAH. Memiliki startup time lebih lama dan kurang cocok untuk simple filtering.<br>Opsi B: SALAH. Terlalu kompleks untuk simple validation.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Memerlukan manajemen consumer dan DLQ terpisah.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data scientist is exploring a new dataset on Amazon EMR using Jupyter Notebooks. The dataset contains customer addresses from multiple countries with inconsistent formatting (varying date formats, phone number formats, and address structures). The scientist needs to interactively explore different cleaning strategies before committing to a production pipeline. Which tool provides the BEST interactive data cleaning experience for this scenario?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Amazon SageMaker Data Wrangler with its visual interface for data transformations</li>
-                <li><span class="option-label">B.</span> AWS Glue DataBrew with custom recipe steps for address standardization</li>
-                <li><span class="option-label">C.</span> Jupyter Notebooks on EMR using PySpark with pandas UDFs for iterative exploration</li>
+                
+                <li><span class="option-label">A.</span> Jupyter Notebooks on EMR using PySpark with pandas UDFs for iterative exploration</li>
+                <li><span class="option-label">B.</span> Amazon SageMaker Data Wrangler with its visual interface for data transformations</li>
+                <li><span class="option-label">C.</span> AWS Glue DataBrew with custom recipe steps for address standardization</li>
                 <li><span class="option-label">D.</span> Amazon Athena with CTAS (CREATE TABLE AS SELECT) queries applying regex transformations</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Jupyter Notebooks pada EMR memberikan fleksibilitas penuh untuk eksplorasi interaktif menggunakan PySpark dan pandas. Data scientist bisa mencoba berbagai strategi cleaning secara iteratif, menulis custom parsing logic, dan langsung melihat hasilnya. Ini paling cocok untuk kompleksitas format yang memerlukan logic custom. Opsi A (Data Wrangler) bagus untuk visual transformation tapi terbatas untuk complex custom logic. Opsi B (DataBrew) memiliki built-in transforms tapi kurang fleksibel untuk format internasional yang sangat bervariasi. Opsi D (Athena) kurang interaktif dan regex di SQL terbatas untuk multi-step cleaning.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Jupyter Notebooks pada EMR memberikan fleksibilitas penuh untuk eksplorasi interaktif menggunakan PySpark dan pandas. Data scientist bisa mencoba berbagai strategi cleaning secara iteratif, menulis custom parsing logic, dan langsung melihat hasilnya. Ini paling cocok untuk kompleksitas format yang memerlukan logic custom.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Bagus untuk visual transformation tapi terbatas untuk complex custom logic.<br>Opsi C: SALAH. Memiliki built-in transforms tapi kurang fleksibel untuk format internasional yang sangat bervariasi.<br>Opsi D: SALAH. Kurang interaktif dan regex di SQL terbatas untuk multi-step cleaning.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer needs to build an automated data quality pipeline that runs after each nightly batch load. The pipeline must check: (1) referential integrity between orders and customers tables, (2) freshness - data should not be older than 24 hours, and (3) uniqueness of primary keys. Failed checks should halt downstream processing and send alerts. Which architecture is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> AWS Glue Data Quality rules with EvaluateDataQuality transform in Glue workflow, configured to fail the job on rule violations, with CloudWatch alarms for notification</li>
-                <li><span class="option-label">B.</span> Step Functions orchestrating multiple Athena queries for each check, with conditional branching based on results configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> DataBrew profile job scheduled after each load, with Lambda reading profile results and halting pipeline if thresholds exceeded</li>
-                <li><span class="option-label">D.</span> Custom Python script on EMR that performs all validation checks and writes results to DynamoDB</li>
+                
+                <li><span class="option-label">A.</span> DataBrew profile job scheduled after each load, with Lambda reading profile results and halting pipeline if thresholds exceeded</li>
+                <li><span class="option-label">B.</span> Custom Python script on EMR that performs all validation checks and writes results to DynamoDB</li>
+                <li><span class="option-label">C.</span> AWS Glue Data Quality rules with EvaluateDataQuality transform in Glue workflow, configured to fail the job on rule violations, with CloudWatch alarms for notification</li>
+                <li><span class="option-label">D.</span> Step Functions orchestrating multiple Athena queries for each check, with conditional branching based on results configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue Data Quality dengan EvaluateDataQuality transform memungkinkan definisi rules deklaratif untuk referential integrity (ReferentialIntegrity), freshness (DataFreshness), dan uniqueness (Uniqueness). Rules dievaluasi inline dalam Glue workflow dan bisa dikonfigurasi untuk menghentikan job jika gagal. Integrasi dengan CloudWatch memungkinkan alerting otomatis. Opsi B memerlukan orchestration custom yang kompleks — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (DataBrew) tidak dirancang untuk referential integrity checks lintas tabel. Opsi D memerlukan maintenance kode custom.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">AWS Glue Data Quality dengan EvaluateDataQuality transform memungkinkan definisi rules deklaratif untuk referential integrity (ReferentialIntegrity), freshness (DataFreshness), dan uniqueness (Uniqueness). Rules dievaluasi inline dalam Glue workflow dan bisa dikonfigurasi untuk menghentikan job jika gagal. Integrasi dengan CloudWatch memungkinkan alerting otomatis.<br><br>Opsi A: SALAH. Tidak dirancang untuk referential integrity checks lintas tabel.<br>Opsi B: SALAH. Memerlukan maintenance kode custom.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Memerlukan orchestration custom yang kompleks — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer discovers that a dataset loaded into Amazon S3 has approximately 15% of records with inconsistent date formats (mix of YYYY-MM-DD, DD/MM/YYYY, and MM-DD-YYYY). The dataset has 200 million records. The engineer needs to standardize all dates to ISO 8601 format (YYYY-MM-DD) before the data is used by downstream Athena queries. What is the MOST cost-effective approach?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Use AWS Glue ETL with a custom PySpark transformation to parse and standardize date formats</li>
-                <li><span class="option-label">B.</span> Use Amazon SageMaker Data Wrangler to define date parsing transformations and export as a processing job</li>
-                <li><span class="option-label">C.</span> Use Athena CTAS with CASE statements and date_parse functions to create a cleaned table</li>
+                <li><span class="option-label">B.</span> Use Athena CTAS with CASE statements and date_parse functions to create a cleaned table</li>
+                <li><span class="option-label">C.</span> Use Amazon SageMaker Data Wrangler to define date parsing transformations and export as a processing job</li>
                 <li><span class="option-label">D.</span> Use AWS Glue DataBrew with built-in date format transformations in a recipe job</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Athena CTAS (CREATE TABLE AS SELECT) adalah pendekatan paling cost-effective karena serverless dan Anda hanya membayar per data yang di-scan. Dengan fungsi date_parse dan CASE statements, Anda bisa mendeteksi format dan mengkonversi ke standar. Hasilnya langsung tersedia sebagai tabel baru di Glue Data Catalog. Opsi A (Glue ETL) berfungsi tapi lebih mahal dengan DPU costs untuk job sederhana ini. Opsi B (Data Wrangler) dirancang untuk ML workflows dan overkill. Opsi D (DataBrew) memiliki biaya per-node yang lebih tinggi dibanding Athena untuk transformasi sederhana pada 200M records.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Athena CTAS (CREATE TABLE AS SELECT) adalah pendekatan paling cost-effective karena serverless dan Anda hanya membayar per data yang di-scan. Dengan fungsi date_parse dan CASE statements, Anda bisa mendeteksi format dan mengkonversi ke standar. Hasilnya langsung tersedia sebagai tabel baru di Glue Data Catalog.<br><br>Opsi A: SALAH. Berfungsi tapi lebih mahal dengan DPU costs untuk job sederhana ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Dirancang untuk ML workflows dan overkill.<br>Opsi D: SALAH. Memiliki biaya per-node yang lebih tinggi dibanding Athena untuk transformasi sederhana pada 200M records.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data team uses Amazon SageMaker Data Wrangler to prepare features for a machine learning model. During the data cleaning phase, they notice that a numeric column (annual_income) has outliers where values exceed $10 million, which represent data entry errors. They want to cap these values at the 99th percentile and also impute missing values with the median. Which Data Wrangler capability should they use?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Use the Handle Outliers transform with the Winsorization method and Handle Missing Values with Impute option</li>
-                <li><span class="option-label">B.</span> Write custom PySpark code in the Data Wrangler custom transform step</li>
+                <li><span class="option-label">B.</span> Export the dataset to a Jupyter notebook and handle cleaning with pandas and Handle Missing Values with Impute option</li>
                 <li><span class="option-label">C.</span> Use the Featurize transform with normalization to automatically handle outliers and missing values</li>
-                <li><span class="option-label">D.</span> Export the dataset to a Jupyter notebook and handle cleaning with pandas and Handle Missing Values with Impute option</li>
+                <li><span class="option-label">D.</span> Write custom PySpark code in the Data Wrangler custom transform step</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SageMaker Data Wrangler menyediakan built-in transforms untuk Handle Outliers (termasuk Winsorization yang caps values pada percentile tertentu) dan Handle Missing Values (termasuk imputation dengan median, mean, atau custom value). Kedua operasi ini tersedia sebagai visual transforms tanpa coding. Opsi B (custom code) tidak perlu karena built-in transforms sudah tersedia. Opsi C (Featurize) untuk feature engineering seperti one-hot encoding, bukan outlier handling. Opsi D kehilangan integrasi dengan Data Wrangler pipeline — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">SageMaker Data Wrangler menyediakan built-in transforms untuk Handle Outliers (termasuk Winsorization yang caps values pada percentile tertentu) dan Handle Missing Values (termasuk imputation dengan median, mean, atau custom value). Kedua operasi ini tersedia sebagai visual transforms tanpa coding.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Kehilangan integrasi dengan Data Wrangler pipeline — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Untuk feature engineering seperti one-hot encoding, bukan outlier handling.<br>Opsi D: SALAH. Tidak perlu karena built-in transforms sudah tersedia.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer is building a data quality monitoring system for a multi-source data lake. The system needs to track data quality metrics over time, detect quality degradation trends, and provide a visual dashboard showing quality scores per source system. Quality rules are already defined in AWS Glue Data Quality. How should the engineer implement the monitoring dashboard?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Export Glue Data Quality evaluation results to S3, catalog with Glue, and visualize trends in Amazon QuickSight</li>
-                <li><span class="option-label">B.</span> Use CloudWatch custom metrics to publish quality scores and create CloudWatch dashboards with Glue and visualize trends in Amazon QuickSight</li>
-                <li><span class="option-label">C.</span> Store quality results in DynamoDB and build a custom web dashboard using API Gateway and Lambda</li>
-                <li><span class="option-label">D.</span> Use AWS Glue DataBrew profile job statistics as the quality monitoring dashboard</li>
+                
+                <li><span class="option-label">A.</span> Use AWS Glue DataBrew profile job statistics as the quality monitoring dashboard</li>
+                <li><span class="option-label">B.</span> Store quality results in DynamoDB and build a custom web dashboard using API Gateway and Lambda</li>
+                <li><span class="option-label">C.</span> Use CloudWatch custom metrics to publish quality scores and create CloudWatch dashboards with Glue and visualize trends in Amazon QuickSight</li>
+                <li><span class="option-label">D.</span> Export Glue Data Quality evaluation results to S3, catalog with Glue, and visualize trends in Amazon QuickSight</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue Data Quality evaluation results dapat di-export ke S3 dalam format yang bisa di-catalog oleh Glue Crawler. Dengan data historis di S3, QuickSight bisa membuat dashboard interaktif yang menampilkan tren quality scores per source, trend degradation, dan drill-down ke specific rules. Ini memberikan visualisasi paling kaya dan interaktif. Opsi B (CloudWatch) memiliki keterbatasan visualization dan retention — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C memerlukan custom development. Opsi D (DataBrew) hanya memberikan snapshot profiling, bukan time-series quality monitoring.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">AWS Glue Data Quality evaluation results dapat di-export ke S3 dalam format yang bisa di-catalog oleh Glue Crawler. Dengan data historis di S3, QuickSight bisa membuat dashboard interaktif yang menampilkan tren quality scores per source, trend degradation, dan drill-down ke specific rules. Ini memberikan visualisasi paling kaya dan interaktif.<br><br>Opsi A: SALAH. Hanya memberikan snapshot profiling, bukan time-series quality monitoring.<br>Opsi B: SALAH. Memerlukan custom development.<br>Opsi C: SALAH. Memiliki keterbatasan visualization dan retention — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">An e-commerce company receives product catalog data from 50 different suppliers via daily CSV uploads to Amazon S3. Each supplier uses slightly different column names and formats for the same information (e.g., "product_name", "item_title", "prod_desc" all represent the product title). The data engineer needs to standardize these into a unified schema. Which approach is MOST maintainable as new suppliers are added?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create 50 separate AWS Glue ETL jobs, each with hardcoded column mappings for its supplier</li>
-                <li><span class="option-label">B.</span> Use AWS Glue DataBrew with a parameterized recipe that applies column mapping rules from a configuration table</li>
-                <li><span class="option-label">C.</span> Use AWS Glue ETL with a DynamicFrame and apply ApplyMapping transforms driven by a mapping configuration stored in DynamoDB</li>
-                <li><span class="option-label">D.</span> Use Amazon Athena views with COALESCE across all possible column names for each logical field configured for optimal performance and minimal</li>
+                
+                <li><span class="option-label">A.</span> Use Amazon Athena views with COALESCE across all possible column names for each logical field configured for optimal performance and minimal</li>
+                <li><span class="option-label">B.</span> Use AWS Glue ETL with a DynamicFrame and apply ApplyMapping transforms driven by a mapping configuration stored in DynamoDB</li>
+                <li><span class="option-label">C.</span> Use AWS Glue DataBrew with a parameterized recipe that applies column mapping rules from a configuration table</li>
+                <li><span class="option-label">D.</span> Create 50 separate AWS Glue ETL jobs, each with hardcoded column mappings for its supplier</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Menggunakan Glue ETL dengan konfigurasi mapping di DynamoDB adalah pendekatan paling maintainable. Ketika supplier baru ditambahkan, cukup menambahkan entry di tabel konfigurasi tanpa mengubah kode ETL. DynamicFrame dengan ApplyMapping mendukung schema yang fleksibel. Opsi A (50 jobs) tidak scalable dan maintenance nightmare. Opsi B (DataBrew) memiliki keterbatasan parameterisasi dibanding Glue ETL. Opsi D (Athena COALESCE) menjadi sangat kompleks dengan 50+ supplier dan tidak bisa menangani transformasi format yang berbeda — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Menggunakan Glue ETL dengan konfigurasi mapping di DynamoDB adalah pendekatan paling maintainable. Ketika supplier baru ditambahkan, cukup menambahkan entry di tabel konfigurasi tanpa mengubah kode ETL. DynamicFrame dengan ApplyMapping mendukung schema yang fleksibel.<br><br>Opsi A: SALAH. Menjadi sangat kompleks dengan 50+ supplier dan tidak bisa menangani transformasi format yang berbeda — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Memiliki keterbatasan parameterisasi dibanding Glue ETL.<br>Opsi D: SALAH. Tidak scalable dan maintenance nightmare.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data engineer needs to verify data consistency between a source Amazon RDS MySQL database and a target Amazon Redshift data warehouse after an initial full load migration. The tables contain 500 million rows each. The verification must confirm that row counts match, aggregate values (SUM, AVG) for numeric columns are identical, and there are no missing records. What is the MOST efficient verification approach?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Use AWS DMS data validation feature which automatically compares source and target data during migration tasks</li>
-                <li><span class="option-label">B.</span> Export both datasets to S3 and use a Glue ETL job to perform a full outer join to identify mismatches</li>
-                <li><span class="option-label">C.</span> Use Amazon Redshift federated queries to directly compare Redshift tables with RDS source tables</li>
-                <li><span class="option-label">D.</span> Write Python scripts to compute checksums on both databases and compare results and target data during migration tasks</li>
+                <li><span class="option-label">B.</span> Write Python scripts to compute checksums on both databases and compare results and target data during migration tasks</li>
+                <li><span class="option-label">C.</span> Export both datasets to S3 and use a Glue ETL job to perform a full outer join to identify mismatches</li>
+                <li><span class="option-label">D.</span> Use Amazon Redshift federated queries to directly compare Redshift tables with RDS source tables</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS DMS memiliki fitur data validation bawaan yang secara otomatis membandingkan data antara source dan target selama migration task. Fitur ini melakukan row-by-row comparison, memeriksa row count, dan melaporkan mismatches. Ini paling efisien karena terintegrasi langsung dengan proses migrasi. Opsi B (full outer join) sangat resource-intensive untuk 500M rows. Opsi C (federated query) menambah load ke RDS production dan network transfer besar. Opsi D (custom script) memerlukan pengembangan dan tidak scalable untuk volume ini — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">AWS DMS memiliki fitur data validation bawaan yang secara otomatis membandingkan data antara source dan target selama migration task. Fitur ini melakukan row-by-row comparison, memeriksa row count, dan melaporkan mismatches. Ini paling efisien karena terintegrasi langsung dengan proses migrasi.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Memerlukan pengembangan dan tidak scalable untuk volume ini — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Sangat resource-intensive untuk 500M rows.<br>Opsi D: SALAH. Menambah load ke RDS production dan network transfer besar.</div>
             </div>
         </div>
         

@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineering team stores daily ETL output files in an S3 bucket with versioning enabled. Over time, storage costs have increased significantly due to accumulated noncurrent object versions. The team wants to reduce costs while retaining the ability to recover accidentally overwritten files for 30 days. Which solution BEST meets these requirements?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Suspend versioning on the bucket and delete all noncurrent versions manually</li>
-                <li><span class="option-label">B.</span> Create a lifecycle rule to expire noncurrent versions after 30 days and transition them to S3 Glacier after 7 days</li>
-                <li><span class="option-label">C.</span> Create a lifecycle rule to permanently delete noncurrent versions after 30 days</li>
+                
+                <li><span class="option-label">A.</span> Create a lifecycle rule to expire noncurrent versions after 30 days and transition them to S3 Glacier after 7 days</li>
+                <li><span class="option-label">B.</span> Create a lifecycle rule to permanently delete noncurrent versions after 30 days</li>
+                <li><span class="option-label">C.</span> Suspend versioning on the bucket and delete all noncurrent versions manually</li>
                 <li><span class="option-label">D.</span> Disable versioning and enable S3 Cross-Region Replication for data protection</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Lifecycle rule untuk menghapus noncurrent versions setelah 30 hari memungkinkan pemulihan file yang tertimpa dalam waktu 30 hari sambil secara otomatis membersihkan versi lama untuk mengontrol biaya. Opsi A (suspend versioning) tidak menghapus versi yang ada dan menghilangkan proteksi ke depan. Opsi B salah karena transition ke Glacier terjadi sebelum expiration, tapi lifecycle rule untuk noncurrent versions harus menggunakan NoncurrentVersionExpiration, bukan Expiration. Opsi D (disable versioning) tidak mungkin — versioning hanya bisa di-suspend, tidak di-disable, dan CRR membutuhkan versioning enabled.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Lifecycle rule untuk menghapus noncurrent versions setelah 30 hari memungkinkan pemulihan file yang tertimpa dalam waktu 30 hari sambil secara otomatis membersihkan versi lama untuk mengontrol biaya.<br><br>Opsi A: SALAH. Salah karena transition ke Glacier terjadi sebelum expiration, tapi lifecycle rule untuk noncurrent versions harus menggunakan NoncurrentVersionExpiration, bukan Expiration.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Tidak menghapus versi yang ada dan menghilangkan proteksi ke depan.<br>Opsi D: SALAH. Tidak mungkin — versioning hanya bisa di-suspend, tidak di-disable, dan CRR membutuhkan versioning enabled.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A company has a DynamoDB table storing user session data. Each session record includes a "lastActivity" attribute (Unix epoch timestamp). The team wants sessions to automatically expire 24 hours after the last activity. Which configuration correctly implements this requirement?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable TTL on the table using the "lastActivity" attribute and set the TTL value to 86400</li>
-                <li><span class="option-label">B.</span> Enable TTL on the table using a dedicated "expirationTime" attribute that stores lastActivity + 86400 seconds</li>
-                <li><span class="option-label">C.</span> Create a DynamoDB Stream that triggers a Lambda function to delete expired items every 24 hours</li>
-                <li><span class="option-label">D.</span> Enable TTL on the table using the "lastActivity" attribute and configure the TTL offset to 86400 seconds in the DynamoDB console</li>
+                
+                <li><span class="option-label">A.</span> Enable TTL on the table using a dedicated "expirationTime" attribute that stores lastActivity + 86400 seconds</li>
+                <li><span class="option-label">B.</span> Enable TTL on the table using the "lastActivity" attribute and set the TTL value to 86400</li>
+                <li><span class="option-label">C.</span> Enable TTL on the table using the "lastActivity" attribute and configure the TTL offset to 86400 seconds in the DynamoDB console</li>
+                <li><span class="option-label">D.</span> Create a DynamoDB Stream that triggers a Lambda function to delete expired items every 24 hours</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">DynamoDB TTL membandingkan nilai atribut TTL (Unix epoch timestamp) dengan waktu saat ini. Item dihapus ketika current time > TTL value. Tidak ada "offset" yang bisa dikonfigurasi — atribut TTL harus berisi waktu ekspirasi absolut. Oleh karena itu, atribut terpisah "expirationTime" yang berisi lastActivity + 86400 (24 jam dalam detik) adalah implementasi yang benar. Opsi A salah karena menggunakan lastActivity langsung berarti item langsung expired. Opsi C menambah kompleksitas yang tidak perlu. Opsi D tidak ada — DynamoDB tidak memiliki fitur TTL offset.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">DynamoDB TTL membandingkan nilai atribut TTL (Unix epoch timestamp) dengan waktu saat ini. Item dihapus ketika current time > TTL value. Tidak ada "offset" yang bisa dikonfigurasi — atribut TTL harus berisi waktu ekspirasi absolut. Oleh karena itu, atribut terpisah "expirationTime" yang berisi lastActivity + 86400 (24 jam dalam detik) adalah implementasi yang benar.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Salah karena menggunakan lastActivity langsung berarti item langsung expired.<br>Opsi C: SALAH. Tidak ada — DynamoDB tidak memiliki fitur TTL offset.<br>Opsi D: SALAH. Menambah kompleksitas yang tidak perlu.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A financial institution requires that specific compliance-critical objects in their S3 bucket cannot be permanently deleted, even by the root account user, without multi-factor authentication. Which feature should the data engineer enable?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> S3 Object Lock in Compliance mode</li>
-                <li><span class="option-label">B.</span> S3 Versioning with MFA Delete enabled</li>
-                <li><span class="option-label">C.</span> S3 Bucket Policy denying s3:DeleteObject for all principals</li>
-                <li><span class="option-label">D.</span> S3 Versioning with a lifecycle rule preventing deletion</li>
+                
+                <li><span class="option-label">A.</span> S3 Versioning with a lifecycle rule preventing deletion</li>
+                <li><span class="option-label">B.</span> S3 Bucket Policy denying s3:DeleteObject for all principals</li>
+                <li><span class="option-label">C.</span> S3 Versioning with MFA Delete enabled</li>
+                <li><span class="option-label">D.</span> S3 Object Lock in Compliance mode</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">MFA Delete mengharuskan autentikasi multi-faktor untuk menghapus versi objek secara permanen atau mengubah status versioning bucket. Ini mencegah penghapusan permanen tanpa MFA, bahkan oleh root account. Opsi A (Object Lock Compliance) mencegah penghapusan selama retention period tapi tidak memerlukan MFA — ia memblokir semua penghapusan termasuk root. Opsi C (Bucket Policy) bisa di-bypass oleh root account yang bisa mengubah policy. Opsi D (lifecycle rule) tidak mencegah penghapusan manual. Pertanyaan spesifik menyebut "tanpa multi-factor authentication" yang langsung mengarah ke MFA Delete.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">MFA Delete mengharuskan autentikasi multi-faktor untuk menghapus versi objek secara permanen atau mengubah status versioning bucket. Ini mencegah penghapusan permanen tanpa MFA, bahkan oleh root account.<br><br>Opsi A: SALAH. Tidak mencegah penghapusan manual. Pertanyaan spesifik menyebut "tanpa multi-factor authentication" yang langsung mengarah ke MFA Delete.<br>Opsi B: SALAH. Bisa di-bypass oleh root account yang bisa mengubah policy.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Mencegah penghapusan selama retention period tapi tidak memerlukan MFA — ia memblokir semua penghapusan termasuk root.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data engineer has an S3 bucket with versioning enabled. They need to retrieve a specific previous version of a data file that was accidentally overwritten yesterday. The engineer knows the object key but not the version ID. Which approach should they use?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use the S3 console to view object versions, identify the correct version ID, then use GetObject with the versionId parameter</li>
-                <li><span class="option-label">B.</span> Use S3 Inventory to find the version ID and then restore using S3 Batch Operations</li>
+                
+                <li><span class="option-label">A.</span> Use aws s3 cp with the --restore flag to retrieve the previous version with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">B.</span> Use the S3 console to view object versions, identify the correct version ID, then use GetObject with the versionId parameter</li>
                 <li><span class="option-label">C.</span> Use S3 Replication Time Control to restore the previous version</li>
-                <li><span class="option-label">D.</span> Use aws s3 cp with the --restore flag to retrieve the previous version with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">D.</span> Use S3 Inventory to find the version ID and then restore using S3 Batch Operations</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk mengambil versi spesifik, gunakan ListObjectVersions API atau S3 console untuk melihat semua versi objek beserta version ID-nya, kemudian gunakan GetObject dengan parameter versionId untuk mengunduh versi yang diinginkan. Opsi B (S3 Inventory) tidak real-time dan membutuhkan waktu untuk generate report. Opsi C (Replication Time Control) untuk mengontrol SLA replikasi, bukan untuk restore. Opsi D (--restore flag) digunakan untuk restore dari Glacier, bukan untuk mengakses versi sebelumnya — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Untuk mengambil versi spesifik, gunakan ListObjectVersions API atau S3 console untuk melihat semua versi objek beserta version ID-nya, kemudian gunakan GetObject dengan parameter versionId untuk mengunduh versi yang diinginkan.<br><br>Opsi A: SALAH. Digunakan untuk restore dari Glacier, bukan untuk mengakses versi sebelumnya — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Untuk mengontrol SLA replikasi, bukan untuk restore.<br>Opsi D: SALAH. Tidak real-time dan membutuhkan waktu untuk generate report.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A company uses DynamoDB to store IoT sensor readings. They enable TTL to automatically delete readings older than 90 days. The team also needs to archive expired items to S3 for long-term analytics. Which architecture achieves this with MINIMAL operational overhead?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Schedule a Lambda function to scan the table hourly and move items older than 90 days to S3 before they expire</li>
-                <li><span class="option-label">B.</span> Enable DynamoDB Streams on the table, filter for TTL-deleted events (REMOVE with userIdentity.type = "Service"), and use Lambda to write to S3</li>
-                <li><span class="option-label">C.</span> Use DynamoDB Export to S3 feature daily to export the full table, then let TTL handle deletion with userIdentity and use Lambda to write to S3</li>
-                <li><span class="option-label">D.</span> Create a Global Secondary Index on the TTL attribute and periodically query items near expiration to copy to S3</li>
+                
+                <li><span class="option-label">A.</span> Use DynamoDB Export to S3 feature daily to export the full table, then let TTL handle deletion with userIdentity and use Lambda to write to S3</li>
+                <li><span class="option-label">B.</span> Create a Global Secondary Index on the TTL attribute and periodically query items near expiration to copy to S3</li>
+                <li><span class="option-label">C.</span> Schedule a Lambda function to scan the table hourly and move items older than 90 days to S3 before they expire</li>
+                <li><span class="option-label">D.</span> Enable DynamoDB Streams on the table, filter for TTL-deleted events (REMOVE with userIdentity.type = "Service"), and use Lambda to write to S3</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">DynamoDB Streams menangkap TTL deletions sebagai event REMOVE dengan userIdentity.type = "Service" dan userIdentity.principalId = "dynamodb.amazonaws.com". Lambda consumer dapat memfilter event ini dan menulis data ke S3 untuk archival. Ini fully event-driven dan minimal overhead. Opsi A memerlukan scan yang mahal dan berisiko race condition dengan TTL. Opsi C (full export) sangat mahal untuk tabel besar dan menghasilkan data duplikat — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D tidak efisien — GSI tidak bisa digunakan untuk query items berdasarkan waktu mendekati TTL secara efektif.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">DynamoDB Streams menangkap TTL deletions sebagai event REMOVE dengan userIdentity.type = "Service" dan userIdentity.principalId = "dynamodb.amazonaws.com". Lambda consumer dapat memfilter event ini dan menulis data ke S3 untuk archival. Ini fully event-driven dan minimal overhead.<br><br>Opsi A: SALAH. Sangat mahal untuk tabel besar dan menghasilkan data duplikat — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Tidak efisien — GSI tidak bisa digunakan untuk query items berdasarkan waktu mendekati TTL secara efektif.<br>Opsi C: SALAH. Memerlukan scan yang mahal dan berisiko race condition dengan TTL.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer suspends versioning on an S3 bucket that previously had versioning enabled. What happens when a new object is uploaded with the same key as an existing versioned object?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The upload fails because the bucket previously had versioning enabled with a null version ID is created and the previous null version</li>
-                <li><span class="option-label">B.</span> A new version with a null version ID is created, and all previous versions are retained</li>
-                <li><span class="option-label">C.</span> The new object overwrites the current version and all previous versions are permanently deleted</li>
-                <li><span class="option-label">D.</span> A new version with a null version ID is created, and the previous null version ID object (if any) is overwritten</li>
+                
+                <li><span class="option-label">A.</span> A new version with a null version ID is created, and the previous null version ID object (if any) is overwritten</li>
+                <li><span class="option-label">B.</span> The upload fails because the bucket previously had versioning enabled with a null version ID is created and the previous null version</li>
+                <li><span class="option-label">C.</span> A new version with a null version ID is created, and all previous versions are retained</li>
+                <li><span class="option-label">D.</span> The new object overwrites the current version and all previous versions are permanently deleted</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">Ketika versioning di-suspend, objek baru yang diupload mendapat null version ID. Jika sudah ada objek dengan null version ID, objek tersebut ditimpa. Versi-versi sebelumnya yang memiliki version ID non-null tetap dipertahankan. Opsi A salah — upload tetap berhasil — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi B hampir benar tapi tidak menyebutkan bahwa null version ID sebelumnya ditimpa. Opsi C salah — versi sebelumnya tidak dihapus otomatis. Ini penting dipahami: suspend versioning TIDAK menghapus versi yang sudah ada.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Ketika versioning di-suspend, objek baru yang diupload mendapat null version ID. Jika sudah ada objek dengan null version ID, objek tersebut ditimpa. Versi-versi sebelumnya yang memiliki version ID non-null tetap dipertahankan.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Salah — upload tetap berhasil — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Hampir benar tapi tidak menyebutkan bahwa null version ID sebelumnya ditimpa.<br>Opsi D: SALAH. Salah — versi sebelumnya tidak dihapus otomatis. Ini penting dipahami: suspend versioning TIDAK menghapus versi yang sudah ada.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A company stores machine learning model artifacts in a versioned S3 bucket. The bucket has accumulated thousands of noncurrent versions over two years. The team wants to keep only the 3 most recent noncurrent versions and delete older ones. Which S3 feature should the data engineer use?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> S3 Lifecycle rule with NoncurrentVersionExpiration and NewerNoncurrentVersions set to 3</li>
-                <li><span class="option-label">B.</span> S3 Intelligent-Tiering with version management enabled and NewerNoncurrentVersions set to 3</li>
-                <li><span class="option-label">C.</span> S3 Lifecycle rule with AbortIncompleteMultipartUpload set to 3 versions</li>
-                <li><span class="option-label">D.</span> S3 Batch Operations to delete all but the 3 most recent versions per object</li>
+                <li><span class="option-label">B.</span> S3 Lifecycle rule with AbortIncompleteMultipartUpload set to 3 versions</li>
+                <li><span class="option-label">C.</span> S3 Batch Operations to delete all but the 3 most recent versions per object</li>
+                <li><span class="option-label">D.</span> S3 Intelligent-Tiering with version management enabled and NewerNoncurrentVersions set to 3</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">S3 Lifecycle rules mendukung NoncurrentVersionExpiration dengan parameter NewerNoncurrentVersions yang memungkinkan menyimpan sejumlah N versi noncurrent terbaru dan menghapus yang lebih lama. Ini adalah solusi native S3 yang paling efisien. Opsi B (Intelligent-Tiering) mengelola storage class bukan jumlah versi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (AbortIncompleteMultipartUpload) untuk multipart upload yang tidak selesai, bukan versi. Opsi D (Batch Operations) bisa dilakukan tapi membutuhkan pengelolaan manual dan tidak otomatis.</div>
+                <div class="explanation">S3 Lifecycle rules mendukung NoncurrentVersionExpiration dengan parameter NewerNoncurrentVersions yang memungkinkan menyimpan sejumlah N versi noncurrent terbaru dan menghapus yang lebih lama. Ini adalah solusi native S3 yang paling efisien.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Untuk multipart upload yang tidak selesai, bukan versi.<br>Opsi C: SALAH. Bisa dilakukan tapi membutuhkan pengelolaan manual dan tidak otomatis.<br>Opsi D: SALAH. Mengelola storage class bukan jumlah versi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer observes that DynamoDB TTL is not deleting expired items immediately at the specified expiration time. Some items remain in the table for several hours after their TTL timestamp has passed. The application queries are returning stale data. What is the MOST appropriate solution?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Increase the table's write capacity units to speed up TTL deletions configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Add a filter expression in application queries to exclude items where the TTL attribute is less than the current time</li>
+                <li><span class="option-label">B.</span> Contact AWS Support to increase the TTL deletion throughput for the table</li>
                 <li><span class="option-label">C.</span> Disable and re-enable TTL to reset the background deletion process</li>
-                <li><span class="option-label">D.</span> Contact AWS Support to increase the TTL deletion throughput for the table</li>
+                <li><span class="option-label">D.</span> Add a filter expression in application queries to exclude items where the TTL attribute is less than the current time</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">DynamoDB TTL tidak menjamin penghapusan instan — item biasanya dihapus dalam waktu 48 jam setelah expiration (umumnya dalam beberapa jam). Ini by design dan tidak bisa dipercepat. Solusi yang benar adalah menambahkan filter expression di query aplikasi untuk mengecualikan item yang sudah expired (TTL < current_time). Opsi A salah — TTL deletion menggunakan background proses yang terpisah dari WCU provisioned — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C tidak akan mempercepat proses. Opsi D tidak ada mekanisme untuk meningkatkan TTL throughput secara manual.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">DynamoDB TTL tidak menjamin penghapusan instan — item biasanya dihapus dalam waktu 48 jam setelah expiration (umumnya dalam beberapa jam). Ini by design dan tidak bisa dipercepat. Solusi yang benar adalah menambahkan filter expression di query aplikasi untuk mengecualikan item yang sudah expired (TTL < current_time).<br><br>Opsi A: SALAH. Salah — TTL deletion menggunakan background proses yang terpisah dari WCU provisioned — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Tidak ada mekanisme untuk meningkatkan TTL throughput secara manual.<br>Opsi C: SALAH. Tidak akan mempercepat proses.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A healthcare company stores patient records in a versioned S3 bucket. Due to a regulatory requirement, they must ensure that once an object version is deleted, it cannot be recovered. Currently, when users delete objects, only delete markers are created. What must the data engineer do to permanently remove specific object versions?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Disable versioning on the bucket, then delete the objects for each version to be permanently deleted</li>
-                <li><span class="option-label">B.</span> Issue DeleteObject requests specifying the exact version ID for each version to be permanently deleted</li>
-                <li><span class="option-label">C.</span> Create a lifecycle rule with an Expiration action targeting the specific objects</li>
-                <li><span class="option-label">D.</span> Use S3 Batch Operations with the DeleteObject operation without specifying version IDs</li>
+                
+                <li><span class="option-label">A.</span> Use S3 Batch Operations with the DeleteObject operation without specifying version IDs</li>
+                <li><span class="option-label">B.</span> Create a lifecycle rule with an Expiration action targeting the specific objects</li>
+                <li><span class="option-label">C.</span> Issue DeleteObject requests specifying the exact version ID for each version to be permanently deleted</li>
+                <li><span class="option-label">D.</span> Disable versioning on the bucket, then delete the objects for each version to be permanently deleted</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Untuk menghapus versi objek secara permanen di bucket dengan versioning enabled, Anda harus mengirim DeleteObject request dengan version ID spesifik. Tanpa version ID, S3 hanya membuat delete marker. Opsi A salah — versioning tidak bisa di-disable, hanya di-suspend, dan itu tidak menghapus versi yang ada — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (lifecycle rule) tidak bisa menargetkan objek spesifik berdasarkan key. Opsi D tanpa version ID hanya akan membuat delete markers, bukan penghapusan permanen.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Untuk menghapus versi objek secara permanen di bucket dengan versioning enabled, Anda harus mengirim DeleteObject request dengan version ID spesifik. Tanpa version ID, S3 hanya membuat delete marker.<br><br>Opsi A: SALAH. Tanpa version ID hanya akan membuat delete markers, bukan penghapusan permanen.<br>Opsi B: SALAH. Tidak bisa menargetkan objek spesifik berdasarkan key.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Salah — versioning tidak bisa di-disable, hanya di-suspend, dan itu tidak menghapus versi yang ada — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A company has a DynamoDB table with TTL enabled for automatic session cleanup. They want to understand the cost implications of TTL deletions. Which statement about DynamoDB TTL cost is CORRECT?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> TTL deletions consume write capacity units (WCU) from the table's provisioned capacity</li>
-                <li><span class="option-label">B.</span> TTL deletions are free of charge and do not consume any write capacity units</li>
+                <li><span class="option-label">B.</span> TTL deletions are free but incur additional charges for DynamoDB Streams if enabled</li>
                 <li><span class="option-label">C.</span> TTL deletions are charged at 50% of the normal write cost per item deleted</li>
-                <li><span class="option-label">D.</span> TTL deletions are free but incur additional charges for DynamoDB Streams if enabled</li>
+                <li><span class="option-label">D.</span> TTL deletions are free of charge and do not consume any write capacity units</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">DynamoDB TTL deletions sepenuhnya gratis — tidak mengonsumsi write capacity units dan tidak dikenakan biaya. Ini menjadikan TTL cara yang paling cost-effective untuk menghapus data yang sudah expired secara otomatis. Opsi A salah — TTL menggunakan background proses terpisah yang tidak mempengaruhi WCU. Opsi C tidak ada skema biaya seperti ini. Opsi D salah — TTL deletions yang tercatat di DynamoDB Streams juga tidak menimbulkan biaya tambahan di luar biaya normal Streams (biaya read dari stream tetap berlaku jika ada consumer).</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">DynamoDB TTL deletions sepenuhnya gratis — tidak mengonsumsi write capacity units dan tidak dikenakan biaya. Ini menjadikan TTL cara yang paling cost-effective untuk menghapus data yang sudah expired secara otomatis.<br><br>Opsi A: SALAH. Salah — TTL menggunakan background proses terpisah yang tidak mempengaruhi WCU.<br>Opsi B: SALAH. Salah — TTL deletions yang tercatat di DynamoDB Streams juga tidak menimbulkan biaya tambahan di luar biaya normal Streams (biaya read dari stream tetap berlaku jika ada consumer).<br>Opsi C: SALAH. Tidak ada skema biaya seperti ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
         

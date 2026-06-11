@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A company's Redshift data warehouse has 50 analysts who need read-only access to the "sales" schema and 10 data engineers who need full access to all schemas. Currently, permissions are granted individually to each user. The DBA wants to simplify permission management. Which approach is MOST efficient?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create a superuser account shared by all analysts and another shared by all engineers</li>
-                <li><span class="option-label">B.</span> Create a Redshift role "analysts_readonly" with SELECT on all tables in "sales" schema, and a role "engineers_full" with ALL on all schemas; then GRANT each role to the respective users. When new users join, simply GRANT the appropriate role</li>
-                <li><span class="option-label">C.</span> Use Redshift Spectrum to isolate analyst queries from engineer queries</li>
-                <li><span class="option-label">D.</span> Create separate Redshift clusters for analysts and engineers with SELECT on all tables in "sales" schema</li>
+                
+                <li><span class="option-label">A.</span> Create a Redshift role "analysts_readonly" with SELECT on all tables in "sales" schema, and a role "engineers_full" with ALL on all schemas; then GRANT each role to the respective users. When new users join, simply GRANT the appropriate role</li>
+                <li><span class="option-label">B.</span> Create separate Redshift clusters for analysts and engineers with SELECT on all tables in "sales" schema</li>
+                <li><span class="option-label">C.</span> Create a superuser account shared by all analysts and another shared by all engineers</li>
+                <li><span class="option-label">D.</span> Use Redshift Spectrum to isolate analyst queries from engineer queries</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Redshift roles (introduced as native feature) memungkinkan centralized permission management: CREATE ROLE analysts_readonly; GRANT SELECT ON ALL TABLES IN SCHEMA sales TO ROLE analysts_readonly; GRANT ROLE analysts_readonly TO user1, user2, ..., user50; Benefit: (1) Permissions didefinisikan SEKALI di role, (2) New users hanya perlu GRANT role — no need to repeat permission statements, (3) Permission changes (e.g., add new table) hanya perlu update role — automatically applies to all members, (4) Audit simplified — check role membership vs 50 individual grants. Redshift role hierarchy juga memungkinkan roles inherit dari roles lain. Opsi A (shared superuser) — massive security risk, no audit trail per-user, violates least privilege. Opsi C (Spectrum) — query engine feature bukan access control mechanism. Opsi D (separate clusters) — expensive dan data duplication needed — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Redshift roles (introduced as native feature) memungkinkan centralized permission management: CREATE ROLE analysts_readonly; GRANT SELECT ON ALL TABLES IN SCHEMA sales TO ROLE analysts_readonly; GRANT ROLE analysts_readonly TO user1, user2, ..., user50; Benefit: (1) Permissions didefinisikan SEKALI di role, (2) New users hanya perlu GRANT role — no need to repeat permission statements, (3) Permission changes (e.g., add new table) hanya perlu update role — automatically applies to all members, (4) Audit simplified — check role membership vs 50 individual grants. Redshift role hierarchy juga memungkinkan roles inherit dari roles lain.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Expensive dan data duplication needed — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Massive security risk, no audit trail per-user, violates least privilege.<br>Opsi D: SALAH. Query engine feature bukan access control mechanism.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A healthcare company stores patient data in Redshift. Regulations require that customer service representatives can see patient names and appointment dates, but NOT diagnosis codes or treatment details. All data is in a single "patients" table with columns: patient_id, name, appointment_date, diagnosis_code, treatment_details, billing_amount. Which Redshift feature enforces this MOST effectively?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create a view that excludes sensitive columns and grant access only to the view</li>
-                <li><span class="option-label">B.</span> Use column-level access control — GRANT SELECT (patient_id, name, appointment_date) ON patients TO ROLE customer_service; this ensures the role can only query permitted columns, and any attempt to SELECT diagnosis_code will return a permission error</li>
-                <li><span class="option-label">C.</span> Use dynamic data masking to show NULL for restricted columns</li>
-                <li><span class="option-label">D.</span> Separate the table into two tables and restrict access to the sensitive table configured for optimal performance and minimal operational overhead</li>
+                
+                <li><span class="option-label">A.</span> Separate the table into two tables and restrict access to the sensitive table configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> Use dynamic data masking to show NULL for restricted columns</li>
+                <li><span class="option-label">C.</span> Use column-level access control — GRANT SELECT (patient_id, name, appointment_date) ON patients TO ROLE customer_service; this ensures the role can only query permitted columns, and any attempt to SELECT diagnosis_code will return a permission error</li>
+                <li><span class="option-label">D.</span> Create a view that excludes sensitive columns and grant access only to the view</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Column-level access control di Redshift memungkinkan GRANT/REVOKE pada specific columns: GRANT SELECT (patient_id, name, appointment_date) ON TABLE patients TO ROLE customer_service; Behavior: Jika user mencoba SELECT * FROM patients — query fails dengan "permission denied for column diagnosis_code". User HARUS explicitly list only permitted columns. Ini enforce security di database engine level — tidak bisa di-bypass melalui application layer. Opsi A (views) bekerja sebagai alternative approach — CREATE VIEW patient_safe AS SELECT patient_id, name, appointment_date FROM patients — tapi pengguna masih perlu dicegah akses ke base table langsung. Views + column-level grants bisa dikombinasikan untuk defense-in-depth. Opsi C (masking) shows NULL tapi user TAHU kolom exists — mungkin tidak compliant dengan regulations yang memerlukan "no access". Opsi D (table separation) requires application changes dan JOIN complexity — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Column-level access control di Redshift memungkinkan GRANT/REVOKE pada specific columns: GRANT SELECT (patient_id, name, appointment_date) ON TABLE patients TO ROLE customer_service; Behavior: Jika user mencoba SELECT * FROM patients — query fails dengan "permission denied for column diagnosis_code". User HARUS explicitly list only permitted columns. Ini enforce security di database engine level — tidak bisa di-bypass melalui application layer.<br><br>Opsi A: SALAH. Requires application changes dan JOIN complexity — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Shows NULL tapi user TAHU kolom exists — mungkin tidak compliant dengan regulations yang memerlukan "no access".<br>Opsi C: BENAR.<br>Opsi D: SALAH. Bekerja sebagai alternative approach — CREATE VIEW patient_safe AS SELECT patient_id, name, appointment_date FROM patients — tapi pengguna masih perlu dicegah akses ke base table langsung. Views + column-level grants bisa dikombinasikan untuk defense-in-depth.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A multi-tenant SaaS company uses Amazon Redshift to store data for 200 customers. Each customer's data is identified by a "tenant_id" column in every table. The company needs to ensure that when a customer's analyst runs queries, they can ONLY see their own tenant's data — without relying on application-level WHERE clause filtering. Which Redshift feature provides this server-enforced row-level security?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create separate schemas for each tenant and grant access to only their schema</li>
+                
+                <li><span class="option-label">A.</span> Use Redshift Spectrum with S3 bucket-per-tenant partitioning and enable for the analyst role</li>
                 <li><span class="option-label">B.</span> Implement Row-Level Security (RLS) policies in Redshift — CREATE RLS POLICY tenant_isolation USING (tenant_id = current_setting('app.tenant_id')); ATTACH RLS POLICY to tables and enable for the analyst role. The policy automatically filters rows based on the session variable</li>
-                <li><span class="option-label">C.</span> Use Redshift Spectrum with S3 bucket-per-tenant partitioning and enable for the analyst role</li>
+                <li><span class="option-label">C.</span> Create separate schemas for each tenant and grant access to only their schema</li>
                 <li><span class="option-label">D.</span> Add WHERE tenant_id = ? to all views accessed by customers</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Redshift Row-Level Security (RLS) policies transparently filter rows at query execution time: (1) CREATE RLS POLICY tenant_isolation WITH (tenant_id int) USING (tenant_id = current_setting('app.tenant_id')::int); (2) ATTACH RLS POLICY tenant_isolation ON sales TO ROLE tenant_analyst; (3) ALTER TABLE sales ROW LEVEL SECURITY ON; Saat tenant analyst menjalankan SELECT * FROM sales, Redshift automatically appends WHERE tenant_id = {their_tenant_id}. Advantages: Database-enforced (cannot bypass), transparent to queries (no application changes needed), works with any SQL client, auditable, cannot be accidentally removed by developers. Session variable (SET app.tenant_id) di-set saat connection establishment. Opsi A (separate schemas) works tapi 200 schemas = management nightmare, schema DDL changes harus di-replicate 200x. Opsi C (Spectrum per-tenant) expensive — 200 buckets — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (views with WHERE) can be bypassed jika user gains direct table access.</div>
+                <div class="explanation">Redshift Row-Level Security (RLS) policies transparently filter rows at query execution time: (1) CREATE RLS POLICY tenant_isolation WITH (tenant_id int) USING (tenant_id = current_setting('app.tenant_id')::int); (2) ATTACH RLS POLICY tenant_isolation ON sales TO ROLE tenant_analyst; (3) ALTER TABLE sales ROW LEVEL SECURITY ON; Saat tenant analyst menjalankan SELECT * FROM sales, Redshift automatically appends WHERE tenant_id = {their_tenant_id}. Advantages: Database-enforced (cannot bypass), transparent to queries (no application changes needed), works with any SQL client, auditable, cannot be accidentally removed by developers. Session variable (SET app.tenant_id) di-set saat connection establishment.<br><br>Opsi A: SALAH. Expensive — 200 buckets — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Works tapi 200 schemas = management nightmare, schema DDL changes harus di-replicate 200x.<br>Opsi D: SALAH. Can be bypassed jika user gains direct table access.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data engineer needs to audit who has access to what in their Redshift cluster. The security team requests a report showing: all users, their group memberships, and effective permissions on the "finance" schema. Which system tables/views should the engineer query?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Query pg_catalog.pg_user for users, pg_catalog.pg_group for group memberships, and SVV_RELATION_PRIVILEGES for effective permissions on schema objects</li>
-                <li><span class="option-label">B.</span> Check CloudTrail logs for all Redshift GRANT statements executed in the past year</li>
-                <li><span class="option-label">C.</span> Query STL_QUERY system table for all SELECT statements on the finance schema configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Use AWS Config to evaluate Redshift database permissions</li>
+                
+                <li><span class="option-label">A.</span> Use AWS Config to evaluate Redshift database permissions</li>
+                <li><span class="option-label">B.</span> Query STL_QUERY system table for all SELECT statements on the finance schema configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Check CloudTrail logs for all Redshift GRANT statements executed in the past year</li>
+                <li><span class="option-label">D.</span> Query pg_catalog.pg_user for users, pg_catalog.pg_group for group memberships, and SVV_RELATION_PRIVILEGES for effective permissions on schema objects</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Redshift provides system tables/views untuk permission auditing: pg_catalog.pg_user: Lists all database users (usename, usesysid, usesuper). pg_catalog.pg_group: Shows group names and member user IDs (groname, grolist). SVV_RELATION_PRIVILEGES: Shows effective permissions on tables/views — includes: identity_name (user/role), identity_type, relation_name, privilege_type. Additional useful views: SVV_ROLE_GRANTS: Shows role hierarchy dan membership, HAS_TABLE_PRIVILEGE(): Function to check specific user's access, pg_catalog.pg_namespace: Schema information. Example audit query: SELECT u.usename, g.groname, rp.relation_name, rp.privilege_type FROM pg_user u LEFT JOIN pg_group g ON u.usesysid = ANY(g.grolist) JOIN svv_relation_privileges rp ON rp.identity_name = u.usename WHERE rp.namespace_name = 'finance'; Opsi B (CloudTrail) shows API calls ke Redshift service tapi TIDAK in-database SQL permissions. Opsi C (STL_QUERY) shows query history bukan permissions — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (AWS Config) evaluates cluster-level configuration, bukan database-internal permissions.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Redshift provides system tables/views untuk permission auditing: pg_catalog.pg_user: Lists all database users (usename, usesysid, usesuper). pg_catalog.pg_group: Shows group names and member user IDs (groname, grolist). SVV_RELATION_PRIVILEGES: Shows effective permissions on tables/views — includes: identity_name (user/role), identity_type, relation_name, privilege_type. Additional useful views: SVV_ROLE_GRANTS: Shows role hierarchy dan membership, HAS_TABLE_PRIVILEGE(): Function to check specific user's access, pg_catalog.pg_namespace: Schema information. Example audit query: SELECT u.usename, g.groname, rp.relation_name, rp.privilege_type FROM pg_user u LEFT JOIN pg_group g ON u.usesysid = ANY(g.grolist) JOIN svv_relation_privileges rp ON rp.identity_name = u.usename WHERE rp.namespace_name = 'finance'.<br><br>Opsi A: SALAH. Evaluates cluster-level configuration, bukan database-internal permissions.<br>Opsi B: SALAH. Shows query history bukan permissions — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Shows API calls ke Redshift service tapi TIDAK in-database SQL permissions.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer wants to implement IAM-based authentication for an Amazon RDS PostgreSQL database, eliminating the need for database passwords entirely. Application Lambda functions should authenticate to RDS using their IAM role. Which configuration steps are required?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable IAM database authentication on the RDS instance, create a database user mapped to the IAM role using GRANT rds_iam TO db_user, and configure the Lambda function to generate an authentication token using the RDS API (generate-db-auth-token) which is used as the password when connecting</li>
+                
+                <li><span class="option-label">A.</span> Store IAM credentials in the RDS parameter group and enable auto-authentication configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> Simply attach the AmazonRDSFullAccess policy to the Lambda role — RDS will automatically recognize it</li>
-                <li><span class="option-label">C.</span> Store IAM credentials in the RDS parameter group and enable auto-authentication configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Enable IAM database authentication on the RDS instance, create a database user mapped to the IAM role using GRANT rds_iam TO db_user, and configure the Lambda function to generate an authentication token using the RDS API (generate-db-auth-token) which is used as the password when connecting</li>
                 <li><span class="option-label">D.</span> Create an RDS Proxy and it will automatically handle IAM authentication without any database-level configuration</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">RDS IAM Database Authentication memerlukan konfigurasi di multiple layers: Step 1 — RDS Instance: Modify DB instance → Enable IAM DB Authentication. Step 2 — Database level: CREATE USER lambda_app WITH LOGIN; GRANT rds_iam TO lambda_app; (rds_iam role indicates user authenticates via IAM). Step 3 — IAM Policy: Allow rds-db:connect pada resource "arn:aws:rds-db:region:account:dbuser:dbi-resource-id/lambda_app". Step 4 — Application code: token = rds_client.generate_db_auth_token(DBHostname, Port, DBUser); Connect menggunakan token sebagai password (valid 15 minutes). Benefits: No persistent passwords, token auto-expires, leverages IAM for centralized access control, integrates with CloudTrail. Opsi B — AmazonRDSFullAccess grants RDS API permissions (CreateDB, etc.), NOT database-level connectivity. Opsi C — not a valid configuration — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — RDS Proxy supports IAM auth tapi database-level GRANT rds_iam still needed.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">RDS IAM Database Authentication memerlukan konfigurasi di multiple layers: Step 1 — RDS Instance: Modify DB instance → Enable IAM DB Authentication. Step 2 — Database level: CREATE USER lambda_app WITH LOGIN; GRANT rds_iam TO lambda_app; (rds_iam role indicates user authenticates via IAM). Step 3 — IAM Policy: Allow rds-db:connect pada resource "arn:aws:rds-db:region:account:dbuser:dbi-resource-id/lambda_app". Step 4 — Application code: token = rds_client.generate_db_auth_token(DBHostname, Port, DBUser); Connect menggunakan token sebagai password (valid 15 minutes). Benefits: No persistent passwords, token auto-expires, leverages IAM for centralized access control, integrates with CloudTrail.<br><br>Opsi A: SALAH. Not a valid configuration — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. AmazonRDSFullAccess grants RDS API permissions (CreateDB, etc.), NOT database-level connectivity.<br>Opsi C: BENAR.<br>Opsi D: SALAH. RDS Proxy supports IAM auth tapi database-level GRANT rds_iam still needed.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A Redshift administrator creates the following permission structure: Group "analytics" has SELECT on schema "reporting". User "john" is a member of group "analytics". An explicit REVOKE SELECT on reporting.revenue_table FROM john is also applied. What happens when john tries to SELECT from reporting.revenue_table?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Access is allowed because group permissions override individual user revocations</li>
-                <li><span class="option-label">B.</span> Access is allowed because john inherits SELECT from the "analytics" group, and the individual REVOKE only removes directly-granted permissions, not group-inherited permissions — in Redshift, group grants and user grants are evaluated independently</li>
-                <li><span class="option-label">C.</span> Access is denied because REVOKE always overrides GRANT regardless of source</li>
+                <li><span class="option-label">B.</span> Access is denied because REVOKE always overrides GRANT regardless of source</li>
+                <li><span class="option-label">C.</span> Access is allowed because john inherits SELECT from the "analytics" group, and the individual REVOKE only removes directly-granted permissions, not group-inherited permissions — in Redshift, group grants and user grants are evaluated independently</li>
                 <li><span class="option-label">D.</span> Access results in an error because conflicting permissions are not allowed configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Redshift permission evaluation: Permissions dari groups dan individual users dievaluasi secara ADDITIVE (union). REVOKE pada user level hanya menghapus permissions yang directly granted ke user tersebut — TIDAK menghapus permissions yang inherited dari group membership. Dalam kasus ini: john's effective permissions = (permissions dari group "analytics") UNION (direct user permissions) - (direct user revocations). Karena SELECT didapat dari GROUP (bukan direct grant), REVOKE dari user tidak mempengaruhi. Untuk benar-benar block john dari revenue_table: (1) Remove john dari group "analytics", ATAU (2) REVOKE SELECT pada table dari GROUP "analytics" dan buat group baru tanpa table tersebut, ATAU (3) Gunakan RLS policy untuk deny access. Ini berbeda dari IAM dimana explicit Deny SELALU wins. Opsi A correct conclusion tapi wrong reasoning. Opsi C salah — Redshift bukan IAM (no explicit deny concept di database permissions). Opsi D — no error, just evaluated as described — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Redshift permission evaluation: Permissions dari groups dan individual users dievaluasi secara ADDITIVE (union). REVOKE pada user level hanya menghapus permissions yang directly granted ke user tersebut — TIDAK menghapus permissions yang inherited dari group membership. Dalam kasus ini: john's effective permissions = (permissions dari group "analytics") UNION (direct user permissions) - (direct user revocations). Karena SELECT didapat dari GROUP (bukan direct grant), REVOKE dari user tidak mempengaruhi. Untuk benar-benar block john dari revenue_table: (1) Remove john dari group "analytics", ATAU (2) REVOKE SELECT pada table dari GROUP "analytics" dan buat group baru tanpa table tersebut, ATAU (3) Gunakan RLS policy untuk deny access. Ini berbeda dari IAM dimana explicit Deny SELALU wins.<br><br>Opsi A: SALAH. Correct conclusion tapi wrong reasoning.<br>Opsi B: SALAH. Salah — Redshift bukan IAM (no explicit deny concept di database permissions).<br>Opsi C: BENAR.<br>Opsi D: SALAH. No error, just evaluated as described — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer needs to create a read-only role for business intelligence tools connecting to Redshift. The role should be able to SELECT from all CURRENT and FUTURE tables in the "analytics" schema. Which combination of GRANT statements ensures this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly;</li>
-                <li><span class="option-label">B.</span> GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly; combined with ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES TO ROLE bi_readonly; — the first covers existing tables, the second ensures future tables automatically get the same grant</li>
-                <li><span class="option-label">C.</span> GRANT ALL ON SCHEMA analytics TO ROLE bi_readonly; with ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES</li>
-                <li><span class="option-label">D.</span> GRANT USAGE ON SCHEMA analytics TO ROLE bi_readonly; only</li>
+                
+                <li><span class="option-label">A.</span> GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly; combined with ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES TO ROLE bi_readonly; — the first covers existing tables, the second ensures future tables automatically get the same grant</li>
+                <li><span class="option-label">B.</span> GRANT ALL ON SCHEMA analytics TO ROLE bi_readonly; with ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES</li>
+                <li><span class="option-label">C.</span> GRANT USAGE ON SCHEMA analytics TO ROLE bi_readonly; only</li>
+                <li><span class="option-label">D.</span> GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly;</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Dua GRANT statements diperlukan untuk cover existing + future objects: (1) GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly — Memberikan SELECT pada semua tables yang SUDAH ADA saat statement dijalankan. (2) ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES TO ROLE bi_readonly — Mendefinisikan bahwa setiap table BARU yang dibuat di schema "analytics" akan otomatis mendapat GRANT SELECT ke bi_readonly role. Tanpa ALTER DEFAULT PRIVILEGES, setiap table baru memerlukan manual GRANT. Juga diperlukan: GRANT USAGE ON SCHEMA analytics TO ROLE bi_readonly (agar bisa "see" schema). Opsi A hanya cover existing tables — future tables won't be accessible. Opsi C (GRANT ALL) memberikan CREATE, DROP, dll — violates read-only requirement — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (USAGE only) mengizinkan melihat schema tapi tidak SELECT dari tables.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Dua GRANT statements diperlukan untuk cover existing + future objects: (1) GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly — Memberikan SELECT pada semua tables yang SUDAH ADA saat statement dijalankan. (2) ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES TO ROLE bi_readonly — Mendefinisikan bahwa setiap table BARU yang dibuat di schema "analytics" akan otomatis mendapat GRANT SELECT ke bi_readonly role. Tanpa ALTER DEFAULT PRIVILEGES, setiap table baru memerlukan manual GRANT. Juga diperlukan: GRANT USAGE ON SCHEMA analytics TO ROLE bi_readonly (agar bisa "see" schema).<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Memberikan CREATE, DROP, dll — violates read-only requirement — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Mengizinkan melihat schema tapi tidak SELECT dari tables.<br>Opsi D: SALAH. Hanya cover existing tables — future tables won't be accessible.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A company federates access to Amazon Redshift using IAM roles with SAML-based identity federation. Different teams assume different IAM roles. The DBA needs to map these federated IAM roles to appropriate Redshift database permissions. Which approach correctly maps IAM roles to Redshift database roles?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Create Redshift database users matching the IAM role names and manually assign permissions</li>
                 <li><span class="option-label">B.</span> Use Redshift's native IAM role integration — when federated users connect using GetClusterCredentials API with DbGroup parameter, they are automatically added to specified Redshift database groups; OR use role-based identity mapping where IAM roles are mapped to Redshift roles via the Redshift identity provider configuration</li>
                 <li><span class="option-label">C.</span> Federated users always get superuser access to Redshift with DbGroup parameter</li>
                 <li><span class="option-label">D.</span> Use S3 bucket policies to control Redshift access for federated users</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Redshift supports IAM-federated access melalui GetClusterCredentials API: Flow: (1) User authenticates via SAML/SSO → assumes IAM role, (2) Application calls redshift:GetClusterCredentials with parameters: DbUser (database username), DbGroups (Redshift groups to join), AutoCreate (auto-create user if not exists), (3) API returns temporary database credentials, (4) User connects to Redshift — automatically member of specified DbGroups. IAM Policy controls: IAM policy pada role determines WHICH DbUsers dan DbGroups the federated user can request (via conditions). Redshift database permissions: Groups in Redshift have pre-configured GRANT permissions. Mapping: IAM Role "analysts-role" → allowed DbGroups: ["analytics_readonly"] → Redshift group "analytics_readonly" has SELECT on analytics schema. Opsi A (manual users) doesn't scale for federation. Opsi C salah — federated users get permissions based on DbGroups, not superuser — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — S3 policies irrelevant for Redshift database access.</div>
+                <div class="explanation">Redshift supports IAM-federated access melalui GetClusterCredentials API: Flow: (1) User authenticates via SAML/SSO → assumes IAM role, (2) Application calls redshift:GetClusterCredentials with parameters: DbUser (database username), DbGroups (Redshift groups to join), AutoCreate (auto-create user if not exists), (3) API returns temporary database credentials, (4) User connects to Redshift — automatically member of specified DbGroups. IAM Policy controls: IAM policy pada role determines WHICH DbUsers dan DbGroups the federated user can request (via conditions). Redshift database permissions: Groups in Redshift have pre-configured GRANT permissions. Mapping: IAM Role "analysts-role" → allowed DbGroups: ["analytics_readonly"] → Redshift group "analytics_readonly" has SELECT on analytics schema.<br><br>Opsi A: SALAH. Doesn't scale for federation.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Salah — federated users get permissions based on DbGroups, not superuser — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. S3 policies irrelevant for Redshift database access.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer discovers that a former contractor's database user in Redshift still has active permissions. The contractor's access was supposed to be revoked when they left 3 months ago. The DBA needs to: (1) immediately revoke all access, (2) audit what the user accessed in the past 3 months, and (3) prevent this from happening again. What is the correct remediation approach?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Only disable the user's password — their permissions will automatically expire</li>
-                <li><span class="option-label">B.</span> Execute ALTER USER contractor_user DISABLE; to immediately prevent login, then query STL_CONNECTION_LOG and STL_QUERY for the user's activity over the past 3 months, and implement a process using IAM-based temporary credentials (GetClusterCredentials) instead of persistent database passwords to ensure access automatically expires when IAM access is revoked</li>
+                
+                <li><span class="option-label">A.</span> Wait for the password to expire naturally configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> Only disable the user's password — their permissions will automatically expire</li>
                 <li><span class="option-label">C.</span> Delete the Redshift cluster and recreate it without the user</li>
-                <li><span class="option-label">D.</span> Wait for the password to expire naturally configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Execute ALTER USER contractor_user DISABLE; to immediately prevent login, then query STL_CONNECTION_LOG and STL_QUERY for the user's activity over the past 3 months, and implement a process using IAM-based temporary credentials (GetClusterCredentials) instead of persistent database passwords to ensure access automatically expires when IAM access is revoked</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Complete remediation approach: Immediate: ALTER USER contractor_user DISABLE; — prevents any new connections. Existing active sessions: SELECT pg_terminate_backend(pid) untuk kill active sessions. Also: REVOKE ALL ON ALL TABLES IN SCHEMA ... FROM contractor_user; untuk remove all permissions. Audit: STL_CONNECTION_LOG — shows all connections: login time, source IP, success/failure. STL_QUERY — shows all SQL executed by the user (full query text, timestamps, tables accessed). STL_QUERYTEXT — untuk queries yang terlalu panjang. SVL_STATEMENTTEXT — comprehensive statement log. Prevention: Migrate to IAM-based authentication via GetClusterCredentials. When contractor's IAM access is revoked (role assumption removed), they cannot generate DB credentials. Temporary credentials expire automatically (default 15 min - 3600 sec configurable). Opsi A — disabling password doesn't revoke permissions on existing sessions. Opsi C — extreme overreaction. Opsi D — passwords may not have expiry set — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Complete remediation approach: Immediate: ALTER USER contractor_user DISABLE; — prevents any new connections. Existing active sessions: SELECT pg_terminate_backend(pid) untuk kill active sessions. Also: REVOKE ALL ON ALL TABLES IN SCHEMA ... FROM contractor_user; untuk remove all permissions. Audit: STL_CONNECTION_LOG — shows all connections: login time, source IP, success/failure. STL_QUERY — shows all SQL executed by the user (full query text, timestamps, tables accessed). STL_QUERYTEXT — untuk queries yang terlalu panjang. SVL_STATEMENTTEXT — comprehensive statement log. Prevention: Migrate to IAM-based authentication via GetClusterCredentials. When contractor's IAM access is revoked (role assumption removed), they cannot generate DB credentials. Temporary credentials expire automatically (default 15 min - 3600 sec configurable).<br><br>Opsi A: SALAH. Passwords may not have expiry set — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Disabling password doesn't revoke permissions on existing sessions.<br>Opsi C: SALAH. Extreme overreaction.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data warehouse team is implementing schema-level isolation in Redshift. They have schemas: "raw" (ETL landing), "staging" (transformations), and "presentation" (BI access). The requirements are: ETL role can write to raw and staging but NOT presentation; transformation role can read raw, write staging, and write presentation; BI role can ONLY read presentation. Which GRANT structure correctly implements this isolation?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Grant ALL on ALL schemas to all three roles for simplicity configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> ETL role: GRANT USAGE, CREATE, INSERT, SELECT ON raw/staging schemas; Transformation role: GRANT SELECT ON raw, GRANT ALL ON staging/presentation; BI role: GRANT USAGE ON SCHEMA presentation + GRANT SELECT ON ALL TABLES IN SCHEMA presentation. Each role gets ONLY what's needed</li>
-                <li><span class="option-label">C.</span> Create separate Redshift clusters for each schema</li>
-                <li><span class="option-label">D.</span> Use only views in the presentation schema that reference staging tables, and grant SELECT on views only</li>
+                
+                <li><span class="option-label">A.</span> Use only views in the presentation schema that reference staging tables, and grant SELECT on views only</li>
+                <li><span class="option-label">B.</span> Create separate Redshift clusters for each schema</li>
+                <li><span class="option-label">C.</span> Grant ALL on ALL schemas to all three roles for simplicity configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> ETL role: GRANT USAGE, CREATE, INSERT, SELECT ON raw/staging schemas; Transformation role: GRANT SELECT ON raw, GRANT ALL ON staging/presentation; BI role: GRANT USAGE ON SCHEMA presentation + GRANT SELECT ON ALL TABLES IN SCHEMA presentation. Each role gets ONLY what's needed</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Schema-level isolation menggunakan precise GRANT statements: ETL Role: GRANT USAGE ON SCHEMA raw, staging TO ROLE etl_role; GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA raw TO ROLE etl_role; GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA staging TO ROLE etl_role; (NO grants on presentation schema — implicit deny). Transformation Role: GRANT USAGE ON SCHEMA raw, staging, presentation TO ROLE transform_role; GRANT SELECT ON ALL TABLES IN SCHEMA raw TO ROLE transform_role; GRANT ALL ON ALL TABLES IN SCHEMA staging, presentation TO ROLE transform_role; BI Role: GRANT USAGE ON SCHEMA presentation TO ROLE bi_role; GRANT SELECT ON ALL TABLES IN SCHEMA presentation TO ROLE bi_role; (Only USAGE + SELECT on presentation — cannot see raw/staging schemas). Key: USAGE permission on schema is required first — without it, user cannot even list objects. Opsi A violates least privilege — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C expensive overengineering. Opsi D is good defense-in-depth addition but doesn't fully address schema isolation requirements.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Schema-level isolation menggunakan precise GRANT statements: ETL Role: GRANT USAGE ON SCHEMA raw, staging TO ROLE etl_role; GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA raw TO ROLE etl_role; GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA staging TO ROLE etl_role; (NO grants on presentation schema — implicit deny). Transformation Role: GRANT USAGE ON SCHEMA raw, staging, presentation TO ROLE transform_role; GRANT SELECT ON ALL TABLES IN SCHEMA raw TO ROLE transform_role; GRANT ALL ON ALL TABLES IN SCHEMA staging, presentation TO ROLE transform_role; BI Role: GRANT USAGE ON SCHEMA presentation TO ROLE bi_role; GRANT SELECT ON ALL TABLES IN SCHEMA presentation TO ROLE bi_role; (Only USAGE + SELECT on presentation — cannot see raw/staging schemas). Key: USAGE permission on schema is required first — without it, user cannot even list objects.<br><br>Opsi A: SALAH. Is good defense-in-depth addition but doesn't fully address schema isolation requirements.<br>Opsi B: SALAH. Expensive overengineering.<br>Opsi C: SALAH. Violates least privilege — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
         

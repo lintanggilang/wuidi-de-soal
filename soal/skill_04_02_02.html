@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineering team has a Glue ETL job that connects to an Amazon RDS PostgreSQL database. Currently, the database credentials (username/password) are hardcoded in the job script. The security team mandates that credentials must be rotated every 30 days automatically without any pipeline downtime. Which solution meets ALL requirements?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Store credentials in an S3 file encrypted with SSE-KMS and update the file monthly using a scheduled Lambda function</li>
-                <li><span class="option-label">B.</span> Use AWS Secrets Manager to store the RDS credentials, enable automatic rotation with a 30-day schedule using the built-in RDS rotation Lambda function, and configure the Glue job to retrieve credentials from Secrets Manager at runtime</li>
-                <li><span class="option-label">C.</span> Store credentials in AWS Systems Manager Parameter Store (Standard tier) and create a CloudWatch Events rule to trigger rotation every 30 days</li>
-                <li><span class="option-label">D.</span> Use environment variables in the Glue job configuration and update them manually every 30 days with a 30-day schedule using the built-in RDS rotation Lambda function</li>
+                
+                <li><span class="option-label">A.</span> Store credentials in AWS Systems Manager Parameter Store (Standard tier) and create a CloudWatch Events rule to trigger rotation every 30 days</li>
+                <li><span class="option-label">B.</span> Use environment variables in the Glue job configuration and update them manually every 30 days with a 30-day schedule using the built-in RDS rotation Lambda function</li>
+                <li><span class="option-label">C.</span> Use AWS Secrets Manager to store the RDS credentials, enable automatic rotation with a 30-day schedule using the built-in RDS rotation Lambda function, and configure the Glue job to retrieve credentials from Secrets Manager at runtime</li>
+                <li><span class="option-label">D.</span> Store credentials in an S3 file encrypted with SSE-KMS and update the file monthly using a scheduled Lambda function</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS Secrets Manager adalah satu-satunya service yang menyediakan BUILT-IN automatic rotation untuk RDS/Aurora credentials. Cara kerjanya: (1) Secret disimpan di Secrets Manager dengan rotation enabled, (2) Rotation Lambda function (provided by AWS untuk RDS) secara otomatis: creates new password, updates the database, updates the secret value, (3) Menggunakan staging labels (AWSCURRENT, AWSPENDING) untuk zero-downtime rotation — old credentials tetap valid selama transition, (4) Glue job memanggil GetSecretValue saat runtime — selalu mendapat credential terbaru. Opsi A (S3 file) memerlukan custom Lambda dan tidak memiliki built-in database password update mechanism. Opsi C (Parameter Store Standard) TIDAK memiliki native rotation feature — harus build sendiri. Advanced tier PS bisa trigger rotation tapi tanpa built-in RDS rotation Lambda. Opsi D (env vars) requires manual intervention dan credentials exposed in configuration — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">AWS Secrets Manager adalah satu-satunya service yang menyediakan BUILT-IN automatic rotation untuk RDS/Aurora credentials. Cara kerjanya: (1) Secret disimpan di Secrets Manager dengan rotation enabled, (2) Rotation Lambda function (provided by AWS untuk RDS) secara otomatis: creates new password, updates the database, updates the secret value, (3) Menggunakan staging labels (AWSCURRENT, AWSPENDING) untuk zero-downtime rotation — old credentials tetap valid selama transition, (4) Glue job memanggil GetSecretValue saat runtime — selalu mendapat credential terbaru.<br><br>Opsi A: SALAH. TIDAK memiliki native rotation feature — harus build sendiri. Advanced tier PS bisa trigger rotation tapi tanpa built-in RDS rotation Lambda.<br>Opsi B: SALAH. Requires manual intervention dan credentials exposed in configuration — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Memerlukan custom Lambda dan tidak memiliki built-in database password update mechanism.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A data engineer needs to store configuration values for a data pipeline: a non-sensitive S3 bucket name, an API endpoint URL, and a sensitive database connection string. Budget is a concern. Which combination of AWS services provides the MOST cost-effective secure storage?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Store all three values in AWS Secrets Manager with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">B.</span> Store the S3 bucket name and API endpoint in SSM Parameter Store (Standard tier, free), and store the database connection string in AWS Secrets Manager (for encryption and rotation capability)</li>
-                <li><span class="option-label">C.</span> Store all values in environment variables within the application code</li>
-                <li><span class="option-label">D.</span> Store all values in a DynamoDB table with server-side encryption</li>
+                
+                <li><span class="option-label">A.</span> Store all values in a DynamoDB table with server-side encryption</li>
+                <li><span class="option-label">B.</span> Store all values in environment variables within the application code</li>
+                <li><span class="option-label">C.</span> Store all three values in AWS Secrets Manager with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">D.</span> Store the S3 bucket name and API endpoint in SSM Parameter Store (Standard tier, free), and store the database connection string in AWS Secrets Manager (for encryption and rotation capability)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Cost-optimized approach menggunakan masing-masing service sesuai kebutuhan: SSM Parameter Store Standard tier: FREE (up to 10,000 parameters), supports String/StringList types, sufficient untuk non-sensitive config values. Tidak ada per-API-call charges untuk standard parameters. Cocok untuk: bucket names, endpoint URLs, feature flags. AWS Secrets Manager: $0.40/secret/month + $0.05/10,000 API calls. Menyediakan: encryption at rest (KMS), automatic rotation, versioning, cross-account access. Diperlukan untuk: sensitive credentials yang memerlukan rotation. Opsi A (semua di Secrets Manager) works tapi unnecessarily expensive — $0 — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.40/month × 3 secrets untuk values yang tidak memerlukan rotation. Opsi C (env vars) insecure — credentials in plaintext. Opsi D (DynamoDB) over-engineering untuk credential storage — no built-in rotation, additional DynamoDB charges.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Cost-optimized approach menggunakan masing-masing service sesuai kebutuhan: SSM Parameter Store Standard tier: FREE (up to 10,000 parameters), supports String/StringList types, sufficient untuk non-sensitive config values. Tidak ada per-API-call charges untuk standard parameters. Cocok untuk: bucket names, endpoint URLs, feature flags. AWS Secrets Manager: $0.40/secret/month + $0.05/10,000 API calls. Menyediakan: encryption at rest (KMS), automatic rotation, versioning, cross-account access. Diperlukan untuk: sensitive credentials yang memerlukan rotation.<br><br>Opsi A: SALAH. Over-engineering untuk credential storage — no built-in rotation, additional DynamoDB charges.<br>Opsi B: SALAH. Insecure — credentials in plaintext.<br>Opsi C: SALAH. Works tapi unnecessarily expensive — $0 — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.40/month × 3 secrets untuk values yang tidak memerlukan rotation.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data engineer sets up automatic rotation for an RDS MySQL secret in Secrets Manager. After the first rotation, the Glue ETL job fails with "Authentication failed" errors. The secret's rotation status shows "Rotation successful". What is the MOST likely cause?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The KMS key used to encrypt the secret has expired for the duration of the job</li>
-                <li><span class="option-label">B.</span> The Glue job is caching the old credentials — it retrieved the secret value at startup and stores it in memory for the duration of the job, not re-fetching after rotation occurs mid-job execution</li>
-                <li><span class="option-label">C.</span> The rotation Lambda function is in a different VPC than the database</li>
-                <li><span class="option-label">D.</span> Secrets Manager automatically revokes the old password immediately upon rotation</li>
+                
+                <li><span class="option-label">A.</span> The Glue job is caching the old credentials — it retrieved the secret value at startup and stores it in memory for the duration of the job, not re-fetching after rotation occurs mid-job execution</li>
+                <li><span class="option-label">B.</span> The KMS key used to encrypt the secret has expired for the duration of the job</li>
+                <li><span class="option-label">C.</span> Secrets Manager automatically revokes the old password immediately upon rotation</li>
+                <li><span class="option-label">D.</span> The rotation Lambda function is in a different VPC than the database</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Common issue dengan credential rotation: Long-running jobs (Glue ETL can run hours) yang retrieve credentials at startup dan cache them. Jika rotation happens DURING job execution: (1) Job started with old password at T=0, (2) Rotation occurs at T=30min — database password changes, (3) Job's cached credential becomes invalid, (4) Next database connection attempt fails. Solutions: (1) Implement credential refresh logic — periodically call GetSecretValue, (2) Use connection pooling with credential refresh, (3) For Glue specifically — use Glue Connections which can be configured to retrieve secrets, (4) Schedule rotations during maintenance windows when no long-running jobs are active. Opsi A — jika KMS key expired, rotation itself would have failed — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — jika networking was wrong, rotation status would show failed. Opsi D — Secrets Manager uses staging labels (AWSCURRENT/AWSPREVIOUS) dan old credential (AWSPREVIOUS) biasanya tetap valid briefly, tapi database already has new password setelah rotation.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Common issue dengan credential rotation: Long-running jobs (Glue ETL can run hours) yang retrieve credentials at startup dan cache them. Jika rotation happens DURING job execution: (1) Job started with old password at T=0, (2) Rotation occurs at T=30min — database password changes, (3) Job's cached credential becomes invalid, (4) Next database connection attempt fails. Solutions: (1) Implement credential refresh logic — periodically call GetSecretValue, (2) Use connection pooling with credential refresh, (3) For Glue specifically — use Glue Connections which can be configured to retrieve secrets, (4) Schedule rotations during maintenance windows when no long-running jobs are active.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Jika KMS key expired, rotation itself would have failed — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Secrets Manager uses staging labels (AWSCURRENT/AWSPREVIOUS) dan old credential (AWSPREVIOUS) biasanya tetap valid briefly, tapi database already has new password setelah rotation.<br>Opsi D: SALAH. Jika networking was wrong, rotation status would show failed.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A multi-account data platform has a central "Security" account that manages all database credentials in Secrets Manager. The "Analytics" account (111111111111) needs to access a Redshift credential stored in the Security account (999999999999). Which configuration enables secure cross-account secret access?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Copy the secret to the Analytics account using cross-region replication</li>
-                <li><span class="option-label">B.</span> In the Security account: add a resource-based policy on the secret allowing the Analytics account's role to call secretsmanager:GetSecretValue; ensure the KMS key policy also grants Decrypt to the Analytics account's role. In the Analytics account: the role's IAM policy allows secretsmanager:GetSecretValue on the secret ARN in the Security account</li>
+                
+                <li><span class="option-label">A.</span> In the Security account: add a resource-based policy on the secret allowing the Analytics account's role to call secretsmanager:GetSecretValue; ensure the KMS key policy also grants Decrypt to the Analytics account's role. In the Analytics account: the role's IAM policy allows secretsmanager:GetSecretValue on the secret ARN in the Security account</li>
+                <li><span class="option-label">B.</span> Create an identical secret in both accounts and synchronize manually configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Share the AWS account credentials of the Security account with the Analytics team</li>
-                <li><span class="option-label">D.</span> Create an identical secret in both accounts and synchronize manually configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Copy the secret to the Analytics account using cross-region replication</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Cross-account secret access memerlukan permissions di KEDUA sisi: Security Account (resource owner) — Secret resource policy: {"Effect": "Allow", "Principal": {"AWS": "arn:aws:iam::111111111111:role/AnalyticsRole"}, "Action": "secretsmanager:GetSecretValue", "Resource": "*"}. KMS key policy: HARUS grant kms:Decrypt ke Analytics role karena secret terenkripsi KMS. Tanpa ini, GetSecretValue akan gagal dengan AccessDenied meskipun secret policy mengizinkan. Analytics Account (consumer): IAM policy pada role: Allow secretsmanager:GetSecretValue pada ARN secret "arn:aws:secretsmanager:region:999999999999:secret:redshift-creds-*". BOTH permissions (secret policy + KMS policy + IAM policy) diperlukan. Opsi A — Secrets Manager cross-region replication exists tapi ini cross-ACCOUNT bukan cross-region. Opsi C — severe anti-pattern. Opsi D — manual sync tidak scalable dan credential bisa out of sync — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Cross-account secret access memerlukan permissions di KEDUA sisi: Security Account (resource owner) — Secret resource policy: {"Effect": "Allow", "Principal": {"AWS": "arn:aws:iam::111111111111:role/AnalyticsRole"}, "Action": "secretsmanager:GetSecretValue", "Resource": "*"}. KMS key policy: HARUS grant kms:Decrypt ke Analytics role karena secret terenkripsi KMS. Tanpa ini, GetSecretValue akan gagal dengan AccessDenied meskipun secret policy mengizinkan. Analytics Account (consumer): IAM policy pada role: Allow secretsmanager:GetSecretValue pada ARN secret "arn:aws:secretsmanager:region:999999999999:secret:redshift-creds-*". BOTH permissions (secret policy + KMS policy + IAM policy) diperlukan.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Manual sync tidak scalable dan credential bisa out of sync — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Severe anti-pattern.<br>Opsi D: SALAH. Secrets Manager cross-region replication exists tapi ini cross-ACCOUNT bukan cross-region.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer is migrating a legacy application that has database credentials hardcoded in 15 different configuration files across multiple Lambda functions, Glue jobs, and Step Functions. The engineer wants to centralize credential management with minimal code changes. Which approach provides the SMOOTHEST migration path?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Rewrite all 15 applications from scratch to use Secrets Manager SDK calls</li>
-                <li><span class="option-label">B.</span> Store credentials in Secrets Manager, then for Lambda functions use the Secrets Manager Lambda extension (caches secrets as environment variables automatically); for Glue jobs use Glue Connection properties that reference Secrets Manager; for Step Functions use the native GetSecretValue integration action</li>
-                <li><span class="option-label">C.</span> Store credentials in SSM Parameter Store and set them as environment variables at deployment time in all services</li>
-                <li><span class="option-label">D.</span> Use AWS Config to automatically find and replace hardcoded credentials in source code configured for optimal performance and minimal operational overhead</li>
+                
+                <li><span class="option-label">A.</span> Store credentials in SSM Parameter Store and set them as environment variables at deployment time in all services</li>
+                <li><span class="option-label">B.</span> Use AWS Config to automatically find and replace hardcoded credentials in source code configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Rewrite all 15 applications from scratch to use Secrets Manager SDK calls</li>
+                <li><span class="option-label">D.</span> Store credentials in Secrets Manager, then for Lambda functions use the Secrets Manager Lambda extension (caches secrets as environment variables automatically); for Glue jobs use Glue Connection properties that reference Secrets Manager; for Step Functions use the native GetSecretValue integration action</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Best migration approach leverages native integrations untuk minimize code changes: Lambda: AWS Parameters and Secrets Lambda Extension — retrieves secrets dan makes them available as local HTTP endpoint or environment variables. Minimal code change: just reference env var instead of hardcoded value. Extension handles caching dan refresh. Glue: Glue Connections can store connection details backed by Secrets Manager. Glue job references Connection name — framework handles credential retrieval. Step Functions: Native AWS SDK integration action (aws-sdk:secretsmanager:getSecretValue) — no Lambda needed, direct retrieval in state machine. Each service has purpose-built integration patterns that minimize changes. Opsi A (rewrite all) — expensive dan risky full rewrite. Opsi C (env vars at deploy time) — credentials still static until next deployment, no auto-rotation. Opsi D — AWS Config doesn't modify source code — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Best migration approach leverages native integrations untuk minimize code changes: Lambda: AWS Parameters and Secrets Lambda Extension — retrieves secrets dan makes them available as local HTTP endpoint or environment variables. Minimal code change: just reference env var instead of hardcoded value. Extension handles caching dan refresh. Glue: Glue Connections can store connection details backed by Secrets Manager. Glue job references Connection name — framework handles credential retrieval. Step Functions: Native AWS SDK integration action (aws-sdk:secretsmanager:getSecretValue) — no Lambda needed, direct retrieval in state machine. Each service has purpose-built integration patterns that minimize changes.<br><br>Opsi A: SALAH. Credentials still static until next deployment, no auto-rotation.<br>Opsi B: SALAH. AWS Config doesn't modify source code — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Expensive dan risky full rewrite.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer needs to store an API key for a third-party data provider. The key costs $10,000/year and must never be exposed. Requirements: encrypt with customer-managed KMS key, track all access in audit logs, and allow retrieval only from specific Lambda functions. Which service and configuration best meets these requirements?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> SSM Parameter Store SecureString with default AWS-managed KMS key</li>
-                <li><span class="option-label">B.</span> AWS Secrets Manager with: customer-managed KMS key for encryption, resource-based policy restricting GetSecretValue to specific Lambda function role ARNs, and CloudTrail logging enabled for the secret to audit all access attempts</li>
-                <li><span class="option-label">C.</span> Store the API key in a private S3 bucket with SSE-S3 encryption for encryption</li>
-                <li><span class="option-label">D.</span> AWS Certificate Manager for storing API keys</li>
+                
+                <li><span class="option-label">A.</span> AWS Secrets Manager with: customer-managed KMS key for encryption, resource-based policy restricting GetSecretValue to specific Lambda function role ARNs, and CloudTrail logging enabled for the secret to audit all access attempts</li>
+                <li><span class="option-label">B.</span> Store the API key in a private S3 bucket with SSE-S3 encryption for encryption</li>
+                <li><span class="option-label">C.</span> AWS Certificate Manager for storing API keys</li>
+                <li><span class="option-label">D.</span> SSM Parameter Store SecureString with default AWS-managed KMS key</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Secrets Manager dengan full configuration memenuhi semua requirements: (1) Customer-managed KMS key: Saat create secret, specify KmsKeyId dengan CMK ARN. Gives full control over key rotation, key policy, dan audit. (2) Resource-based policy: {"Effect": "Allow", "Principal": {"AWS": ["arn:aws:iam::account:role/LambdaFunction1Role", "arn:aws:iam::account:role/LambdaFunction2Role"]}, "Action": "secretsmanager:GetSecretValue", "Resource": "*"}. Ini RESTRICTS access hanya ke specified Lambda roles. (3) CloudTrail integration: Secrets Manager API calls (GetSecretValue, DescribeSecret, etc.) otomatis logged di CloudTrail — setiap access attempt direcord dengan: who, when, source IP, success/failure. Opsi A (Parameter Store) supports SecureString tapi tidak mendukung resource-based policies untuk fine-grained access restriction. Opsi C (S3) possible tapi lacks purpose-built secret management features — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D — ACM is for SSL/TLS certificates, not API keys.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Secrets Manager dengan full configuration memenuhi semua requirements: (1) Customer-managed KMS key: Saat create secret, specify KmsKeyId dengan CMK ARN. Gives full control over key rotation, key policy, dan audit. (2) Resource-based policy: {"Effect": "Allow", "Principal": {"AWS": ["arn:aws:iam::account:role/LambdaFunction1Role", "arn:aws:iam::account:role/LambdaFunction2Role"]}, "Action": "secretsmanager:GetSecretValue", "Resource": "*"}. Ini RESTRICTS access hanya ke specified Lambda roles. (3) CloudTrail integration: Secrets Manager API calls (GetSecretValue, DescribeSecret, etc.) otomatis logged di CloudTrail — setiap access attempt direcord dengan: who, when, source IP, success/failure.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Possible tapi lacks purpose-built secret management features — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. ACM is for SSL/TLS certificates, not API keys.<br>Opsi D: SALAH. Supports SecureString tapi tidak mendukung resource-based policies untuk fine-grained access restriction.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer implements Secrets Manager rotation for an Aurora MySQL cluster. During the rotation, applications experience brief connection failures. The rotation Lambda function uses the "single user" rotation strategy. The engineer wants to eliminate connection failures during rotation. Which rotation strategy should they switch to?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Increase the rotation Lambda timeout to avoid failures configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Switch to the "alternating users" rotation strategy — this uses TWO database users that alternate between active roles, so the previous user's credentials remain valid while the new user is being set up, eliminating any window where no valid credentials exist</li>
-                <li><span class="option-label">C.</span> Disable rotation and manually update credentials during maintenance windows</li>
-                <li><span class="option-label">D.</span> Use IAM database authentication instead of password rotation</li>
+                
+                <li><span class="option-label">A.</span> Disable rotation and manually update credentials during maintenance windows</li>
+                <li><span class="option-label">B.</span> Increase the rotation Lambda timeout to avoid failures configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Use IAM database authentication instead of password rotation</li>
+                <li><span class="option-label">D.</span> Switch to the "alternating users" rotation strategy — this uses TWO database users that alternate between active roles, so the previous user's credentials remain valid while the new user is being set up, eliminating any window where no valid credentials exist</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Rotation strategies di Secrets Manager: Single User Strategy: Uses ONE database user. During rotation: (1) Change password in database, (2) Update secret. Brief window exists dimana password sudah berubah di DB tapi applications masih punya old cached value → connection failures. Alternating Users Strategy: Uses TWO database users (e.g., app_user dan app_user_clone). Rotation cycle: (1) AWSCURRENT points to user_A (currently active), (2) Rotation creates/updates user_B with new password, (3) Tests user_B connectivity, (4) Swaps labels: user_B becomes AWSCURRENT, user_A becomes AWSPREVIOUS. At NO point are both users simultaneously invalid — eliminates connection failures. Applications using GetSecretValue always get working credentials because AWSCURRENT is always valid. Opsi A (timeout) doesn't address the root cause — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (manual) removes automation benefit. Opsi D (IAM auth) is valid alternative tapi changes the entire authentication mechanism, tidak hanya rotation strategy.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Rotation strategies di Secrets Manager: Single User Strategy: Uses ONE database user. During rotation: (1) Change password in database, (2) Update secret. Brief window exists dimana password sudah berubah di DB tapi applications masih punya old cached value → connection failures. Alternating Users Strategy: Uses TWO database users (e.g., app_user dan app_user_clone). Rotation cycle: (1) AWSCURRENT points to user_A (currently active), (2) Rotation creates/updates user_B with new password, (3) Tests user_B connectivity, (4) Swaps labels: user_B becomes AWSCURRENT, user_A becomes AWSPREVIOUS. At NO point are both users simultaneously invalid — eliminates connection failures. Applications using GetSecretValue always get working credentials because AWSCURRENT is always valid.<br><br>Opsi A: SALAH. Removes automation benefit.<br>Opsi B: SALAH. Doesn't address the root cause — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Is valid alternative tapi changes the entire authentication mechanism, tidak hanya rotation strategy.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">An EMR cluster needs to access credentials stored in Secrets Manager to connect to an external Oracle database. The cluster runs in a private subnet with no internet access. How should the data engineer configure network access to Secrets Manager for the EMR nodes?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Add a NAT Gateway to the private subnet to allow EMR nodes to reach Secrets Manager over the internet</li>
-                <li><span class="option-label">B.</span> Create a VPC Interface Endpoint for Secrets Manager (com.amazonaws.region.secretsmanager) in the VPC, ensuring the endpoint's security group allows HTTPS (443) from the EMR nodes' security group</li>
-                <li><span class="option-label">C.</span> Store credentials in the EMR bootstrap script instead of Secrets Manager for Secrets Manager</li>
-                <li><span class="option-label">D.</span> Move the EMR cluster to a public subnet</li>
+                <li><span class="option-label">B.</span> Move the EMR cluster to a public subnet</li>
+                <li><span class="option-label">C.</span> Create a VPC Interface Endpoint for Secrets Manager (com.amazonaws.region.secretsmanager) in the VPC, ensuring the endpoint's security group allows HTTPS (443) from the EMR nodes' security group</li>
+                <li><span class="option-label">D.</span> Store credentials in the EMR bootstrap script instead of Secrets Manager for Secrets Manager</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">VPC Interface Endpoint untuk Secrets Manager memungkinkan EMR nodes mengakses Secrets Manager API melalui AWS private network TANPA internet access. Configuration: (1) Create Interface Endpoint for service "com.amazonaws.{region}.secretsmanager", (2) Select subnets dimana EMR nodes berada, (3) Attach security group yang allows inbound HTTPS (443) dari EMR nodes' security group, (4) Enable Private DNS agar standard Secrets Manager API endpoint (secretsmanager.region.amazonaws.com) resolve ke private endpoint IP. EMR code memanggil Secrets Manager SDK seperti biasa — DNS resolution otomatis mengarahkan ke private endpoint. Opsi A (NAT Gateway) bekerja tapi unnecessary exposure — traffic keluar ke internet lalu kembali ke AWS, dan NAT Gateway mahal. Opsi C (bootstrap script) credentials stored in plaintext dan tidak mendapat benefit rotation/auditing — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (public subnet) reduces security posture significantly.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">VPC Interface Endpoint untuk Secrets Manager memungkinkan EMR nodes mengakses Secrets Manager API melalui AWS private network TANPA internet access. Configuration: (1) Create Interface Endpoint for service "com.amazonaws.{region}.secretsmanager", (2) Select subnets dimana EMR nodes berada, (3) Attach security group yang allows inbound HTTPS (443) dari EMR nodes' security group, (4) Enable Private DNS agar standard Secrets Manager API endpoint (secretsmanager.region.amazonaws.com) resolve ke private endpoint IP. EMR code memanggil Secrets Manager SDK seperti biasa — DNS resolution otomatis mengarahkan ke private endpoint.<br><br>Opsi A: SALAH. Bekerja tapi unnecessary exposure — traffic keluar ke internet lalu kembali ke AWS, dan NAT Gateway mahal.<br>Opsi B: SALAH. Reduces security posture significantly.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Credentials stored in plaintext dan tidak mendapat benefit rotation/auditing — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer stores database credentials in Secrets Manager with versioning enabled. They need to implement a rollback capability — if a new credential version causes issues, they should be able to quickly revert to the previous working version. How does Secrets Manager versioning support this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Delete the current secret and recreate it with the old value</li>
+                
+                <li><span class="option-label">A.</span> Secrets Manager only keeps the latest version; previous versions are permanently deleted</li>
                 <li><span class="option-label">B.</span> Use staging labels — the current version has label AWSCURRENT, and the previous version has label AWSPREVIOUS. To rollback, move the AWSCURRENT label to the previous version using UpdateSecretVersionStage API, making applications immediately retrieve the old (working) credential</li>
-                <li><span class="option-label">C.</span> Secrets Manager only keeps the latest version; previous versions are permanently deleted</li>
+                <li><span class="option-label">C.</span> Delete the current secret and recreate it with the old value</li>
                 <li><span class="option-label">D.</span> Contact AWS Support to restore a previous secret version and the previous version has label AWSPREVIOUS</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Secrets Manager versioning menggunakan staging labels untuk manage version lifecycle: AWSCURRENT: The version returned by default when GetSecretValue is called. This is the "active" version. AWSPREVIOUS: The version that was AWSCURRENT before the last rotation/update. AWSPENDING: Used during rotation process (temporary state). Rollback process: (1) Identify issue dengan current credential, (2) Call UpdateSecretVersionStage to move AWSCURRENT label from problematic version to AWSPREVIOUS version, (3) Immediately, all subsequent GetSecretValue calls return the rolled-back version. Important notes: Ini hanya rollback di Secrets Manager — jika database password sudah berubah, perlu juga rollback database password ke match. Untuk rotation-related rollbacks, both database and secret must be consistent. Opsi A (delete/recreate) loses version history dan audit trail. Opsi C salah — SM keeps multiple versions. Opsi D — not needed, self-service available — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">Secrets Manager versioning menggunakan staging labels untuk manage version lifecycle: AWSCURRENT: The version returned by default when GetSecretValue is called. This is the "active" version. AWSPREVIOUS: The version that was AWSCURRENT before the last rotation/update. AWSPENDING: Used during rotation process (temporary state). Rollback process: (1) Identify issue dengan current credential, (2) Call UpdateSecretVersionStage to move AWSCURRENT label from problematic version to AWSPREVIOUS version, (3) Immediately, all subsequent GetSecretValue calls return the rolled-back version. Important notes: Ini hanya rollback di Secrets Manager — jika database password sudah berubah, perlu juga rollback database password ke match. Untuk rotation-related rollbacks, both database and secret must be consistent.<br><br>Opsi A: SALAH. Salah — SM keeps multiple versions.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Loses version history dan audit trail.<br>Opsi D: SALAH. Not needed, self-service available — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data platform stores 500 configuration parameters and 20 database credentials. The team needs to optimize costs while maintaining security best practices. Currently, ALL 520 values are stored in Secrets Manager costing $208/month in secret storage fees alone. Which optimization reduces costs without sacrificing security for sensitive credentials?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Move all 520 values to SSM Parameter Store Standard tier to eliminate all storage costs</li>
+                
+                <li><span class="option-label">A.</span> Store all values in a single Secrets Manager secret as a large JSON object to pay for only one secret</li>
                 <li><span class="option-label">B.</span> Migrate the 500 non-sensitive configuration parameters to SSM Parameter Store Standard tier (free, up to 10,000 parameters); keep the 20 database credentials in Secrets Manager ($8/month) for rotation capability and enhanced security features. Use SecureString parameter type for any sensitive config values</li>
-                <li><span class="option-label">C.</span> Store all values in a single Secrets Manager secret as a large JSON object to pay for only one secret</li>
+                <li><span class="option-label">C.</span> Move all 520 values to SSM Parameter Store Standard tier to eliminate all storage costs</li>
                 <li><span class="option-label">D.</span> Move everything to environment variables to eliminate all AWS service costs and enhanced security features</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Cost optimization strategy: SSM Parameter Store Standard tier: $0/month for storage (up to 10,000 parameters, 4KB each). Supports String, StringList, SecureString (encrypted with KMS). Perfect for: bucket names, endpoints, feature flags, non-rotating configuration. SecureString parameters still encrypted at rest with KMS. Secrets Manager: $0.40/secret/month = $8/month for 20 credentials. Worth the cost for: automatic rotation, cross-account sharing, staging labels, built-in RDS/Aurora rotation Lambdas. Savings: $208 → $8/month = $200/month saved ($2,400/year). Opsi A moves DB credentials ke Parameter Store — loses rotation capability (critical for security compliance). Opsi C (single JSON secret) has 64KB limit, makes granular access control impossible (all-or-nothing), dan breaks rotation (can't rotate individual credentials). Opsi D (env vars) — credentials in plaintext, no encryption, no rotation, no audit — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">Cost optimization strategy: SSM Parameter Store Standard tier: $0/month for storage (up to 10,000 parameters, 4KB each). Supports String, StringList, SecureString (encrypted with KMS). Perfect for: bucket names, endpoints, feature flags, non-rotating configuration. SecureString parameters still encrypted at rest with KMS. Secrets Manager: $0.40/secret/month = $8/month for 20 credentials. Worth the cost for: automatic rotation, cross-account sharing, staging labels, built-in RDS/Aurora rotation Lambdas. Savings: $208 → $8/month = $200/month saved ($2,400/year).<br><br>Opsi A: SALAH. Has 64KB limit, makes granular access control impossible (all-or-nothing), dan breaks rotation (can't rotate individual credentials).<br>Opsi B: BENAR.<br>Opsi C: SALAH. Moves DB credentials ke Parameter Store — loses rotation capability (critical for security compliance).<br>Opsi D: SALAH. Credentials in plaintext, no encryption, no rotation, no audit — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
