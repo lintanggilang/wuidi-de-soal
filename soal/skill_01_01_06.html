@@ -34,15 +34,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer needs to trigger an AWS Glue ETL job whenever a new file is uploaded to a specific S3 prefix (s3://data-lake/raw/orders/). The trigger must be reliable and not miss any events. The S3 bucket receives hundreds of files per minute. Which approach is MOST reliable?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Enable Amazon EventBridge notifications on the S3 bucket and create a rule matching s3:ObjectCreated events with a prefix filter targeting the Glue StartJobRun API</li>
-                <li><span class="option-label">B.</span> Configure S3 Event Notification to send directly to a Lambda function that starts the Glue job</li>
+                <li><span class="option-label">B.</span> Use a scheduled Lambda function to list new objects in S3 every minute</li>
                 <li><span class="option-label">C.</span> Configure S3 Event Notification to send to an SQS queue, with EventBridge polling the queue with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">D.</span> Use a scheduled Lambda function to list new objects in S3 every minute</li>
+                <li><span class="option-label">D.</span> Configure S3 Event Notification to send directly to a Lambda function that starts the Glue job</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon EventBridge integration dengan S3 adalah cara paling reliable untuk event-driven triggers. EventBridge menangkap semua S3 events dengan at-least-once delivery dan mendukung filtering berdasarkan prefix. Ini juga bisa langsung menargetkan Glue API. Opsi B (S3 → Lambda → Glue) bisa kehilangan events jika Lambda throttled. Opsi C arsitektur-nya salah karena EventBridge tidak "poll" SQS — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (polling) tidak real-time dan bisa miss files di antara interval polling.</div>
+                <div class="explanation">Amazon EventBridge integration dengan S3 adalah cara paling reliable untuk event-driven triggers. EventBridge menangkap semua S3 events dengan at-least-once delivery dan mendukung filtering berdasarkan prefix. Ini juga bisa langsung menargetkan Glue API.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Tidak real-time dan bisa miss files di antara interval polling.<br>Opsi C: SALAH. Arsitektur-nya salah karena EventBridge tidak "poll" SQS — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Bisa kehilangan events jika Lambda throttled.</div>
             </div>
         </div>
 
@@ -50,15 +52,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A company wants to trigger different processing pipelines based on the file type uploaded to S3. CSV files should go to Pipeline A, JSON files to Pipeline B, and Parquet files to Pipeline C. Which event configuration provides the cleanest routing?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create three EventBridge rules with content-based filtering on the S3 object key suffix (.csv, .json, .parquet)</li>
-                <li><span class="option-label">B.</span> Create one S3 Event Notification sending to a Lambda function that routes based on file extension</li>
-                <li><span class="option-label">C.</span> Create three separate S3 prefixes with individual S3 Event Notifications for each with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">D.</span> Use S3 Object Lambda to intercept upload events and route them</li>
+                
+                <li><span class="option-label">A.</span> Create three separate S3 prefixes with individual S3 Event Notifications for each with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">B.</span> Use S3 Object Lambda to intercept upload events and route them</li>
+                <li><span class="option-label">C.</span> Create one S3 Event Notification sending to a Lambda function that routes based on file extension</li>
+                <li><span class="option-label">D.</span> Create three EventBridge rules with content-based filtering on the S3 object key suffix (.csv, .json, .parquet)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge rules mendukung content-based filtering pada event payload termasuk S3 object key. Tiga rules terpisah dengan suffix filter (.csv, .json, .parquet) memberikan routing paling bersih tanpa kode tambahan. Setiap rule menargetkan pipeline yang berbeda. Opsi B menambah Lambda sebagai router yang meningkatkan kompleksitas. Opsi C memaksa reorganisasi data berdasarkan format — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Object Lambda) untuk transformasi read access, bukan event routing.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">EventBridge rules mendukung content-based filtering pada event payload termasuk S3 object key. Tiga rules terpisah dengan suffix filter (.csv, .json, .parquet) memberikan routing paling bersih tanpa kode tambahan. Setiap rule menargetkan pipeline yang berbeda.<br><br>Opsi A: SALAH. Memaksa reorganisasi data berdasarkan format — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Untuk transformasi read access, bukan event routing.<br>Opsi C: SALAH. Menambah Lambda sebagai router yang meningkatkan kompleksitas.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -66,15 +70,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data pipeline is triggered by S3 Event Notifications sent to an SQS queue. The processing Lambda function occasionally fails, causing messages to return to the queue and trigger duplicate processing. How should the engineer prevent duplicate processing while ensuring no data is lost?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Configure a dead-letter queue (DLQ) for failed messages and implement idempotent processing in the Lambda function using DynamoDB to track processed files</li>
-                <li><span class="option-label">B.</span> Set the SQS visibility timeout to 24 hours to prevent reprocessing configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> Use an SQS FIFO queue with deduplication enabled</li>
-                <li><span class="option-label">D.</span> Delete messages from the queue immediately before processing starts</li>
+                
+                <li><span class="option-label">A.</span> Delete messages from the queue immediately before processing starts</li>
+                <li><span class="option-label">B.</span> Use an SQS FIFO queue with deduplication enabled</li>
+                <li><span class="option-label">C.</span> Set the SQS visibility timeout to 24 hours to prevent reprocessing configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Configure a dead-letter queue (DLQ) for failed messages and implement idempotent processing in the Lambda function using DynamoDB to track processed files</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DLQ menangkap messages yang gagal diproses setelah max retries, mencegah infinite reprocessing. Idempotent processing dengan DynamoDB tracking memastikan bahwa jika message diproses ulang, hasilnya sama (tidak ada duplikasi data). Opsi B (24h visibility timeout) menunda retry terlalu lama tanpa menyelesaikan masalah root cause — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (FIFO) membatasi throughput ke 300 msg/s dan S3 events tidak guarantee deduplication ID. Opsi D (delete sebelum proses) menyebabkan data loss jika processing gagal.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">DLQ menangkap messages yang gagal diproses setelah max retries, mencegah infinite reprocessing. Idempotent processing dengan DynamoDB tracking memastikan bahwa jika message diproses ulang, hasilnya sama (tidak ada duplikasi data).<br><br>Opsi A: SALAH. Menyebabkan data loss jika processing gagal.<br>Opsi B: SALAH. Membatasi throughput ke 300 msg/s dan S3 events tidak guarantee deduplication ID.<br>Opsi C: SALAH. Menunda retry terlalu lama tanpa menyelesaikan masalah root cause — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -82,15 +88,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data engineer needs to implement an event-driven pipeline where a Glue ETL job should only be triggered when ALL expected files for a given batch have arrived in S3 (e.g., 5 files with naming pattern batch_001_part_*.csv). Which architecture handles this "completeness check" pattern?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> S3 events → Lambda function that increments a counter in DynamoDB → When counter reaches 5, Lambda triggers the Glue job</li>
-                <li><span class="option-label">B.</span> S3 events → EventBridge rule that triggers after 5 matching events</li>
-                <li><span class="option-label">C.</span> Use S3 Event Notification with suffix filter for a "_COMPLETE" marker file that the source system uploads last</li>
+                
+                <li><span class="option-label">A.</span> S3 events → EventBridge rule that triggers after 5 matching events</li>
+                <li><span class="option-label">B.</span> Use S3 Event Notification with suffix filter for a "_COMPLETE" marker file that the source system uploads last</li>
+                <li><span class="option-label">C.</span> S3 events → Lambda function that increments a counter in DynamoDB → When counter reaches 5, Lambda triggers the Glue job</li>
                 <li><span class="option-label">D.</span> Schedule a Glue crawler every 5 minutes to count files in the partition with suffix filter for a "_COMPLETE" marker file</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Marker file (sentinel file) pattern adalah solusi paling sederhana dan reliable. Source system mengupload "_COMPLETE" file setelah semua data files selesai diupload. S3 event notification hanya memicu pipeline ketika marker file muncul, menjamin semua data sudah tersedia. Opsi A bisa bekerja tapi lebih kompleks dan rentan race condition. Opsi B (EventBridge) tidak bisa menghitung events sebelum trigger. Opsi D (polling) tidak event-driven dan memiliki latency — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Marker file (sentinel file) pattern adalah solusi paling sederhana dan reliable. Source system mengupload "_COMPLETE" file setelah semua data files selesai diupload. S3 event notification hanya memicu pipeline ketika marker file muncul, menjamin semua data sudah tersedia.<br><br>Opsi A: SALAH. Tidak bisa menghitung events sebelum trigger.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Bisa bekerja tapi lebih kompleks dan rentan race condition.<br>Opsi D: SALAH. Tidak event-driven dan memiliki latency — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -98,15 +106,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer set up S3 Event Notifications to trigger a Lambda function. However, when multiple files are uploaded simultaneously, some events are lost. Investigation shows the Lambda function is hitting concurrency limits. What is the BEST solution to prevent event loss?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Add an SQS queue between S3 Event Notifications and Lambda as a buffer</li>
-                <li><span class="option-label">B.</span> Increase the Lambda reserved concurrency to the maximum account limit</li>
-                <li><span class="option-label">C.</span> Configure S3 Event Notifications with a retry policy and Lambda as a buffer</li>
-                <li><span class="option-label">D.</span> Use S3 Batch Operations to process files instead of events</li>
+                
+                <li><span class="option-label">A.</span> Increase the Lambda reserved concurrency to the maximum account limit</li>
+                <li><span class="option-label">B.</span> Use S3 Batch Operations to process files instead of events</li>
+                <li><span class="option-label">C.</span> Add an SQS queue between S3 Event Notifications and Lambda as a buffer</li>
+                <li><span class="option-label">D.</span> Configure S3 Event Notifications with a retry policy and Lambda as a buffer</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">SQS queue sebagai buffer antara S3 events dan Lambda mencegah event loss. SQS menyimpan messages hingga Lambda siap memprosesnya (retention up to 14 days). Lambda SQS event source mapping juga mengatur batch size dan concurrency secara otomatis. Opsi B (increase concurrency) membantu tapi masih bisa hit account-level limits. Opsi C (S3 retry) — S3 Event Notifications tidak memiliki configurable retry policy — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Batch Operations) bukan event-driven dan untuk operasi massal yang dijadwalkan.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">SQS queue sebagai buffer antara S3 events dan Lambda mencegah event loss. SQS menyimpan messages hingga Lambda siap memprosesnya (retention up to 14 days). Lambda SQS event source mapping juga mengatur batch size dan concurrency secara otomatis.<br><br>Opsi A: SALAH. Membantu tapi masih bisa hit account-level limits.<br>Opsi B: SALAH. Bukan event-driven dan untuk operasi massal yang dijadwalkan.<br>Opsi C: BENAR.<br>Opsi D: SALAH. S3 Event Notifications tidak memiliki configurable retry policy — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -114,15 +124,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A company has an existing S3 bucket that already uses S3 Event Notifications to send to an SNS topic for an existing application. The data engineering team now needs to also trigger a Glue job from the same events. However, S3 allows only one event notification configuration per event type per prefix. How should this be resolved?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable Amazon EventBridge notifications on the S3 bucket, which provides unlimited rule targets without conflicting with existing S3 Event Notifications</li>
-                <li><span class="option-label">B.</span> Add a second subscription to the existing SNS topic that targets the Glue job with existing S3 Event Notifications</li>
-                <li><span class="option-label">C.</span> Replace S3 Event Notifications with EventBridge and migrate the existing application</li>
-                <li><span class="option-label">D.</span> Create a Lambda function subscribed to the SNS topic that triggers the Glue job</li>
+                
+                <li><span class="option-label">A.</span> Replace S3 Event Notifications with EventBridge and migrate the existing application</li>
+                <li><span class="option-label">B.</span> Create a Lambda function subscribed to the SNS topic that triggers the Glue job</li>
+                <li><span class="option-label">C.</span> Enable Amazon EventBridge notifications on the S3 bucket, which provides unlimited rule targets without conflicting with existing S3 Event Notifications</li>
+                <li><span class="option-label">D.</span> Add a second subscription to the existing SNS topic that targets the Glue job with existing S3 Event Notifications</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Enabling EventBridge on an S3 bucket works alongside existing S3 Event Notifications tanpa konflik. EventBridge menerima semua S3 events secara independen dan Anda bisa membuat rules dengan multiple targets. Existing notification ke SNS tetap berfungsi. Opsi B memerlukan Glue memiliki SNS subscription endpoint yang tidak langsung supported — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C membutuhkan migrasi aplikasi existing. Opsi D bisa bekerja tapi menambah overhead Lambda invocation.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Enabling EventBridge on an S3 bucket works alongside existing S3 Event Notifications tanpa konflik. EventBridge menerima semua S3 events secara independen dan Anda bisa membuat rules dengan multiple targets. Existing notification ke SNS tetap berfungsi.<br><br>Opsi A: SALAH. Membutuhkan migrasi aplikasi existing.<br>Opsi B: SALAH. Bisa bekerja tapi menambah overhead Lambda invocation.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Memerlukan Glue memiliki SNS subscription endpoint yang tidak langsung supported — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -130,15 +142,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer needs to set up an event trigger that starts a Step Functions workflow whenever an AWS Glue job changes state to FAILED. The workflow should capture the job name and error message for alerting. Which implementation is correct?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> EventBridge rule matching "Glue Job State Change" with detail.state = "FAILED", targeting Step Functions with input transformation to extract jobName and message</li>
-                <li><span class="option-label">B.</span> CloudWatch Alarm on Glue job failure metric, with alarm action targeting Step Functions</li>
-                <li><span class="option-label">C.</span> Glue job notification trigger configured to call Step Functions API on failure with detail and message</li>
+                
+                <li><span class="option-label">A.</span> CloudWatch Alarm on Glue job failure metric, with alarm action targeting Step Functions</li>
+                <li><span class="option-label">B.</span> Glue job notification trigger configured to call Step Functions API on failure with detail and message</li>
+                <li><span class="option-label">C.</span> EventBridge rule matching "Glue Job State Change" with detail.state = "FAILED", targeting Step Functions with input transformation to extract jobName and message</li>
                 <li><span class="option-label">D.</span> SNS topic subscribed to Glue job events with a Lambda subscriber that starts Step Functions</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge menangkap Glue Job State Change events natively. Dengan rule filtering pada state "FAILED" dan input transformation, event detail (jobName, error message) bisa diteruskan ke Step Functions sebagai input. Ini adalah pola event-driven yang paling direct. Opsi B (CloudWatch Alarm) tidak membawa detail error message. Opsi C — Glue tidak memiliki "notification trigger" built-in yang memanggil API langsung — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D menambah layer SNS dan Lambda yang tidak diperlukan.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">EventBridge menangkap Glue Job State Change events natively. Dengan rule filtering pada state "FAILED" dan input transformation, event detail (jobName, error message) bisa diteruskan ke Step Functions sebagai input. Ini adalah pola event-driven yang paling direct.<br><br>Opsi A: SALAH. Tidak membawa detail error message.<br>Opsi B: SALAH. Glue tidak memiliki "notification trigger" built-in yang memanggil API langsung — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Menambah layer SNS dan Lambda yang tidak diperlukan.</div>
             </div>
         </div>
 
@@ -146,15 +160,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A company receives partner data via SFTP to AWS Transfer Family. When a file is uploaded, it's stored in S3. The data engineer needs to trigger processing only for files larger than 100 MB (to batch small files separately). Which event trigger configuration supports file-size-based filtering?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> EventBridge rule with content filtering on the detail.object.size field using numeric matching (greater than 104857600)</li>
-                <li><span class="option-label">B.</span> S3 Event Notification with a size filter in the configuration</li>
-                <li><span class="option-label">C.</span> Lambda function triggered by all S3 events that checks file size using HeadObject before processing</li>
-                <li><span class="option-label">D.</span> S3 Intelligent-Tiering to separate large and small files automatically with content filtering on the detail</li>
+                
+                <li><span class="option-label">A.</span> S3 Event Notification with a size filter in the configuration</li>
+                <li><span class="option-label">B.</span> EventBridge rule with content filtering on the detail.object.size field using numeric matching (greater than 104857600)</li>
+                <li><span class="option-label">C.</span> S3 Intelligent-Tiering to separate large and small files automatically with content filtering on the detail</li>
+                <li><span class="option-label">D.</span> Lambda function triggered by all S3 events that checks file size using HeadObject before processing</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge mendukung content-based filtering termasuk numeric matching pada field seperti object size. Rule bisa memfilter events dimana detail.object.size > 104857600 (100 MB). Ini menghindari invokasi yang tidak perlu. Opsi B — S3 Event Notifications tidak mendukung filtering berdasarkan ukuran file. Opsi C bekerja tapi memicu Lambda untuk setiap file yang tidak efisien. Opsi D (Intelligent-Tiering) untuk storage class management, bukan event filtering — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">EventBridge mendukung content-based filtering termasuk numeric matching pada field seperti object size. Rule bisa memfilter events dimana detail.object.size > 104857600 (100 MB). Ini menghindari invokasi yang tidak perlu.<br><br>Opsi A: SALAH. S3 Event Notifications tidak mendukung filtering berdasarkan ukuran file.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Untuk storage class management, bukan event filtering — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Bekerja tapi memicu Lambda untuk setiap file yang tidak efisien.</div>
             </div>
         </div>
 
@@ -162,15 +178,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer configured an EventBridge rule to trigger a Lambda function when objects are created in S3. During testing, the engineer notices that the Lambda function receives events for both PutObject and CompleteMultipartUpload. The function should only process complete multipart uploads of large files. How should the rule be refined?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Add an event pattern filter specifying detail.reason as "CompleteMultipartUpload" in the EventBridge rule</li>
-                <li><span class="option-label">B.</span> Filter in the Lambda function code to only process CompleteMultipartUpload events configured for optimal performance</li>
-                <li><span class="option-label">C.</span> Use S3 Event Notification with the s3:ObjectCreated:CompleteMultipartUpload event type instead</li>
-                <li><span class="option-label">D.</span> Create a separate S3 bucket for multipart uploads only</li>
+                
+                <li><span class="option-label">A.</span> Filter in the Lambda function code to only process CompleteMultipartUpload events configured for optimal performance</li>
+                <li><span class="option-label">B.</span> Add an event pattern filter specifying detail.reason as "CompleteMultipartUpload" in the EventBridge rule</li>
+                <li><span class="option-label">C.</span> Create a separate S3 bucket for multipart uploads only</li>
+                <li><span class="option-label">D.</span> Use S3 Event Notification with the s3:ObjectCreated:CompleteMultipartUpload event type instead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge S3 events include detail.reason field yang menunjukkan bagaimana object dibuat (PutObject, CompleteMultipartUpload, CopyObject, dll). Memfilter pada field ini di EventBridge rule memastikan Lambda hanya dipanggil untuk multipart uploads. Opsi B (filter di Lambda) membuang invocation cost untuk events yang tidak diproses — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C bisa bekerja tapi S3 Event Notifications kurang fleksibel dibanding EventBridge. Opsi D (separate bucket) mengubah arsitektur storage secara tidak perlu.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">EventBridge S3 events include detail.reason field yang menunjukkan bagaimana object dibuat (PutObject, CompleteMultipartUpload, CopyObject, dll). Memfilter pada field ini di EventBridge rule memastikan Lambda hanya dipanggil untuk multipart uploads.<br><br>Opsi A: SALAH. Membuang invocation cost untuk events yang tidak diproses — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Mengubah arsitektur storage secara tidak perlu.<br>Opsi D: SALAH. Bisa bekerja tapi S3 Event Notifications kurang fleksibel dibanding EventBridge.</div>
             </div>
         </div>
 
@@ -178,15 +196,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data engineering team needs to implement a cross-account event trigger. When data is uploaded to an S3 bucket in Account A, a Glue job in Account B should be triggered. Which is the MOST secure approach?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Account A sends S3 events to its EventBridge bus → Cross-account EventBridge rule puts events on Account B's event bus → Account B rule triggers the Glue job</li>
-                <li><span class="option-label">B.</span> Account A S3 Event Notification sends to an SNS topic → Account B Lambda subscribes to the topic and starts the Glue job</li>
-                <li><span class="option-label">C.</span> Account A configures S3 Event Notification directly targeting Account B's Lambda function</li>
-                <li><span class="option-label">D.</span> Account B polls Account A's S3 bucket using ListObjectsV2 every minute with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">B.</span> Account A configures S3 Event Notification directly targeting Account B's Lambda function</li>
+                <li><span class="option-label">C.</span> Account B polls Account A's S3 bucket using ListObjectsV2 every minute with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">D.</span> Account A S3 Event Notification sends to an SNS topic → Account B Lambda subscribes to the topic and starts the Glue job</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Cross-account EventBridge event forwarding adalah pola paling secure dan native untuk cross-account event triggers. Account A mengizinkan Account B's event bus sebagai target melalui resource-based policy. Ini menggunakan IAM untuk security dan tidak memerlukan shared credentials. Opsi B (SNS cross-account) bekerja tapi membutuhkan subscription confirmation. Opsi C tidak supported — S3 Event Notifications tidak bisa langsung target cross-account Lambda. Opsi D (polling) tidak event-driven, lambat, dan membutuhkan cross-account S3 access — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">Cross-account EventBridge event forwarding adalah pola paling secure dan native untuk cross-account event triggers. Account A mengizinkan Account B's event bus sebagai target melalui resource-based policy. Ini menggunakan IAM untuk security dan tidak memerlukan shared credentials.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Tidak supported — S3 Event Notifications tidak bisa langsung target cross-account Lambda.<br>Opsi C: SALAH. Tidak event-driven, lambat, dan membutuhkan cross-account S3 access — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Bekerja tapi membutuhkan subscription confirmation.</div>
             </div>
         </div>
         

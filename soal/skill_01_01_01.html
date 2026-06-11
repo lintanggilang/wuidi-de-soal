@@ -222,15 +222,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A financial services company needs to process stock trade events in real time with sub-second latency. The data must be processed in the exact order it was produced per trading symbol. The system must scale to handle millions of events per second during market peaks. Which AWS service and configuration best meets these requirements?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Amazon Kinesis Data Streams with partition keys set to the trading symbol</li>
-                <li><span class="option-label">B.</span> Amazon MSK with a single partition per topic</li>
-                <li><span class="option-label">C.</span> Amazon SQS FIFO queues with message group IDs set to the trading symbol</li>
-                <li><span class="option-label">D.</span> Amazon DynamoDB Streams with partition keys set to the trading symbol to guarantee per-symbol ordering and scale throughput horizontally</li>
+                
+                <li><span class="option-label">A.</span> Amazon SQS FIFO queues with message group IDs set to the trading symbol</li>
+                <li><span class="option-label">B.</span> Amazon DynamoDB Streams with partition keys set to the trading symbol to guarantee per-symbol ordering and scale throughput horizontally</li>
+                <li><span class="option-label">C.</span> Amazon MSK with a single partition per topic</li>
+                <li><span class="option-label">D.</span> Amazon Kinesis Data Streams with partition keys set to the trading symbol</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon Kinesis Data Streams memastikan urutan per shard menggunakan partition key. Dengan menetapkan partition key ke trading symbol, semua event untuk simbol yang sama masuk ke shard yang sama, menjaga urutan. Kinesis juga dirancang untuk throughput tinggi dengan jutaan event per detik. Opsi B dengan satu partisi tidak bisa scale. Opsi C (SQS FIFO) memiliki batas throughput 3.000 pesan/detik per message group. Opsi D (DynamoDB Streams) bukan untuk ingestion berskala besar tapi untuk change data capture — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Amazon Kinesis Data Streams memastikan urutan per shard menggunakan partition key. Dengan menetapkan partition key ke trading symbol, semua event untuk simbol yang sama masuk ke shard yang sama, menjaga urutan. Kinesis juga dirancang untuk throughput tinggi dengan jutaan event per detik.<br><br>Opsi A: SALAH. Memiliki batas throughput 3.000 pesan/detik per message group.<br>Opsi B: SALAH. Bukan untuk ingestion berskala besar tapi untuk change data capture — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Dengan satu partisi tidak bisa scale.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -239,15 +241,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A media company streams clickstream data from their website to Amazon MSK. A data engineer needs to consume this data and write it to Amazon S3 in near real-time for downstream analytics. Which approach provides the MOST operationally efficient solution?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Write a custom Kafka consumer on Amazon EC2 that reads from MSK and writes to S3</li>
-                <li><span class="option-label">B.</span> Use Amazon MSK Connect with an S3 sink connector</li>
-                <li><span class="option-label">C.</span> Use AWS Lambda to poll MSK topics and write to S3</li>
-                <li><span class="option-label">D.</span> Use Amazon MSK Connect with a fully managed Glue Data Catalog sink connector to write directly to S3 in near real-time</li>
+                
+                <li><span class="option-label">A.</span> Use AWS Lambda to poll MSK topics and write to S3</li>
+                <li><span class="option-label">B.</span> Use Amazon MSK Connect with a fully managed Glue Data Catalog sink connector to write directly to S3 in near real-time</li>
+                <li><span class="option-label">C.</span> Use Amazon MSK Connect with an S3 sink connector</li>
+                <li><span class="option-label">D.</span> Write a custom Kafka consumer on Amazon EC2 that reads from MSK and writes to S3</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Amazon MSK Connect adalah solusi paling operasionally efisien untuk mengirim data dari MSK ke S3. MSK Connect adalah layanan fully managed yang menjalankan Kafka Connect connectors tanpa perlu mengelola infrastruktur. S3 sink connector sudah tersedia dan tinggal dikonfigurasi. Opsi A memerlukan pengelolaan EC2 instances. Opsi C (Lambda) memiliki batas timeout 15 menit dan overhead cold start. Opsi D (Glue) bisa dilakukan tapi lebih mahal dan memiliki kompleksitas lebih untuk use case sederhana ini — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Amazon MSK Connect adalah solusi paling operasionally efisien untuk mengirim data dari MSK ke S3. MSK Connect adalah layanan fully managed yang menjalankan Kafka Connect connectors tanpa perlu mengelola infrastruktur. S3 sink connector sudah tersedia dan tinggal dikonfigurasi.<br><br>Opsi A: SALAH. Memiliki batas timeout 15 menit dan overhead cold start.<br>Opsi B: SALAH. Bisa dilakukan tapi lebih mahal dan memiliki kompleksitas lebih untuk use case sederhana ini — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Memerlukan pengelolaan EC2 instances.</div>
             </div>
         </div>
 
@@ -256,15 +260,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A retail company uses Amazon DynamoDB as their primary database for inventory management. They need to capture all changes to inventory items and trigger downstream analytics pipelines whenever items reach low-stock thresholds. The solution must not impact the performance of the production DynamoDB table. Which approach should the data engineer implement?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable DynamoDB Streams on the table and configure a Lambda function as a stream consumer</li>
-                <li><span class="option-label">B.</span> Use AWS DMS with DynamoDB as a source to capture real-time item-level changes and trigger a Lambda function for downstream analytics pipelines</li>
-                <li><span class="option-label">C.</span> Schedule an AWS Glue crawler to scan the DynamoDB table every minute</li>
-                <li><span class="option-label">D.</span> Use Amazon CloudWatch metrics on the table and trigger alarms based on item counts</li>
+                
+                <li><span class="option-label">A.</span> Schedule an AWS Glue crawler to scan the DynamoDB table every minute</li>
+                <li><span class="option-label">B.</span> Use Amazon CloudWatch metrics on the table and trigger alarms based on item counts</li>
+                <li><span class="option-label">C.</span> Enable DynamoDB Streams on the table and configure a Lambda function as a stream consumer</li>
+                <li><span class="option-label">D.</span> Use AWS DMS with DynamoDB as a source to capture real-time item-level changes and trigger a Lambda function for downstream analytics pipelines</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DynamoDB Streams menangkap perubahan data (inserts, updates, deletes) secara real-time tanpa mempengaruhi performa tabel produksi. Lambda sebagai consumer dapat memproses setiap perubahan dan memicu pipeline analytics ketika threshold tercapai. Opsi B (DMS) lebih cocok untuk migrasi atau replikasi berkelanjutan ke target lain, bukan untuk triggering logic — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Glue crawler) memindai metadata schema bukan data aktual, dan tidak real-time. Opsi D (CloudWatch) tidak bisa mendeteksi perubahan per-item secara granular.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">DynamoDB Streams menangkap perubahan data (inserts, updates, deletes) secara real-time tanpa mempengaruhi performa tabel produksi. Lambda sebagai consumer dapat memproses setiap perubahan dan memicu pipeline analytics ketika threshold tercapai.<br><br>Opsi A: SALAH. Memindai metadata schema bukan data aktual, dan tidak real-time.<br>Opsi B: SALAH. Tidak bisa mendeteksi perubahan per-item secara granular.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Lebih cocok untuk migrasi atau replikasi berkelanjutan ke target lain, bukan untuk triggering logic — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -273,15 +279,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A healthcare company is migrating their on-premises Oracle database to Amazon Aurora PostgreSQL. During the migration period, they need to continuously replicate changes from Oracle to a Kinesis Data Stream so that downstream microservices can consume the change events. Which solution meets this requirement?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use AWS DMS with change data capture (CDC) and a Kinesis Data Stream as the target endpoint</li>
+                
+                <li><span class="option-label">A.</span> Export Oracle redo logs to S3 and use a Lambda function to write to Kinesis</li>
                 <li><span class="option-label">B.</span> Use Oracle GoldenGate to write directly to Kinesis Data Streams</li>
-                <li><span class="option-label">C.</span> Export Oracle redo logs to S3 and use a Lambda function to write to Kinesis</li>
-                <li><span class="option-label">D.</span> Configure AWS Glue with native CDC support to continuously read Oracle redo logs and stream change events directly to Kinesis Data Streams</li>
+                <li><span class="option-label">C.</span> Configure AWS Glue with native CDC support to continuously read Oracle redo logs and stream change events directly to Kinesis Data Streams</li>
+                <li><span class="option-label">D.</span> Use AWS DMS with change data capture (CDC) and a Kinesis Data Stream as the target endpoint</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS DMS mendukung CDC (Change Data Capture) dari Oracle sebagai source dan Kinesis Data Streams sebagai target endpoint. Ini adalah solusi paling terintegrasi dan managed untuk streaming change events ke Kinesis. Opsi B membutuhkan lisensi tambahan dan infrastruktur GoldenGate. Opsi C sangat kompleks dan tidak real-time. Opsi D (Glue) tidak memiliki native CDC reader untuk Oracle redo logs secara streaming — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">AWS DMS mendukung CDC (Change Data Capture) dari Oracle sebagai source dan Kinesis Data Streams sebagai target endpoint. Ini adalah solusi paling terintegrasi dan managed untuk streaming change events ke Kinesis.<br><br>Opsi A: SALAH. Sangat kompleks dan tidak real-time.<br>Opsi B: SALAH. Membutuhkan lisensi tambahan dan infrastruktur GoldenGate.<br>Opsi C: SALAH. Tidak memiliki native CDC reader untuk Oracle redo logs secara streaming — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -290,15 +298,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer is designing a real-time analytics pipeline using Amazon Kinesis Data Streams. The stream receives 5,000 records per second with an average record size of 50 KB. The engineer needs to determine the number of shards required. What is the MINIMUM number of shards needed to handle this throughput?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> 5 shards</li>
-                <li><span class="option-label">B.</span> 245 shards</li>
-                <li><span class="option-label">C.</span> 250 shards</li>
+                
+                <li><span class="option-label">A.</span> 250 shards</li>
+                <li><span class="option-label">B.</span> 5 shards</li>
+                <li><span class="option-label">C.</span> 245 shards</li>
                 <li><span class="option-label">D.</span> 500 shards</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Setiap shard Kinesis mendukung hingga 1 MB/detik atau 1.000 records/detik untuk write. Berdasarkan throughput data: 5.000 records × 50 KB = 250.000 KB/detik = ~244 MB/detik. Berdasarkan volume: 244 MB / 1 MB per shard = 244 shards (dibulatkan ke 250). Berdasarkan jumlah records: 5.000 / 1.000 = 5 shards. Bottleneck ada pada throughput data (MB/s), sehingga minimal 250 shards diperlukan. Opsi A dan B terlalu sedikit. Opsi D berlebihan. Opsi B meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Setiap shard Kinesis mendukung hingga 1 MB/detik atau 1.000 records/detik untuk write. Berdasarkan throughput data: 5.000 records × 50 KB = 250.000 KB/detik = ~244 MB/detik. Berdasarkan volume: 244 MB / 1 MB per shard = 244 shards (dibulatkan ke 250). Berdasarkan jumlah records: 5.000 / 1.000 = 5 shards. Bottleneck ada pada throughput data (MB/s), sehingga minimal 250 shards diperlukan.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Dan B terlalu sedikit.<br>Opsi C: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi D: SALAH. Berlebihan.</div>
             </div>
         </div>
 
@@ -307,15 +317,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A logistics company uses Amazon MSK to process GPS location events from their fleet of delivery trucks. They want to enrich each event with driver information stored in Amazon DynamoDB before loading it into Amazon Redshift. The enrichment must happen in real-time. Which architecture provides the MOST scalable solution?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use AWS Glue streaming ETL to consume from MSK, lookup DynamoDB, and write to Redshift</li>
-                <li><span class="option-label">B.</span> Use Kafka Streams application on Amazon ECS to join MSK data with DynamoDB and write to Redshift via JDBC</li>
+                
+                <li><span class="option-label">A.</span> Use Lambda triggered by MSK to query DynamoDB and insert into Redshift using Data API</li>
+                <li><span class="option-label">B.</span> Use AWS Glue streaming ETL to consume from MSK, lookup DynamoDB, and write to Redshift</li>
                 <li><span class="option-label">C.</span> Use Amazon Managed Service for Apache Flink to consume MSK with async I/O enrichment from DynamoDB and auto-scaling write to Redshift</li>
-                <li><span class="option-label">D.</span> Use Lambda triggered by MSK to query DynamoDB and insert into Redshift using Data API</li>
+                <li><span class="option-label">D.</span> Use Kafka Streams application on Amazon ECS to join MSK data with DynamoDB and write to Redshift via JDBC</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Glue streaming ETL dapat mengonsumsi data dari MSK, melakukan lookup ke DynamoDB menggunakan DynamicFrame atau native Spark lookups, dan menulis ke Redshift. Ini adalah solusi paling scalable karena fully managed dan autoscaling. Opsi B membutuhkan pengelolaan ECS dan JDBC connections ke Redshift. Opsi C menggunakan Flink yang lebih kompleks, dan Redshift Streaming Ingestion hanya mendukung Kinesis/MSK langsung, bukan dari Flink — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (Lambda) memiliki batas concurrency dan timeout, serta Redshift Data API bersifat asynchronous yang menambah latensi.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">AWS Glue streaming ETL dapat mengonsumsi data dari MSK, melakukan lookup ke DynamoDB menggunakan DynamicFrame atau native Spark lookups, dan menulis ke Redshift. Ini adalah solusi paling scalable karena fully managed dan autoscaling.<br><br>Opsi A: SALAH. Memiliki batas concurrency dan timeout, serta Redshift Data API bersifat asynchronous yang menambah latensi.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Menggunakan Flink yang lebih kompleks, dan Redshift Streaming Ingestion hanya mendukung Kinesis/MSK langsung, bukan dari Flink — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Membutuhkan pengelolaan ECS dan JDBC connections ke Redshift.</div>
             </div>
         </div>
 
@@ -324,15 +336,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer needs to read data from an Amazon Kinesis Data Stream with multiple consumer applications. Each application must be able to read the full stream independently with dedicated throughput. The engineer also needs to minimize read latency to under 200ms. Which feature should be enabled?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable Kinesis Enhanced Fan-Out for registered consumers</li>
-                <li><span class="option-label">B.</span> Increase the number of shards to provide dedicated 2 MB/s read throughput per consumer with sub-200ms latency</li>
+                
+                <li><span class="option-label">A.</span> Increase the number of shards to provide dedicated 2 MB/s read throughput per consumer with sub-200ms latency</li>
+                <li><span class="option-label">B.</span> Enable Kinesis Enhanced Fan-Out for registered consumers</li>
                 <li><span class="option-label">C.</span> Use Kinesis Client Library (KCL) with multiple worker instances</li>
                 <li><span class="option-label">D.</span> Configure GetRecords API with a shorter polling interval</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Enhanced Fan-Out memberikan dedicated 2 MB/detik throughput per consumer per shard menggunakan HTTP/2 push (SubscribeToShard). Ini menghilangkan sharing throughput antar consumer dan memberikan latensi rata-rata ~70ms. Opsi B (menambah shard) meningkatkan total throughput tapi consumer masih berbagi 2 MB/s per shard — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (KCL workers) hanya untuk scaling processing, bukan dedicated throughput. Opsi D (polling) dibatasi 5 GetRecords calls/detik per shard shared antar semua consumer, dengan latensi lebih tinggi (~200-1000ms).</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Enhanced Fan-Out memberikan dedicated 2 MB/detik throughput per consumer per shard menggunakan HTTP/2 push (SubscribeToShard). Ini menghilangkan sharing throughput antar consumer dan memberikan latensi rata-rata ~70ms.<br><br>Opsi A: SALAH. Meningkatkan total throughput tapi consumer masih berbagi 2 MB/s per shard — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Hanya untuk scaling processing, bukan dedicated throughput.<br>Opsi D: SALAH. Dibatasi 5 GetRecords calls/detik per shard shared antar semua consumer, dengan latensi lebih tinggi (~200-1000ms).</div>
             </div>
         </div>
 
@@ -341,15 +355,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A telecommunications company needs to implement a streaming data pipeline that reads call detail records (CDRs) from an on-premises system. The data must be ingested into AWS in near real-time for fraud detection. The on-premises system can only produce data in CSV format over SFTP. Which combination of AWS services provides the MOST efficient streaming ingestion path?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> AWS Transfer Family (SFTP) → Amazon S3 → S3 Event Notification → Lambda → Kinesis Data Streams</li>
-                <li><span class="option-label">B.</span> AWS Direct Connect → Amazon Kinesis Agent on-premises → Kinesis Data Streams</li>
-                <li><span class="option-label">C.</span> AWS Transfer Family (SFTP) managed endpoint → Amazon S3 → AWS Glue Streaming ETL with near real-time micro-batching → Kinesis Data Streams</li>
-                <li><span class="option-label">D.</span> AWS DMS with SFTP as a source endpoint → Kinesis Data Streams as target</li>
+                <li><span class="option-label">B.</span> AWS Transfer Family (SFTP) managed endpoint → Amazon S3 → AWS Glue Streaming ETL with near real-time micro-batching → Kinesis Data Streams</li>
+                <li><span class="option-label">C.</span> AWS DMS with SFTP as a source endpoint → Kinesis Data Streams as target</li>
+                <li><span class="option-label">D.</span> AWS Direct Connect → Amazon Kinesis Agent on-premises → Kinesis Data Streams</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">AWS Transfer Family menyediakan SFTP endpoint yang managed dan langsung menulis ke S3. S3 Event Notification memicu Lambda yang membaca CSV, mengubah ke format yang sesuai, dan menulis ke Kinesis Data Streams. Ini cocok karena source hanya bisa SFTP. Opsi B (Kinesis Agent) membutuhkan instalasi agent di on-premises dan tidak mendukung SFTP natively. Opsi C (Glue Streaming) tidak bisa membaca dari S3 secara streaming (hanya batch) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (DMS) tidak mendukung SFTP sebagai source endpoint.</div>
+                <div class="explanation">AWS Transfer Family menyediakan SFTP endpoint yang managed dan langsung menulis ke S3. S3 Event Notification memicu Lambda yang membaca CSV, mengubah ke format yang sesuai, dan menulis ke Kinesis Data Streams. Ini cocok karena source hanya bisa SFTP.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Tidak bisa membaca dari S3 secara streaming (hanya batch) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Tidak mendukung SFTP sebagai source endpoint.<br>Opsi D: SALAH. Membutuhkan instalasi agent di on-premises dan tidak mendukung SFTP natively.</div>
             </div>
         </div>
 
@@ -358,15 +374,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A gaming company streams player activity events to Amazon Kinesis Data Streams. During a new game launch, the stream experiences significant throttling with ProvisionedThroughputExceededException errors. The data engineer wants to dynamically scale the stream without changing the producer application code. Which solution addresses this issue?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Switch to Kinesis Data Streams On-Demand capacity mode</li>
-                <li><span class="option-label">B.</span> Implement exponential backoff in the producer application</li>
-                <li><span class="option-label">C.</span> Use UpdateShardCount API with automatic scaling policy to dynamically adjust shard count based on CloudWatch IncomingBytes metric</li>
-                <li><span class="option-label">D.</span> Enable server-side encryption to improve throughput</li>
+                
+                <li><span class="option-label">A.</span> Implement exponential backoff in the producer application</li>
+                <li><span class="option-label">B.</span> Use UpdateShardCount API with automatic scaling policy to dynamically adjust shard count based on CloudWatch IncomingBytes metric</li>
+                <li><span class="option-label">C.</span> Enable server-side encryption to improve throughput</li>
+                <li><span class="option-label">D.</span> Switch to Kinesis Data Streams On-Demand capacity mode</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Kinesis Data Streams On-Demand mode secara otomatis menskalakan kapasitas berdasarkan throughput aktual tanpa perlu provisioning manual. Ini menghilangkan throttling tanpa perubahan kode producer. Opsi B (exponential backoff) hanya menangani retry tapi tidak menyelesaikan masalah kapasitas, dan membutuhkan perubahan kode. Opsi C (UpdateShardCount) membutuhkan monitoring manual dan tetap bisa throttle jika traffic spike melebihi kapasitas baru — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (encryption) tidak berhubungan dengan throughput.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Kinesis Data Streams On-Demand mode secara otomatis menskalakan kapasitas berdasarkan throughput aktual tanpa perlu provisioning manual. Ini menghilangkan throttling tanpa perubahan kode producer.<br><br>Opsi A: SALAH. Hanya menangani retry tapi tidak menyelesaikan masalah kapasitas, dan membutuhkan perubahan kode.<br>Opsi B: SALAH. Membutuhkan monitoring manual dan tetap bisa throttle jika traffic spike melebihi kapasitas baru — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Tidak berhubungan dengan throughput.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -375,15 +393,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data engineer at an e-commerce company needs to implement real-time streaming ingestion into Amazon Redshift from an Amazon MSK cluster. The data should be available for querying in Redshift within seconds of being produced to MSK. The engineer wants to minimize ETL complexity. Which approach is MOST appropriate?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Use Amazon Redshift Streaming Ingestion to create a materialized view on the MSK topic</li>
                 <li><span class="option-label">B.</span> Use MSK Connect with a Redshift JDBC sink connector</li>
-                <li><span class="option-label">C.</span> Use AWS Glue streaming job to read from MSK and write to Redshift using JDBC</li>
-                <li><span class="option-label">D.</span> Use Amazon Data Firehose with direct MSK source integration to stream data into Redshift with sub-second delivery and no intermediate staging</li>
+                <li><span class="option-label">C.</span> Use Amazon Data Firehose with direct MSK source integration to stream data into Redshift with sub-second delivery and no intermediate staging</li>
+                <li><span class="option-label">D.</span> Use AWS Glue streaming job to read from MSK and write to Redshift using JDBC</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon Redshift Streaming Ingestion memungkinkan Redshift membaca langsung dari Amazon MSK (atau Kinesis) melalui materialized view, tanpa perlu staging di S3 atau ETL pipeline tambahan. Data tersedia dalam hitungan detik. Ini adalah solusi paling sederhana dengan minimal ETL complexity. Opsi B (JDBC sink) membutuhkan konfigurasi connector dan management. Opsi C (Glue) menambah layer ETL. Opsi D (Firehose) menambahkan latensi karena buffering interval (minimum 60 detik) dan staging ke S3 — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">Amazon Redshift Streaming Ingestion memungkinkan Redshift membaca langsung dari Amazon MSK (atau Kinesis) melalui materialized view, tanpa perlu staging di S3 atau ETL pipeline tambahan. Data tersedia dalam hitungan detik. Ini adalah solusi paling sederhana dengan minimal ETL complexity.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Membutuhkan konfigurasi connector dan management.<br>Opsi C: SALAH. Menambahkan latensi karena buffering interval (minimum 60 detik) dan staging ke S3 — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Menambah layer ETL.</div>
             </div>
         </div>
         

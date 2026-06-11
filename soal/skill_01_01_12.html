@@ -34,15 +34,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer is building a real-time pipeline that calculates a running average of sensor readings over a 5-minute window. Each new reading must be combined with previous readings to compute the average. Which type of processing does this represent?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Stateful processing — the pipeline must maintain state (accumulated values and count) across multiple events to compute the running average</li>
-                <li><span class="option-label">B.</span> Stateless processing — each record is processed independently</li>
+                <li><span class="option-label">B.</span> Stateless processing with external lookup configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Batch processing — the data must be collected before processing</li>
-                <li><span class="option-label">D.</span> Stateless processing with external lookup configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Stateless processing — each record is processed independently</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Running average membutuhkan akumulasi nilai dari multiple events sebelumnya (sum dan count). State ini harus dipertahankan antar pemrosesan event. Ini adalah definisi klasik stateful processing — output bergantung pada input saat ini DAN state dari input sebelumnya. Opsi B salah karena setiap event tidak bisa diproses tanpa context dari event sebelumnya. Opsi C (batch) bisa stateless tapi pertanyaannya tentang real-time pipeline. Opsi D contradictory — external lookup bisa stateful — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">Running average membutuhkan akumulasi nilai dari multiple events sebelumnya (sum dan count). State ini harus dipertahankan antar pemrosesan event. Ini adalah definisi klasik stateful processing — output bergantung pada input saat ini DAN state dari input sebelumnya.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Contradictory — external lookup bisa stateful — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Bisa stateless tapi pertanyaannya tentang real-time pipeline.<br>Opsi D: SALAH. Salah karena setiap event tidak bisa diproses tanpa context dari event sebelumnya.</div>
             </div>
         </div>
 
@@ -50,15 +52,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A Lambda function processes events from a Kinesis stream. Each event contains a user's location coordinates. The function converts coordinates to an address using a geocoding API and writes the enriched record to DynamoDB. Is this processing stateful or stateless, and why?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Stateless — each event is processed independently; the function does not need to remember any information from previous events</li>
-                <li><span class="option-label">B.</span> Stateful — the function calls an external API, creating a dependency</li>
-                <li><span class="option-label">C.</span> Stateful — the function writes to DynamoDB configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Stateless — because Lambda functions are inherently stateless</li>
+                <li><span class="option-label">B.</span> Stateless — because Lambda functions are inherently stateless</li>
+                <li><span class="option-label">C.</span> Stateful — the function calls an external API, creating a dependency</li>
+                <li><span class="option-label">D.</span> Stateful — the function writes to DynamoDB configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Processing ini stateless karena setiap event diproses secara independen — output (enriched record) hanya bergantung pada input saat ini (coordinates), bukan pada event sebelumnya. External API call dan DynamoDB write tidak membuat processing stateful; mereka adalah side effects. Stateful berarti output bergantung pada accumulated state dari multiple events. Opsi B salah — external dependency bukan definisi stateful. Opsi C salah — writing output bukan state — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D alasannya tidak tepat — Lambda bisa melakukan stateful processing jika menggunakan external state store.</div>
+                <div class="explanation">Processing ini stateless karena setiap event diproses secara independen — output (enriched record) hanya bergantung pada input saat ini (coordinates), bukan pada event sebelumnya. External API call dan DynamoDB write tidak membuat processing stateful; mereka adalah side effects. Stateful berarti output bergantung pada accumulated state dari multiple events.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Alasannya tidak tepat — Lambda bisa melakukan stateful processing jika menggunakan external state store.<br>Opsi C: SALAH. Salah — external dependency bukan definisi stateful.<br>Opsi D: SALAH. Salah — writing output bukan state — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -66,15 +70,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A fraud detection system processes financial transactions in real-time. It needs to flag a transaction as suspicious if a user makes more than 5 transactions in different countries within 1 hour. Which approach correctly implements this stateful detection?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use Apache Flink (Amazon Managed Service for Apache Flink) with keyed state and a 1-hour event-time window grouped by user_id</li>
-                <li><span class="option-label">B.</span> Use a Lambda function that queries DynamoDB for the user's recent transaction count each time</li>
-                <li><span class="option-label">C.</span> Use Kinesis Data Analytics SQL with a simple SELECT query</li>
-                <li><span class="option-label">D.</span> Use a stateless filter in Amazon Data Firehose transformation with keyed state and a 1-hour event-time window grouped by user_id</li>
+                
+                <li><span class="option-label">A.</span> Use a stateless filter in Amazon Data Firehose transformation with keyed state and a 1-hour event-time window grouped by user_id</li>
+                <li><span class="option-label">B.</span> Use Kinesis Data Analytics SQL with a simple SELECT query</li>
+                <li><span class="option-label">C.</span> Use Apache Flink (Amazon Managed Service for Apache Flink) with keyed state and a 1-hour event-time window grouped by user_id</li>
+                <li><span class="option-label">D.</span> Use a Lambda function that queries DynamoDB for the user's recent transaction count each time</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Apache Flink excels at stateful stream processing. Keyed state (grouped by user_id) memungkinkan Flink melacak jumlah transaksi per user dalam windowed time frame. Event-time processing menangani late-arriving events. Flink mengelola state secara internal dengan checkpointing untuk fault tolerance. Opsi B bisa bekerja tapi menambah latency DynamoDB lookup setiap transaction dan race conditions. Opsi C (SQL query sederhana) tidak memiliki state management yang robust. Opsi D (Firehose) hanya untuk transformasi record-by-record stateless — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Apache Flink excels at stateful stream processing. Keyed state (grouped by user_id) memungkinkan Flink melacak jumlah transaksi per user dalam windowed time frame. Event-time processing menangani late-arriving events. Flink mengelola state secara internal dengan checkpointing untuk fault tolerance.<br><br>Opsi A: SALAH. Hanya untuk transformasi record-by-record stateless — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Tidak memiliki state management yang robust.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Bisa bekerja tapi menambah latency DynamoDB lookup setiap transaction dan race conditions.</div>
             </div>
         </div>
 
@@ -82,15 +88,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data engineer needs to choose between stateful and stateless processing for a data pipeline. Which scenario is BEST suited for stateless processing?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Converting each JSON record's date field from US format to ISO 8601 format</li>
-                <li><span class="option-label">B.</span> Counting unique visitors per website session configured for optimal performance</li>
-                <li><span class="option-label">C.</span> Computing a customer's lifetime value from all their purchase history</li>
-                <li><span class="option-label">D.</span> Detecting sequences of failed login attempts across multiple events</li>
+                
+                <li><span class="option-label">A.</span> Detecting sequences of failed login attempts across multiple events</li>
+                <li><span class="option-label">B.</span> Computing a customer's lifetime value from all their purchase history</li>
+                <li><span class="option-label">C.</span> Converting each JSON record's date field from US format to ISO 8601 format</li>
+                <li><span class="option-label">D.</span> Counting unique visitors per website session configured for optimal performance</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Konversi format tanggal adalah operasi per-record yang hanya membutuhkan data dalam record itu sendiri. Tidak perlu context dari record lain — ini stateless. Opsi B membutuhkan tracking unique users (state) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C membutuhkan akumulasi dari semua purchases (state). Opsi D membutuhkan tracking sequence events sebelumnya (state).</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Konversi format tanggal adalah operasi per-record yang hanya membutuhkan data dalam record itu sendiri. Tidak perlu context dari record lain — ini stateless.<br><br>Opsi A: SALAH. Membutuhkan tracking sequence events sebelumnya (state).<br>Opsi B: SALAH. Membutuhkan akumulasi dari semua purchases (state).<br>Opsi C: BENAR.<br>Opsi D: SALAH. Membutuhkan tracking unique users (state) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -98,15 +106,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A streaming pipeline uses AWS Lambda to process Kinesis records with tumbling window aggregation (5-minute windows). The Lambda function accumulates state across invocations within the window. What happens to the in-progress state if the Lambda function is scaled up (new execution environments added)?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Lambda Kinesis tumbling windows maintain state per shard; new execution environments for the SAME shard receive the accumulated state from previous invocations via the event's state field</li>
-                <li><span class="option-label">B.</span> State is lost when new execution environments are created</li>
-                <li><span class="option-label">C.</span> State is shared across all execution environments using shared memory with partition-level ordering and dedicated throughput</li>
-                <li><span class="option-label">D.</span> Each execution environment starts with fresh state regardless of previous invocations</li>
+                
+                <li><span class="option-label">A.</span> Each execution environment starts with fresh state regardless of previous invocations</li>
+                <li><span class="option-label">B.</span> State is shared across all execution environments using shared memory with partition-level ordering and dedicated throughput</li>
+                <li><span class="option-label">C.</span> Lambda Kinesis tumbling windows maintain state per shard; new execution environments for the SAME shard receive the accumulated state from previous invocations via the event's state field</li>
+                <li><span class="option-label">D.</span> State is lost when new execution environments are created</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Lambda tumbling windows mengelola state per shard secara internal. Setiap invocation menerima state sebelumnya via event payload (field 'state') dan mengembalikan state yang diperbarui di response. Lambda service mengelola penyimpanan state antar invocations. State ini per-shard sehingga tidak terpengaruh scaling. Opsi B salah karena Lambda service menyimpan state di antara invocations. Opsi C (shared memory) tidak ada — state per-shard — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D salah — state diteruskan melalui event.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Lambda tumbling windows mengelola state per shard secara internal. Setiap invocation menerima state sebelumnya via event payload (field 'state') dan mengembalikan state yang diperbarui di response. Lambda service mengelola penyimpanan state antar invocations. State ini per-shard sehingga tidak terpengaruh scaling.<br><br>Opsi A: SALAH. Salah — state diteruskan melalui event.<br>Opsi B: SALAH. Tidak ada — state per-shard — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Salah karena Lambda service menyimpan state di antara invocations.</div>
             </div>
         </div>
 
@@ -114,15 +124,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer is designing a pipeline where the processing logic must survive failures without data loss. The pipeline calculates running totals. In the context of stateful processing, which mechanism ensures state is not lost during a failure?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Checkpointing — periodically saving the current state to durable storage so processing can resume from the last checkpoint after failure</li>
-                <li><span class="option-label">B.</span> Increasing the number of processing nodes for redundancy</li>
-                <li><span class="option-label">C.</span> Using in-memory caching for faster state access configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Implementing retry logic in the producer to resend failed records</li>
+                
+                <li><span class="option-label">A.</span> Increasing the number of processing nodes for redundancy</li>
+                <li><span class="option-label">B.</span> Using in-memory caching for faster state access configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Implementing retry logic in the producer to resend failed records</li>
+                <li><span class="option-label">D.</span> Checkpointing — periodically saving the current state to durable storage so processing can resume from the last checkpoint after failure</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Checkpointing adalah mekanisme utama untuk fault-tolerant stateful processing. Framework seperti Apache Flink melakukan periodic checkpoints yang menyimpan state ke durable storage (S3). Setelah failure, processing resume dari checkpoint terakhir dengan state yang intact. Opsi B (redundancy) tidak menjamin state preservation. Opsi C (in-memory cache) hilang saat failure — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (producer retry) mengirim ulang records tapi state yang terakumulasi tetap hilang tanpa checkpoint.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Checkpointing adalah mekanisme utama untuk fault-tolerant stateful processing. Framework seperti Apache Flink melakukan periodic checkpoints yang menyimpan state ke durable storage (S3). Setelah failure, processing resume dari checkpoint terakhir dengan state yang intact.<br><br>Opsi A: SALAH. Tidak menjamin state preservation.<br>Opsi B: SALAH. Hilang saat failure — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Mengirim ulang records tapi state yang terakumulasi tetap hilang tanpa checkpoint.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -130,15 +142,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A company has two data pipelines. Pipeline A uses AWS Glue to read files from S3, transform each record (type casting, field renaming), and write to Redshift. Pipeline B uses Apache Flink to compute session-based user metrics from a Kinesis stream using event-time windows. Which statement correctly characterizes these pipelines?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Pipeline A is primarily stateless (record-level transformations), while Pipeline B is stateful (requires maintaining session state across events)</li>
-                <li><span class="option-label">B.</span> Both pipelines are stateful because they write to persistent storage configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> Both pipelines are stateless because they use managed services</li>
+                
+                <li><span class="option-label">A.</span> Both pipelines are stateless because they use managed services</li>
+                <li><span class="option-label">B.</span> Pipeline A is primarily stateless (record-level transformations), while Pipeline B is stateful (requires maintaining session state across events)</li>
+                <li><span class="option-label">C.</span> Both pipelines are stateful because they write to persistent storage configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Pipeline A is stateful because Glue maintains job bookmarks, Pipeline B is stateless</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Pipeline A melakukan transformasi per-record (type casting, rename) — setiap record diproses independen dari yang lain = stateless processing. Pipeline B menghitung session metrics yang membutuhkan tracking events per user session over time = stateful processing. Opsi B salah — writing to storage adalah output, bukan definisi stateful processing — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C salah — managed services bisa stateful. Opsi D salah — job bookmarks adalah metadata tracking untuk incremental processing, bukan processing state dalam konteks stateful transactions.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Pipeline A melakukan transformasi per-record (type casting, rename) — setiap record diproses independen dari yang lain = stateless processing. Pipeline B menghitung session metrics yang membutuhkan tracking events per user session over time = stateful processing.<br><br>Opsi A: SALAH. Salah — managed services bisa stateful.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Salah — writing to storage adalah output, bukan definisi stateful processing — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Salah — job bookmarks adalah metadata tracking untuk incremental processing, bukan processing state dalam konteks stateful transactions.</div>
             </div>
         </div>
 
@@ -146,15 +160,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer needs to implement exactly-once semantics for a stateful streaming pipeline that processes payment transactions. The pipeline uses Apache Flink on Amazon Managed Service for Apache Flink. Which combination of Flink features provides exactly-once guarantees?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Enable checkpointing with exactly-once mode and use two-phase commit sink connectors for external systems</li>
-                <li><span class="option-label">B.</span> Set parallelism to 1 to process one record at a time with exactly-once mode and use two-phase commit sink connectors</li>
-                <li><span class="option-label">C.</span> Use at-least-once checkpointing with deduplication in the sink</li>
-                <li><span class="option-label">D.</span> Disable checkpointing and rely on Kinesis exactly-once delivery</li>
+                
+                <li><span class="option-label">A.</span> Use at-least-once checkpointing with deduplication in the sink</li>
+                <li><span class="option-label">B.</span> Enable checkpointing with exactly-once mode and use two-phase commit sink connectors for external systems</li>
+                <li><span class="option-label">C.</span> Disable checkpointing and rely on Kinesis exactly-once delivery</li>
+                <li><span class="option-label">D.</span> Set parallelism to 1 to process one record at a time with exactly-once mode and use two-phase commit sink connectors</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Flink's exactly-once semantics membutuhkan: (1) Checkpointing dalam exactly-once mode yang menjamin state consistency, (2) Two-phase commit (2PC) sink connectors yang mengoordinasikan commit ke external systems dengan Flink checkpoints. Kombinasi ini memastikan setiap record diproses dan output tepat satu kali. Opsi B (parallelism 1) tidak menjamin exactly-once tanpa checkpointing — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (at-least-once + deduplication) bekerja tapi bukan exactly-once native. Opsi D — tanpa checkpointing, Flink tidak bisa recover state.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Flink's exactly-once semantics membutuhkan: (1) Checkpointing dalam exactly-once mode yang menjamin state consistency, (2) Two-phase commit (2PC) sink connectors yang mengoordinasikan commit ke external systems dengan Flink checkpoints. Kombinasi ini memastikan setiap record diproses dan output tepat satu kali.<br><br>Opsi A: SALAH. Bekerja tapi bukan exactly-once native.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Tanpa checkpointing, Flink tidak bisa recover state.<br>Opsi D: SALAH. Tidak menjamin exactly-once tanpa checkpointing — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -162,15 +178,17 @@
             <div class="question-number">9</div>
             <div class="question-text">An application uses DynamoDB with transactions to transfer funds between accounts. The operation debits one account and credits another in a single transaction. If the transaction fails midway, both operations are rolled back. This is an example of which concept?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Stateful transaction with ACID properties — atomicity ensures both operations succeed or both fail, maintaining consistent state</li>
+                
+                <li><span class="option-label">A.</span> Eventually consistent transaction — both accounts will eventually be correct</li>
                 <li><span class="option-label">B.</span> Stateless transaction — each account update is independent</li>
-                <li><span class="option-label">C.</span> Eventually consistent transaction — both accounts will eventually be correct</li>
-                <li><span class="option-label">D.</span> Idempotent operation — the transfer can be retried safely with ACID properties — atomicity ensures both operations succeed or both fail</li>
+                <li><span class="option-label">C.</span> Idempotent operation — the transfer can be retried safely with ACID properties — atomicity ensures both operations succeed or both fail</li>
+                <li><span class="option-label">D.</span> Stateful transaction with ACID properties — atomicity ensures both operations succeed or both fail, maintaining consistent state</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Transfer antar akun adalah stateful transaction — state (account balances) harus berubah secara atomik. DynamoDB TransactWriteItems menjamin atomicity: semua operasi dalam transaksi sukses atau semua dibatalkan. Ini ACID (Atomic, Consistent, Isolated, Durable). Opsi B salah — kedua operasi saling bergantung (bukan independent). Opsi C (eventually consistent) bisa menyebabkan temporary inconsistency yang tidak acceptable untuk transfers. Opsi D (idempotent) adalah property terpisah dari transactional semantics — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Transfer antar akun adalah stateful transaction — state (account balances) harus berubah secara atomik. DynamoDB TransactWriteItems menjamin atomicity: semua operasi dalam transaksi sukses atau semua dibatalkan. Ini ACID (Atomic, Consistent, Isolated, Durable).<br><br>Opsi A: SALAH. Bisa menyebabkan temporary inconsistency yang tidak acceptable untuk transfers.<br>Opsi B: SALAH. Salah — kedua operasi saling bergantung (bukan independent).<br>Opsi C: SALAH. Adalah property terpisah dari transactional semantics — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -178,15 +196,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data engineer is deciding between AWS Lambda and Apache Flink for a streaming use case. The use case requires maintaining a count of events per user over the last 30 minutes, with the count updated on every new event. Why is Flink more suitable than Lambda for this scenario?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Flink natively manages state (per-key state with RocksDB backend), supports event-time windows, and provides consistent state checkpointing; Lambda requires external state stores adding latency and complexity</li>
-                <li><span class="option-label">B.</span> Lambda cannot process streaming data from Kinesis</li>
-                <li><span class="option-label">C.</span> Flink is always faster than Lambda for any streaming workload with RocksDB backend)</li>
+                
+                <li><span class="option-label">A.</span> Flink is always faster than Lambda for any streaming workload with RocksDB backend)</li>
+                <li><span class="option-label">B.</span> Flink natively manages state (per-key state with RocksDB backend), supports event-time windows, and provides consistent state checkpointing; Lambda requires external state stores adding latency and complexity</li>
+                <li><span class="option-label">C.</span> Lambda cannot process streaming data from Kinesis</li>
                 <li><span class="option-label">D.</span> Lambda is limited to stateless processing and cannot maintain any form of state</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Apache Flink dirancang untuk stateful stream processing. State per-key disimpan locally (RocksDB) di memory/disk worker, memberikan low-latency access. Checkpointing menjamin durability. Window operators (sliding 30-min window) built-in. Lambda BISA melakukan stateful processing (tumbling windows) tapi terbatas — hanya tumbling bukan sliding windows, membutuhkan external state store (DynamoDB) untuk custom state, yang menambah latency pada setiap event. Opsi B salah — Lambda bisa consume Kinesis. Opsi C over-generalization — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D salah — Lambda mendukung tumbling window state.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Apache Flink dirancang untuk stateful stream processing. State per-key disimpan locally (RocksDB) di memory/disk worker, memberikan low-latency access. Checkpointing menjamin durability. Window operators (sliding 30-min window) built-in. Lambda BISA melakukan stateful processing (tumbling windows) tapi terbatas — hanya tumbling bukan sliding windows, membutuhkan external state store (DynamoDB) untuk custom state, yang menambah latency pada setiap event.<br><br>Opsi A: SALAH. Over-generalization — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Salah — Lambda bisa consume Kinesis.<br>Opsi D: SALAH. Salah — Lambda mendukung tumbling window state.</div>
             </div>
         </div>
         

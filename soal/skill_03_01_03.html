@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer is writing a Python script using boto3 to list all objects in an S3 bucket that contains over 2 million objects. The script uses s3_client.list_objects_v2() but only returns 1,000 objects. What is the correct approach to retrieve ALL objects from the bucket?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Set MaxKeys parameter to 2000000 in the list_objects_v2 call with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">B.</span> Use a paginator: paginator = s3_client.get_paginator('list_objects_v2') to automatically handle pagination across all pages</li>
-                <li><span class="option-label">C.</span> Use the S3 resource interface (s3.Bucket.objects.all()) which has no limit</li>
-                <li><span class="option-label">D.</span> Call list_objects_v2 in a loop, manually passing the NextContinuationToken from each response</li>
+                
+                <li><span class="option-label">A.</span> Use the S3 resource interface (s3.Bucket.objects.all()) which has no limit</li>
+                <li><span class="option-label">B.</span> Call list_objects_v2 in a loop, manually passing the NextContinuationToken from each response</li>
+                <li><span class="option-label">C.</span> Use a paginator: paginator = s3_client.get_paginator('list_objects_v2') to automatically handle pagination across all pages</li>
+                <li><span class="option-label">D.</span> Set MaxKeys parameter to 2000000 in the list_objects_v2 call with native S3 integration and optimized data transfer</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Boto3 paginators adalah cara yang paling clean dan recommended untuk menangani paginated API responses. Paginator secara otomatis handle continuation tokens, iterating melalui semua halaman tanpa manual loop. Ini juga mendukung PageSize configuration dan JMESPath filtering. Opsi A salah — MaxKeys dibatasi 1000 oleh S3 API, tidak bisa diset lebih tinggi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C bisa bekerja untuk use case sederhana tapi resource interface memberikan kurang kontrol dan bisa memory-intensive untuk 2M objects. Opsi D secara teknis benar tapi manual token management lebih error-prone dan verbose dibandingkan paginator — paginator adalah best practice.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Boto3 paginators adalah cara yang paling clean dan recommended untuk menangani paginated API responses. Paginator secara otomatis handle continuation tokens, iterating melalui semua halaman tanpa manual loop. Ini juga mendukung PageSize configuration dan JMESPath filtering.<br><br>Opsi A: SALAH. Bisa bekerja untuk use case sederhana tapi resource interface memberikan kurang kontrol dan bisa memory-intensive untuk 2M objects.<br>Opsi B: SALAH. Secara teknis benar tapi manual token management lebih error-prone dan verbose dibandingkan paginator — paginator adalah best practice.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Salah — MaxKeys dibatasi 1000 oleh S3 API, tidak bisa diset lebih tinggi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A data pipeline running on AWS Lambda uses boto3 to call the Glue StartJobRun API. During peak hours, the pipeline frequently receives "ThrottlingException" errors. The engineer needs to implement a resilient retry strategy without modifying every API call in the code. Which approach is MOST effective?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Wrap each boto3 API call in a try-except block with time.sleep(5) between retries</li>
-                <li><span class="option-label">B.</span> Configure boto3 client with a Config object using retries={'mode': 'adaptive', 'max_attempts': 10} for automatic adaptive retry with token bucket rate limiting</li>
-                <li><span class="option-label">C.</span> Increase the Lambda function's timeout to allow more time for API calls to succeed with a Config object using retries={'mode': 'adaptive'</li>
-                <li><span class="option-label">D.</span> Use the AWS SDK default retry configuration which handles all throttling scenarios</li>
+                <li><span class="option-label">B.</span> Increase the Lambda function's timeout to allow more time for API calls to succeed with a Config object using retries={'mode': 'adaptive'</li>
+                <li><span class="option-label">C.</span> Use the AWS SDK default retry configuration which handles all throttling scenarios</li>
+                <li><span class="option-label">D.</span> Configure boto3 client with a Config object using retries={'mode': 'adaptive', 'max_attempts': 10} for automatic adaptive retry with token bucket rate limiting</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Boto3 adaptive retry mode menggunakan token bucket algorithm yang secara dinamis menyesuaikan retry behavior berdasarkan throttling responses. Ini lebih sophisticated dari standard mode — ia memperlambat request rate ketika mendeteksi throttling, mencegah thundering herd. max_attempts: 10 memberikan cukup retry untuk intermittent throttling. Konfigurasi ini berlaku untuk semua API calls pada client tersebut. Opsi A (manual retry) tidak adaptive dan memerlukan modifikasi setiap call. Opsi C (timeout) tidak menyelesaikan throttling — hanya memberikan lebih banyak waktu untuk gagal — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (default) menggunakan 'legacy' mode dengan hanya 5 attempts tanpa adaptive behavior.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Boto3 adaptive retry mode menggunakan token bucket algorithm yang secara dinamis menyesuaikan retry behavior berdasarkan throttling responses. Ini lebih sophisticated dari standard mode — ia memperlambat request rate ketika mendeteksi throttling, mencegah thundering herd. max_attempts: 10 memberikan cukup retry untuk intermittent throttling. Konfigurasi ini berlaku untuk semua API calls pada client tersebut.<br><br>Opsi A: SALAH. Tidak adaptive dan memerlukan modifikasi setiap call.<br>Opsi B: SALAH. Tidak menyelesaikan throttling — hanya memberikan lebih banyak waktu untuk gagal — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Menggunakan 'legacy' mode dengan hanya 5 attempts tanpa adaptive behavior.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data engineer's Lambda function creates an EMR cluster and needs to wait until the cluster reaches the "WAITING" state before submitting steps. The function uses a polling loop with describe_cluster() calls every 30 seconds. This approach is unreliable because the Lambda function sometimes times out. What is the BEST boto3 pattern for waiting on resource state changes?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use a boto3 waiter: emr_client.get_waiter('cluster_running').wait(ClusterId=cluster_id) with WaiterConfig for custom delay and max attempts</li>
-                <li><span class="option-label">B.</span> Increase the Lambda timeout to 15 minutes to ensure enough time for polling with WaiterConfig for custom delay and max attempts</li>
-                <li><span class="option-label">C.</span> Use EventBridge to detect EMR state changes and trigger a second Lambda function</li>
+                
+                <li><span class="option-label">A.</span> Use EventBridge to detect EMR state changes and trigger a second Lambda function</li>
+                <li><span class="option-label">B.</span> Use a boto3 waiter: emr_client.get_waiter('cluster_running').wait(ClusterId=cluster_id) with WaiterConfig for custom delay and max attempts</li>
+                <li><span class="option-label">C.</span> Increase the Lambda timeout to 15 minutes to ensure enough time for polling with WaiterConfig for custom delay and max attempts</li>
                 <li><span class="option-label">D.</span> Use the EMR resource interface which blocks until the cluster is ready</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Boto3 waiters adalah built-in polling mechanism yang menunggu resource mencapai state tertentu. Waiters memiliki configurable Delay (polling interval) dan MaxAttempts, dengan proper error handling untuk terminal failure states. Untuk EMR, 'cluster_running' waiter polls describe_cluster secara teratur. WaiterConfig memungkinkan tuning untuk fit within Lambda timeout. Opsi B (increase timeout) masih unreliable jika cluster takes longer than 15 min — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (EventBridge) adalah arsitektur yang lebih baik untuk long waits tapi pertanyaan spesifik tentang boto3 pattern. Opsi D — EMR tidak memiliki "resource interface" yang blocking di boto3.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Boto3 waiters adalah built-in polling mechanism yang menunggu resource mencapai state tertentu. Waiters memiliki configurable Delay (polling interval) dan MaxAttempts, dengan proper error handling untuk terminal failure states. Untuk EMR, 'cluster_running' waiter polls describe_cluster secara teratur. WaiterConfig memungkinkan tuning untuk fit within Lambda timeout.<br><br>Opsi A: SALAH. Adalah arsitektur yang lebih baik untuk long waits tapi pertanyaan spesifik tentang boto3 pattern.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Masih unreliable jika cluster takes longer than 15 min — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. EMR tidak memiliki "resource interface" yang blocking di boto3.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data pipeline in Account A needs to read data from a DynamoDB table in Account B. The pipeline runs on an EC2 instance with an IAM role attached. The DynamoDB table in Account B has a resource policy allowing cross-account access. How should the data engineer configure boto3 to access the cross-account DynamoDB table?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use sts_client.assume_role() to get temporary credentials for a role in Account B, then create a new boto3 DynamoDB client with those credentials</li>
-                <li><span class="option-label">B.</span> Configure the AWS_DEFAULT_REGION environment variable to point to Account B's region with those credentials for a role in Account B</li>
-                <li><span class="option-label">C.</span> Pass the Account B's account ID as a parameter to the DynamoDB client constructor</li>
-                <li><span class="option-label">D.</span> Create the DynamoDB client with endpoint_url pointing to Account B's DynamoDB endpoint</li>
+                
+                <li><span class="option-label">A.</span> Pass the Account B's account ID as a parameter to the DynamoDB client constructor</li>
+                <li><span class="option-label">B.</span> Create the DynamoDB client with endpoint_url pointing to Account B's DynamoDB endpoint</li>
+                <li><span class="option-label">C.</span> Use sts_client.assume_role() to get temporary credentials for a role in Account B, then create a new boto3 DynamoDB client with those credentials</li>
+                <li><span class="option-label">D.</span> Configure the AWS_DEFAULT_REGION environment variable to point to Account B's region with those credentials for a role in Account B</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Cross-account access ke AWS resources menggunakan STS AssumeRole pattern. Pipeline di Account A memanggil sts.assume_role() untuk mendapatkan temporary credentials (AccessKeyId, SecretAccessKey, SessionToken) yang memiliki permissions dari role di Account B. Credentials ini digunakan untuk membuat DynamoDB client baru yang beroperasi dalam context Account B. Opsi B (region) hanya mengatur region, tidak memberikan cross-account access — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C — tidak ada parameter account ID di client constructor. Opsi D — DynamoDB endpoint URL sama untuk semua accounts dalam region yang sama; endpoint tidak membedakan antar accounts.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Cross-account access ke AWS resources menggunakan STS AssumeRole pattern. Pipeline di Account A memanggil sts.assume_role() untuk mendapatkan temporary credentials (AccessKeyId, SecretAccessKey, SessionToken) yang memiliki permissions dari role di Account B. Credentials ini digunakan untuk membuat DynamoDB client baru yang beroperasi dalam context Account B.<br><br>Opsi A: SALAH. Tidak ada parameter account ID di client constructor.<br>Opsi B: SALAH. DynamoDB endpoint URL sama untuk semua accounts dalam region yang sama; endpoint tidak membedakan antar accounts.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Hanya mengatur region, tidak memberikan cross-account access — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer is developing a Glue ETL job that writes processed data to DynamoDB using boto3 batch_write_item(). The job processes 500,000 records. Some batch writes return UnprocessedItems in the response. The engineer notices data loss in the target table. What is the correct way to handle UnprocessedItems?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Ignore UnprocessedItems as DynamoDB will eventually process them with exponential backoff until all items are successfully written</li>
-                <li><span class="option-label">B.</span> Implement a retry loop that re-submits UnprocessedItems with exponential backoff until all items are successfully written</li>
-                <li><span class="option-label">C.</span> Increase the DynamoDB table's provisioned write capacity to prevent UnprocessedItems</li>
-                <li><span class="option-label">D.</span> Switch from batch_write_item to individual put_item calls for each record</li>
+                
+                <li><span class="option-label">A.</span> Switch from batch_write_item to individual put_item calls for each record</li>
+                <li><span class="option-label">B.</span> Increase the DynamoDB table's provisioned write capacity to prevent UnprocessedItems</li>
+                <li><span class="option-label">C.</span> Ignore UnprocessedItems as DynamoDB will eventually process them with exponential backoff until all items are successfully written</li>
+                <li><span class="option-label">D.</span> Implement a retry loop that re-submits UnprocessedItems with exponential backoff until all items are successfully written</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">batch_write_item() dapat mengembalikan UnprocessedItems ketika throughput terlampaui. Items ini TIDAK secara otomatis di-retry oleh SDK — developer harus explicitly menangani mereka. Pattern yang benar: loop yang mengambil UnprocessedItems dari response, apply exponential backoff, dan re-submit sampai tidak ada UnprocessedItems tersisa. Opsi A salah — UnprocessedItems akan HILANG jika tidak di-handle (ini penyebab data loss) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (increase capacity) mengurangi kemungkinan UnprocessedItems tapi tidak menghilangkannya sepenuhnya — handling tetap diperlukan. Opsi D (individual put_item) sangat lambat untuk 500K records dan tetap bisa throttled.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">batch_write_item() dapat mengembalikan UnprocessedItems ketika throughput terlampaui. Items ini TIDAK secara otomatis di-retry oleh SDK — developer harus explicitly menangani mereka. Pattern yang benar: loop yang mengambil UnprocessedItems dari response, apply exponential backoff, dan re-submit sampai tidak ada UnprocessedItems tersisa.<br><br>Opsi A: SALAH. Sangat lambat untuk 500K records dan tetap bisa throttled.<br>Opsi B: SALAH. Mengurangi kemungkinan UnprocessedItems tapi tidak menghilangkannya sepenuhnya — handling tetap diperlukan.<br>Opsi C: SALAH. Salah — UnprocessedItems akan HILANG jika tidak di-handle (ini penyebab data loss) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer is writing a Lambda function using boto3 that processes S3 event notifications. The function needs to handle errors gracefully when the S3 object referenced in the event has been deleted by the time the function runs. Which boto3 exception handling pattern correctly catches this scenario?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Use a generic try-except Exception block to catch all possible errors</li>
-                <li><span class="option-label">B.</span> Catch botocore.exceptions.ClientError and check if error.response['Error']['Code'] == '404' or 'NoSuchKey'</li>
+                <li><span class="option-label">B.</span> Check if the object exists using head_object() before attempting to download it and check if error</li>
                 <li><span class="option-label">C.</span> Catch s3_client.exceptions.NoSuchKeyException using the client's built-in exception classes</li>
-                <li><span class="option-label">D.</span> Check if the object exists using head_object() before attempting to download it and check if error</li>
+                <li><span class="option-label">D.</span> Catch botocore.exceptions.ClientError and check if error.response['Error']['Code'] == '404' or 'NoSuchKey'</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Boto3 S3 operations raise botocore.exceptions.ClientError untuk service-level errors. Untuk menangani "object tidak ada", Anda catch ClientError dan periksa error code di response dictionary. Untuk S3 get_object, code akan '404' atau 'NoSuchKey'. Pattern ini memberikan granular error handling. Opsi A (generic Exception) terlalu broad — tidak bisa membedakan antara missing object vs permission error vs network error. Opsi C — S3 client tidak expose exceptions sebagai attributes pada client object (berbeda dengan beberapa service seperti DynamoDB). Opsi D (head_object check) memiliki race condition — object bisa dihapus antara check dan download (TOCTOU) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Boto3 S3 operations raise botocore.exceptions.ClientError untuk service-level errors. Untuk menangani "object tidak ada", Anda catch ClientError dan periksa error code di response dictionary. Untuk S3 get_object, code akan '404' atau 'NoSuchKey'. Pattern ini memberikan granular error handling.<br><br>Opsi A: SALAH. Terlalu broad — tidak bisa membedakan antara missing object vs permission error vs network error.<br>Opsi B: SALAH. Memiliki race condition — object bisa dihapus antara check dan download (TOCTOU) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. S3 client tidak expose exceptions sebagai attributes pada client object (berbeda dengan beberapa service seperti DynamoDB).<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer's Python application running on ECS uses boto3 to interact with multiple AWS services (S3, Glue, Redshift Data API). The application currently uses hardcoded AWS access keys in the code. The security team requires moving to a more secure credential management approach. Which solution follows AWS best practices for credential management with the SDK?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Store access keys in environment variables on the ECS task definition</li>
+                
+                <li><span class="option-label">A.</span> Assign an IAM task role to the ECS task definition and let boto3 use the automatic credential provider chain</li>
                 <li><span class="option-label">B.</span> Store access keys in AWS Secrets Manager and retrieve them at application startup</li>
-                <li><span class="option-label">C.</span> Assign an IAM task role to the ECS task definition and let boto3 use the automatic credential provider chain</li>
-                <li><span class="option-label">D.</span> Encrypt the access keys and store them in the application's configuration file and let boto3 use the automatic credential provider chain</li>
+                <li><span class="option-label">C.</span> Encrypt the access keys and store them in the application's configuration file and let boto3 use the automatic credential provider chain</li>
+                <li><span class="option-label">D.</span> Store access keys in environment variables on the ECS task definition</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">IAM task roles pada ECS adalah best practice karena: (1) tidak ada credentials yang perlu di-manage — boto3 secara otomatis mendapatkan temporary credentials dari credential provider chain melalui container metadata endpoint, (2) credentials rotate otomatis, (3) tidak ada risk credential exposure. Boto3 akan otomatis menemukan dan menggunakan task role credentials tanpa konfigurasi tambahan. Opsi A (env vars) masih menggunakan long-lived credentials. Opsi B (Secrets Manager) memerlukan logic tambahan dan masih menggunakan long-lived keys. Opsi D (encrypted config) tetap memerlukan decryption key dan access keys management — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">IAM task roles pada ECS adalah best practice karena: (1) tidak ada credentials yang perlu di-manage — boto3 secara otomatis mendapatkan temporary credentials dari credential provider chain melalui container metadata endpoint, (2) credentials rotate otomatis, (3) tidak ada risk credential exposure. Boto3 akan otomatis menemukan dan menggunakan task role credentials tanpa konfigurasi tambahan.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Memerlukan logic tambahan dan masih menggunakan long-lived keys.<br>Opsi C: SALAH. Tetap memerlukan decryption key dan access keys management — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Masih menggunakan long-lived credentials.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer needs to delete 10,000 objects from an S3 bucket as part of a data cleanup pipeline using boto3. Calling delete_object() for each object individually takes over 30 minutes. What is the MOST efficient approach to perform bulk deletions?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use s3_client.delete_objects() which accepts up to 1,000 keys per call, processing objects in batches</li>
-                <li><span class="option-label">B.</span> Use Python multiprocessing to call delete_object() in parallel across multiple processes</li>
-                <li><span class="option-label">C.</span> Configure an S3 Lifecycle rule to delete the objects and wait for it to take effect</li>
-                <li><span class="option-label">D.</span> Use the S3 resource interface Bucket.objects.delete() which handles bulk deletion automatically</li>
+                
+                <li><span class="option-label">A.</span> Use Python multiprocessing to call delete_object() in parallel across multiple processes</li>
+                <li><span class="option-label">B.</span> Use the S3 resource interface Bucket.objects.delete() which handles bulk deletion automatically</li>
+                <li><span class="option-label">C.</span> Use s3_client.delete_objects() which accepts up to 1,000 keys per call, processing objects in batches</li>
+                <li><span class="option-label">D.</span> Configure an S3 Lifecycle rule to delete the objects and wait for it to take effect</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">S3 delete_objects() API (multi-object delete) menerima hingga 1,000 keys per single API call, secara drastis mengurangi jumlah HTTP requests dari 10,000 menjadi 10 calls. Ini adalah cara paling efisien untuk bulk deletion. Pattern: batch keys menjadi groups of 1000, call delete_objects() untuk setiap batch. Opsi B (multiprocessing) meningkatkan complexity dan masih memerlukan 10,000 API calls (hanya parallel). Opsi C (Lifecycle) tidak immediate — bisa memerlukan sampai 24+ jam untuk S3 memproses lifecycle rules. Opsi D bisa bekerja tapi resource interface secara internal tetap membatasi delete calls, dan less control dibanding explicit batching.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">S3 delete_objects() API (multi-object delete) menerima hingga 1,000 keys per single API call, secara drastis mengurangi jumlah HTTP requests dari 10,000 menjadi 10 calls. Ini adalah cara paling efisien untuk bulk deletion. Pattern: batch keys menjadi groups of 1000, call delete_objects() untuk setiap batch.<br><br>Opsi A: SALAH. Meningkatkan complexity dan masih memerlukan 10,000 API calls (hanya parallel).<br>Opsi B: SALAH. Bisa bekerja tapi resource interface secara internal tetap membatasi delete calls, dan less control dibanding explicit batching.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Tidak immediate — bisa memerlukan sampai 24+ jam untuk S3 memproses lifecycle rules.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data engineer is developing a Glue Python Shell job that starts a Redshift query using the Redshift Data API (redshift_data.execute_statement()). The query takes 5 minutes to complete. The execute_statement() call returns immediately with a query ID. How should the engineer wait for and retrieve the query results?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Call describe_statement() in a polling loop until the Status field returns 'FINISHED', then call get_statement_result() to retrieve the results</li>
-                <li><span class="option-label">B.</span> Call get_statement_result() immediately after execute_statement() — it will block until results are ready</li>
+                
+                <li><span class="option-label">A.</span> Set a synchronous=True parameter in execute_statement() to make it blocking configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> Call describe_statement() in a polling loop until the Status field returns 'FINISHED', then call get_statement_result() to retrieve the results</li>
                 <li><span class="option-label">C.</span> Use a boto3 waiter for Redshift Data API to wait for statement completion</li>
-                <li><span class="option-label">D.</span> Set a synchronous=True parameter in execute_statement() to make it blocking configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Call get_statement_result() immediately after execute_statement() — it will block until results are ready</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Redshift Data API adalah asynchronous — execute_statement() returns immediately dengan Id (query ID). Untuk mendapatkan results, Anda harus poll describe_statement() sampai Status menjadi 'FINISHED' (atau 'FAILED'/'ABORTED'), kemudian call get_statement_result() untuk mengambil data. Pattern: while loop dengan sleep interval checking status. Opsi B salah — get_statement_result() akan throw error jika statement belum selesai, tidak blocking. Opsi C — boto3 tidak memiliki built-in waiter untuk Redshift Data API statement completion. Opsi D — tidak ada parameter 'synchronous' di execute_statement() API — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Redshift Data API adalah asynchronous — execute_statement() returns immediately dengan Id (query ID). Untuk mendapatkan results, Anda harus poll describe_statement() sampai Status menjadi 'FINISHED' (atau 'FAILED'/'ABORTED'), kemudian call get_statement_result() untuk mengambil data. Pattern: while loop dengan sleep interval checking status.<br><br>Opsi A: SALAH. Tidak ada parameter 'synchronous' di execute_statement() API — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Boto3 tidak memiliki built-in waiter untuk Redshift Data API statement completion.<br>Opsi D: SALAH. Salah — get_statement_result() akan throw error jika statement belum selesai, tidak blocking.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data engineering team has a Python application that makes boto3 calls to AWS Glue APIs. In production, the application occasionally experiences "EndpointConnectionError" and "ConnectTimeoutError" exceptions during network instability. The team wants to differentiate between retryable transient errors and non-retryable client errors in their error handling logic. Which exception hierarchy correctly categorizes these errors in botocore?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Catch botocore.exceptions.ConnectionError (parent of EndpointConnectionError and ConnectTimeoutError) for retryable network errors, and botocore.exceptions.ClientError for non-retryable API errors</li>
                 <li><span class="option-label">B.</span> All boto3 exceptions are retryable; implement retry for every exception type</li>
                 <li><span class="option-label">C.</span> Catch Exception base class and check the exception message string for "timeout" or "connection" keywords</li>
                 <li><span class="option-label">D.</span> Use ClientError for all errors and check the HTTP status code — 5xx is retryable, 4xx is not configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Botocore memiliki exception hierarchy yang jelas: botocore.exceptions.ConnectionError (dan subclasses EndpointConnectionError, ConnectTimeoutError, ReadTimeoutError) adalah transient network errors yang aman untuk di-retry. botocore.exceptions.ClientError adalah service-level errors yang memerlukan pemeriksaan error code — beberapa retryable (throttling, 500) dan beberapa tidak (validation errors, access denied). Membedakan kedua tipe ini penting untuk retry strategy yang benar. Opsi B salah — retry pada non-retryable errors (misalnya AccessDenied) adalah sia-sia. Opsi C (string matching) fragile dan tidak reliable. Opsi D — network errors bukan ClientError dan tidak memiliki HTTP status code — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">Botocore memiliki exception hierarchy yang jelas: botocore.exceptions.ConnectionError (dan subclasses EndpointConnectionError, ConnectTimeoutError, ReadTimeoutError) adalah transient network errors yang aman untuk di-retry. botocore.exceptions.ClientError adalah service-level errors yang memerlukan pemeriksaan error code — beberapa retryable (throttling, 500) dan beberapa tidak (validation errors, access denied). Membedakan kedua tipe ini penting untuk retry strategy yang benar.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Salah — retry pada non-retryable errors (misalnya AccessDenied) adalah sia-sia.<br>Opsi C: SALAH. Fragile dan tidak reliable.<br>Opsi D: SALAH. Network errors bukan ClientError dan tidak memiliki HTTP status code — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 

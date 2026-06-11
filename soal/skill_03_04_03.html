@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer discovers that a daily ETL pipeline loading data from an operational PostgreSQL RDS database to a Redshift data warehouse shows discrepancies. The source table has 1,245,832 records for yesterday's date, but the Redshift target table only has 1,243,567 records. The ETL uses AWS DMS for change data capture. Which investigation approach will MOST quickly identify the missing records?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Run a reconciliation query that performs a MINUS/EXCEPT operation: query the source primary keys and compare against target primary keys using Redshift federated query to the RDS source. The resulting set identifies the specific missing records for root cause analysis.</li>
-                <li><span class="option-label">B.</span> Check the DMS task's table statistics to compare the full load and CDC row counts, then review the DMS task logs for any rows that were rejected due to data type conversion errors or constraint violations.</li>
-                <li><span class="option-label">C.</span> Rerun the entire ETL pipeline from scratch to resolve the inconsistency, then implement a row count check to prevent future issues.</li>
-                <li><span class="option-label">D.</span> Compare the MD5 hash of all columns concatenated at the source and target to identify modified records. configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> Compare the MD5 hash of all columns concatenated at the source and target to identify modified records. configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Check the DMS task's table statistics to compare the full load and CDC row counts, then review the DMS task logs for any rows that were rejected due to data type conversion errors or constraint violations.</li>
+                <li><span class="option-label">D.</span> Rerun the entire ETL pipeline from scratch to resolve the inconsistency, then implement a row count check to prevent future issues.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">DMS task table statistics provide immediate visibility into row counts at each stage (full load applied, inserts applied, updates applied, deletes applied, DDL applied) and any rows that failed validation. DMS logs record specific rows that were rejected due to LOB truncation, data type conversion failures, or primary key violations. This pinpoints the exact cause without running expensive cross-database queries. Option A: While federated queries can identify missing records, this approach is more expensive and time-consuming than checking DMS's built-in diagnostics that already track this information. Option C: Rerunning the pipeline doesn't identify the root cause and the same issue will likely recur. Option D: MD5 hashing identifies modified records but the problem is missing records, not modifications; hashing is also computationally expensive across 1.2M+ rows. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">DMS task table statistics provide immediate visibility into row counts at each stage (full load applied, inserts applied, updates applied, deletes applied, DDL applied) and any rows that failed validation. DMS logs record specific rows that were rejected due to LOB truncation, data type conversion failures, or primary key violations. This pinpoints the exact cause without running expensive cross-database queries. Option A: While federated queries can identify missing records, this approach is more expensive and time-consuming than checking DMS's built-in diagnostics that already track this information. Option C: Rerunning the pipeline doesn't identify the root cause and the same issue will likely recur. Option D: MD5 hashing identifies modified records but the problem is missing records, not modifications; hashing is also computationally expensive across 1.2M+ rows.<br><br>Opsi A: SALAH.<br>Opsi B: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A data platform processes the same customer events through two different pipelines: a real-time pipeline (Kinesis → Lambda → DynamoDB) and a batch pipeline (S3 → Glue → Redshift). Business stakeholders report that customer lifetime value (CLV) calculations differ between the real-time dashboard (DynamoDB) and the weekly report (Redshift). Which approach BEST investigates this cross-pipeline consistency issue?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use AWS Glue DataBrew to profile both datasets independently, comparing statistical distributions (mean, median, percentiles) of CLV values, null percentages, and record counts per customer segment between the two targets.</li>
-                <li><span class="option-label">B.</span> Sample 100 specific customers and manually trace their events through both pipelines end-to-end, comparing the raw events received, transformations applied, and final values computed.</li>
-                <li><span class="option-label">C.</span> Compare aggregate totals (SUM of CLV) between both systems; if they match, the issue is resolved. configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Add logging to both pipelines and wait for the next data load to identify where values diverge.</li>
+                
+                <li><span class="option-label">A.</span> Add logging to both pipelines and wait for the next data load to identify where values diverge.</li>
+                <li><span class="option-label">B.</span> Compare aggregate totals (SUM of CLV) between both systems; if they match, the issue is resolved. configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Sample 100 specific customers and manually trace their events through both pipelines end-to-end, comparing the raw events received, transformations applied, and final values computed.</li>
+                <li><span class="option-label">D.</span> Use AWS Glue DataBrew to profile both datasets independently, comparing statistical distributions (mean, median, percentiles) of CLV values, null percentages, and record counts per customer segment between the two targets.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">End-to-end tracing of specific records through both pipelines is the most effective way to identify where consistency breaks down. By following known customer events from ingestion through transformation to final output in both paths, you can pinpoint whether differences arise from: different event deduplication logic, timing windows (real-time vs batch boundaries), different transformation formulas, or data arrival ordering. Option A: DataBrew profiling shows statistical differences but doesn't identify the root cause—you'd know values differ but not why. Option C: Aggregate sums can match while individual records differ (offsetting errors), giving a false sense of consistency. Option D: Waiting for new data adds delay and doesn't help investigate existing discrepancies. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">End-to-end tracing of specific records through both pipelines is the most effective way to identify where consistency breaks down. By following known customer events from ingestion through transformation to final output in both paths, you can pinpoint whether differences arise from: different event deduplication logic, timing windows (real-time vs batch boundaries), different transformation formulas, or data arrival ordering. Option A: DataBrew profiling shows statistical differences but doesn't identify the root cause—you'd know values differ but not why. Option C: Aggregate sums can match while individual records differ (offsetting errors), giving a false sense of consistency. Option D: Waiting for new data adds delay and doesn't help investigate existing discrepancies.<br><br>Opsi A: SALAH.<br>Opsi B: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">After a data lake migration, a team needs to verify that all data was migrated correctly from the legacy Hadoop HDFS cluster to Amazon S3. The data lake contains 500 tables with a total of 50 TB of data in Parquet format. What is the MOST efficient approach to validate migration consistency?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Implement a multi-level validation: Level 1 (fast) — compare file counts and total bytes per table; Level 2 (medium) — compare row counts per partition using Athena; Level 3 (thorough) — compute column-level checksums on a sample of critical tables using Spark on EMR.</li>
-                <li><span class="option-label">B.</span> Compute MD5 checksums for every file on both HDFS and S3 and compare them byte-for-byte.</li>
+                <li><span class="option-label">B.</span> Use AWS DataSync's built-in verification which compares source and destination after transfer, with partition-level ordering and dedicated throughput</li>
                 <li><span class="option-label">C.</span> Run SELECT COUNT(*) on every table in both locations and consider the migration successful if counts match.</li>
-                <li><span class="option-label">D.</span> Use AWS DataSync's built-in verification which compares source and destination after transfer, with partition-level ordering and dedicated throughput</li>
+                <li><span class="option-label">D.</span> Compute MD5 checksums for every file on both HDFS and S3 and compare them byte-for-byte.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">A multi-level validation strategy balances thoroughness with efficiency for a 50 TB migration. Level 1 catches obvious issues (missing files, truncated transfers) quickly. Level 2 verifies logical data counts at the partition level. Level 3 provides data-level verification on critical tables. This tiered approach allows fast identification of problems without the prohibitive cost of checksumming 50 TB. Option B: Computing MD5 for every file in 50 TB is extremely time-consuming and may not be meaningful if Parquet files were rewritten (same data, different file structure) during migration. Option C: Row counts alone miss data corruption, column value changes, or schema differences that don't affect row count. Option D: DataSync verifies file-level integrity during transfer but doesn't validate logical data consistency (e.g., correct partitioning, readable Parquet files, schema compatibility). Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="explanation">A multi-level validation strategy balances thoroughness with efficiency for a 50 TB migration. Level 1 catches obvious issues (missing files, truncated transfers) quickly. Level 2 verifies logical data counts at the partition level. Level 3 provides data-level verification on critical tables. This tiered approach allows fast identification of problems without the prohibitive cost of checksumming 50 TB. Option B: Computing MD5 for every file in 50 TB is extremely time-consuming and may not be meaningful if Parquet files were rewritten (same data, different file structure) during migration. Option C: Row counts alone miss data corruption, column value changes, or schema differences that don't affect row count. Option D: DataSync verifies file-level integrity during transfer but doesn't validate logical data consistency (e.g., correct partitioning, readable Parquet files, schema compatibility).<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi C: SALAH.<br>Opsi D: SALAH.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data warehouse team notices that aggregated revenue figures in their Redshift summary tables don't match the sum of detailed transaction records. The summary table is rebuilt nightly by a Glue ETL job that reads from the transaction detail table. Both tables exist in Redshift. What is the MOST likely cause of this inconsistency?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The Glue ETL job that rebuilds the summary table runs at 2 AM, but late-arriving transactions are inserted into the detail table by a separate real-time pipeline after the summary rebuild completes. The summary misses records that arrive between 2 AM and midnight.</li>
+                
+                <li><span class="option-label">A.</span> The VACUUM operation hasn't run on the transaction table, causing deleted rows to be included in the aggregation.</li>
                 <li><span class="option-label">B.</span> Redshift's columnar compression is causing rounding errors in the revenue SUM calculation. and midnight</li>
-                <li><span class="option-label">C.</span> The VACUUM operation hasn't run on the transaction table, causing deleted rows to be included in the aggregation.</li>
+                <li><span class="option-label">C.</span> The Glue ETL job that rebuilds the summary table runs at 2 AM, but late-arriving transactions are inserted into the detail table by a separate real-time pipeline after the summary rebuild completes. The summary misses records that arrive between 2 AM and midnight.</li>
                 <li><span class="option-label">D.</span> Redshift's eventual consistency model means the transaction table reads may not reflect recent commits.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Late-arriving data is the most common cause of summary/detail inconsistency in data warehouses. When the summary is rebuilt at a fixed time but the detail table continues receiving records (from real-time pipelines, delayed batch loads, or late-arriving source data), the summary represents a point-in-time snapshot that becomes stale. This is a fundamental data pipeline timing issue. Option B: Redshift compression doesn't affect the accuracy of SUM calculations; numeric precision is maintained regardless of encoding. Option C: VACUUM handles physical deletion of logically deleted rows; an un-VACUUMed table still returns correct query results because deleted rows are excluded from scans. Option D: Redshift provides strong read-after-write consistency within a cluster; it does not have eventual consistency for committed transactions. Opsi B meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Late-arriving data is the most common cause of summary/detail inconsistency in data warehouses. When the summary is rebuilt at a fixed time but the detail table continues receiving records (from real-time pipelines, delayed batch loads, or late-arriving source data), the summary represents a point-in-time snapshot that becomes stale. This is a fundamental data pipeline timing issue. Option B: Redshift compression doesn't affect the accuracy of SUM calculations; numeric precision is maintained regardless of encoding. Option C: VACUUM handles physical deletion of logically deleted rows; an un-VACUUMed table still returns correct query results because deleted rows are excluded from scans. Option D: Redshift provides strong read-after-write consistency within a cluster; it does not have eventual consistency for committed transactions.<br><br>Opsi A: SALAH.<br>Opsi B: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer uses AWS Glue DataBrew to profile a customer dataset and discovers consistency issues: the "country" field contains variations like "US", "USA", "United States", "us", and "U.S." all representing the same country. There are similar variations across 50+ countries. What is the MOST efficient approach to investigate the full scope of this consistency issue and standardize the data?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use DataBrew's profiling results to identify all distinct values in the country column, then create a DataBrew recipe with a mapping transformation that uses a lookup table to standardize all variations to ISO 3166-1 alpha-2 country codes.</li>
-                <li><span class="option-label">B.</span> Write a custom Glue ETL job with complex regex patterns to normalize each country variation individually. configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> Use DataBrew's built-in "Nest column by similarity" feature to automatically group similar values and replace them with a canonical form.</li>
-                <li><span class="option-label">D.</span> Ignore the variations since they all represent valid country names and downstream systems should handle normalization.</li>
+                
+                <li><span class="option-label">A.</span> Write a custom Glue ETL job with complex regex patterns to normalize each country variation individually. configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> Use DataBrew's built-in "Nest column by similarity" feature to automatically group similar values and replace them with a canonical form.</li>
+                <li><span class="option-label">C.</span> Ignore the variations since they all represent valid country names and downstream systems should handle normalization.</li>
+                <li><span class="option-label">D.</span> Use DataBrew's profiling results to identify all distinct values in the country column, then create a DataBrew recipe with a mapping transformation that uses a lookup table to standardize all variations to ISO 3166-1 alpha-2 country codes.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DataBrew's profiling provides a complete view of distinct values and their frequencies, revealing all variations. A mapping/lookup-based approach is most efficient for standardization because it's maintainable (the lookup table can be updated without changing code), auditable, and handles the full scope of 50+ countries with multiple variations each. ISO country codes provide a standard target format. Option B: Regex patterns for country name normalization are brittle, hard to maintain for 50+ countries with multiple variations, and prone to false matches. Option C: DataBrew doesn't have a "Nest column by similarity" feature that automatically resolves semantic equivalence between country names. Option D: Pushing normalization to downstream systems creates inconsistency across the data platform and duplicates effort in every consuming system. Opsi B meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">DataBrew's profiling provides a complete view of distinct values and their frequencies, revealing all variations. A mapping/lookup-based approach is most efficient for standardization because it's maintainable (the lookup table can be updated without changing code), auditable, and handles the full scope of 50+ countries with multiple variations each. ISO country codes provide a standard target format. Option B: Regex patterns for country name normalization are brittle, hard to maintain for 50+ countries with multiple variations, and prone to false matches. Option C: DataBrew doesn't have a "Nest column by similarity" feature that automatically resolves semantic equivalence between country names. Option D: Pushing normalization to downstream systems creates inconsistency across the data platform and duplicates effort in every consuming system.<br><br>Opsi A: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi B: SALAH.<br>Opsi C: SALAH.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A company replicates data from their production DynamoDB table to an S3 data lake using DynamoDB Export to S3. After each export, they need to verify that the exported data is consistent with the production table's state at the export timestamp. The table processes 10,000 write operations per second. How should they verify export consistency?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> DynamoDB Export to S3 uses point-in-time recovery (PITR) to create a consistent snapshot at the requested timestamp. Verify by comparing the export's item count with the ItemCount metric from CloudWatch at that timestamp, and spot-check specific items using GetItem with ConsistentRead against the current table.</li>
-                <li><span class="option-label">B.</span> Use DynamoDB Export to S3's built-in manifest file that contains the item count and checksum of the export. Compare the manifest's item count with a Scan operation's count on the live table.</li>
-                <li><span class="option-label">C.</span> Run a full table Scan immediately after the export completes and compare every item between the scan results and the exported S3 data, with the ItemCount metric from CloudWatch at that timestamp</li>
-                <li><span class="option-label">D.</span> Compare the S3 export file sizes with the DynamoDB table's storage size metric to verify all data was exported.</li>
+                
+                <li><span class="option-label">A.</span> Compare the S3 export file sizes with the DynamoDB table's storage size metric to verify all data was exported.</li>
+                <li><span class="option-label">B.</span> DynamoDB Export to S3 uses point-in-time recovery (PITR) to create a consistent snapshot at the requested timestamp. Verify by comparing the export's item count with the ItemCount metric from CloudWatch at that timestamp, and spot-check specific items using GetItem with ConsistentRead against the current table.</li>
+                <li><span class="option-label">C.</span> Use DynamoDB Export to S3's built-in manifest file that contains the item count and checksum of the export. Compare the manifest's item count with a Scan operation's count on the live table.</li>
+                <li><span class="option-label">D.</span> Run a full table Scan immediately after the export completes and compare every item between the scan results and the exported S3 data, with the ItemCount metric from CloudWatch at that timestamp</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">DynamoDB Export to S3 leverages PITR to create a consistent point-in-time snapshot, meaning the export represents an exact consistent state of the table at the specified timestamp. Verification involves confirming the export's metadata (item count) matches expectations and spot-checking individual items. Since the table processes 10K writes/second, the table state will differ from the export by the time it completes, but the export itself is internally consistent. Option B: While the export produces metadata, comparing against a live Scan is meaningless because the table has changed by 10K writes/second since the export timestamp. Option C: A full Scan after export completion would show a different state due to the continuous writes; direct comparison is invalid. Option D: Storage size includes DynamoDB overhead (indexes, metadata) and uses different compression than S3 files; sizes aren't directly comparable. Opsi C meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">DynamoDB Export to S3 leverages PITR to create a consistent point-in-time snapshot, meaning the export represents an exact consistent state of the table at the specified timestamp. Verification involves confirming the export's metadata (item count) matches expectations and spot-checking individual items. Since the table processes 10K writes/second, the table state will differ from the export by the time it completes, but the export itself is internally consistent. Option B: While the export produces metadata, comparing against a live Scan is meaningless because the table has changed by 10K writes/second since the export timestamp. Option C: A full Scan after export completion would show a different state due to the continuous writes; direct comparison is invalid. Option D: Storage size includes DynamoDB overhead (indexes, metadata) and uses different compression than S3 files; sizes aren't directly comparable.<br><br>Opsi A: SALAH.<br>Opsi B: BENAR.<br>Opsi C: SALAH.<br>Opsi D: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A multi-region data platform replicates datasets across us-east-1 and eu-west-1 using S3 Cross-Region Replication (CRR). A data engineer needs to verify that the replicated data in eu-west-1 is consistent with the source in us-east-1. Some analysts report seeing stale data in eu-west-1. Which validation approach is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use S3 Replication Metrics and S3 Replication Time Control (RTC) to monitor replication latency. Check the ReplicationLatency metric and PendingReplication byte count. For data-level validation, compare S3 Inventory reports from both regions to identify objects present in source but missing in destination.</li>
-                <li><span class="option-label">B.</span> Run an S3 ListObjects operation on both buckets and compare the object keys and sizes. for data-level validation</li>
-                <li><span class="option-label">C.</span> Enable S3 event notifications on both buckets and compare the events to identify replication gaps.</li>
-                <li><span class="option-label">D.</span> Use Athena to query the same table in both regions and compare row counts to verify consistency.</li>
+                
+                <li><span class="option-label">A.</span> Run an S3 ListObjects operation on both buckets and compare the object keys and sizes. for data-level validation</li>
+                <li><span class="option-label">B.</span> Use S3 Replication Metrics and S3 Replication Time Control (RTC) to monitor replication latency. Check the ReplicationLatency metric and PendingReplication byte count. For data-level validation, compare S3 Inventory reports from both regions to identify objects present in source but missing in destination.</li>
+                <li><span class="option-label">C.</span> Use Athena to query the same table in both regions and compare row counts to verify consistency.</li>
+                <li><span class="option-label">D.</span> Enable S3 event notifications on both buckets and compare the events to identify replication gaps.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">S3 Replication Metrics provide native monitoring of replication health (latency, pending bytes, failed operations). S3 Inventory reports provide a complete manifest of all objects with metadata (size, last modified, replication status) that can be compared between regions to identify any objects that failed replication or are pending. This combines real-time monitoring with periodic comprehensive validation. Option B: ListObjects is rate-limited and expensive for large buckets; it doesn't show replication status or timing information. Option C: S3 event notifications on the destination show replicated objects, but comparing event streams across regions is complex and doesn't handle failures gracefully. Option D: Athena row counts tell you about logical data but miss partial file replication, corrupted objects, or newly arrived objects not yet reflected in partitions. Opsi B meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">S3 Replication Metrics provide native monitoring of replication health (latency, pending bytes, failed operations). S3 Inventory reports provide a complete manifest of all objects with metadata (size, last modified, replication status) that can be compared between regions to identify any objects that failed replication or are pending. This combines real-time monitoring with periodic comprehensive validation. Option B: ListObjects is rate-limited and expensive for large buckets; it doesn't show replication status or timing information. Option C: S3 event notifications on the destination show replicated objects, but comparing event streams across regions is complex and doesn't handle failures gracefully. Option D: Athena row counts tell you about logical data but miss partial file replication, corrupted objects, or newly arrived objects not yet reflected in partitions.<br><br>Opsi A: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH.<br>Opsi D: SALAH.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer identifies duplicate customer records across three source systems being merged into a unified data lake. Each system has its own customer ID format. Some customers exist in all three systems with different IDs but the same name and email. The team needs to identify and resolve these cross-system duplicates. Which approach is MOST scalable?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Use AWS Glue's FindMatches ML transform which uses machine learning to identify duplicate records across datasets based on fuzzy matching of multiple fields (name, email, address) without requiring exact key matches.</li>
-                <li><span class="option-label">B.</span> Perform exact joins on email address across all three sources to identify customers present in multiple systems. configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> Use DataBrew profiling to identify records with similar names across datasets, then manually review and merge them.</li>
-                <li><span class="option-label">D.</span> Create a deterministic hash of (lowercase_name + email_domain) and join on the hash across all three sources.</li>
+                
+                <li><span class="option-label">A.</span> Perform exact joins on email address across all three sources to identify customers present in multiple systems. configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> Use DataBrew profiling to identify records with similar names across datasets, then manually review and merge them.</li>
+                <li><span class="option-label">C.</span> Create a deterministic hash of (lowercase_name + email_domain) and join on the hash across all three sources.</li>
+                <li><span class="option-label">D.</span> Use AWS Glue's FindMatches ML transform which uses machine learning to identify duplicate records across datasets based on fuzzy matching of multiple fields (name, email, address) without requiring exact key matches.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue's FindMatches ML transform is specifically designed for entity resolution—identifying duplicate records that don't share exact keys. It learns matching patterns from labeled examples and can handle variations in names ("John Smith" vs "J. Smith"), email addresses, addresses, and other fuzzy matching scenarios across datasets. It scales to millions of records. Option B: Exact email matching misses customers who use different email addresses across systems (personal vs work email) and fails when emails have typos. Option C: Manual review doesn't scale when dealing with millions of records across three systems. Option D: A deterministic hash approach fails for any variation in input (name spelling differences, email domain changes) and doesn't handle fuzzy matching. Opsi B meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Glue's FindMatches ML transform is specifically designed for entity resolution—identifying duplicate records that don't share exact keys. It learns matching patterns from labeled examples and can handle variations in names ("John Smith" vs "J. Smith"), email addresses, addresses, and other fuzzy matching scenarios across datasets. It scales to millions of records. Option B: Exact email matching misses customers who use different email addresses across systems (personal vs work email) and fails when emails have typos. Option C: Manual review doesn't scale when dealing with millions of records across three systems. Option D: A deterministic hash approach fails for any variation in input (name spelling differences, email domain changes) and doesn't handle fuzzy matching.<br><br>Opsi A: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi B: SALAH.<br>Opsi C: SALAH.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A data pipeline uses Glue ETL to transform data and write to an Iceberg table in S3. The team notices schema consistency issues: the same logical table in development has 45 columns while production has 47 columns, and two columns have different data types (INT in dev vs BIGINT in prod). How should the team prevent schema inconsistencies across environments?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Implement schema evolution controls in the Iceberg table configuration with strict schema enforcement, and manage schema changes through a version-controlled schema registry that promotes changes from dev → staging → production with automated consistency checks.</li>
                 <li><span class="option-label">B.</span> Use the same Glue Data Catalog database for all environments so schema changes are applied everywhere simultaneously.</li>
                 <li><span class="option-label">C.</span> Run Glue crawlers on all environments with the same schedule to ensure schemas are detected consistently.</li>
                 <li><span class="option-label">D.</span> Manually compare table definitions monthly and align them when differences are found, with strict schema enforcement</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">A schema registry with version-controlled schema definitions and automated promotion between environments ensures that schema changes follow a controlled path: they're first validated in dev, then promoted to staging, and finally to production. Iceberg's schema evolution features (adding columns, widening types) combined with strict enforcement prevent unauthorized schema drift. Automated consistency checks in CI/CD catch divergence early. Option B: Sharing a catalog across environments breaks environment isolation—a development experiment could corrupt production table definitions. Option C: Crawlers detect schema from existing data; they can't enforce desired schemas and may detect different schemas if data differs between environments. Option D: Monthly manual comparison is reactive, not preventive, and allows inconsistencies to persist for weeks before detection. Opsi D meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="explanation">A schema registry with version-controlled schema definitions and automated promotion between environments ensures that schema changes follow a controlled path: they're first validated in dev, then promoted to staging, and finally to production. Iceberg's schema evolution features (adding columns, widening types) combined with strict enforcement prevent unauthorized schema drift. Automated consistency checks in CI/CD catch divergence early. Option B: Sharing a catalog across environments breaks environment isolation—a development experiment could corrupt production table definitions. Option C: Crawlers detect schema from existing data; they can't enforce desired schemas and may detect different schemas if data differs between environments. Option D: Monthly manual comparison is reactive, not preventive, and allows inconsistencies to persist for weeks before detection.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH.<br>Opsi C: SALAH.<br>Opsi D: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data engineer needs to implement a daily reconciliation process for a pipeline that loads data from S3 to Redshift. The reconciliation must verify: (1) row counts match between S3 source and Redshift target, (2) aggregate sums for numeric columns match, and (3) no orphaned records exist in related tables. The reconciliation should run automatically and alert on failures. Which architecture is MOST operationally efficient?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create a Step Functions workflow that: (1) runs an Athena query on S3 to get source row counts and sums, (2) runs a Redshift Data API query for target counts and sums, (3) compares results in a Lambda function, (4) runs a Redshift referential integrity query for orphans, (5) publishes results to CloudWatch and triggers SNS on mismatch.</li>
-                <li><span class="option-label">B.</span> Write a Glue ETL job that reads both source and target, joins them, and fails if discrepancies are found. for target counts and sums</li>
-                <li><span class="option-label">C.</span> Create Glue Data Quality rules on the Redshift table that check RowCount and ColumnSum, scheduled to run daily.</li>
+                
+                <li><span class="option-label">A.</span> Create Glue Data Quality rules on the Redshift table that check RowCount and ColumnSum, scheduled to run daily.</li>
+                <li><span class="option-label">B.</span> Create a Step Functions workflow that: (1) runs an Athena query on S3 to get source row counts and sums, (2) runs a Redshift Data API query for target counts and sums, (3) compares results in a Lambda function, (4) runs a Redshift referential integrity query for orphans, (5) publishes results to CloudWatch and triggers SNS on mismatch.</li>
+                <li><span class="option-label">C.</span> Write a Glue ETL job that reads both source and target, joins them, and fails if discrepancies are found. for target counts and sums</li>
                 <li><span class="option-label">D.</span> Build a QuickSight dashboard that displays source and target metrics side-by-side for manual comparison by analysts.</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Step Functions provides a fully automated, observable reconciliation workflow. It orchestrates Athena (for S3 source queries), Redshift Data API (for target queries), and Lambda (for comparison logic) with built-in error handling, retry, and alerting through SNS. This covers all three requirements (row counts, aggregates, referential integrity) in a single automated flow with no manual intervention. Option B: A Glue ETL job that reads both datasets is expensive (reads all data just for counting) and doesn't cleanly separate reconciliation from processing. Option C: Glue Data Quality can check the target table but cannot compare against source values—it only evaluates rules against a single dataset. Option D: Manual dashboard review doesn't scale, is prone to human error, and doesn't provide automated alerting. Opsi B meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Step Functions provides a fully automated, observable reconciliation workflow. It orchestrates Athena (for S3 source queries), Redshift Data API (for target queries), and Lambda (for comparison logic) with built-in error handling, retry, and alerting through SNS. This covers all three requirements (row counts, aggregates, referential integrity) in a single automated flow with no manual intervention. Option B: A Glue ETL job that reads both datasets is expensive (reads all data just for counting) and doesn't cleanly separate reconciliation from processing. Option C: Glue Data Quality can check the target table but cannot compare against source values—it only evaluates rules against a single dataset. Option D: Manual dashboard review doesn't scale, is prone to human error, and doesn't provide automated alerting.<br><br>Opsi A: SALAH.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi D: SALAH.</div>
             </div>
         </div>
         

@@ -35,15 +35,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer is running a Spark job on Amazon EMR to join a large transactions table (500 GB) with a customers table (200 GB). The join key is customer_id. The Spark UI shows that most tasks complete in 2 minutes, but 3 tasks take over 45 minutes. Executor memory spills to disk are observed for those tasks. What is the MOST likely cause and appropriate resolution?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> The cluster has insufficient memory. Increase the instance type to provide more RAM per executor.</li>
-                <li><span class="option-label">B.</span> Data skew exists on certain customer_id values. Apply a salting technique by appending a random suffix to the skewed keys before the join.</li>
-                <li><span class="option-label">C.</span> The shuffle partitions are too few. Increase spark.sql.shuffle.partitions from 200 to 2000. configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> The data is not compressed. Convert both tables to Snappy-compressed Parquet format.</li>
+                
+                <li><span class="option-label">A.</span> Data skew exists on certain customer_id values. Apply a salting technique by appending a random suffix to the skewed keys before the join.</li>
+                <li><span class="option-label">B.</span> The cluster has insufficient memory. Increase the instance type to provide more RAM per executor.</li>
+                <li><span class="option-label">C.</span> The data is not compressed. Convert both tables to Snappy-compressed Parquet format.</li>
+                <li><span class="option-label">D.</span> The shuffle partitions are too few. Increase spark.sql.shuffle.partitions from 200 to 2000. configured for optimal performance and minimal operational overhead</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Gejala yang ditunjukkan — sebagian besar task selesai cepat tetapi beberapa task memakan waktu sangat lama (long-tail tasks) dengan memory spill — adalah indikator klasik data skew pada join key. Salting technique menambahkan suffix acak pada key yang skewed, mendistribusikan data secara merata ke lebih banyak partisi. Opsi A (menambah RAM) hanya menyembunyikan masalah tanpa menyelesaikan distribusi data yang tidak merata. Opsi C (menambah shuffle partitions) tidak membantu jika satu key memiliki data sangat besar — data key tersebut tetap akan masuk ke satu partisi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (kompresi) tidak berhubungan dengan distribusi data di partisi.</div>
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Gejala yang ditunjukkan — sebagian besar task selesai cepat tetapi beberapa task memakan waktu sangat lama (long-tail tasks) dengan memory spill — adalah indikator klasik data skew pada join key. Salting technique menambahkan suffix acak pada key yang skewed, mendistribusikan data secara merata ke lebih banyak partisi.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Hanya menyembunyikan masalah tanpa menyelesaikan distribusi data yang tidak merata.<br>Opsi C: SALAH. Tidak berhubungan dengan distribusi data di partisi.<br>Opsi D: SALAH. Tidak membantu jika satu key memiliki data sangat besar — data key tersebut tetap akan masuk ke satu partisi — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -52,15 +54,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A company processes IoT sensor data using AWS Glue with Apache Spark. A join operation between a sensor_readings table and a device_metadata table frequently times out. Analysis reveals that 80% of sensor readings come from just 5 out of 10,000 devices. The device_metadata table is only 50 MB. Which optimization strategy provides the MOST effective resolution with minimal code changes?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Repartition the sensor_readings table by device_id with 1000 partitions before the join</li>
-                <li><span class="option-label">B.</span> Use a broadcast join by broadcasting the device_metadata table to all executors</li>
-                <li><span class="option-label">C.</span> Enable Spark AQE (Adaptive Query Execution) with skew join optimization</li>
-                <li><span class="option-label">D.</span> Split the sensor_readings into two DataFrames — one for the 5 hot devices and one for the rest — then union the results</li>
+                
+                <li><span class="option-label">A.</span> Split the sensor_readings into two DataFrames — one for the 5 hot devices and one for the rest — then union the results</li>
+                <li><span class="option-label">B.</span> Enable Spark AQE (Adaptive Query Execution) with skew join optimization</li>
+                <li><span class="option-label">C.</span> Use a broadcast join by broadcasting the device_metadata table to all executors</li>
+                <li><span class="option-label">D.</span> Repartition the sensor_readings table by device_id with 1000 partitions before the join</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Karena device_metadata hanya 50 MB, broadcast join adalah solusi paling efektif dan memerlukan minimal code changes. Broadcast join mengirim tabel kecil ke semua executors, menghindari shuffle sepenuhnya sehingga data skew tidak menjadi masalah. Opsi A (repartition) tidak menyelesaikan skew karena 80% data tetap akan terkonsentrasi di 5 partisi device_id. Opsi C (AQE skew join) bisa membantu tapi memerlukan konfigurasi threshold yang tepat dan menambahkan overhead. Opsi D berfungsi tapi memerlukan perubahan kode signifikan dan logika pemeliharaan yang lebih kompleks.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Karena device_metadata hanya 50 MB, broadcast join adalah solusi paling efektif dan memerlukan minimal code changes. Broadcast join mengirim tabel kecil ke semua executors, menghindari shuffle sepenuhnya sehingga data skew tidak menjadi masalah.<br><br>Opsi A: SALAH. Berfungsi tapi memerlukan perubahan kode signifikan dan logika pemeliharaan yang lebih kompleks.<br>Opsi B: SALAH. Bisa membantu tapi memerlukan konfigurasi threshold yang tepat dan menambahkan overhead.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Tidak menyelesaikan skew karena 80% data tetap akan terkonsentrasi di 5 partisi device_id.</div>
             </div>
         </div>
 
@@ -69,15 +73,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data engineer enables Spark Adaptive Query Execution (AQE) on an AWS Glue job to handle data skew during a join operation. Which combination of Spark configurations should be set to enable the AQE skew join optimization? (Select the configuration that enables the feature)</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> spark.sql.adaptive.enabled=true and spark.sql.adaptive.skewJoin.enabled=true</li>
                 <li><span class="option-label">B.</span> spark.sql.adaptive.enabled=true and spark.sql.shuffle.partitions=auto</li>
                 <li><span class="option-label">C.</span> spark.sql.adaptive.skewJoin.enabled=true and spark.sql.adaptive.coalescePartitions.enabled=true</li>
                 <li><span class="option-label">D.</span> spark.sql.autoBroadcastJoinThreshold=10485760 and spark.sql.adaptive.enabled=true</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Untuk mengaktifkan AQE skew join optimization, dua konfigurasi diperlukan: spark.sql.adaptive.enabled=true (mengaktifkan AQE secara keseluruhan) dan spark.sql.adaptive.skewJoin.enabled=true (mengaktifkan fitur penanganan skew secara spesifik). AQE akan mendeteksi partisi yang jauh lebih besar dari median dan memecahnya menjadi sub-partisi. Opsi B (shuffle.partitions=auto) terkait coalescing partisi, bukan skew handling. Opsi C tidak cukup karena AQE harus diaktifkan terlebih dahulu. Opsi D terkait broadcast join threshold, bukan skew join handling.</div>
+                <div class="explanation">Untuk mengaktifkan AQE skew join optimization, dua konfigurasi diperlukan: spark.sql.adaptive.enabled=true (mengaktifkan AQE secara keseluruhan) dan spark.sql.adaptive.skewJoin.enabled=true (mengaktifkan fitur penanganan skew secara spesifik). AQE akan mendeteksi partisi yang jauh lebih besar dari median dan memecahnya menjadi sub-partisi.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Terkait coalescing partisi, bukan skew handling.<br>Opsi C: SALAH. Tidak cukup karena AQE harus diaktifkan terlebih dahulu.<br>Opsi D: SALAH. Terkait broadcast join threshold, bukan skew join handling.</div>
             </div>
         </div>
 
@@ -86,15 +92,17 @@
             <div class="question-number">4</div>
             <div class="question-text">An e-commerce company uses Amazon DynamoDB to store order data with order_status as the partition key. During peak sales events, the "pending" status receives 90% of all writes, causing hot partition throttling. Which approach BEST resolves this hot partition issue while maintaining query efficiency?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Increase the provisioned write capacity units (WCU) for the table to handle the peak load</li>
-                <li><span class="option-label">B.</span> Add a random suffix (0-9) to the partition key to create write sharding, and use parallel scatter-gather queries for reads</li>
+                
+                <li><span class="option-label">A.</span> Create a Global Secondary Index (GSI) with a different partition key to distribute the load</li>
+                <li><span class="option-label">B.</span> Increase the provisioned write capacity units (WCU) for the table to handle the peak load</li>
                 <li><span class="option-label">C.</span> Switch to DynamoDB On-Demand capacity mode to automatically handle traffic spikes and use parallel scatter-gather queries for reads</li>
-                <li><span class="option-label">D.</span> Create a Global Secondary Index (GSI) with a different partition key to distribute the load</li>
+                <li><span class="option-label">D.</span> Add a random suffix (0-9) to the partition key to create write sharding, and use parallel scatter-gather queries for reads</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Write sharding dengan menambahkan random suffix pada partition key mendistribusikan writes secara merata ke beberapa physical partitions. Untuk "pending" status, key menjadi "pending_0", "pending_1", ..., "pending_9", membagi load ke 10 partisi. Reads dilakukan dengan scatter-gather query pada semua suffix. Opsi A (menambah WCU) tidak efektif karena DynamoDB membagi WCU secara merata antar partisi — hot partition tetap throttled. Opsi C (On-Demand) tetap memiliki limit per-partition sebesar 1000 WCU — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (GSI) membutuhkan partition key berbeda dan tidak langsung menyelesaikan hot partition pada base table.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Write sharding dengan menambahkan random suffix pada partition key mendistribusikan writes secara merata ke beberapa physical partitions. Untuk "pending" status, key menjadi "pending_0", "pending_1", ..., "pending_9", membagi load ke 10 partisi. Reads dilakukan dengan scatter-gather query pada semua suffix.<br><br>Opsi A: SALAH. Membutuhkan partition key berbeda dan tidak langsung menyelesaikan hot partition pada base table.<br>Opsi B: SALAH. Tidak efektif karena DynamoDB membagi WCU secara merata antar partisi — hot partition tetap throttled.<br>Opsi C: SALAH. Tetap memiliki limit per-partition sebesar 1000 WCU — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -103,15 +111,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A data engineer observes that an Amazon Kinesis Data Stream with 10 shards has uneven data distribution. CloudWatch metrics show that 2 shards consistently receive 70% of all incoming records while the other 8 shards are underutilized. The records use user_country as the partition key, and most users are from the United States and India. What is the MOST effective solution?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Increase the number of shards from 10 to 50 to reduce per-shard load</li>
+                
+                <li><span class="option-label">A.</span> Switch to Kinesis On-Demand capacity mode for automatic scaling</li>
                 <li><span class="option-label">B.</span> Change the partition key strategy to use a more granular key such as user_id or a composite key combining country with a random suffix</li>
-                <li><span class="option-label">C.</span> Enable Kinesis Enhanced Fan-Out to increase per-shard throughput with a random suffix</li>
-                <li><span class="option-label">D.</span> Switch to Kinesis On-Demand capacity mode for automatic scaling</li>
+                <li><span class="option-label">C.</span> Increase the number of shards from 10 to 50 to reduce per-shard load</li>
+                <li><span class="option-label">D.</span> Enable Kinesis Enhanced Fan-Out to increase per-shard throughput with a random suffix</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Masalah utama adalah partition key yang tidak terdistribusi merata (user_country). Kinesis menggunakan MD5 hash pada partition key untuk menentukan shard assignment. Jika hanya ada ~200 negara dan 2 negara dominan, hash-nya akan selalu mengarah ke shard yang sama. Menggunakan user_id atau composite key (country + random suffix) menciptakan distribusi hash yang lebih merata. Opsi A (menambah shard) tidak efektif karena hash dari "US" dan "IN" tetap akan masuk ke shard tertentu. Opsi C (Enhanced Fan-Out) meningkatkan read throughput, bukan write distribution — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (On-Demand) menangani scaling otomatis tapi tidak mengubah distribusi data antar shard.</div>
+                <div class="explanation">Masalah utama adalah partition key yang tidak terdistribusi merata (user_country). Kinesis menggunakan MD5 hash pada partition key untuk menentukan shard assignment. Jika hanya ada ~200 negara dan 2 negara dominan, hash-nya akan selalu mengarah ke shard yang sama. Menggunakan user_id atau composite key (country + random suffix) menciptakan distribusi hash yang lebih merata.<br><br>Opsi A: SALAH. Menangani scaling otomatis tapi tidak mengubah distribusi data antar shard.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Tidak efektif karena hash dari "US" dan "IN" tetap akan masuk ke shard tertentu.<br>Opsi D: SALAH. Meningkatkan read throughput, bukan write distribution — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -120,15 +130,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer is implementing a salting technique to handle data skew in a Spark join on AWS Glue. The left table has 1 billion rows with a skewed join key (product_id), and the right table has 100,000 rows. What is the correct approach for implementing salt-based join?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Add a random integer column (0 to N-1) to the left table, explode the right table N times with each salt value, then join on both original key and salt column</li>
+                
+                <li><span class="option-label">A.</span> Repartition both tables by the join key with N partitions, then perform a sort-merge join</li>
                 <li><span class="option-label">B.</span> Add a random integer column (0 to N-1) to both tables independently, then join on both original key and salt column</li>
-                <li><span class="option-label">C.</span> Repartition both tables by the join key with N partitions, then perform a sort-merge join</li>
+                <li><span class="option-label">C.</span> Add a random integer column (0 to N-1) to the left table, explode the right table N times with each salt value, then join on both original key and salt column</li>
                 <li><span class="option-label">D.</span> Add a hash column based on the join key to both tables and join on the hash column instead of the original key with each salt value and salt column</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Salting technique yang benar: (1) Tambahkan kolom salt acak (0 sampai N-1) ke tabel kiri (yang besar/skewed). (2) Explode/replicate tabel kanan N kali, masing-masing dengan salt value berbeda. (3) Join pada kombinasi key asli DAN salt column. Ini mendistribusikan rows dari key yang skewed ke N partisi berbeda. Opsi B (random salt di kedua tabel) tidak berhasil karena salt acak di kedua sisi tidak akan cocok — baris yang seharusnya join tidak akan menemukan pasangannya. Opsi C (repartition) tidak menyelesaikan skew karena satu key tetap masuk ke satu partisi. Opsi D (hash column) menghasilkan distribusi yang sama seperti key asli — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Salting technique yang benar: (1) Tambahkan kolom salt acak (0 sampai N-1) ke tabel kiri (yang besar/skewed). (2) Explode/replicate tabel kanan N kali, masing-masing dengan salt value berbeda. (3) Join pada kombinasi key asli DAN salt column. Ini mendistribusikan rows dari key yang skewed ke N partisi berbeda.<br><br>Opsi A: SALAH. Tidak menyelesaikan skew karena satu key tetap masuk ke satu partisi.<br>Opsi B: SALAH. Tidak berhasil karena salt acak di kedua sisi tidak akan cocok — baris yang seharusnya join tidak akan menemukan pasangannya.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Menghasilkan distribusi yang sama seperti key asli — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -137,15 +149,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer notices that a Spark job on Amazon EMR has significant performance degradation after a data source change. Examining the Spark UI, they see that Stage 3 (a shuffle stage) has 200 tasks where 195 tasks complete in 10 seconds but 5 tasks take 20 minutes each. The Summary Metrics tab shows the 75th percentile shuffle read size is 50 MB but the max is 8 GB. Which Spark UI metric BEST confirms that this is a data skew problem?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> High GC time percentage in the executors running the slow tasks configured for optimal performance and minimal</li>
-                <li><span class="option-label">B.</span> Large disparity between median and maximum values in the Shuffle Read Size/Records metric per task</li>
-                <li><span class="option-label">C.</span> High Scheduler Delay metric indicating cluster resource contention</li>
-                <li><span class="option-label">D.</span> Peak Execution Memory exceeding the executor memory allocation</li>
+                
+                <li><span class="option-label">A.</span> Peak Execution Memory exceeding the executor memory allocation</li>
+                <li><span class="option-label">B.</span> High Scheduler Delay metric indicating cluster resource contention</li>
+                <li><span class="option-label">C.</span> High GC time percentage in the executors running the slow tasks configured for optimal performance and minimal</li>
+                <li><span class="option-label">D.</span> Large disparity between median and maximum values in the Shuffle Read Size/Records metric per task</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Indikator paling jelas dari data skew di Spark UI adalah disparitas besar antara median dan maximum pada Shuffle Read Size/Records per task. Jika median 50 MB tetapi max 8 GB, ini menunjukkan distribusi data yang sangat tidak merata antar partisi. Opsi A (GC time) bisa menjadi efek samping dari skew tapi juga disebabkan oleh hal lain (memory leak, cache pressure) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C (Scheduler Delay) mengindikasikan resource contention, bukan data distribution. Opsi D (Peak Execution Memory) bisa disebabkan oleh banyak faktor selain skew (misalnya cache yang besar, broadcast variables).</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Indikator paling jelas dari data skew di Spark UI adalah disparitas besar antara median dan maximum pada Shuffle Read Size/Records per task. Jika median 50 MB tetapi max 8 GB, ini menunjukkan distribusi data yang sangat tidak merata antar partisi.<br><br>Opsi A: SALAH. Bisa disebabkan oleh banyak faktor selain skew (misalnya cache yang besar, broadcast variables).<br>Opsi B: SALAH. Mengindikasikan resource contention, bukan data distribution.<br>Opsi C: SALAH. Bisa menjadi efek samping dari skew tapi juga disebabkan oleh hal lain (memory leak, cache pressure) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -154,15 +168,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineer is processing a 2 TB dataset with AWS Glue Spark job. The job aggregates sales data by store_id using groupBy and sum operations. Analysis shows that 3 flagship stores account for 60% of all transactions. The job consistently fails with OutOfMemoryError on executors processing these stores. Which combination of techniques should the engineer apply? (Select the BEST approach)</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Increase executor memory to 64 GB and enable off-heap memory with spark.memory.offHeap.enabled=true</li>
-                <li><span class="option-label">B.</span> Use a two-phase aggregation: first partial aggregate with a salt column to distribute skewed keys, then remove salt and perform final aggregation</li>
-                <li><span class="option-label">C.</span> Replace groupBy with reduceByKey and increase spark.sql.shuffle.partitions to 10000</li>
+                
+                <li><span class="option-label">A.</span> Replace groupBy with reduceByKey and increase spark.sql.shuffle.partitions to 10000</li>
+                <li><span class="option-label">B.</span> Increase executor memory to 64 GB and enable off-heap memory with spark.memory.offHeap.enabled=true</li>
+                <li><span class="option-label">C.</span> Use a two-phase aggregation: first partial aggregate with a salt column to distribute skewed keys, then remove salt and perform final aggregation</li>
                 <li><span class="option-label">D.</span> Convert the job to use DynamicFrames with AWS Glue's built-in groupFilter transformation and perform final aggregation</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Two-phase aggregation (juga disebut partial aggregation with salting) adalah teknik standar untuk mengatasi skew pada operasi aggregation. Fase 1: tambahkan salt column, lakukan partial aggregation per (store_id, salt) — ini mendistribusikan data flagship stores ke beberapa partisi. Fase 2: hapus salt column dan lakukan final aggregation per store_id. Opsi A (menambah memory) hanya menangani symptom, bukan root cause, dan tidak scalable untuk data yang terus bertumbuh. Opsi C (reduceByKey) adalah RDD-level API yang tidak langsung applicable untuk DataFrame groupBy, dan menambah partitions tidak membantu jika key-nya sama. Opsi D (groupFilter) bukan solusi untuk skew pada aggregation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Two-phase aggregation (juga disebut partial aggregation with salting) adalah teknik standar untuk mengatasi skew pada operasi aggregation. Fase 1: tambahkan salt column, lakukan partial aggregation per (store_id, salt) — ini mendistribusikan data flagship stores ke beberapa partisi. Fase 2: hapus salt column dan lakukan final aggregation per store_id.<br><br>Opsi A: SALAH. Adalah RDD-level API yang tidak langsung applicable untuk DataFrame groupBy, dan menambah partitions tidak membantu jika key-nya sama.<br>Opsi B: SALAH. Hanya menangani symptom, bukan root cause, dan tidak scalable untuk data yang terus bertumbuh.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Bukan solusi untuk skew pada aggregation — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -171,15 +187,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A financial services company processes transaction data using Amazon EMR with Spark. They perform a join between a transactions table (partitioned by transaction_date) and an accounts table. The join key is account_id, and one institutional account generates 40% of all daily transactions. The data engineer wants to use Spark AQE to handle this skew. Which AQE configuration parameters control when a partition is considered skewed?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> spark.sql.adaptive.skewJoin.skewedPartitionFactor and spark.sql.adaptive.skewJoin.skewedPartitionThresholdInBytes</li>
-                <li><span class="option-label">B.</span> spark.sql.adaptive.advisoryPartitionSizeInBytes and spark.sql.adaptive.coalescePartitions.minPartitionSize</li>
-                <li><span class="option-label">C.</span> spark.sql.adaptive.maxShuffledHashJoinLocalMapThreshold and spark.sql.shuffle.partitions and spark</li>
+                
+                <li><span class="option-label">A.</span> spark.sql.adaptive.maxShuffledHashJoinLocalMapThreshold and spark.sql.shuffle.partitions and spark</li>
+                <li><span class="option-label">B.</span> spark.sql.adaptive.skewJoin.skewedPartitionFactor and spark.sql.adaptive.skewJoin.skewedPartitionThresholdInBytes</li>
+                <li><span class="option-label">C.</span> spark.sql.adaptive.advisoryPartitionSizeInBytes and spark.sql.adaptive.coalescePartitions.minPartitionSize</li>
                 <li><span class="option-label">D.</span> spark.sql.adaptive.skewJoin.enabled and spark.sql.adaptive.localShuffleReader.enabled</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Spark AQE menggunakan dua parameter untuk menentukan apakah sebuah partisi dianggap skewed: (1) skewedPartitionFactor (default 5) — partisi dianggap skewed jika ukurannya lebih besar dari median × factor ini. (2) skewedPartitionThresholdInBytes (default 256 MB) — ukuran minimum agar partisi dipertimbangkan untuk split. Keduanya harus terpenuhi. Opsi B terkait advisory partition size untuk coalescing. Opsi C terkait hash join threshold dan jumlah shuffle partitions — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D hanya mengaktifkan fitur, bukan mengontrol kapan partisi dianggap skewed.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Spark AQE menggunakan dua parameter untuk menentukan apakah sebuah partisi dianggap skewed: (1) skewedPartitionFactor (default 5) — partisi dianggap skewed jika ukurannya lebih besar dari median × factor ini. (2) skewedPartitionThresholdInBytes (default 256 MB) — ukuran minimum agar partisi dipertimbangkan untuk split. Keduanya harus terpenuhi.<br><br>Opsi A: SALAH. Terkait hash join threshold dan jumlah shuffle partitions — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Terkait advisory partition size untuk coalescing.<br>Opsi D: SALAH. Hanya mengaktifkan fitur, bukan mengontrol kapan partisi dianggap skewed.</div>
             </div>
         </div>
 
@@ -188,15 +206,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A streaming analytics platform uses Amazon Kinesis Data Streams to ingest clickstream data from a global e-commerce website. The stream has 20 shards and uses session_id as the partition key. During a flash sale campaign, the platform detects that shard iterator age increases significantly on certain shards while others remain idle. The IteratorAgeMilliseconds metric exceeds 60 seconds on 3 shards. What combination of actions should the data engineer take to resolve this hot shard problem?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Split the hot shards using the UpdateShardCount API and configure consumers to process from child shards</li>
+                
+                <li><span class="option-label">A.</span> Enable Kinesis Enhanced Fan-Out for all consumers and increase the data retention period to 7 days with a calculated hash that evenly distributes records across all shards</li>
                 <li><span class="option-label">B.</span> Modify the producer to use ExplicitHashKey with a calculated hash that evenly distributes records across all shards, bypassing the partition key hash</li>
-                <li><span class="option-label">C.</span> Enable Kinesis Enhanced Fan-Out for all consumers and increase the data retention period to 7 days with a calculated hash that evenly distributes records across all shards</li>
+                <li><span class="option-label">C.</span> Split the hot shards using the UpdateShardCount API and configure consumers to process from child shards</li>
                 <li><span class="option-label">D.</span> Switch to Amazon MSK with more partitions since Kafka handles hot partitions better than Kinesis</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">Menggunakan ExplicitHashKey memungkinkan producer mengontrol distribusi records secara langsung ke shard tertentu, bypass MD5 hash dari partition key. Dengan menghitung hash yang mendistribusikan records secara merata (misalnya round-robin atau random hash), hot shard problem dapat diatasi sambil tetap mempertahankan session_id sebagai partition key untuk consumer ordering. Opsi A (split shards) hanya membagi hot shard menjadi 2, yang mungkin tidak cukup, dan UpdateShardCount mengubah jumlah total shard, bukan shard individual. Opsi C (Enhanced Fan-Out) meningkatkan read throughput tetapi masalahnya adalah write distribution — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D tidak diperlukan karena masalahnya ada pada partition key strategy, bukan limitasi Kinesis.</div>
+                <div class="explanation">Menggunakan ExplicitHashKey memungkinkan producer mengontrol distribusi records secara langsung ke shard tertentu, bypass MD5 hash dari partition key. Dengan menghitung hash yang mendistribusikan records secara merata (misalnya round-robin atau random hash), hot shard problem dapat diatasi sambil tetap mempertahankan session_id sebagai partition key untuk consumer ordering.<br><br>Opsi A: SALAH. Meningkatkan read throughput tetapi masalahnya adalah write distribution — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Hanya membagi hot shard menjadi 2, yang mungkin tidak cukup, dan UpdateShardCount mengubah jumlah total shard, bukan shard individual.<br>Opsi D: SALAH. Tidak diperlukan karena masalahnya ada pada partition key strategy, bukan limitasi Kinesis.</div>
             </div>
         </div>
         

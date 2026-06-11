@@ -34,15 +34,17 @@
             <div class="question-number">1</div>
             <div class="question-text">A data engineer needs to schedule an AWS Glue ETL job to run every weekday at 6:00 AM UTC. The schedule must NOT trigger on weekends. Which scheduling approach is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create an Amazon EventBridge rule with a cron expression: cron(0 6 ? * MON-FRI *)</li>
-                <li><span class="option-label">B.</span> Use the AWS Glue built-in scheduler with a rate expression: rate(1 day)</li>
-                <li><span class="option-label">C.</span> Create a CloudWatch Events rule with rate(24 hours) and a Lambda to check the day</li>
-                <li><span class="option-label">D.</span> Use Amazon MWAA (Airflow) with a DAG that runs daily and has a Python operator to skip weekends</li>
+                
+                <li><span class="option-label">A.</span> Use Amazon MWAA (Airflow) with a DAG that runs daily and has a Python operator to skip weekends</li>
+                <li><span class="option-label">B.</span> Create a CloudWatch Events rule with rate(24 hours) and a Lambda to check the day</li>
+                <li><span class="option-label">C.</span> Create an Amazon EventBridge rule with a cron expression: cron(0 6 ? * MON-FRI *)</li>
+                <li><span class="option-label">D.</span> Use the AWS Glue built-in scheduler with a rate expression: rate(1 day)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge (penerus CloudWatch Events) mendukung cron expressions yang dapat menentukan hari dalam minggu. cron(0 6 ? * MON-FRI *) berjalan pada pukul 6:00 UTC hanya pada hari Senin hingga Jumat. Ini solusi paling sederhana dan native. Opsi B (rate expression) tidak bisa mengecualikan hari tertentu. Opsi C menambah kompleksitas tidak perlu dengan Lambda filter. Opsi D (MWAA) berlebihan untuk scheduling sederhana satu job.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">EventBridge (penerus CloudWatch Events) mendukung cron expressions yang dapat menentukan hari dalam minggu. cron(0 6 ? * MON-FRI *) berjalan pada pukul 6:00 UTC hanya pada hari Senin hingga Jumat. Ini solusi paling sederhana dan native.<br><br>Opsi A: SALAH. Berlebihan untuk scheduling sederhana satu job.<br>Opsi B: SALAH. Menambah kompleksitas tidak perlu dengan Lambda filter.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Tidak bisa mengecualikan hari tertentu.</div>
             </div>
         </div>
 
@@ -50,15 +52,17 @@
             <div class="question-number">2</div>
             <div class="question-text">A company has a complex data pipeline with 15 AWS Glue jobs that have dependencies between them. Job B and Job C depend on Job A completing successfully. Job D depends on both Job B and Job C completing. Which scheduling solution BEST manages these dependencies?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Amazon MWAA (Apache Airflow) with a DAG defining task dependencies</li>
+                
+                <li><span class="option-label">A.</span> AWS Step Functions with Glue StartJobRun tasks</li>
                 <li><span class="option-label">B.</span> AWS Glue Workflows with triggers and job dependencies</li>
-                <li><span class="option-label">C.</span> EventBridge rules chained with Glue job state change events</li>
-                <li><span class="option-label">D.</span> AWS Step Functions with Glue StartJobRun tasks</li>
+                <li><span class="option-label">C.</span> Amazon MWAA (Apache Airflow) with a DAG defining task dependencies</li>
+                <li><span class="option-label">D.</span> EventBridge rules chained with Glue job state change events</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: B</div>
-                <div class="explanation">AWS Glue Workflows dirancang khusus untuk mengorkestrasikan multiple Glue jobs dengan dependensi. Workflows mendukung triggers conditional (on job success/failure) dan fan-out/fan-in patterns. Untuk pipeline yang sepenuhnya menggunakan Glue jobs, ini adalah solusi paling terintegrasi. Opsi A (MWAA) adalah pilihan valid tapi menambah overhead operasional (cluster management). Opsi C (EventBridge chaining) sulit untuk fan-in (menunggu multiple jobs selesai). Opsi D (Step Functions) bisa bekerja tapi lebih generik dan membutuhkan lebih banyak konfigurasi.</div>
+                <div class="explanation">AWS Glue Workflows dirancang khusus untuk mengorkestrasikan multiple Glue jobs dengan dependensi. Workflows mendukung triggers conditional (on job success/failure) dan fan-out/fan-in patterns. Untuk pipeline yang sepenuhnya menggunakan Glue jobs, ini adalah solusi paling terintegrasi.<br><br>Opsi A: SALAH. Bisa bekerja tapi lebih generik dan membutuhkan lebih banyak konfigurasi.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Adalah pilihan valid tapi menambah overhead operasional (cluster management).<br>Opsi D: SALAH. Sulit untuk fan-in (menunggu multiple jobs selesai).</div>
             </div>
         </div>
 
@@ -66,15 +70,17 @@
             <div class="question-number">3</div>
             <div class="question-text">A data engineering team manages 50+ data pipelines with cross-system dependencies spanning AWS Glue, Amazon EMR, Amazon Redshift, and external APIs. They need a centralized scheduler with DAG visualization, retry policies, SLA monitoring, and alerting. Which solution is MOST appropriate?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Amazon MWAA (Managed Workflows for Apache Airflow)</li>
+                
+                <li><span class="option-label">A.</span> Amazon EventBridge Scheduler with Lambda orchestration</li>
                 <li><span class="option-label">B.</span> AWS Step Functions with CloudWatch alarms</li>
                 <li><span class="option-label">C.</span> AWS Glue Workflows with EventBridge notifications</li>
-                <li><span class="option-label">D.</span> Amazon EventBridge Scheduler with Lambda orchestration</li>
+                <li><span class="option-label">D.</span> Amazon MWAA (Managed Workflows for Apache Airflow)</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Amazon MWAA (Apache Airflow) adalah satu-satunya solusi yang menyediakan semua fitur: DAG visualization, cross-system orchestration (Glue, EMR, Redshift, APIs), retry policies, SLA monitoring, dan alerting built-in. Ini dirancang untuk pipeline orchestration berskala enterprise. Opsi B (Step Functions) tidak memiliki DAG visualization dan SLA monitoring bawaan. Opsi C (Glue Workflows) hanya untuk Glue jobs. Opsi D (EventBridge + Lambda) tidak memiliki UI visualization dan SLA features.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Amazon MWAA (Apache Airflow) adalah satu-satunya solusi yang menyediakan semua fitur: DAG visualization, cross-system orchestration (Glue, EMR, Redshift, APIs), retry policies, SLA monitoring, dan alerting built-in. Ini dirancang untuk pipeline orchestration berskala enterprise.<br><br>Opsi A: SALAH. Tidak memiliki UI visualization dan SLA features.<br>Opsi B: SALAH. Tidak memiliki DAG visualization dan SLA monitoring bawaan.<br>Opsi C: SALAH. Hanya untuk Glue jobs.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -82,15 +88,17 @@
             <div class="question-number">4</div>
             <div class="question-text">A data engineer configured an AWS Glue crawler to run on a schedule every hour to detect new partitions in an S3 data lake. However, the crawler runs even when no new data has arrived, consuming unnecessary DPU hours. How can the engineer optimize this?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Replace the scheduled crawler with an S3 event notification that triggers a Lambda function calling the MSCK REPAIR TABLE command in Athena</li>
                 <li><span class="option-label">B.</span> Configure the crawler with "Crawl new folders only" and reduce schedule to once daily</li>
                 <li><span class="option-label">C.</span> Use an EventBridge rule triggered by S3:PutObject to start the crawler only when new files arrive</li>
                 <li><span class="option-label">D.</span> Increase the crawler's recrawl policy to "Crawl everything" to process faster with native S3 integration</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: C</div>
-                <div class="explanation">Menggunakan EventBridge untuk mendeteksi S3:PutObject events dan memicu crawler hanya ketika data baru tiba menghilangkan run yang tidak perlu. Crawler hanya berjalan saat ada data baru. Opsi A (MSCK REPAIR TABLE) hanya menambahkan partisi Hive-style yang sudah ada, tidak mendeteksi schema changes. Opsi B mengurangi frekuensi tapi masih bisa berjalan tanpa data baru. Opsi D (Crawl everything) justru lebih boros karena memproses semua data setiap kali — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+                <div class="explanation">Menggunakan EventBridge untuk mendeteksi S3:PutObject events dan memicu crawler hanya ketika data baru tiba menghilangkan run yang tidak perlu. Crawler hanya berjalan saat ada data baru.<br><br>Opsi A: SALAH. Hanya menambahkan partisi Hive-style yang sudah ada, tidak mendeteksi schema changes.<br>Opsi B: SALAH. Mengurangi frekuensi tapi masih bisa berjalan tanpa data baru.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Justru lebih boros karena memproses semua data setiap kali — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
             </div>
         </div>
 
@@ -98,15 +106,17 @@
             <div class="question-number">5</div>
             <div class="question-text">A company uses Amazon MWAA to orchestrate their data pipelines. They need to schedule a DAG that runs at 8:00 AM local time in the US/Eastern timezone, properly handling daylight saving time transitions. How should this be configured in the Airflow DAG?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Set schedule_interval with a cron expression and specify start_date with timezone: pendulum.timezone('US/Eastern')</li>
+                
+                <li><span class="option-label">A.</span> Create two DAGs — one for EST and one for EDT — and enable/disable them manually during transitions</li>
                 <li><span class="option-label">B.</span> Use schedule_interval='0 8 * * *' with default UTC timezone and manually adjust for DST and specify start_date with timezone: pendulum</li>
-                <li><span class="option-label">C.</span> Create two DAGs — one for EST and one for EDT — and enable/disable them manually during transitions</li>
-                <li><span class="option-label">D.</span> Use a Lambda function triggered by EventBridge to start the DAG at the correct local time</li>
+                <li><span class="option-label">C.</span> Use a Lambda function triggered by EventBridge to start the DAG at the correct local time</li>
+                <li><span class="option-label">D.</span> Set schedule_interval with a cron expression and specify start_date with timezone: pendulum.timezone('US/Eastern')</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Apache Airflow mendukung timezone-aware scheduling menggunakan library pendulum. Dengan menentukan timezone di start_date, Airflow secara otomatis menangani transisi DST. DAG akan selalu berjalan pada 8:00 AM Eastern terlepas dari apakah EST atau EDT berlaku. Opsi B (UTC tanpa timezone) menyebabkan DAG berjalan pada jam yang salah saat DST berubah — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C sangat manual dan error-prone. Opsi D menambah kompleksitas yang tidak perlu.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Apache Airflow mendukung timezone-aware scheduling menggunakan library pendulum. Dengan menentukan timezone di start_date, Airflow secara otomatis menangani transisi DST. DAG akan selalu berjalan pada 8:00 AM Eastern terlepas dari apakah EST atau EDT berlaku.<br><br>Opsi A: SALAH. Sangat manual dan error-prone.<br>Opsi B: SALAH. Menyebabkan DAG berjalan pada jam yang salah saat DST berubah — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Menambah kompleksitas yang tidak perlu.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -114,15 +124,17 @@
             <div class="question-number">6</div>
             <div class="question-text">A data engineer needs to schedule a data pipeline that must complete before 9:00 AM every morning. If the pipeline fails, it should automatically retry up to 3 times with 10-minute intervals. If all retries fail, the on-call engineer must be notified. Which combination of services provides this functionality?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> EventBridge Scheduler to trigger the pipeline, Step Functions for retry logic, and SNS for notification</li>
-                <li><span class="option-label">B.</span> EventBridge Scheduler with built-in retry policy (3 retries) and a dead-letter queue connected to SNS</li>
-                <li><span class="option-label">C.</span> AWS Glue trigger with time-based schedule, built-in Glue job retry, and CloudWatch alarm for failures</li>
-                <li><span class="option-label">D.</span> Amazon MWAA DAG with retries=3, retry_delay=timedelta(minutes=10), and email on_failure_callback</li>
+                
+                <li><span class="option-label">A.</span> EventBridge Scheduler with built-in retry policy (3 retries) and a dead-letter queue connected to SNS</li>
+                <li><span class="option-label">B.</span> EventBridge Scheduler to trigger the pipeline, Step Functions for retry logic, and SNS for notification</li>
+                <li><span class="option-label">C.</span> Amazon MWAA DAG with retries=3, retry_delay=timedelta(minutes=10), and email on_failure_callback</li>
+                <li><span class="option-label">D.</span> AWS Glue trigger with time-based schedule, built-in Glue job retry, and CloudWatch alarm for failures</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: D</div>
-                <div class="explanation">MWAA (Airflow) menyediakan built-in support untuk retries, retry_delay, dan callbacks (on_failure_callback) dalam satu konfigurasi DAG. Ini mencakup semua requirements: scheduling, retry logic, interval, dan notification. Opsi A bekerja tapi membutuhkan integrasi 3 service. Opsi B (EventBridge retry) memiliki retry interval yang sangat pendek (hingga 185 detik) bukan 10 menit. Opsi C (Glue retry) bisa retry tapi CloudWatch alarm harus dikonfigurasi terpisah dan retry interval tidak bisa dikustomisasi per Glue.</div>
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">MWAA (Airflow) menyediakan built-in support untuk retries, retry_delay, dan callbacks (on_failure_callback) dalam satu konfigurasi DAG. Ini mencakup semua requirements: scheduling, retry logic, interval, dan notification.<br><br>Opsi A: SALAH. Memiliki retry interval yang sangat pendek (hingga 185 detik) bukan 10 menit.<br>Opsi B: SALAH. Bekerja tapi membutuhkan integrasi 3 service.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Bisa retry tapi CloudWatch alarm harus dikonfigurasi terpisah dan retry interval tidak bisa dikustomisasi per Glue.</div>
             </div>
         </div>
 
@@ -130,15 +142,17 @@
             <div class="question-number">7</div>
             <div class="question-text">A data engineer is using Amazon EventBridge Scheduler to trigger an AWS Glue job every 15 minutes. The Glue job occasionally takes longer than 15 minutes to complete, causing overlapping runs. How should the engineer prevent concurrent executions?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Configure the Glue job with maximum concurrency set to 1 (MaxConcurrentRuns = 1)</li>
-                <li><span class="option-label">B.</span> Add a Lambda function before the Glue job to check if a previous run is still active</li>
+                
+                <li><span class="option-label">A.</span> Add a Lambda function before the Glue job to check if a previous run is still active</li>
+                <li><span class="option-label">B.</span> Configure the Glue job with maximum concurrency set to 1 (MaxConcurrentRuns = 1)</li>
                 <li><span class="option-label">C.</span> Increase the EventBridge schedule to every 30 minutes with maximum concurrency set</li>
                 <li><span class="option-label">D.</span> Enable Glue job bookmarks to prevent duplicate processing</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">MaxConcurrentRuns = 1 pada Glue job memastikan hanya satu instance job yang berjalan pada satu waktu. Jika schedule memicu run baru sementara run sebelumnya masih berjalan, run baru akan diskip atau queued. Opsi B menambah kompleksitas yang tidak perlu. Opsi C tidak menyelesaikan masalah karena job masih bisa exceed 30 menit — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (bookmarks) mencegah pemrosesan ulang data tapi tidak mencegah concurrent executions.</div>
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">MaxConcurrentRuns = 1 pada Glue job memastikan hanya satu instance job yang berjalan pada satu waktu. Jika schedule memicu run baru sementara run sebelumnya masih berjalan, run baru akan diskip atau queued.<br><br>Opsi A: SALAH. Menambah kompleksitas yang tidak perlu.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Tidak menyelesaikan masalah karena job masih bisa exceed 30 menit — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Mencegah pemrosesan ulang data tapi tidak mencegah concurrent executions.</div>
             </div>
         </div>
 
@@ -146,15 +160,17 @@
             <div class="question-number">8</div>
             <div class="question-text">A data engineering team is migrating from a self-managed Apache Airflow on EC2 to Amazon MWAA. Their existing DAGs use custom Python packages and operators. What must they do to ensure the DAGs work on MWAA?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Package custom dependencies in a requirements.txt file and upload DAGs and plugins to the designated S3 bucket</li>
-                <li><span class="option-label">B.</span> Install custom packages directly on the MWAA worker nodes via SSH and upload DAGs and plugins to the designated S3 bucket</li>
-                <li><span class="option-label">C.</span> Use only Airflow providers available in the MWAA managed image without custom packages</li>
+                <li><span class="option-label">B.</span> Use only Airflow providers available in the MWAA managed image without custom packages</li>
+                <li><span class="option-label">C.</span> Install custom packages directly on the MWAA worker nodes via SSH and upload DAGs and plugins to the designated S3 bucket</li>
                 <li><span class="option-label">D.</span> Deploy custom operators as Lambda functions and call them from the DAG</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">MWAA menggunakan S3 bucket untuk DAGs (dags/ folder), plugins (plugins.zip), dan dependencies (requirements.txt). Custom Python packages didaftarkan di requirements.txt dan diinstall otomatis saat environment update. Plugins (custom operators) dipaket dalam plugins.zip. Opsi B tidak mungkin karena MWAA adalah managed service tanpa akses SSH — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi C membatasi fungsionalitas. Opsi D mengubah arsitektur operator yang sudah ada secara tidak perlu.</div>
+                <div class="explanation">MWAA menggunakan S3 bucket untuk DAGs (dags/ folder), plugins (plugins.zip), dan dependencies (requirements.txt). Custom Python packages didaftarkan di requirements.txt dan diinstall otomatis saat environment update. Plugins (custom operators) dipaket dalam plugins.zip.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Membatasi fungsionalitas.<br>Opsi C: SALAH. Tidak mungkin karena MWAA adalah managed service tanpa akses SSH — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Mengubah arsitektur operator yang sudah ada secara tidak perlu.</div>
             </div>
         </div>
 
@@ -162,15 +178,17 @@
             <div class="question-number">9</div>
             <div class="question-text">A company wants to schedule an AWS Glue crawler to run immediately after a Glue ETL job completes successfully. If the ETL job fails, the crawler should NOT run. Which is the MOST straightforward way to implement this?</div>
             <ul class="options">
-                <li><span class="option-label">A.</span> Create a Glue Workflow with a conditional trigger that starts the crawler on job SUCCEEDED state</li>
-                <li><span class="option-label">B.</span> Use EventBridge rule matching Glue job state change to SUCCEEDED, targeting StartCrawler API</li>
-                <li><span class="option-label">C.</span> Add a post-processing step in the Glue job script to programmatically start the crawler via boto3</li>
-                <li><span class="option-label">D.</span> Use Step Functions with a Choice state after the Glue job to decide whether to start the crawler</li>
+                
+                <li><span class="option-label">A.</span> Use Step Functions with a Choice state after the Glue job to decide whether to start the crawler</li>
+                <li><span class="option-label">B.</span> Add a post-processing step in the Glue job script to programmatically start the crawler via boto3</li>
+                <li><span class="option-label">C.</span> Use EventBridge rule matching Glue job state change to SUCCEEDED, targeting StartCrawler API</li>
+                <li><span class="option-label">D.</span> Create a Glue Workflow with a conditional trigger that starts the crawler on job SUCCEEDED state</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
-                <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">Glue Workflow dengan conditional trigger adalah cara paling native dan straightforward untuk menjalankan crawler setelah job sukses. Trigger "SUCCEEDED" hanya memicu crawler ketika job selesai dengan sukses. Opsi B (EventBridge) bekerja tapi membutuhkan konfigurasi di luar Glue. Opsi C (boto3 di script) mixing orchestration logic dengan ETL logic yang bukan best practice. Opsi D (Step Functions) overkill untuk dua step sederhana.</div>
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Glue Workflow dengan conditional trigger adalah cara paling native dan straightforward untuk menjalankan crawler setelah job sukses. Trigger "SUCCEEDED" hanya memicu crawler ketika job selesai dengan sukses.<br><br>Opsi A: SALAH. Overkill untuk dua step sederhana.<br>Opsi B: SALAH. Mixing orchestration logic dengan ETL logic yang bukan best practice.<br>Opsi C: SALAH. Bekerja tapi membutuhkan konfigurasi di luar Glue.<br>Opsi D: BENAR.</div>
             </div>
         </div>
 
@@ -178,15 +196,17 @@
             <div class="question-number">10</div>
             <div class="question-text">A data engineer uses Amazon EventBridge Scheduler to trigger multiple Lambda functions and Glue jobs at different intervals. The engineer needs to temporarily pause all scheduled tasks during a planned maintenance window without deleting any schedules. What is the MOST efficient approach?</div>
             <ul class="options">
+                
                 <li><span class="option-label">A.</span> Use a schedule group and disable the entire group during maintenance</li>
-                <li><span class="option-label">B.</span> Delete all schedules before maintenance and recreate them after</li>
-                <li><span class="option-label">C.</span> Change each schedule's state to DISABLED individually and disable the entire</li>
-                <li><span class="option-label">D.</span> Set each schedule's end date to the maintenance start time</li>
+                <li><span class="option-label">B.</span> Change each schedule's state to DISABLED individually and disable the entire</li>
+                <li><span class="option-label">C.</span> Set each schedule's end date to the maintenance start time</li>
+                <li><span class="option-label">D.</span> Delete all schedules before maintenance and recreate them after</li>
+            
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
             <div class="answer-section">
                 <div class="correct-answer">Jawaban Benar: A</div>
-                <div class="explanation">EventBridge Scheduler mendukung schedule groups. Dengan menempatkan semua related schedules dalam satu group, Anda bisa men-disable (atau delete) seluruh group sekaligus. Ini paling efisien untuk batch operations. Opsi B (delete + recreate) berisiko kehilangan konfigurasi. Opsi C (disable satu per satu) tidak efisien untuk banyak schedules — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini. Opsi D (end date) membutuhkan update setiap schedule dan perlu di-reset setelah maintenance.</div>
+                <div class="explanation">EventBridge Scheduler mendukung schedule groups. Dengan menempatkan semua related schedules dalam satu group, Anda bisa men-disable (atau delete) seluruh group sekaligus. Ini paling efisien untuk batch operations.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Tidak efisien untuk banyak schedules — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Membutuhkan update setiap schedule dan perlu di-reset setelah maintenance.<br>Opsi D: SALAH. Berisiko kehilangan konfigurasi.</div>
             </div>
         </div>
         
