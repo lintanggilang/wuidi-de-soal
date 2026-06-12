@@ -37,7 +37,7 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Amazon OpenSearch Service with a dedicated cluster sized for 2 TB of data, ingesting all 6 months of logs for interactive analysis.</li>
-                <li><span class="option-label">B.</span> CloudWatch Logs Insights by first importing the S3-stored logs back into CloudWatch Logs, then running queries.</li>
+                <li><span class="option-label">B.</span> CloudWatch Logs Insights by first importing the S3-stored logs back into CloudWatch Logs, then running queries, enforcing encryption and fine-grained access control</li>
                 <li><span class="option-label">C.</span> Amazon EMR with a transient Spark cluster to process all 2 TB of flow logs and produce a filtered result set, with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Amazon Athena with partition pruning on the date columns and predicate pushdown on the source CIDR field, querying the Parquet files directly in S3.</li>
             
@@ -55,10 +55,10 @@
             <div class="question-text">A data engineering team operates a real-time fraud detection system that generates 500 GB of application logs daily. The operations team needs sub-second search latency for the most recent 7 days of logs, with the ability to create interactive dashboards showing fraud patterns. Historical logs beyond 7 days should be retained for 1 year at minimal cost for occasional compliance queries. Which architecture BEST meets these requirements?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Send all logs to CloudWatch Logs with a 365-day retention policy. Use CloudWatch Logs Insights for all queries and CloudWatch dashboards for visualization.</li>
+                <li><span class="option-label">A.</span> Send all logs to CloudWatch Logs with a 365-day retention policy. Use CloudWatch Logs Insights for all queries and CloudWatch dashboards for visualization, enforcing encryption and fine-grained access control and delivering records with consistent sub-second latency and satisfying strict compliance and audit requirements</li>
                 <li><span class="option-label">B.</span> Stream logs to Amazon OpenSearch Service with a 7-day index retention policy for real-time dashboards. Configure an index lifecycle policy to automatically snapshot and delete indices older than 7 days, storing snapshots in S3. Use Athena for querying historical data in S3.</li>
-                <li><span class="option-label">C.</span> Ingest all logs into Amazon Redshift with a 365-day retention. Use Redshift's query capabilities for both real-time and historical analysis. and delete indices older than 7 days, storing snapshots in S3</li>
-                <li><span class="option-label">D.</span> Stream logs to Amazon OpenSearch Service with UltraWarm storage for all 365 days. Use OpenSearch Dashboards for all visualization needs.</li>
+                <li><span class="option-label">C.</span> Ingest all logs into Amazon Redshift with a 365-day retention. Use Redshift's query capabilities for both real-time and historical analysis. and delete indices older than 7 days, storing snapshots in S3, delivering records with consistent sub-second latency and reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Stream logs to Amazon OpenSearch Service with UltraWarm storage for all 365 days. Use OpenSearch Dashboards for all visualization needs, running as a fully managed service with minimal operational overhead and avoiding charges for idle provisioned capacity and optimizing cost for the described workload</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -112,9 +112,9 @@
             <div class="question-text">A data platform team needs to analyze ALB access logs to identify API endpoints with the highest error rates. The ALB logs are stored in S3 in the default space-delimited format with Gzip compression. The team has already set up an Athena table for these logs. Which Athena query approach correctly parses the ALB log format and calculates error rates by target endpoint?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use OPENCSV SerDe with comma delimiter to parse the ALB log files, then aggregate by URL path.</li>
-                <li><span class="option-label">B.</span> Use the ALB log table created with the JSON SerDe since ALB logs are in JSON format, then filter by the status_code field.</li>
-                <li><span class="option-label">C.</span> Use the raw text format and Athena's SPLIT function to parse each line into fields, then calculate error rates, with the Regex SerDe</li>
+                <li><span class="option-label">A.</span> Use OPENCSV SerDe with comma delimiter to parse the ALB log files, then aggregate by URL path, applying schema conversion and enrichment inline and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
+                <li><span class="option-label">B.</span> Use the ALB log table created with the JSON SerDe since ALB logs are in JSON format, then filter by the status_code field, meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
+                <li><span class="option-label">C.</span> Use the raw text format and Athena's SPLIT function to parse each line into fields, then calculate error rates, with the Regex SerDe, integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
                 <li><span class="option-label">D.</span> Use the ALB log table created with the Regex SerDe (org.apache.hadoop.hive.serde2.RegexSerDe) that maps ALB log fields to columns, then query: SELECT request_url, COUNT(CASE WHEN elb_status_code >= 500 THEN 1 END) * 100.0 / COUNT(*) as error_rate FROM alb_logs GROUP BY request_url ORDER BY error_rate DESC</li>
             
             </ul>
@@ -131,10 +131,10 @@
             <div class="question-text">A company has 50 TB of historical log data from various data pipeline services stored in S3. They need to process this data to build a searchable log analytics platform with the following requirements: process logs from 10+ different formats (JSON, CSV, Apache, custom), enrich logs with geolocation data, normalize timestamps across timezone differences, and produce Parquet output for long-term analysis. Which service is BEST suited for this large-scale log processing?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Amazon Athena with CTAS (CREATE TABLE AS SELECT) queries to transform each log format into normalized Parquet tables.</li>
-                <li><span class="option-label">B.</span> CloudWatch Logs Insights for querying all log formats and exporting results to S3 in Parquet format.</li>
+                <li><span class="option-label">A.</span> Amazon Athena with CTAS (CREATE TABLE AS SELECT) queries to transform each log format into normalized Parquet tables, validating and cleansing each record before delivery and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> CloudWatch Logs Insights for querying all log formats and exporting results to S3 in Parquet format, applying schema conversion and enrichment inline and scaling elastically to millions of events per second</li>
                 <li><span class="option-label">C.</span> Amazon EMR with Apache Spark for its ability to handle 50 TB of diverse data with custom parsing logic, UDF-based enrichment, timezone normalization, and efficient Parquet output with partitioning.</li>
-                <li><span class="option-label">D.</span> AWS Glue ETL with a single job that reads all 10+ formats and produces unified Parquet output. and efficient Parquet output with partitioning</li>
+                <li><span class="option-label">D.</span> AWS Glue ETL with a single job that reads all 10+ formats and produces unified Parquet output. and efficient Parquet output with partitioning, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -150,10 +150,10 @@
             <div class="question-text">A team uses Amazon OpenSearch Service for real-time log analytics of their data pipeline. The cluster has 3 data nodes with 1 TB EBS storage each. They've configured an index pattern where each day creates a new index. After 6 months, queries have become slow and the cluster shows high JVM memory pressure (>85%). What is the MOST effective solution?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Change the index pattern from daily to weekly to reduce the total number of indices in the cluster. and delete indices older than 90 days</li>
-                <li><span class="option-label">B.</span> Add more data nodes to the cluster to distribute the shard load and reduce per-node JVM memory pressure.</li>
+                <li><span class="option-label">A.</span> Change the index pattern from daily to weekly to reduce the total number of indices in the cluster. and delete indices older than 90 days, making the data queryable within seconds of arrival and delivering records with consistent sub-second latency</li>
+                <li><span class="option-label">B.</span> Add more data nodes to the cluster to distribute the shard load and reduce per-node JVM memory pressure, satisfying all of the stated requirements with minimal effort and minimizing end-to-end processing latency and delivering records with consistent sub-second latency</li>
                 <li><span class="option-label">C.</span> Implement Index State Management (ISM) policies to automatically transition indices older than 7 days to warm storage (UltraWarm), and delete indices older than 90 days. Reduce the number of shards per index based on the daily data volume.</li>
-                <li><span class="option-label">D.</span> Increase the EBS volume size on each node to provide more storage capacity for the growing indices.</li>
+                <li><span class="option-label">D.</span> Increase the EBS volume size on each node to provide more storage capacity for the growing indices, minimizing end-to-end processing latency and handling the described workload reliably at scale and integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -169,9 +169,9 @@
             <div class="question-text">A data engineer needs to run a CloudWatch Logs Insights query across 20 different log groups simultaneously to correlate events across multiple microservices in their data pipeline. The query needs to find the end-to-end processing time for records identified by a correlation ID. Which approach correctly achieves cross-log-group correlation?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create 20 separate queries (one per log group) and manually join the results using spreadsheet software to correlate by correlationId.</li>
-                <li><span class="option-label">B.</span> Use CloudWatch ServiceLens to automatically trace requests across all 20 log groups without writing queries.</li>
-                <li><span class="option-label">C.</span> Create subscription filters on all 20 log groups to stream to a single consolidated log group, then query the consolidated group, with real-time processing and low-latency data delivery</li>
+                <li><span class="option-label">A.</span> Create 20 separate queries (one per log group) and manually join the results using spreadsheet software to correlate by correlationId, handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Use CloudWatch ServiceLens to automatically trace requests across all 20 log groups without writing queries, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> Create subscription filters on all 20 log groups to stream to a single consolidated log group, then query the consolidated group, with real-time processing and low-latency data delivery, satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
                 <li><span class="option-label">D.</span> Select all 20 log groups in the CloudWatch Logs Insights query editor, then use: fields @timestamp, @logStream, correlationId, stage, duration | filter correlationId = "abc-123" | sort @timestamp asc — Logs Insights natively supports querying up to 50 log groups simultaneously.</li>
             
             </ul>
@@ -189,9 +189,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Amazon OpenSearch Service with a hot tier sized for 100 GB, using an ingestion pipeline from S3 via Kinesis Data Firehose with a 24-hour index retention policy and OpenSearch Dashboards for interactive search.</li>
-                <li><span class="option-label">B.</span> Amazon Redshift Spectrum for querying the S3-stored JSON logs with full-text search capabilities.</li>
-                <li><span class="option-label">C.</span> Amazon Athena with a Glue table pointing to the S3 logs, using full-text search with the LIKE operator across concatenated fields.</li>
-                <li><span class="option-label">D.</span> CloudWatch Logs Insights after importing the S3 logs into a CloudWatch log group with a 1-day retention policy. and OpenSearch Dashboards for interactive search for 100 GB</li>
+                <li><span class="option-label">B.</span> Amazon Redshift Spectrum for querying the S3-stored JSON logs with full-text search capabilities, transforming records into the required target format and removing the need to provision or patch any infrastructure and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">C.</span> Amazon Athena with a Glue table pointing to the S3 logs, using full-text search with the LIKE operator across concatenated fields, streaming results downstream in near real time and delivering records with consistent sub-second latency</li>
+                <li><span class="option-label">D.</span> CloudWatch Logs Insights after importing the S3 logs into a CloudWatch log group with a 1-day retention policy. and OpenSearch Dashboards for interactive search for 100 GB, transforming records into the required target format</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -208,9 +208,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> CloudWatch Logs Insights has the highest total cost because it charges $0.50/GB for ingestion plus $0.005/GB for queries scanned, making the ingestion cost ($100/day) the dominant factor regardless of query patterns.</li>
-                <li><span class="option-label">B.</span> OpenSearch is the cheapest because UltraWarm storage costs less than S3 Standard for the same data volume.</li>
-                <li><span class="option-label">C.</span> Athena is always the cheapest option because it only charges $5/TB scanned with no ingestion costs when data already resides in S3.</li>
-                <li><span class="option-label">D.</span> All three services cost approximately the same at 200 GB/day because AWS normalizes pricing across analytics services. for ingestion plus $0</li>
+                <li><span class="option-label">B.</span> OpenSearch is the cheapest because UltraWarm storage costs less than S3 Standard for the same data volume, optimizing cost for the described workload and keeping steady-state operating costs low</li>
+                <li><span class="option-label">C.</span> Athena is always the cheapest option because it only charges $5/TB scanned with no ingestion costs when data already resides in S3, keeping steady-state operating costs low and providing exactly-once processing semantics</li>
+                <li><span class="option-label">D.</span> All three services cost approximately the same at 200 GB/day because AWS normalizes pricing across analytics services. for ingestion plus $0, meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

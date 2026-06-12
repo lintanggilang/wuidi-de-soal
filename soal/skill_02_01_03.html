@@ -36,9 +36,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> HNSW (Hierarchical Navigable Small World) index with ef_construction=128 and m=16, providing approximate nearest neighbor search with 95%+ recall at sub-50ms latency by building a multi-layer proximity graph that enables logarithmic-time traversal through the vector space</li>
-                <li><span class="option-label">B.</span> Exact brute-force search (sequential scan) without any index, computing cosine similarity against all 10 million vectors for guaranteed 100% recall with ef_construction=128</li>
-                <li><span class="option-label">C.</span> A B-tree index on a hash of the vector values for equality lookups on exact vector matches</li>
-                <li><span class="option-label">D.</span> IVF (Inverted File Index) with nlist=1000 and nprobe=50, partitioning vectors into 1000 Voronoi cells and searching only the 50 closest cells during query time</li>
+                <li><span class="option-label">B.</span> Exact brute-force search (sequential scan) without any index, computing cosine similarity against all 10 million vectors for guaranteed 100% recall with ef_construction=128, satisfying all of the stated requirements with minimal effort and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">C.</span> A B-tree index on a hash of the vector values for equality lookups on exact vector matches, minimizing end-to-end processing latency and making the data queryable within seconds of arrival and delivering records with consistent sub-second latency</li>
+                <li><span class="option-label">D.</span> IVF (Inverted File Index) with nlist=1000 and nprobe=50, partitioning vectors into 1000 Voronoi cells and searching only the 50 closest cells during query time, satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -53,10 +53,10 @@
             <div class="question-text">An online gaming platform needs a session state store that supports: 100,000 read/write operations per second, sub-millisecond latency for both reads and writes, complex data structures (sorted sets for leaderboards, lists for chat history, hashes for player state), and automatic failover with zero data loss. The data is ephemeral (24-hour TTL) but must not be lost during infrastructure failures within that window. Which AWS service is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Amazon DynamoDB with DAX caching layer for sub-millisecond reads</li>
-                <li><span class="option-label">B.</span> Amazon ElastiCache for Redis with Multi-AZ replication enabled for automatic failover and single-digit millisecond write latency</li>
+                <li><span class="option-label">A.</span> Amazon DynamoDB with DAX caching layer for sub-millisecond reads, streaming results downstream in near real time and meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">B.</span> Amazon ElastiCache for Redis with Multi-AZ replication enabled for automatic failover and single-digit millisecond write latency, meeting the latency and throughput goals of the design and making the data queryable within seconds of arrival and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">C.</span> Amazon MemoryDB for Redis, which provides Redis-compatible data structure support (sorted sets, lists, hashes) with Multi-AZ durability using a distributed transaction log that ensures zero data loss on failover, while maintaining sub-millisecond read latency and single-digit millisecond write latency</li>
-                <li><span class="option-label">D.</span> Amazon Aurora PostgreSQL with connection pooling using RDS Proxy for low-latency access</li>
+                <li><span class="option-label">D.</span> Amazon Aurora PostgreSQL with connection pooling using RDS Proxy for low-latency access, satisfying all of the stated requirements with minimal effort and delivering records with consistent sub-second latency and meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -71,10 +71,10 @@
             <div class="question-text">A fraud detection system needs to identify suspicious financial transactions in real-time by checking if a transaction's characteristics are similar to known fraud patterns. The system stores 500,000 known fraud pattern vectors (256 dimensions) and must search for the nearest 10 patterns for each incoming transaction within 10ms to make a block/allow decision. The fraud pattern database is updated weekly. The team must choose between HNSW and IVF index types on Aurora PostgreSQL with pgvector. Which index type and why?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Neither — use exact brute-force search since 500K vectors is small enough for sequential scan within 10ms with incremental insertions — critical for a fraud detection system where missing a similar pattern (false negative) has severe financial consequences</li>
+                <li><span class="option-label">A.</span> Neither — use exact brute-force search since 500K vectors is small enough for sequential scan within 10ms with incremental insertions — critical for a fraud detection system where missing a similar pattern (false negative) has severe financial consequences, satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">B.</span> HNSW index because it provides consistent low-latency queries (sub-10ms for 500K vectors) regardless of data distribution changes, doesn't require retraining after weekly updates, and maintains high recall even with incremental insertions — critical for a fraud detection system where missing a similar pattern (false negative) has severe financial consequences</li>
-                <li><span class="option-label">C.</span> IVF index with nprobe equal to nlist (searching all cells) to guarantee 100% recall for the fraud detection use case</li>
-                <li><span class="option-label">D.</span> IVF index because it uses less memory than HNSW and provides faster index build times, making weekly rebuilds feasible</li>
+                <li><span class="option-label">C.</span> IVF index with nprobe equal to nlist (searching all cells) to guarantee 100% recall for the fraud detection use case, integrating natively with the rest of the pipeline and streaming results downstream in near real time and meeting the latency and throughput goals of the design and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">D.</span> IVF index because it uses less memory than HNSW and provides faster index build times, making weekly rebuilds feasible, handling the described workload reliably at scale and streaming results downstream in near real time and making the data queryable within seconds of arrival and delivering records with consistent sub-second latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -90,9 +90,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Amazon Aurora PostgreSQL with pgvector extension, which provides vector similarity search (HNSW/IVF indexes), traditional SQL for metadata filtering (WHERE department='Engineering' AND date > '2024-01-01'), full-text search via tsvector/tsquery, and native ACID transaction support — all in a single database engine</li>
-                <li><span class="option-label">B.</span> Amazon Neptune for storing document relationships as a knowledge graph with vector similarity as a graph traversal operation</li>
-                <li><span class="option-label">C.</span> Amazon DynamoDB for document storage with a separate Pinecone-compatible vector database for similarity search configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Amazon OpenSearch Service with k-NN plugin for vector search, combined with its native full-text search capabilities and metadata filtering</li>
+                <li><span class="option-label">B.</span> Amazon Neptune for storing document relationships as a knowledge graph with vector similarity as a graph traversal operation, scaling horizontally as ingestion throughput keeps growing and integrating natively with the rest of the pipeline and absorbing sudden traffic spikes without throttling</li>
+                <li><span class="option-label">C.</span> Amazon DynamoDB for document storage with a separate Pinecone-compatible vector database for similarity search configured for optimal performance and minimal operational overhead, satisfying all of the stated requirements with minimal effort and scaling elastically to millions of events per second</li>
+                <li><span class="option-label">D.</span> Amazon OpenSearch Service with k-NN plugin for vector search, combined with its native full-text search capabilities and metadata filtering, meeting the latency and throughput goals of the design and scaling elastically to millions of events per second and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -107,10 +107,10 @@
             <div class="question-text">A supply chain company needs to model and query complex relationships between suppliers, manufacturers, distributors, and retailers. Key queries include: "find all suppliers within 3 hops of a given retailer," "identify the shortest supply route between two entities," and "detect circular dependencies in the supply chain." The graph has 2 million nodes and 50 million edges with properties on both. Which AWS service is specifically designed for this use case?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Amazon Aurora PostgreSQL with a self-referencing table and application-level graph traversal logic</li>
+                <li><span class="option-label">A.</span> Amazon Aurora PostgreSQL with a self-referencing table and application-level graph traversal logic, integrating natively with the rest of the pipeline and scaling elastically to millions of events per second and absorbing sudden traffic spikes without throttling and reducing day-to-day operational effort</li>
                 <li><span class="option-label">B.</span> Amazon Neptune, a purpose-built graph database supporting both property graph (Gremlin/openCypher) and RDF (SPARQL) models, optimized for traversal queries like multi-hop path finding, shortest path algorithms, and cycle detection across millions of nodes and edges with ACID transaction support</li>
-                <li><span class="option-label">C.</span> Amazon DynamoDB with an adjacency list pattern where each item stores a node and its direct connections as a list attribute for traversal queries like multi-hop path finding</li>
-                <li><span class="option-label">D.</span> Amazon Redshift with recursive CTEs (Common Table Expressions) to traverse the supply chain relationships stored in a relational table</li>
+                <li><span class="option-label">C.</span> Amazon DynamoDB with an adjacency list pattern where each item stores a node and its direct connections as a list attribute for traversal queries like multi-hop path finding, absorbing sudden traffic spikes without throttling and providing exactly-once processing semantics</li>
+                <li><span class="option-label">D.</span> Amazon Redshift with recursive CTEs (Common Table Expressions) to traverse the supply chain relationships stored in a relational table, integrating natively with the rest of the pipeline and scaling elastically to millions of events per second and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -125,10 +125,10 @@
             <div class="question-text">A real-time bidding (RTB) platform for digital advertising must make bid decisions within 100ms of receiving an ad request. The decision requires looking up user segment data (key: user_id, value: JSON with demographics and interests) from a dataset of 200 million users. The system handles 500,000 requests per second with extreme latency sensitivity — p99 latency must be under 5ms for the cache layer. Which caching architecture is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Amazon ElastiCache for Memcached with multiple nodes for simple key-value caching with partition-level ordering and dedicated throughput</li>
-                <li><span class="option-label">B.</span> Application-level in-memory cache (local HashMap) in each bidding service instance, refreshed periodically from S3</li>
+                <li><span class="option-label">A.</span> Amazon ElastiCache for Memcached with multiple nodes for simple key-value caching with partition-level ordering and dedicated throughput, integrating natively with the rest of the pipeline and scaling elastically to millions of events per second and streaming results downstream in near real time</li>
+                <li><span class="option-label">B.</span> Application-level in-memory cache (local HashMap) in each bidding service instance, refreshed periodically from S3, minimizing end-to-end processing latency and delivering records with consistent sub-second latency and meeting the latency and throughput goals of the design and absorbing sudden traffic spikes without throttling</li>
                 <li><span class="option-label">C.</span> Amazon ElastiCache for Redis cluster mode with multiple shards distributing the 200M keys across nodes, using consistent hashing for key distribution. Configure read replicas per shard for read scaling, and use connection pooling to minimize connection overhead at 500K RPS</li>
-                <li><span class="option-label">D.</span> Amazon DynamoDB with DAX (DynamoDB Accelerator) as the caching layer in front of DynamoDB</li>
+                <li><span class="option-label">D.</span> Amazon DynamoDB with DAX (DynamoDB Accelerator) as the caching layer in front of DynamoDB, streaming results downstream in near real time and scaling horizontally as ingestion throughput keeps growing and handling the described workload reliably at scale and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -143,9 +143,9 @@
             <div class="question-text">An e-commerce search platform needs to support: full-text product search with relevance ranking, faceted navigation (filter by brand, price range, color), autocomplete suggestions, and "fuzzy" matching for misspellings. The catalog has 50 million products with structured attributes (price, brand) and unstructured text (descriptions, reviews). Which AWS service is purpose-built for this search use case?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Amazon DynamoDB with a GSI for each searchable attribute and application-level text matching with parallel processing and horizontal scaling capabilities</li>
-                <li><span class="option-label">B.</span> Amazon Redshift with LIKE queries on product description columns and GROUP BY for facet counts</li>
-                <li><span class="option-label">C.</span> Amazon Aurora PostgreSQL with GIN indexes on tsvector columns for full-text search and B-tree indexes for faceted filtering</li>
+                <li><span class="option-label">A.</span> Amazon DynamoDB with a GSI for each searchable attribute and application-level text matching with parallel processing and horizontal scaling capabilities, handling the described workload reliably at scale and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> Amazon Redshift with LIKE queries on product description columns and GROUP BY for facet counts, handling peak volume without any manual intervention and absorbing sudden traffic spikes without throttling and scaling elastically to millions of events per second</li>
+                <li><span class="option-label">C.</span> Amazon Aurora PostgreSQL with GIN indexes on tsvector columns for full-text search and B-tree indexes for faceted filtering, avoiding charges for idle provisioned capacity and absorbing sudden traffic spikes without throttling and keeping steady-state operating costs low</li>
                 <li><span class="option-label">D.</span> Amazon OpenSearch Service, which provides inverted indexes for full-text search with BM25 relevance scoring, aggregation framework for faceted navigation, completion suggesters for autocomplete, and fuzzy query support for misspelling tolerance — all optimized for search workloads at scale</li>
             
             </ul>
@@ -162,9 +162,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Amazon OpenSearch Service with k-NN plugin using HNSW algorithm, storing embeddings as knn_vector fields alongside product metadata. Use filtered k-NN queries that apply metadata filters (availability=true AND price BETWEEN 10 AND 50) during the vector search, with near real-time index refreshes for availability updates</li>
-                <li><span class="option-label">B.</span> Amazon SageMaker with a custom endpoint hosting a FAISS index loaded from S3, with separate DynamoDB calls for metadata filtering</li>
-                <li><span class="option-label">C.</span> Aurora PostgreSQL with pgvector, using HNSW index on the embedding column and WHERE clauses for metadata filtering with real-time processing and low-latency data delivery</li>
-                <li><span class="option-label">D.</span> Amazon Neptune with vector similarity as a custom Lambda function integrated into graph queries</li>
+                <li><span class="option-label">B.</span> Amazon SageMaker with a custom endpoint hosting a FAISS index loaded from S3, with separate DynamoDB calls for metadata filtering, integrating natively with the rest of the pipeline and optimizing cost for the described workload and providing exactly-once processing semantics and keeping steady-state operating costs low</li>
+                <li><span class="option-label">C.</span> Aurora PostgreSQL with pgvector, using HNSW index on the embedding column and WHERE clauses for metadata filtering with real-time processing and low-latency data delivery, keeping steady-state operating costs low and streaming results downstream in near real time and guaranteeing no data loss during component failures</li>
+                <li><span class="option-label">D.</span> Amazon Neptune with vector similarity as a custom Lambda function integrated into graph queries, optimizing cost for the described workload and integrating natively with the rest of the pipeline and providing exactly-once processing semantics and streaming results downstream in near real time</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -179,9 +179,9 @@
             <div class="question-text">A data engineering team needs to accelerate read performance for a DynamoDB table that serves a product catalog API. The table has 5 million items and handles 50,000 read requests per second. 90% of reads are for the same 100,000 "popular" items (hot keys). The remaining 10% access the long-tail of less popular items. Current DynamoDB costs are high due to provisioned RCUs for peak traffic. Which caching strategy MOST reduces cost while maintaining performance?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Switch to DynamoDB On-Demand mode to pay per-request and avoid over-provisioning for cached items (the hot 100K items)</li>
-                <li><span class="option-label">B.</span> Implement application-level caching using ElastiCache Redis with TTL-based cache invalidation</li>
-                <li><span class="option-label">C.</span> Increase DynamoDB provisioned RCUs to handle 50K reads/second without throttling</li>
+                <li><span class="option-label">A.</span> Switch to DynamoDB On-Demand mode to pay per-request and avoid over-provisioning for cached items (the hot 100K items), absorbing sudden traffic spikes without throttling and scaling elastically to millions of events per second and handling peak volume without any manual intervention and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> Implement application-level caching using ElastiCache Redis with TTL-based cache invalidation, keeping steady-state operating costs low and integrating natively with the rest of the pipeline and handling the described workload reliably at scale and handling peak volume without any manual intervention and scaling elastically to millions of events per second</li>
+                <li><span class="option-label">C.</span> Increase DynamoDB provisioned RCUs to handle 50K reads/second without throttling, handling peak volume without any manual intervention and scaling elastically to millions of events per second and meeting the latency and throughput goals of the design and scaling horizontally as ingestion throughput keeps growing and keeping steady-state operating costs low</li>
                 <li><span class="option-label">D.</span> Deploy DynamoDB Accelerator (DAX) as an in-memory cache in front of DynamoDB. DAX provides microsecond read latency for cached items (the hot 100K items), transparently handles cache misses by reading from DynamoDB (long-tail items), and reduces DynamoDB RCU consumption by serving repeated reads from cache — enabling RCU reduction by up to 90%</li>
             
             </ul>
@@ -197,10 +197,10 @@
             <div class="question-text">A logistics company needs to optimize delivery routes by finding the shortest paths between multiple delivery stops, considering real-time traffic data that updates edge weights (travel times) every 5 minutes. The road network graph has 10 million intersections (nodes) and 30 million road segments (edges) with dynamic weight properties. Route calculations must complete within 2 seconds. Which database architecture supports both the graph traversal and dynamic weight updates efficiently?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Amazon S3 storing the graph as an adjacency matrix CSV file, loaded into Lambda memory for route calculations with Gremlin traversal queries for path finding</li>
+                <li><span class="option-label">A.</span> Amazon S3 storing the graph as an adjacency matrix CSV file, loaded into Lambda memory for route calculations with Gremlin traversal queries for path finding, scaling elastically to millions of events per second and handling peak volume without any manual intervention and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">B.</span> Amazon Neptune for storing the road network graph with Gremlin traversal queries for path finding, combined with a property update mechanism that modifies edge weights (travel_time) every 5 minutes from real-time traffic feeds, using Neptune's ACID transactions to ensure consistent reads during weight updates</li>
-                <li><span class="option-label">C.</span> Amazon DynamoDB storing each road segment as an item with origin/destination as keys, with application-level Dijkstra's algorithm making individual GetItem calls for each step</li>
-                <li><span class="option-label">D.</span> Amazon Redshift with a roads table and recursive CTEs to find shortest paths using SQL</li>
+                <li><span class="option-label">C.</span> Amazon DynamoDB storing each road segment as an item with origin/destination as keys, with application-level Dijkstra's algorithm making individual GetItem calls for each step, meeting the latency and throughput goals of the design and absorbing sudden traffic spikes without throttling and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">D.</span> Amazon Redshift with a roads table and recursive CTEs to find shortest paths using SQL, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and scaling elastically to millions of events per second</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

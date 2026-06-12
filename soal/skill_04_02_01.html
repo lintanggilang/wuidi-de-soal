@@ -36,7 +36,7 @@
             <div class="question-text">A data engineering team needs a custom IAM policy for their Glue ETL role. The role should: (1) Read from any S3 bucket with prefix "raw/", (2) Write only to the "processed/" prefix in a specific bucket "data-lake-prod", and (3) NOT be able to delete any S3 objects. Which policy statement set correctly implements these requirements?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Allow s3:GetObject on "arn:aws:s3:::*/raw/*" and s3:PutObject on "arn:aws:s3:::data-lake-prod/processed/*" without explicit deny</li>
+                <li><span class="option-label">A.</span> Allow s3:GetObject on "arn:aws:s3:::*/raw/*" and s3:PutObject on "arn:aws:s3:::data-lake-prod/processed/*" without explicit deny, protecting the data both in transit and at rest</li>
                 <li><span class="option-label">B.</span> A single Allow statement with s3:* on all resources, combined with a Deny on s3:DeleteObject</li>
                 <li><span class="option-label">C.</span> Allow s3:GetObject and s3:PutObject on "arn:aws:s3:::data-lake-prod/*" only with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">D.</span> Statement 1: Allow s3:GetObject on "arn:aws:s3:::*/raw/*"; Statement 2: Allow s3:PutObject on "arn:aws:s3:::data-lake-prod/processed/*"; Statement 3: Deny s3:DeleteObject on "arn:aws:s3:::*"</li>
@@ -55,7 +55,7 @@
             <div class="question-text">A company wants to ensure that Glue jobs can only be created and run within the eu-west-1 region to comply with GDPR data residency requirements. The data engineer needs to add a condition to the IAM policy. Which condition key and structure correctly enforces this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> "Condition": {"IpAddress": {"aws:SourceIp": "eu-west-1"}} on the Allow statement</li>
+                <li><span class="option-label">A.</span> "Condition": {"IpAddress": {"aws:SourceIp": "eu-west-1"}} on the Allow statement, handling the described workload reliably at scale</li>
                 <li><span class="option-label">B.</span> "Condition": {"StringEquals": {"aws:SourceRegion": "eu-west-1"}} on the Allow statement with Effect "Deny" on glue:* actions</li>
                 <li><span class="option-label">C.</span> "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}} applied to a Deny statement when NOT eu-west-1</li>
                 <li><span class="option-label">D.</span> "Condition": {"StringNotEquals": {"aws:RequestedRegion": "eu-west-1"}} applied to a Deny statement with Effect "Deny" on glue:* actions</li>
@@ -74,10 +74,10 @@
             <div class="question-text">A data engineer's custom IAM policy is approaching the 6,144 character limit for managed policies. The policy needs to grant access to 50+ specific Glue databases and S3 paths. Which strategy allows the engineer to stay within the size limit while maintaining fine-grained access control?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use wildcard (*) in resource ARNs to cover all databases and paths with a single statement</li>
+                <li><span class="option-label">A.</span> Use wildcard (*) in resource ARNs to cover all databases and paths with a single statement, protecting the data both in transit and at rest</li>
                 <li><span class="option-label">B.</span> Use IAM policy variables (e.g., ${aws:PrincipalTag/team}) combined with consistent resource naming conventions to dynamically reference resources, reducing the number of explicit ARN entries needed</li>
-                <li><span class="option-label">C.</span> Convert all permissions to inline policies which have no size limit</li>
-                <li><span class="option-label">D.</span> Remove all condition blocks to save characters with consistent resource naming conventions</li>
+                <li><span class="option-label">C.</span> Convert all permissions to inline policies which have no size limit, satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Remove all condition blocks to save characters with consistent resource naming conventions, removing the need to provision or patch any infrastructure and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -93,10 +93,10 @@
             <div class="question-text">A data engineer wants to test a newly created custom IAM policy before attaching it to the production Glue role. The policy grants access to specific Redshift clusters and S3 paths. Which approach allows safe testing without affecting production workloads?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Deploy the policy in a separate AWS region to test isolation</li>
+                <li><span class="option-label">A.</span> Deploy the policy in a separate AWS region to test isolation, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale</li>
                 <li><span class="option-label">B.</span> Use the IAM Policy Simulator to test the policy against specific actions and resources, then validate in a non-production environment before applying to the production role</li>
-                <li><span class="option-label">C.</span> Attach the policy to the production role and monitor CloudTrail for errors configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Add the policy with a start date condition set to tomorrow to give time to review</li>
+                <li><span class="option-label">C.</span> Attach the policy to the production role and monitor CloudTrail for errors configured for optimal performance and minimal operational overhead, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Add the policy with a start date condition set to tomorrow to give time to review, handling the described workload reliably at scale and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -113,9 +113,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Add an explicit Deny statement to the same policy (or a permissions boundary) that blocks all S3 actions EXCEPT the specific actions and resources that are actually needed</li>
-                <li><span class="option-label">B.</span> Remove the IAM role from the service entirely</li>
-                <li><span class="option-label">C.</span> Delete the entire policy and recreate it correctly and resources that are actually needed</li>
-                <li><span class="option-label">D.</span> Contact AWS Support to temporarily disable the policy</li>
+                <li><span class="option-label">B.</span> Remove the IAM role from the service entirely, integrating natively with the rest of the pipeline and enforcing encryption and fine-grained access control and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">C.</span> Delete the entire policy and recreate it correctly and resources that are actually needed, satisfying strict compliance and audit requirements and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">D.</span> Contact AWS Support to temporarily disable the policy, satisfying strict compliance and audit requirements and satisfying all of the stated requirements with minimal effort and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -131,8 +131,8 @@
             <div class="question-text">A data engineer needs to create an IAM policy that allows a Lambda function to assume a role in another account (Account B: 333333333333) for cross-account data access to Redshift. The policy should only allow assumption during business hours (8 AM - 6 PM UTC, Monday-Friday). Which policy structure correctly implements this time-based cross-account access?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Allow sts:AssumeRole on "arn:aws:iam::333333333333:role/CrossAccountRedshiftRole" with conditions: DateGreaterThanEquals {"aws:CurrentTime": "2024-01-01T08:00:00Z"} AND DateLessThanEquals {"aws:CurrentTime": "2024-01-01T18:00:00Z"}</li>
-                <li><span class="option-label">B.</span> Allow sts:AssumeRole on "arn:aws:iam::333333333333:role/CrossAccountRedshiftRole" with conditions: NumericGreaterThanEquals {"aws:MultiFactorAuthAge": "0"}</li>
+                <li><span class="option-label">A.</span> Allow sts:AssumeRole on "arn:aws:iam::333333333333:role/CrossAccountRedshiftRole" with conditions: DateGreaterThanEquals {"aws:CurrentTime": "2024-01-01T08:00:00Z"} AND DateLessThanEquals {"aws:CurrentTime": "2024-01-01T18:00:00Z"}, protecting the data both in transit and at rest</li>
+                <li><span class="option-label">B.</span> Allow sts:AssumeRole on "arn:aws:iam::333333333333:role/CrossAccountRedshiftRole" with conditions: NumericGreaterThanEquals {"aws:MultiFactorAuthAge": "0"}, integrating natively with the rest of the pipeline and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">C.</span> Allow sts:AssumeRole on "arn:aws:iam::333333333333:role/CrossAccountRedshiftRole" with conditions using aws:TokenIssueTime to restrict hours configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Allow sts:AssumeRole on the target role ARN with conditions: DateGreaterThanEquals {"aws:CurrentTime": "08:00:00Z"} AND DateLessThanEquals {"aws:CurrentTime": "18:00:00Z"} AND StringEquals {"aws:RequestedRegion": "us-east-1"}</li>
             
@@ -170,9 +170,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Custom policy with: (1) s3:GetObject on specific source path ARN, (2) glue:CreateTable, glue:UpdateTable, glue:GetDatabase on specific database ARN, (3) logs:CreateLogGroup, logs:CreateLogStream, logs:PutLogEvents on the specific log group ARN</li>
-                <li><span class="option-label">B.</span> Custom policy with only s3:GetObject — Glue will automatically have catalog and logging permissions</li>
-                <li><span class="option-label">C.</span> Use AWSGlueServiceRole managed policy and add a Deny statement for unnecessary permissions with real-time processing and low-latency data delivery</li>
-                <li><span class="option-label">D.</span> Custom policy with: s3:*, glue:*, logs:* on Resource "*"</li>
+                <li><span class="option-label">B.</span> Custom policy with only s3:GetObject — Glue will automatically have catalog and logging permissions, requiring no servers to manage or scale manually and handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> Use AWSGlueServiceRole managed policy and add a Deny statement for unnecessary permissions with real-time processing and low-latency data delivery, removing the need to provision or patch any infrastructure</li>
+                <li><span class="option-label">D.</span> Custom policy with: s3:*, glue:*, logs:* on Resource "*", requiring no servers to manage or scale manually and handling the described workload reliably at scale and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -207,10 +207,10 @@
             <div class="question-text">A data engineer has a complex IAM setup: the Glue role has an identity policy (Allow glue:StartJobRun), a permissions boundary (allows glue:* and s3:GetObject only), and the role is in an OU with an SCP that denies glue:DeleteJob. The engineer tries to run glue:StartJobRun and glue:DeleteJob. What is the effective result for EACH action?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Both actions are allowed because the identity policy has Allow</li>
-                <li><span class="option-label">B.</span> Both actions are denied because the permissions boundary only allows s3:GetObject configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">A.</span> Both actions are allowed because the identity policy has Allow, satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
+                <li><span class="option-label">B.</span> Both actions are denied because the permissions boundary only allows s3:GetObject configured for optimal performance and minimal operational overhead, satisfying strict compliance and audit requirements</li>
                 <li><span class="option-label">C.</span> glue:StartJobRun is allowed (identity policy allows, permissions boundary allows, SCP does not deny); glue:DeleteJob is denied (SCP explicitly denies it, overriding any Allow)</li>
-                <li><span class="option-label">D.</span> glue:StartJobRun is denied by the permissions boundary; glue:DeleteJob is denied by the SCP</li>
+                <li><span class="option-label">D.</span> glue:StartJobRun is denied by the permissions boundary; glue:DeleteJob is denied by the SCP, satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

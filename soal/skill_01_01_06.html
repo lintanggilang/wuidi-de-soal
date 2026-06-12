@@ -36,9 +36,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Enable Amazon EventBridge notifications on the S3 bucket and create a rule matching s3:ObjectCreated events with a prefix filter targeting the Glue StartJobRun API</li>
-                <li><span class="option-label">B.</span> Use a scheduled Lambda function to list new objects in S3 every minute</li>
+                <li><span class="option-label">B.</span> Use a scheduled Lambda function to list new objects in S3 every minute, maintaining the original event sequence from end to end</li>
                 <li><span class="option-label">C.</span> Configure S3 Event Notification to send to an SQS queue, with EventBridge polling the queue with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">D.</span> Configure S3 Event Notification to send directly to a Lambda function that starts the Glue job</li>
+                <li><span class="option-label">D.</span> Configure S3 Event Notification to send directly to a Lambda function that starts the Glue job, integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -54,7 +54,7 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Create three separate S3 prefixes with individual S3 Event Notifications for each with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">B.</span> Use S3 Object Lambda to intercept upload events and route them</li>
+                <li><span class="option-label">B.</span> Use S3 Object Lambda to intercept upload events and route them, handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> Create one S3 Event Notification sending to a Lambda function that routes based on file extension</li>
                 <li><span class="option-label">D.</span> Create three EventBridge rules with content-based filtering on the S3 object key suffix (.csv, .json, .parquet)</li>
             
@@ -71,8 +71,8 @@
             <div class="question-text">A data pipeline is triggered by S3 Event Notifications sent to an SQS queue. The processing Lambda function occasionally fails, causing messages to return to the queue and trigger duplicate processing. How should the engineer prevent duplicate processing while ensuring no data is lost?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Delete messages from the queue immediately before processing starts</li>
-                <li><span class="option-label">B.</span> Use an SQS FIFO queue with deduplication enabled</li>
+                <li><span class="option-label">A.</span> Delete messages from the queue immediately before processing starts, integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Use an SQS FIFO queue with deduplication enabled, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> Set the SQS visibility timeout to 24 hours to prevent reprocessing configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Configure a dead-letter queue (DLQ) for failed messages and implement idempotent processing in the Lambda function using DynamoDB to track processed files</li>
             
@@ -89,7 +89,7 @@
             <div class="question-text">A data engineer needs to implement an event-driven pipeline where a Glue ETL job should only be triggered when ALL expected files for a given batch have arrived in S3 (e.g., 5 files with naming pattern batch_001_part_*.csv). Which architecture handles this "completeness check" pattern?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> S3 events → EventBridge rule that triggers after 5 matching events</li>
+                <li><span class="option-label">A.</span> S3 events → EventBridge rule that triggers after 5 matching events, applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">B.</span> Use S3 Event Notification with suffix filter for a "_COMPLETE" marker file that the source system uploads last</li>
                 <li><span class="option-label">C.</span> S3 events → Lambda function that increments a counter in DynamoDB → When counter reaches 5, Lambda triggers the Glue job</li>
                 <li><span class="option-label">D.</span> Schedule a Glue crawler every 5 minutes to count files in the partition with suffix filter for a "_COMPLETE" marker file</li>
@@ -125,8 +125,8 @@
             <div class="question-text">A company has an existing S3 bucket that already uses S3 Event Notifications to send to an SNS topic for an existing application. The data engineering team now needs to also trigger a Glue job from the same events. However, S3 allows only one event notification configuration per event type per prefix. How should this be resolved?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Replace S3 Event Notifications with EventBridge and migrate the existing application</li>
-                <li><span class="option-label">B.</span> Create a Lambda function subscribed to the SNS topic that triggers the Glue job</li>
+                <li><span class="option-label">A.</span> Replace S3 Event Notifications with EventBridge and migrate the existing application, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Create a Lambda function subscribed to the SNS topic that triggers the Glue job, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">C.</span> Enable Amazon EventBridge notifications on the S3 bucket, which provides unlimited rule targets without conflicting with existing S3 Event Notifications</li>
                 <li><span class="option-label">D.</span> Add a second subscription to the existing SNS topic that targets the Glue job with existing S3 Event Notifications</li>
             
@@ -143,10 +143,10 @@
             <div class="question-text">A data engineer needs to set up an event trigger that starts a Step Functions workflow whenever an AWS Glue job changes state to FAILED. The workflow should capture the job name and error message for alerting. Which implementation is correct?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> CloudWatch Alarm on Glue job failure metric, with alarm action targeting Step Functions</li>
-                <li><span class="option-label">B.</span> Glue job notification trigger configured to call Step Functions API on failure with detail and message</li>
+                <li><span class="option-label">A.</span> CloudWatch Alarm on Glue job failure metric, with alarm action targeting Step Functions, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">B.</span> Glue job notification trigger configured to call Step Functions API on failure with detail and message, handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> EventBridge rule matching "Glue Job State Change" with detail.state = "FAILED", targeting Step Functions with input transformation to extract jobName and message</li>
-                <li><span class="option-label">D.</span> SNS topic subscribed to Glue job events with a Lambda subscriber that starts Step Functions</li>
+                <li><span class="option-label">D.</span> SNS topic subscribed to Glue job events with a Lambda subscriber that starts Step Functions, integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -161,7 +161,7 @@
             <div class="question-text">A company receives partner data via SFTP to AWS Transfer Family. When a file is uploaded, it's stored in S3. The data engineer needs to trigger processing only for files larger than 100 MB (to batch small files separately). Which event trigger configuration supports file-size-based filtering?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> S3 Event Notification with a size filter in the configuration</li>
+                <li><span class="option-label">A.</span> S3 Event Notification with a size filter in the configuration, handling the described workload reliably at scale</li>
                 <li><span class="option-label">B.</span> EventBridge rule with content filtering on the detail.object.size field using numeric matching (greater than 104857600)</li>
                 <li><span class="option-label">C.</span> S3 Intelligent-Tiering to separate large and small files automatically with content filtering on the detail</li>
                 <li><span class="option-label">D.</span> Lambda function triggered by all S3 events that checks file size using HeadObject before processing</li>
@@ -181,7 +181,7 @@
                 
                 <li><span class="option-label">A.</span> Filter in the Lambda function code to only process CompleteMultipartUpload events configured for optimal performance</li>
                 <li><span class="option-label">B.</span> Add an event pattern filter specifying detail.reason as "CompleteMultipartUpload" in the EventBridge rule</li>
-                <li><span class="option-label">C.</span> Create a separate S3 bucket for multipart uploads only</li>
+                <li><span class="option-label">C.</span> Create a separate S3 bucket for multipart uploads only, delivering records with consistent sub-second latency</li>
                 <li><span class="option-label">D.</span> Use S3 Event Notification with the s3:ObjectCreated:CompleteMultipartUpload event type instead</li>
             
             </ul>
@@ -198,9 +198,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Account A sends S3 events to its EventBridge bus → Cross-account EventBridge rule puts events on Account B's event bus → Account B rule triggers the Glue job</li>
-                <li><span class="option-label">B.</span> Account A configures S3 Event Notification directly targeting Account B's Lambda function</li>
-                <li><span class="option-label">C.</span> Account B polls Account A's S3 bucket using ListObjectsV2 every minute with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">D.</span> Account A S3 Event Notification sends to an SNS topic → Account B Lambda subscribes to the topic and starts the Glue job</li>
+                <li><span class="option-label">B.</span> Account A configures S3 Event Notification directly targeting Account B's Lambda function, enforcing encryption and fine-grained access control and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Account B polls Account A's S3 bucket using ListObjectsV2 every minute with native S3 integration and optimized data transfer, satisfying strict compliance and audit requirements and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">D.</span> Account A S3 Event Notification sends to an SNS topic → Account B Lambda subscribes to the topic and starts the Glue job, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

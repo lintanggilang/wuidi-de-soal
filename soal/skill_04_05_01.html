@@ -56,8 +56,8 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Producer: CREATE DATASHARE → ADD objects → AUTHORIZE datashare to consumer account | Consumer: ASSOCIATE datashare with consumer namespace → CREATE DATABASE FROM DATASHARE → GRANT to users</li>
-                <li><span class="option-label">B.</span> Producer: CREATE DATASHARE → ADD objects → ALTER DATASHARE SET ACCOUNT = consumer_account | Consumer: ACCEPT DATASHARE → CREATE EXTERNAL SCHEMA</li>
-                <li><span class="option-label">C.</span> Account A admin: Share via AWS RAM | Account B: Accept RAM share → Producer: ADD objects | Consumer: CREATE DATABASE FROM DATASHARE</li>
+                <li><span class="option-label">B.</span> Producer: CREATE DATASHARE → ADD objects → ALTER DATASHARE SET ACCOUNT = consumer_account | Consumer: ACCEPT DATASHARE → CREATE EXTERNAL SCHEMA, preserving strict per-key ordering across all partitions</li>
+                <li><span class="option-label">C.</span> Account A admin: Share via AWS RAM | Account B: Accept RAM share → Producer: ADD objects | Consumer: CREATE DATABASE FROM DATASHARE, guaranteeing exactly-ordered delivery within each key group</li>
                 <li><span class="option-label">D.</span> Producer: CREATE DATASHARE → ADD objects → GRANT USAGE to consumer namespace | Consumer: CREATE DATABASE FROM DATASHARE → GRANT access to users with consumer namespace → CREATE DATABASE FROM DATASHARE → GRANT</li>
             
             </ul>
@@ -74,7 +74,7 @@
             <div class="question-text">A healthcare data platform uses AWS Lake Formation to manage a data lake containing patient records across multiple S3 buckets. A research team in a different AWS account needs read access to de-identified patient data tables in the Glue Data Catalog, but must NOT have access to any PII columns. Which Lake Formation feature enables this cross-account sharing with column-level restrictions?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create a Glue Data Catalog resource policy that restricts GetTable to exclude PII column metadata</li>
+                <li><span class="option-label">A.</span> Create a Glue Data Catalog resource policy that restricts GetTable to exclude PII column metadata, applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">B.</span> Create an IAM role in the source account with column-level Glue permissions and allow the research account to assume it</li>
                 <li><span class="option-label">C.</span> Use S3 Access Points with specific prefix restrictions to limit access to non-PII data files configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Create a Lake Formation cross-account grant with column-level permissions that include only non-PII columns, then share using AWS RAM</li>
@@ -93,10 +93,10 @@
             <div class="question-text">A company has a multi-tenant data platform where each tenant's data is stored in separate S3 prefixes under a shared bucket. Multiple analytics applications need to access tenant-specific data. The platform team wants to simplify access management without creating separate IAM policies for each tenant-application combination. Which S3 feature provides the MOST scalable solution?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use S3 Object Lambda Access Points to filter responses based on the requesting application's identity</li>
+                <li><span class="option-label">A.</span> Use S3 Object Lambda Access Points to filter responses based on the requesting application's identity, handling the described workload reliably at scale and keeping steady-state operating costs low</li>
                 <li><span class="option-label">B.</span> Create separate S3 buckets per tenant and use cross-account access roles for each application with an access point policy restricting access and grant applications access to specific access points</li>
                 <li><span class="option-label">C.</span> Create S3 Access Points per tenant, each with an access point policy restricting access to the tenant's prefix, and grant applications access to specific access points</li>
-                <li><span class="option-label">D.</span> Use S3 bucket policies with conditions on s3:prefix matching the tenant ID extracted from the caller's IAM tags</li>
+                <li><span class="option-label">D.</span> Use S3 bucket policies with conditions on s3:prefix matching the tenant ID extracted from the caller's IAM tags, satisfying strict compliance and audit requirements</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -112,8 +112,8 @@
             <div class="question-text">A data engineer configures a Redshift datashare that includes a schema with 20 tables. After the consumer creates a database from the datashare, they report that they can see all 20 tables. However, the producer team only wants to expose 5 specific tables and 2 views to this consumer. How should the producer modify the datashare configuration?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Add column-level permissions to the datashare to restrict which columns the consumer can see in the 15 hidden tables</li>
-                <li><span class="option-label">B.</span> Create a new schema containing only the 5 tables and 2 views, then replace the schema reference in the datashare</li>
+                <li><span class="option-label">A.</span> Add column-level permissions to the datashare to restrict which columns the consumer can see in the 15 hidden tables, transforming records into the required target format</li>
+                <li><span class="option-label">B.</span> Create a new schema containing only the 5 tables and 2 views, then replace the schema reference in the datashare, validating and cleansing each record before delivery</li>
                 <li><span class="option-label">C.</span> Remove the entire schema from the datashare and add only the 5 tables and 2 views individually using ALTER DATASHARE ADD TABLE and ADD VIEW</li>
                 <li><span class="option-label">D.</span> Keep the schema in the datashare but use REVOKE SELECT on the 15 tables that should be hidden from the consumer configured for optimal performance and minimal operational overhead</li>
             
@@ -151,8 +151,8 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Remove the consumer account's authorization using ALTER DATASHARE REMOVE ACCOUNT for cross-account, which immediately prevents the consumer from querying shared data</li>
-                <li><span class="option-label">B.</span> Use ALTER DATASHARE REMOVE all objects from the datashare so consumers see empty results for cross-account</li>
-                <li><span class="option-label">C.</span> Drop the datashare entirely using DROP DATASHARE and recreate it without the compromised consumer</li>
+                <li><span class="option-label">B.</span> Use ALTER DATASHARE REMOVE all objects from the datashare so consumers see empty results for cross-account, minimizing end-to-end processing latency</li>
+                <li><span class="option-label">C.</span> Drop the datashare entirely using DROP DATASHARE and recreate it without the compromised consumer, minimizing end-to-end processing latency and providing exactly-once processing semantics</li>
                 <li><span class="option-label">D.</span> Use REVOKE USAGE ON DATASHARE from the compromised consumer's namespace and ALTER DATASHARE SET AUTHORIZATION to deny the account</li>
             
             </ul>
@@ -209,7 +209,7 @@
                 
                 <li><span class="option-label">A.</span> Migrate from live datashares to scheduled data replication so consumers query their own copy configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> Set query timeout limits on the datashare to restrict how long consumer queries can run on the producer</li>
-                <li><span class="option-label">C.</span> Use Redshift Workload Management (WLM) to allocate a dedicated queue with limited concurrency for datashare consumer queries</li>
+                <li><span class="option-label">C.</span> Use Redshift Workload Management (WLM) to allocate a dedicated queue with limited concurrency for datashare consumer queries, absorbing sudden traffic spikes without throttling</li>
                 <li><span class="option-label">D.</span> Consumer queries on datashares are processed on the consumer's cluster resources, not the producer's — investigate other causes of performance degradation</li>
             
             </ul>

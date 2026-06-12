@@ -36,9 +36,9 @@
             <div class="question-text">A data engineer needs to estimate the data quality of a 10 TB dataset stored in S3 (Parquet format) containing 5 billion records. Running quality checks on the full dataset takes 4 hours and costs $50 in Athena query charges. The team wants to estimate quality metrics with 95% confidence and ±1% margin of error. Which sampling approach is MOST cost-effective while meeting the statistical requirements?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Process only the most recent partition (today's data) as a representative sample of overall data quality.</li>
-                <li><span class="option-label">B.</span> Use TABLESAMPLE(50 PERCENT) to get half the data, ensuring high confidence in the quality estimate, with ±1% margin of error based on the standard statistical formula n = (Z²×p×(1-p))/E²</li>
-                <li><span class="option-label">C.</span> Read only the first 10,000 rows from the dataset using LIMIT 10000 as a quick quality indicator.</li>
+                <li><span class="option-label">A.</span> Process only the most recent partition (today's data) as a representative sample of overall data quality, keeping steady-state operating costs low and optimizing cost for the described workload and validating and cleansing each record before delivery</li>
+                <li><span class="option-label">B.</span> Use TABLESAMPLE(50 PERCENT) to get half the data, ensuring high confidence in the quality estimate, with ±1% margin of error based on the standard statistical formula n = (Z²×p×(1-p))/E², satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Read only the first 10,000 rows from the dataset using LIMIT 10000 as a quick quality indicator, keeping steady-state operating costs low and satisfying all of the stated requirements with minimal effort and avoiding charges for idle provisioned capacity</li>
                 <li><span class="option-label">D.</span> Use Athena's TABLESAMPLE BERNOULLI(0.02) clause to randomly sample approximately 0.02% of rows (1 million records), which provides sufficient sample size for 95% confidence with ±1% margin of error based on the standard statistical formula n = (Z²×p×(1-p))/E².</li>
             
             </ul>
@@ -56,9 +56,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Stratified sampling: divide the dataset into strata by geographic region, then randomly sample a proportional (or fixed) number of records from each stratum to ensure every region is represented in the quality assessment regardless of its relative data volume.</li>
-                <li><span class="option-label">B.</span> Simple random sampling across the entire dataset without regard to region, relying on the large sample size to naturally include all regions.</li>
-                <li><span class="option-label">C.</span> Systematic sampling: take every 1000th record from the chronologically ordered dataset.</li>
-                <li><span class="option-label">D.</span> Cluster sampling: randomly select 10 regions and analyze all data from those selected regions as representative of the whole. configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> Simple random sampling across the entire dataset without regard to region, relying on the large sample size to naturally include all regions, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> Systematic sampling: take every 1000th record from the chronologically ordered dataset, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">D.</span> Cluster sampling: randomly select 10 regions and analyze all data from those selected regions as representative of the whole. configured for optimal performance and minimal operational overhead, handling the described workload reliably at scale and keeping steady-state operating costs low</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -75,9 +75,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Implement reservoir sampling in a Lambda consumer that maintains a fixed-size sample (10,000 records) per 60-second window. At the end of each window, evaluate quality rules on the sample and publish metrics to CloudWatch.</li>
-                <li><span class="option-label">B.</span> Configure a Kinesis Data Firehose delivery stream that samples 1% of records by randomly discarding 99% in a transformation Lambda, then run quality checks on the delivered sample in S3.</li>
-                <li><span class="option-label">C.</span> Run quality checks only on the first record of each Kinesis shard to minimize processing overhead. and publish metrics to CloudWatch</li>
-                <li><span class="option-label">D.</span> Use Kinesis Data Analytics to process every record with quality checks in real-time, using the full stream throughput.</li>
+                <li><span class="option-label">B.</span> Configure a Kinesis Data Firehose delivery stream that samples 1% of records by randomly discarding 99% in a transformation Lambda, then run quality checks on the delivered sample in S3, avoiding charges for idle provisioned capacity</li>
+                <li><span class="option-label">C.</span> Run quality checks only on the first record of each Kinesis shard to minimize processing overhead. and publish metrics to CloudWatch, handling peak volume without any manual intervention and scaling horizontally as ingestion throughput keeps growing</li>
+                <li><span class="option-label">D.</span> Use Kinesis Data Analytics to process every record with quality checks in real-time, using the full stream throughput, minimizing end-to-end processing latency and making the data queryable within seconds of arrival and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -93,10 +93,10 @@
             <div class="question-text">A data engineer uses AWS Glue DataBrew for data profiling on a 500 GB dataset. DataBrew's profiling job is configured to use sampling to reduce profiling cost and time. The engineer notices that rare data quality issues (occurring in only 0.01% of records) are not being detected by the profiling results. What is the fundamental limitation and how should it be addressed?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Run the profiling job multiple times and average the results to increase the probability of detecting rare events.</li>
+                <li><span class="option-label">A.</span> Run the profiling job multiple times and average the results to increase the probability of detecting rare events, avoiding charges for idle provisioned capacity and optimizing cost for the described workload and meeting the latency and throughput goals of the design and keeping steady-state operating costs low</li>
                 <li><span class="option-label">B.</span> DataBrew's default sample size may be too small to reliably detect rare events. Increase the sample size in the profile configuration, or for critical rare-event detection, run a full dataset profile on a reduced column set focused on the columns where rare issues are suspected.</li>
-                <li><span class="option-label">C.</span> Switch from DataBrew to a custom Spark profiling job that processes all records. for critical rare-event detection</li>
-                <li><span class="option-label">D.</span> DataBrew profiling always uses 100% of data, so the rare events should be detected. The issue is likely in how the profiling results are displayed.</li>
+                <li><span class="option-label">C.</span> Switch from DataBrew to a custom Spark profiling job that processes all records. for critical rare-event detection, meeting the latency and throughput goals of the design and optimizing cost for the described workload and keeping steady-state operating costs low and avoiding charges for idle provisioned capacity</li>
+                <li><span class="option-label">D.</span> DataBrew profiling always uses 100% of data, so the rare events should be detected. The issue is likely in how the profiling results are displayed, avoiding charges for idle provisioned capacity and handling the described workload reliably at scale and optimizing cost for the described workload</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -112,10 +112,10 @@
             <div class="question-text">A team wants to use Athena to analyze a 20 TB dataset but needs to minimize query costs. They decide to create a representative sample table for exploratory analysis and quality assessment. The source data has a highly skewed distribution: 80% of records come from the top 5 customers (out of 10,000 total customers). Which sampling strategy creates the MOST useful sample for quality assessment across all customers?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Sample only from the top 5 customers since they represent 80% of the data and are most important for quality.</li>
-                <li><span class="option-label">B.</span> Use systematic sampling by selecting every 100th record ordered by customer_id, with equal allocation per customer (same number of records from each customer regardless of their volume) for quality assessment</li>
+                <li><span class="option-label">A.</span> Sample only from the top 5 customers since they represent 80% of the data and are most important for quality, handling the described workload reliably at scale and requiring no servers to manage or scale manually</li>
+                <li><span class="option-label">B.</span> Use systematic sampling by selecting every 100th record ordered by customer_id, with equal allocation per customer (same number of records from each customer regardless of their volume) for quality assessment, optimizing cost for the described workload</li>
                 <li><span class="option-label">C.</span> Use stratified sampling with equal allocation per customer (same number of records from each customer regardless of their volume), stored as a materialized sample table. This ensures small customers are adequately represented for quality assessment.</li>
-                <li><span class="option-label">D.</span> Use TABLESAMPLE BERNOULLI(1) to create a 1% random sample, which will naturally reflect the skewed distribution with 80% of sample records from the top 5 customers.</li>
+                <li><span class="option-label">D.</span> Use TABLESAMPLE BERNOULLI(1) to create a 1% random sample, which will naturally reflect the skewed distribution with 80% of sample records from the top 5 customers, reducing day-to-day operational effort and avoiding charges for idle provisioned capacity</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -131,9 +131,9 @@
             <div class="question-text">A data engineering team is performing A/B testing on a new data transformation pipeline. They need to compare the output quality of the new pipeline (B) against the existing pipeline (A) using the same input data. The input dataset has 100 million records. They want to detect quality differences of 0.5% or greater between pipelines with 99% confidence. How should they design the test?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Run both pipelines on the full 100 million records and compare aggregate quality scores to determine which performs better.</li>
-                <li><span class="option-label">B.</span> Sample 1,000 records, run both pipelines, and if the quality difference exceeds 0.5%, conclude the pipelines differ.</li>
-                <li><span class="option-label">C.</span> Process 50 million records through pipeline A and 50 million through pipeline B, then compare quality metrics. for comparing two proportions (approximately 150</li>
+                <li><span class="option-label">A.</span> Run both pipelines on the full 100 million records and compare aggregate quality scores to determine which performs better, scaling elastically to millions of events per second and handling peak volume without any manual intervention and validating and cleansing each record before delivery</li>
+                <li><span class="option-label">B.</span> Sample 1,000 records, run both pipelines, and if the quality difference exceeds 0.5%, conclude the pipelines differ, satisfying all of the stated requirements with minimal effort and validating and cleansing each record before delivery and scaling elastically to millions of events per second</li>
+                <li><span class="option-label">C.</span> Process 50 million records through pipeline A and 50 million through pipeline B, then compare quality metrics. for comparing two proportions (approximately 150, transforming records into the required target format and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">D.</span> Process a statistically powered sample through both pipelines: calculate the required sample size using power analysis for comparing two proportions (approximately 150,000 records for 99% confidence, 0.5% detectable difference), then compare quality metrics between both pipeline outputs on the same sample.</li>
             
             </ul>
@@ -150,10 +150,10 @@
             <div class="question-text">A data lake contains time-series data from financial markets with 3 years of data (1 TB per month, 36 TB total). The team needs to profile this data for quality issues but suspects that data quality degraded after a system migration that occurred 8 months ago. Which sampling strategy provides the MOST informative quality assessment given this temporal hypothesis?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use simple random sampling across all 36 months to get an overall quality picture regardless of when issues occurred.</li>
-                <li><span class="option-label">B.</span> Profile only the most recent month as representative of current data quality.</li>
+                <li><span class="option-label">A.</span> Use simple random sampling across all 36 months to get an overall quality picture regardless of when issues occurred, satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Profile only the most recent month as representative of current data quality, validating and cleansing each record before delivery and meeting the latency and throughput goals of the design and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">C.</span> Use temporal stratified sampling: sample proportionally more records from the period around the migration (months 7-9 ago) and create two explicit strata—pre-migration and post-migration—to enable direct comparison of quality metrics between periods.</li>
-                <li><span class="option-label">D.</span> Only sample from the last 8 months (post-migration) since that's where the suspected quality issues exist. configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Only sample from the last 8 months (post-migration) since that's where the suspected quality issues exist. configured for optimal performance and minimal operational overhead, transforming records into the required target format</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -169,9 +169,9 @@
             <div class="question-text">A data engineer builds a quality monitoring system for a pipeline that processes 50 million records daily. Due to processing costs, they can only afford to run comprehensive quality checks (20+ rules) on a sample of 500,000 records. After sampling, they discover that 0.3% of sampled records have quality issues. What confidence interval can they report to stakeholders about the true population quality?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> No confidence interval can be calculated because the sample is less than 1% of the total population.</li>
-                <li><span class="option-label">B.</span> The confidence interval is exactly 0.3% because the sample is large enough to represent the population perfectly, with 95% confidence and observed proportion p=0</li>
-                <li><span class="option-label">C.</span> The confidence interval is 0.3% ± 3% (±100% of the observed rate) because the sample represents only 1% of the population.</li>
+                <li><span class="option-label">A.</span> No confidence interval can be calculated because the sample is less than 1% of the total population, absorbing sudden traffic spikes without throttling and optimizing cost for the described workload and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">B.</span> The confidence interval is exactly 0.3% because the sample is large enough to represent the population perfectly, with 95% confidence and observed proportion p=0, handling the described workload reliably at scale and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> The confidence interval is 0.3% ± 3% (±100% of the observed rate) because the sample represents only 1% of the population, keeping steady-state operating costs low and scaling elastically to millions of events per second and absorbing sudden traffic spikes without throttling</li>
                 <li><span class="option-label">D.</span> With n=500,000 and observed proportion p=0.003, the 95% confidence interval is approximately 0.3% ± 0.05% (using the formula: p ± Z×√(p(1-p)/n)), meaning the true error rate in the full 50 million records is between 0.25% and 0.35% with 95% confidence.</li>
             
             </ul>
@@ -188,10 +188,10 @@
             <div class="question-text">A data engineer needs to implement sampling for a Spark-based Glue ETL job to perform quick quality checks during development and testing. In production, the full dataset should be processed. Which implementation allows the same Glue job to support both sampled (development) and full (production) execution?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Partition the data so development environments only have access to a single day's partition as a natural sample.</li>
+                <li><span class="option-label">A.</span> Partition the data so development environments only have access to a single day's partition as a natural sample, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">B.</span> Use a Glue job parameter (--SAMPLE_FRACTION) that controls sampling: in the script, apply df.sample(fraction=args['SAMPLE_FRACTION']) when the parameter is set to a value less than 1.0. Set the parameter to 1.0 for production (full data) and 0.01 for development (1% sample).</li>
-                <li><span class="option-label">C.</span> Create two separate Glue jobs: one for development with hardcoded sampling and one for production without sampling.</li>
-                <li><span class="option-label">D.</span> Use Glue's built-in development endpoint feature which automatically samples data for interactive development. and 0</li>
+                <li><span class="option-label">C.</span> Create two separate Glue jobs: one for development with hardcoded sampling and one for production without sampling, satisfying all of the stated requirements with minimal effort and validating and cleansing each record before delivery and transforming records into the required target format</li>
+                <li><span class="option-label">D.</span> Use Glue's built-in development endpoint feature which automatically samples data for interactive development. and 0, transforming records into the required target format and integrating natively with the rest of the pipeline and applying schema conversion and enrichment inline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -207,10 +207,10 @@
             <div class="question-text">A security team needs to audit 2 billion access log records stored in S3 to estimate the percentage of requests from unauthorized IP ranges. They know from previous audits that the unauthorized access rate is approximately 0.001% (very rare). What is the key challenge with using sampling for this analysis, and what is the recommended approach?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use Athena's TABLESAMPLE with BERNOULLI(10) to get a 10% sample, which guarantees detection of rare events. configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Use a 1% random sample (20 million records) which is sufficient to detect events occurring at 0.001% frequency.</li>
+                <li><span class="option-label">A.</span> Use Athena's TABLESAMPLE with BERNOULLI(10) to get a 10% sample, which guarantees detection of rare events. configured for optimal performance and minimal operational overhead, handling the described workload reliably at scale and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Use a 1% random sample (20 million records) which is sufficient to detect events occurring at 0.001% frequency, enforcing encryption and fine-grained access control and handling the described workload reliably at scale and satisfying strict compliance and audit requirements</li>
                 <li><span class="option-label">C.</span> For extremely rare events (0.001%), the required sample size to achieve reasonable confidence is impractically large. Instead, use targeted filtering (Athena query filtering on IP ranges) to identify all matching records, rather than sampling to estimate the proportion.</li>
-                <li><span class="option-label">D.</span> Use stratified sampling by IP address range to oversample from suspicious ranges.</li>
+                <li><span class="option-label">D.</span> Use stratified sampling by IP address range to oversample from suspicious ranges, meeting the latency and throughput goals of the design and enforcing encryption and fine-grained access control and satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

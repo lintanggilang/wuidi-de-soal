@@ -53,9 +53,9 @@
             <div class="question-text">An e-commerce platform needs to store user session data that includes shopping cart contents, browsing history, and personalization preferences. The access pattern is primarily single-item reads and writes by user_id with sub-10ms latency requirements. Traffic varies from 5,000 requests per second during off-peak to 50,000 requests per second during flash sales. The company wants to avoid over-provisioning and minimize costs during low-traffic periods. Which storage service and pricing model is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Amazon RDS PostgreSQL with a db.r5.4xlarge instance and read replicas to handle the peak load</li>
+                <li><span class="option-label">A.</span> Amazon RDS PostgreSQL with a db.r5.4xlarge instance and read replicas to handle the peak load, streaming results downstream in near real time</li>
                 <li><span class="option-label">B.</span> Amazon DynamoDB with On-Demand capacity mode, which automatically scales to handle traffic spikes without capacity planning and charges only for actual read/write requests performed</li>
-                <li><span class="option-label">C.</span> Amazon DynamoDB with Provisioned capacity set to 50,000 RCU/WCU to handle peak load, with auto-scaling</li>
+                <li><span class="option-label">C.</span> Amazon DynamoDB with Provisioned capacity set to 50,000 RCU/WCU to handle peak load, with auto-scaling, delivering records with consistent sub-second latency and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">D.</span> Amazon ElastiCache Redis cluster with 10 nodes to serve all session data from memory and charges only for actual read/write requests performed</li>
             
             </ul>
@@ -72,7 +72,7 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Amazon Kinesis Data Streams with enhanced fan-out consumers for real-time processing and a separate consumer that writes to S3 for batch analytics, configured with 7-day retention for event replay capability</li>
-                <li><span class="option-label">B.</span> Amazon SQS FIFO queue with multiple receivers processing messages and writing to both the dashboard and S3 simultaneously</li>
+                <li><span class="option-label">B.</span> Amazon SQS FIFO queue with multiple receivers processing messages and writing to both the dashboard and S3 simultaneously, handling the described workload reliably at scale and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">C.</span> Direct writes to Amazon S3 with S3 Event Notifications triggering Lambda for real-time processing and Athena for batch queries with fully managed infrastructure and automatic scaling</li>
                 <li><span class="option-label">D.</span> Amazon MSK (Managed Streaming for Apache Kafka) with multiple consumer groups — one for real-time dashboards and another for S3 batch loading — using log compaction with 7-day retention</li>
             
@@ -89,9 +89,9 @@
             <div class="question-text">A startup needs to build a data analytics platform with limited budget. They have 5 TB of structured data in S3 (Parquet format) and analysts run ad-hoc queries 10-15 times per day, scanning on average 200 GB per query. The queries are exploratory and don't require sub-second response times — 30-60 seconds per query is acceptable. The team wants the lowest possible cost with no infrastructure management. Which service is MOST cost-effective?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Amazon Redshift dc2.large 2-node cluster on On-Demand pricing for the dedicated compute power</li>
-                <li><span class="option-label">B.</span> Amazon EMR cluster with m5.xlarge instances running Presto for interactive queries</li>
-                <li><span class="option-label">C.</span> Amazon Redshift Serverless with base capacity of 32 RPU for their usage pattern</li>
+                <li><span class="option-label">A.</span> Amazon Redshift dc2.large 2-node cluster on On-Demand pricing for the dedicated compute power, making the data queryable within seconds of arrival and validating and cleansing each record before delivery and keeping steady-state operating costs low</li>
+                <li><span class="option-label">B.</span> Amazon EMR cluster with m5.xlarge instances running Presto for interactive queries, applying schema conversion and enrichment inline and meeting the latency and throughput goals of the design and optimizing cost for the described workload</li>
+                <li><span class="option-label">C.</span> Amazon Redshift Serverless with base capacity of 32 RPU for their usage pattern, integrating natively with the rest of the pipeline and transforming records into the required target format and applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">D.</span> Amazon Athena, which charges $5 per TB of data scanned with no infrastructure to manage, no minimum fees, and no charges when queries aren't running — resulting in approximately $15-30 per day for their usage pattern</li>
             
             </ul>
@@ -107,10 +107,10 @@
             <div class="question-text">A financial services company processes market data feeds and needs to store trade execution records. Requirements include: ACID transactions for trade operations, complex SQL queries for regulatory reporting, consistent read-after-write, storage of 500 GB of highly normalized relational data, and support for stored procedures that enforce business rules. Peak load is 5,000 transactions per second. Which storage service is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Amazon DynamoDB with transactions enabled to provide ACID compliance for trade operations configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">A.</span> Amazon DynamoDB with transactions enabled to provide ACID compliance for trade operations configured for optimal performance and minimal operational overhead, scaling horizontally as ingestion throughput keeps growing and satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">B.</span> Amazon Aurora PostgreSQL with Multi-AZ deployment, providing ACID compliance, up to 128 TB storage, up to 15 read replicas, and support for complex SQL including stored procedures and triggers with sub-millisecond read latency from the buffer cache</li>
-                <li><span class="option-label">C.</span> Amazon Redshift for its SQL support and ability to handle complex queries on large datasets</li>
-                <li><span class="option-label">D.</span> Amazon S3 with AWS Glue for ETL processing and Athena for SQL queries on trade records</li>
+                <li><span class="option-label">C.</span> Amazon Redshift for its SQL support and ability to handle complex queries on large datasets, scaling elastically to millions of events per second and scaling horizontally as ingestion throughput keeps growing and handling peak volume without any manual intervention</li>
+                <li><span class="option-label">D.</span> Amazon S3 with AWS Glue for ETL processing and Athena for SQL queries on trade records, integrating natively with the rest of the pipeline and scaling horizontally as ingestion throughput keeps growing and absorbing sudden traffic spikes without throttling</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -125,9 +125,9 @@
             <div class="question-text">A data engineering team needs to process and analyze 100 TB of semi-structured log data from a one-time migration project. The analysis involves complex transformations including sessionization, custom UDFs in Python, graph analysis of user journeys, and machine learning feature engineering. The project has a 2-week deadline and will not repeat. The team wants maximum flexibility and lowest cost for this temporary workload. Which service is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> AWS Glue ETL jobs for all transformation, analysis, and ML feature engineering tasks with Spark on a transient cluster using Spot Instances for cost optimization</li>
-                <li><span class="option-label">B.</span> Amazon Athena for querying the log data with SQL and performing all required transformations</li>
-                <li><span class="option-label">C.</span> Amazon Redshift with a permanent provisioned cluster sized for the 100 TB workload</li>
+                <li><span class="option-label">A.</span> AWS Glue ETL jobs for all transformation, analysis, and ML feature engineering tasks with Spark on a transient cluster using Spot Instances for cost optimization, applying schema conversion and enrichment inline and avoiding charges for idle provisioned capacity</li>
+                <li><span class="option-label">B.</span> Amazon Athena for querying the log data with SQL and performing all required transformations, validating and cleansing each record before delivery and applying schema conversion and enrichment inline and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Amazon Redshift with a permanent provisioned cluster sized for the 100 TB workload, applying schema conversion and enrichment inline and transforming records into the required target format and satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
                 <li><span class="option-label">D.</span> Amazon EMR with Spark on a transient cluster using Spot Instances (up to 90% savings), leveraging Spark's support for custom Python UDFs, GraphX for graph analysis, and MLlib for feature engineering, with the cluster terminated after the 2-week project completes</li>
             
             </ul>
@@ -144,9 +144,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> AWS Lake Formation, which provides centralized governance with column-level and row-level security, tag-based access control (LF-Tags), cross-account data sharing via RAM or direct Lake Formation grants, and integration with Athena, Redshift Spectrum, and Glue for unified permission enforcement</li>
-                <li><span class="option-label">B.</span> Amazon Redshift with its native GRANT/REVOKE SQL commands to manage user permissions at the column level for unified permission enforcement</li>
-                <li><span class="option-label">C.</span> AWS Organizations with Service Control Policies (SCPs) to restrict which teams can access which data services</li>
-                <li><span class="option-label">D.</span> IAM policies applied to each S3 bucket, Redshift cluster, and RDS instance individually to control team access</li>
+                <li><span class="option-label">B.</span> Amazon Redshift with its native GRANT/REVOKE SQL commands to manage user permissions at the column level for unified permission enforcement, handling the described workload reliably at scale and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> AWS Organizations with Service Control Policies (SCPs) to restrict which teams can access which data services, meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">D.</span> IAM policies applied to each S3 bucket, Redshift cluster, and RDS instance individually to control team access, handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -161,10 +161,10 @@
             <div class="question-text">A company currently uses Amazon Redshift DC2 nodes for their data warehouse. Their data has grown from 2 TB to 20 TB over 18 months, and frequently accessed "hot" data represents only 3 TB while the remaining 17 TB is accessed rarely for historical analysis. The current DC2 cluster requires expensive resizing to accommodate growth. Which Redshift node type migration provides the MOST cost-effective solution for this data growth pattern?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Add more DC2 nodes to the cluster through elastic resize to accommodate the full 20 TB on local SSDs with Managed Storage</li>
+                <li><span class="option-label">A.</span> Add more DC2 nodes to the cluster through elastic resize to accommodate the full 20 TB on local SSDs with Managed Storage, keeping steady-state operating costs low and optimizing cost for the described workload and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">B.</span> Migrate to Redshift RA3 nodes with Managed Storage, which automatically tiers hot data on fast local SSD cache and warm/cold data on S3-backed managed storage, allowing compute and storage to scale independently — pay for compute nodes while storage costs pennies per GB on S3</li>
-                <li><span class="option-label">C.</span> Migrate all 20 TB to Amazon Athena and decommission the Redshift cluster entirely</li>
-                <li><span class="option-label">D.</span> Keep the DC2 cluster at 3 TB and offload historical data to S3, using Redshift Spectrum for historical queries</li>
+                <li><span class="option-label">C.</span> Migrate all 20 TB to Amazon Athena and decommission the Redshift cluster entirely, avoiding charges for idle provisioned capacity and satisfying all of the stated requirements with minimal effort and keeping steady-state operating costs low and optimizing cost for the described workload and providing exactly-once processing semantics</li>
+                <li><span class="option-label">D.</span> Keep the DC2 cluster at 3 TB and offload historical data to S3, using Redshift Spectrum for historical queries, satisfying all of the stated requirements with minimal effort and keeping steady-state operating costs low and optimizing cost for the described workload and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -198,9 +198,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> A lakehouse architecture: store all raw data in S3 (data lake) with Glue Data Catalog for schema management, use Athena for exploratory queries on raw/semi-structured data, and load curated aggregations into Redshift for sub-second dashboard queries — combining the flexibility of a data lake with the performance of a data warehouse</li>
-                <li><span class="option-label">B.</span> Store everything in S3 and use only Athena for both exploratory and dashboard queries</li>
-                <li><span class="option-label">C.</span> Use Amazon RDS PostgreSQL for structured data and S3 for unstructured data, with native S3 integration and optimized data transfer between storage layers</li>
-                <li><span class="option-label">D.</span> Load all data (structured, semi-structured, and unstructured) directly into Amazon Redshift, converting everything to structured tables</li>
+                <li><span class="option-label">B.</span> Store everything in S3 and use only Athena for both exploratory and dashboard queries, minimizing end-to-end processing latency and avoiding charges for idle provisioned capacity and delivering records with consistent sub-second latency and keeping steady-state operating costs low and optimizing cost for the described workload</li>
+                <li><span class="option-label">C.</span> Use Amazon RDS PostgreSQL for structured data and S3 for unstructured data, with native S3 integration and optimized data transfer between storage layers, streaming results downstream in near real time and satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Load all data (structured, semi-structured, and unstructured) directly into Amazon Redshift, converting everything to structured tables, making the data queryable within seconds of arrival and delivering records with consistent sub-second latency and keeping steady-state operating costs low and handling the described workload reliably at scale and streaming results downstream in near real time</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

@@ -36,10 +36,10 @@
             <div class="question-text">A healthcare company stores patient records in Amazon Redshift. Business analysts need to run aggregate queries (average treatment costs by region) but must NOT see individual patient names, SSNs, or dates of birth. The data must remain in the same table for other authorized users (physicians). Which approach provides real-time masking without data duplication?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use Redshift views with CASE statements to filter PII based on current_user</li>
-                <li><span class="option-label">B.</span> Remove PII columns from the table entirely since analysts don't need them and date_of_birth columns that return masked values (e for SSN</li>
+                <li><span class="option-label">A.</span> Use Redshift views with CASE statements to filter PII based on current_user, applying schema conversion and enrichment inline and keeping steady-state operating costs low and minimizing end-to-end processing latency and handling the described workload reliably at scale and avoiding charges for idle provisioned capacity</li>
+                <li><span class="option-label">B.</span> Remove PII columns from the table entirely since analysts don't need them and date_of_birth columns that return masked values (e for SSN, keeping steady-state operating costs low and streaming results downstream in near real time and meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">C.</span> Implement Redshift Dynamic Data Masking (DDM) — create masking policies on the patient_name, ssn, and date_of_birth columns that return masked values (e.g., "XXXX" for SSN, NULL for name) when queried by analyst roles, while physician roles see the original unmasked values. Masking is applied at query time without modifying stored data</li>
-                <li><span class="option-label">D.</span> Create a separate copy of the table with PII columns removed for analysts</li>
+                <li><span class="option-label">D.</span> Create a separate copy of the table with PII columns removed for analysts, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and making the data queryable within seconds of arrival and optimizing cost for the described workload and keeping steady-state operating costs low</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -55,10 +55,10 @@
             <div class="question-text">A retail company needs to anonymize customer data in their data lake before sharing with a third-party analytics vendor. The vendor needs to track customer behavior across sessions (requiring consistent customer identifiers) but must NOT be able to reverse-engineer real customer IDs. Which anonymization technique is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Simply remove the customer_id column from the shared dataset with consistent pseudonymous tokens using a keyed HMAC hash (e for the vendor)</li>
-                <li><span class="option-label">B.</span> Use random UUIDs for each record, generating a new UUID per row</li>
+                <li><span class="option-label">A.</span> Simply remove the customer_id column from the shared dataset with consistent pseudonymous tokens using a keyed HMAC hash (e for the vendor), integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">B.</span> Use random UUIDs for each record, generating a new UUID per row, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and handling the described workload reliably at scale and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">C.</span> Apply deterministic tokenization — replace real customer_ids with consistent pseudonymous tokens using a keyed HMAC hash (e.g., HMAC-SHA256 with a secret key). The same customer_id always produces the same token (enabling cross-session tracking for the vendor), but without the secret key, the vendor cannot reverse the tokens to recover original IDs</li>
-                <li><span class="option-label">D.</span> Replace all customer_ids with a single static value like "ANONYMOUS"</li>
+                <li><span class="option-label">D.</span> Replace all customer_ids with a single static value like "ANONYMOUS", integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and keeping steady-state operating costs low</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -74,9 +74,9 @@
             <div class="question-text">A European bank must comply with GDPR's "right to be forgotten" (Article 17). Customer data exists across multiple systems: S3 data lake (raw + processed), Redshift data warehouse, and DynamoDB operational store. When a customer requests deletion, all their PII must be rendered unrecoverable within 30 days. Which masking/anonymization strategy BEST supports this requirement?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Move all customer records to a "deleted" S3 bucket with a lifecycle policy and delete individual records across distributed systems</li>
-                <li><span class="option-label">B.</span> Physically scan and delete all records containing the customer's data across all systems within 30 days</li>
-                <li><span class="option-label">C.</span> Mark records as "deleted" with a flag and hide them from query results</li>
+                <li><span class="option-label">A.</span> Move all customer records to a "deleted" S3 bucket with a lifecycle policy and delete individual records across distributed systems, satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements and requiring no servers to manage or scale manually and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Physically scan and delete all records containing the customer's data across all systems within 30 days, requiring no servers to manage or scale manually and integrating natively with the rest of the pipeline and protecting the data both in transit and at rest and handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> Mark records as "deleted" with a flag and hide them from query results, removing the need to provision or patch any infrastructure and satisfying strict compliance and audit requirements and running as a fully managed service with minimal operational overhead and requiring no servers to manage or scale manually</li>
                 <li><span class="option-label">D.</span> Implement crypto-shredding (cryptographic erasure) — encrypt each customer's PII with a unique per-customer encryption key stored in KMS. When a deletion request arrives, delete ONLY the customer's encryption key from KMS. All encrypted PII across all systems becomes permanently unreadable without needing to locate and delete individual records across distributed systems</li>
             
             </ul>
@@ -94,9 +94,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use Amazon Macie — enable it across all accounts, configure automated sensitive data discovery jobs that continuously scan S3 buckets using machine learning and pattern matching to detect PII types (SSN, credit cards, names, addresses, passport numbers) across both structured and unstructured formats, with findings reported to Security Hub for centralized visibility</li>
-                <li><span class="option-label">B.</span> Use AWS Glue Data Quality to check for PII patterns in crawled tables</li>
-                <li><span class="option-label">C.</span> Manually review S3 object metadata tags to identify PII-containing objects with findings reported for centralized visibility</li>
-                <li><span class="option-label">D.</span> Write custom Lambda functions with regex patterns to scan each bucket on a schedule</li>
+                <li><span class="option-label">B.</span> Use AWS Glue Data Quality to check for PII patterns in crawled tables, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and satisfying strict compliance and audit requirements and handling the described workload reliably at scale and enforcing encryption and fine-grained access control</li>
+                <li><span class="option-label">C.</span> Manually review S3 object metadata tags to identify PII-containing objects with findings reported for centralized visibility, enforcing encryption and fine-grained access control and satisfying all of the stated requirements with minimal effort and protecting the data both in transit and at rest and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">D.</span> Write custom Lambda functions with regex patterns to scan each bucket on a schedule, satisfying all of the stated requirements with minimal effort and enforcing encryption and fine-grained access control and integrating natively with the rest of the pipeline and satisfying strict compliance and audit requirements and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -113,9 +113,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use Glue DataBrew with a masking recipe — create a project that applies the "mask" or "cryptographic hash" transform to the credit_card column, outputting only last 4 digits with asterisks. DataBrew provides visual, no-code data masking transforms that can be scheduled as part of the ETL pipeline</li>
-                <li><span class="option-label">B.</span> Configure S3 server-side encryption to automatically mask credit card numbers</li>
-                <li><span class="option-label">C.</span> Use Redshift Dynamic Data Masking on the S3 data directly with a masking recipe — create a project that applies the "mask" or "cryptographic hash" transform</li>
-                <li><span class="option-label">D.</span> Apply masking at the Glue Crawler level before writing to the Data Catalog</li>
+                <li><span class="option-label">B.</span> Configure S3 server-side encryption to automatically mask credit card numbers, applying schema conversion and enrichment inline and integrating natively with the rest of the pipeline and transforming records into the required target format and meeting the latency and throughput goals of the design and keeping steady-state operating costs low</li>
+                <li><span class="option-label">C.</span> Use Redshift Dynamic Data Masking on the S3 data directly with a masking recipe — create a project that applies the "mask" or "cryptographic hash" transform, integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
+                <li><span class="option-label">D.</span> Apply masking at the Glue Crawler level before writing to the Data Catalog, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and applying schema conversion and enrichment inline and transforming records into the required target format</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -131,10 +131,10 @@
             <div class="question-text">A data science team needs access to production customer data for model training but must comply with HIPAA requirements. The data includes patient diagnoses, ages, and zip codes. Simply removing names and SSNs is not sufficient — the team must ensure individuals cannot be re-identified from combinations of quasi-identifiers. Which technique addresses this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Add random noise to every field in the dataset including the diagnosis column configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">A.</span> Add random noise to every field in the dataset including the diagnosis column configured for optimal performance and minimal operational overhead, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and handling the described workload reliably at scale</li>
                 <li><span class="option-label">B.</span> Apply k-anonymity through generalization — generalize quasi-identifiers so each record is indistinguishable from at least k-1 other records: generalize age to ranges (e.g., 30-39), truncate zip codes to 3-digit prefix (e.g., 981**), group rare diagnoses into broader categories. This prevents re-identification through linkage attacks on combinations of quasi-identifiers</li>
-                <li><span class="option-label">C.</span> Encrypt the data with a shared team key — this counts as anonymization under HIPAA</li>
-                <li><span class="option-label">D.</span> Remove only the direct identifiers (name, SSN, phone) and share the rest unchanged</li>
+                <li><span class="option-label">C.</span> Encrypt the data with a shared team key — this counts as anonymization under HIPAA, integrating natively with the rest of the pipeline and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and optimizing cost for the described workload</li>
+                <li><span class="option-label">D.</span> Remove only the direct identifiers (name, SSN, phone) and share the rest unchanged, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -150,9 +150,9 @@
             <div class="question-text">A payment processing company must comply with PCI-DSS requirements for handling credit card data. They store transaction data in a data lake and need to ensure that Primary Account Numbers (PAN) are masked in all non-production environments while maintaining referential integrity for testing. Which masking approach satisfies PCI-DSS requirement 3.4?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Truncate all PANs to first 6 and last 4 digits in all environments including production</li>
-                <li><span class="option-label">B.</span> Replace all PANs with the static value "0000-0000-0000-0000" across environments</li>
-                <li><span class="option-label">C.</span> Simply store PANs as plaintext but restrict network access to the database with AES-FF1 — the masked PAN maintains the same format (16 digits and satisfying PCI-DSS requirement 3</li>
+                <li><span class="option-label">A.</span> Truncate all PANs to first 6 and last 4 digits in all environments including production, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">B.</span> Replace all PANs with the static value "0000-0000-0000-0000" across environments, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design and handling the described workload reliably at scale and integrating natively with the rest of the pipeline and absorbing sudden traffic spikes without throttling</li>
+                <li><span class="option-label">C.</span> Simply store PANs as plaintext but restrict network access to the database with AES-FF1 — the masked PAN maintains the same format (16 digits and satisfying PCI-DSS requirement 3, meeting the latency and throughput goals of the design and handling the described workload reliably at scale and transforming records into the required target format</li>
                 <li><span class="option-label">D.</span> Use format-preserving encryption (FPE) with AES-FF1 — the masked PAN maintains the same format (16 digits, passes Luhn check) but is a completely different number. FPE is deterministic (same PAN always produces same masked value) preserving referential integrity across tables, while being NIST-approved and satisfying PCI-DSS requirement 3.4 for rendering PAN unreadable</li>
             
             </ul>
@@ -169,10 +169,10 @@
             <div class="question-text">A streaming data pipeline using Amazon Kinesis Data Streams receives customer events containing email addresses. A downstream analytics consumer needs event data but should NOT receive raw email addresses — they need a consistent pseudonymous identifier for cohort analysis. The masking must happen in-stream without adding significant latency. Which architecture implements this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Store all raw data first, then run a batch masking job nightly with fully managed infrastructure and automatic scaling</li>
-                <li><span class="option-label">B.</span> Configure Kinesis server-side encryption to mask email fields automatically</li>
+                <li><span class="option-label">A.</span> Store all raw data first, then run a batch masking job nightly with fully managed infrastructure and automatic scaling, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design and delivering records with consistent sub-second latency and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">B.</span> Configure Kinesis server-side encryption to mask email fields automatically, minimizing end-to-end processing latency and delivering records with consistent sub-second latency and integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> Use a Kinesis Data Streams consumer (Lambda or KDA/Managed Flink) that reads raw events, applies HMAC-based tokenization to the email field using a secret stored in Secrets Manager, then publishes masked events to a separate "clean" Kinesis stream consumed by analytics. Raw stream is restricted to authorized PII-handlers only</li>
-                <li><span class="option-label">D.</span> Use a Kinesis Firehose transformation to delete the email field entirely</li>
+                <li><span class="option-label">D.</span> Use a Kinesis Firehose transformation to delete the email field entirely, meeting the latency and throughput goals of the design and handling the described workload reliably at scale and streaming results downstream in near real time and minimizing end-to-end processing latency and satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -188,10 +188,10 @@
             <div class="question-text">A company operates in multiple regulatory jurisdictions (GDPR in EU, CCPA in California, LGPD in Brazil). Each regulation has different definitions of personal data and different masking requirements. How should the data engineering team design a masking framework that handles multi-jurisdictional compliance?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Apply GDPR requirements everywhere since it's the most well-known regulation</li>
+                <li><span class="option-label">A.</span> Apply GDPR requirements everywhere since it's the most well-known regulation, integrating natively with the rest of the pipeline and satisfying strict compliance and audit requirements and handling the described workload reliably at scale and enforcing encryption and fine-grained access control and protecting the data both in transit and at rest</li>
                 <li><span class="option-label">B.</span> Implement a metadata-driven masking framework: tag each data field with its jurisdiction(s) and applicable regulations in the Glue Data Catalog, then apply masking rules based on the MOST restrictive applicable regulation for each field. Use a centralized policy engine (e.g., masking rule tables in DynamoDB) that maps {field_type + jurisdiction} to {masking_technique}, enabling different masking for different regulatory contexts</li>
-                <li><span class="option-label">C.</span> Apply the least restrictive regulation's requirements uniformly across all data with its jurisdiction(s) for each field</li>
-                <li><span class="option-label">D.</span> Create completely separate data lakes for each jurisdiction with no shared infrastructure</li>
+                <li><span class="option-label">C.</span> Apply the least restrictive regulation's requirements uniformly across all data with its jurisdiction(s) for each field, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and protecting the data both in transit and at rest and handling the described workload reliably at scale and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">D.</span> Create completely separate data lakes for each jurisdiction with no shared infrastructure, satisfying strict compliance and audit requirements and enforcing encryption and fine-grained access control and integrating natively with the rest of the pipeline and handling the described workload reliably at scale and protecting the data both in transit and at rest</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -208,9 +208,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Plain SHA-256 hashing of emails is vulnerable to dictionary/rainbow table attacks — an attacker can hash all common email patterns (firstname.lastname@domain.com) and match against the hashed values to recover original emails. The solution: use HMAC with a secret key (keyed hashing) or apply salted hashing, making rainbow table attacks infeasible since the attacker would need the secret key or per-record salt to reproduce hashes</li>
-                <li><span class="option-label">B.</span> SHA-256 is a broken algorithm and should be replaced with MD5 for better security and match against the hashed values to recover original emails</li>
-                <li><span class="option-label">C.</span> SHA-256 produces output that is too long to store efficiently in databases</li>
-                <li><span class="option-label">D.</span> The auditor's concern is that SHA-256 is reversible and the original email can be mathematically derived from the hash</li>
+                <li><span class="option-label">B.</span> SHA-256 is a broken algorithm and should be replaced with MD5 for better security and match against the hashed values to recover original emails, enforcing encryption and fine-grained access control and handling the described workload reliably at scale and satisfying strict compliance and audit requirements and protecting the data both in transit and at rest and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> SHA-256 produces output that is too long to store efficiently in databases, integrating natively with the rest of the pipeline and enforcing encryption and fine-grained access control and meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">D.</span> The auditor's concern is that SHA-256 is reversible and the original email can be mathematically derived from the hash, enforcing encryption and fine-grained access control and satisfying strict compliance and audit requirements and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

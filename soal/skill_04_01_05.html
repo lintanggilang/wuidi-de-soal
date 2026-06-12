@@ -38,8 +38,8 @@
                 
                 <li><span class="option-label">A.</span> Split the data into three separate S3 buckets, one per team, and replicate shared data with each Access Point having its own policy that restricts access</li>
                 <li><span class="option-label">B.</span> Create S3 Access Points for each team, with each Access Point having its own policy that restricts access to the team's specific prefixes</li>
-                <li><span class="option-label">C.</span> Use IAM policies only and remove the bucket policy entirely</li>
-                <li><span class="option-label">D.</span> Create IAM groups per team with inline policies that restrict access to specific key prefixes using conditions</li>
+                <li><span class="option-label">C.</span> Use IAM policies only and remove the bucket policy entirely, satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Create IAM groups per team with inline policies that restrict access to specific key prefixes using conditions, integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -74,8 +74,8 @@
             <div class="question-text">A company needs to ensure that their S3 data lake bucket can ONLY be accessed from within their VPC — no access from the internet or other VPCs should be allowed, even if IAM policies permit it. Which approach enforces this network-level restriction?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Remove all IAM policies that allow access from outside the VPC</li>
-                <li><span class="option-label">B.</span> Configure the S3 bucket as a VPC endpoint target</li>
+                <li><span class="option-label">A.</span> Remove all IAM policies that allow access from outside the VPC, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Configure the S3 bucket as a VPC endpoint target, enforcing encryption and fine-grained access control and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">C.</span> Add a bucket policy with a Deny statement using the condition "aws:SourceVpc" not equal to the company's VPC ID</li>
                 <li><span class="option-label">D.</span> Enable S3 Block Public Access at the account level with a Deny statement using the condition "aws:SourceVpc" not equal</li>
             
@@ -94,9 +94,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Create a VPC Interface Endpoint in VPC-A pointing to the SaaS provider's endpoint service name, and configure security groups on the endpoint to allow outbound traffic</li>
-                <li><span class="option-label">B.</span> Create a Transit Gateway attachment to reach the SaaS provider's VPC configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> Create a VPN connection from VPC-A to the SaaS provider's on-premises endpoint</li>
-                <li><span class="option-label">D.</span> Create a VPC peering connection between VPC-A and the SaaS provider's VPC</li>
+                <li><span class="option-label">B.</span> Create a Transit Gateway attachment to reach the SaaS provider's VPC configured for optimal performance and minimal operational overhead, meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> Create a VPN connection from VPC-A to the SaaS provider's on-premises endpoint, meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">D.</span> Create a VPC peering connection between VPC-A and the SaaS provider's VPC, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -133,8 +133,8 @@
                 
                 <li><span class="option-label">A.</span> Access is denied because the VPC endpoint policy does not allow access to the bucket, and the endpoint policy acts as an additional filter</li>
                 <li><span class="option-label">B.</span> Access is allowed because the IAM policy and bucket policy both grant access and the endpoint policy acts as an additional filter</li>
-                <li><span class="option-label">C.</span> Access is allowed because VPC endpoint policies are advisory only and do not enforce restrictions</li>
-                <li><span class="option-label">D.</span> The request bypasses the VPC endpoint and goes directly to S3 over the internet when the endpoint policy denies access</li>
+                <li><span class="option-label">C.</span> Access is allowed because VPC endpoint policies are advisory only and do not enforce restrictions, protecting the data both in transit and at rest</li>
+                <li><span class="option-label">D.</span> The request bypasses the VPC endpoint and goes directly to S3 over the internet when the endpoint policy denies access, enforcing encryption and fine-grained access control</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -169,10 +169,10 @@
             <div class="question-text">A company's security policy requires that S3 buckets storing sensitive data must NEVER be publicly accessible, regardless of any bucket policy changes made by developers. The data engineer needs to implement a preventive control that enforces this across all S3 buckets in the account. Which approach provides the STRONGEST preventive control?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create an AWS Config rule to detect public S3 buckets and automatically remediate</li>
+                <li><span class="option-label">A.</span> Create an AWS Config rule to detect public S3 buckets and automatically remediate, handling the described workload reliably at scale</li>
                 <li><span class="option-label">B.</span> Enable S3 Block Public Access at the account level (s3:PutAccountPublicAccessBlock) to block all current and future public access configurations</li>
                 <li><span class="option-label">C.</span> Add a Deny statement in every bucket policy preventing public access and future public access configurations</li>
-                <li><span class="option-label">D.</span> Use Amazon Macie to scan for publicly exposed buckets and alert the security team</li>
+                <li><span class="option-label">D.</span> Use Amazon Macie to scan for publicly exposed buckets and alert the security team, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -189,9 +189,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Access is denied because the bucket policy Deny still applies — Access Points cannot override explicit Deny statements in bucket policies</li>
-                <li><span class="option-label">B.</span> Access is allowed because the Access Point policy overrides the bucket policy</li>
+                <li><span class="option-label">B.</span> Access is allowed because the Access Point policy overrides the bucket policy, satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">C.</span> The Access Point becomes invalid because it conflicts with the bucket policy configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Only s3:ListBucket works (via Access Point policy) but s3:GetObject is denied (by bucket policy)</li>
+                <li><span class="option-label">D.</span> Only s3:ListBucket works (via Access Point policy) but s3:GetObject is denied (by bucket policy), meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -207,9 +207,9 @@
             <div class="question-text">A data engineer is implementing defense-in-depth for a data pipeline that processes sensitive financial data. The pipeline uses Lambda functions in a VPC accessing S3 through a Gateway Endpoint. The engineer wants to ensure that even if a Lambda function is compromised, it can only access designated S3 buckets and cannot exfiltrate data to external locations. Which combination of policies provides the MOST comprehensive data exfiltration protection?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> VPC endpoint policy restricting to specific buckets + Network ACLs blocking all outbound traffic except to S3 IP ranges</li>
-                <li><span class="option-label">B.</span> IAM policy on Lambda role restricting S3 access to specific bucket ARNs only with aws:SourceVpce condition allowing only the specific VPC endpoint</li>
-                <li><span class="option-label">C.</span> S3 bucket policy with aws:SourceIp condition restricting to the Lambda function's private IP addresses</li>
+                <li><span class="option-label">A.</span> VPC endpoint policy restricting to specific buckets + Network ACLs blocking all outbound traffic except to S3 IP ranges, enforcing encryption and fine-grained access control and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">B.</span> IAM policy on Lambda role restricting S3 access to specific bucket ARNs only with aws:SourceVpce condition allowing only the specific VPC endpoint, handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> S3 bucket policy with aws:SourceIp condition restricting to the Lambda function's private IP addresses, satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements</li>
                 <li><span class="option-label">D.</span> IAM policy restricting to specific buckets + VPC endpoint policy limiting S3 access to those same buckets + S3 bucket policy with aws:SourceVpce condition allowing only the specific VPC endpoint</li>
             
             </ul>

@@ -35,9 +35,9 @@
             <div class="question-text">A data engineering team of 8 members works on a shared AWS Glue ETL codebase. They frequently experience merge conflicts and broken deployments when multiple engineers push changes simultaneously. The team needs a Git branching strategy that allows parallel development while protecting the production pipeline. Which approach is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Maintain separate repositories for each engineer's work and manually copy code to production</li>
-                <li><span class="option-label">B.</span> Have all engineers commit directly to the main branch with no reviews</li>
-                <li><span class="option-label">C.</span> Use long-lived feature branches (lasting weeks) that are merged monthly with short-lived feature branches</li>
+                <li><span class="option-label">A.</span> Maintain separate repositories for each engineer's work and manually copy code to production, integrating natively with the rest of the pipeline and applying schema conversion and enrichment inline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Have all engineers commit directly to the main branch with no reviews, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Use long-lived feature branches (lasting weeks) that are merged monthly with short-lived feature branches, transforming records into the required target format and integrating natively with the rest of the pipeline and applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">D.</span> Use a trunk-based development model with short-lived feature branches, requiring pull requests with at least one approval before merging to main, combined with automated CI tests that run Glue job unit tests on every PR</li>
             
             </ul>
@@ -55,8 +55,8 @@
                 
                 <li><span class="option-label">A.</span> Deploy the job to a Glue development endpoint and manually verify output files in S3 with a local SparkSession (spark-testing-base or pyspark local mode) and assert expected outputs using DataFrame comparisons</li>
                 <li><span class="option-label">B.</span> Use pytest with a local SparkSession (spark-testing-base or pyspark local mode), create small in-memory DataFrames as test inputs, apply the transformation functions, and assert expected outputs using DataFrame comparisons</li>
-                <li><span class="option-label">C.</span> Write integration tests that run the full Glue job against production data</li>
-                <li><span class="option-label">D.</span> Test by reading the output Parquet files after a production run and checking data quality</li>
+                <li><span class="option-label">C.</span> Write integration tests that run the full Glue job against production data, validating and cleansing each record before delivery and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Test by reading the output Parquet files after a production run and checking data quality, validating and cleansing each record before delivery and applying schema conversion and enrichment inline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -71,10 +71,10 @@
             <div class="question-text">A data engineer needs to validate that an end-to-end data pipeline correctly ingests data from an RDS source, transforms it in Glue, and loads it into Redshift with correct schema and row counts. Unit tests pass but production still occasionally produces incorrect results. Which additional testing strategy addresses this gap?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Run the same unit tests multiple times to increase confidence</li>
+                <li><span class="option-label">A.</span> Run the same unit tests multiple times to increase confidence, handling the described workload reliably at scale and meeting the latency and throughput goals of the design and transforming records into the required target format</li>
                 <li><span class="option-label">B.</span> Implement integration tests that run the full pipeline against a dedicated test environment with known seed data, then validate row counts, schema conformity, data types, and sample record values in the target Redshift cluster</li>
-                <li><span class="option-label">C.</span> Add more unit tests for individual transformation functions</li>
-                <li><span class="option-label">D.</span> Perform manual spot-checks on production data weekly with known seed data and sample record values in the target Redshift cluster</li>
+                <li><span class="option-label">C.</span> Add more unit tests for individual transformation functions, applying schema conversion and enrichment inline and handling the described workload reliably at scale and transforming records into the required target format and keeping steady-state operating costs low</li>
+                <li><span class="option-label">D.</span> Perform manual spot-checks on production data weekly with known seed data and sample record values in the target Redshift cluster, meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -90,9 +90,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Implement structured logging (JSON format) with correlation IDs, log at key checkpoints (records read, records filtered, records written), capture failed record details in a dead-letter location, and use different log levels (INFO for progress, WARN for data quality issues, ERROR for failures)</li>
-                <li><span class="option-label">B.</span> Write all records to a debug S3 bucket for manual inspection after failures</li>
-                <li><span class="option-label">C.</span> Enable Glue continuous logging and rely solely on the default Glue metrics with correlation IDs for progress</li>
-                <li><span class="option-label">D.</span> Add print statements throughout the code to output record counts</li>
+                <li><span class="option-label">B.</span> Write all records to a debug S3 bucket for manual inspection after failures, validating and cleansing each record before delivery and satisfying all of the stated requirements with minimal effort and absorbing sudden traffic spikes without throttling and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Enable Glue continuous logging and rely solely on the default Glue metrics with correlation IDs for progress, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and validating and cleansing each record before delivery</li>
+                <li><span class="option-label">D.</span> Add print statements throughout the code to output record counts, transforming records into the required target format and meeting the latency and throughput goals of the design and absorbing sudden traffic spikes without throttling and validating and cleansing each record before delivery</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -107,10 +107,10 @@
             <div class="question-text">A data engineering team operates 25 data pipelines in production. They need to detect pipeline failures, SLA breaches, and data quality degradation proactively rather than hearing about issues from downstream consumers. Which monitoring approach provides comprehensive pipeline health visibility?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Check the Glue console manually each morning for failed jobs</li>
-                <li><span class="option-label">B.</span> Set up email notifications only for job failures via Glue job bookmarks</li>
+                <li><span class="option-label">A.</span> Check the Glue console manually each morning for failed jobs, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Set up email notifications only for job failures via Glue job bookmarks, integrating natively with the rest of the pipeline and handling the described workload reliably at scale and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">C.</span> Create CloudWatch custom metrics for each pipeline (records_processed, processing_duration, error_count), set CloudWatch Alarms with appropriate thresholds for SLA breach detection, configure SNS notifications to the on-call team, and build a CloudWatch Dashboard showing all pipeline health metrics</li>
-                <li><span class="option-label">D.</span> Rely on downstream consumers to report when they notice missing data with appropriate thresholds for SLA breach detection for each pipeline (records_processed</li>
+                <li><span class="option-label">D.</span> Rely on downstream consumers to report when they notice missing data with appropriate thresholds for SLA breach detection for each pipeline (records_processed, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -125,9 +125,9 @@
             <div class="question-text">A senior data engineer reviews a pull request for a Glue ETL job. The code works correctly but has several maintainability concerns: hardcoded S3 paths, no input validation, duplicated transformation logic across functions, and SQL queries embedded as multi-line strings without formatting. Which code review feedback is MOST important for long-term pipeline reliability?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> The code works correctly, so approve the PR without changes</li>
-                <li><span class="option-label">B.</span> Only fix the hardcoded paths and approve the rest with descriptive error messages and move SQL to separate files or use parameterized templates</li>
-                <li><span class="option-label">C.</span> Rewrite the entire job from scratch following a different design pattern</li>
+                <li><span class="option-label">A.</span> The code works correctly, so approve the PR without changes, transforming records into the required target format and durably storing every event with built-in fault tolerance and integrating natively with the rest of the pipeline and providing exactly-once processing semantics</li>
+                <li><span class="option-label">B.</span> Only fix the hardcoded paths and approve the rest with descriptive error messages and move SQL to separate files or use parameterized templates, transforming records into the required target format and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Rewrite the entire job from scratch following a different design pattern, guaranteeing no data loss during component failures and transforming records into the required target format and durably storing every event with built-in fault tolerance and providing exactly-once processing semantics</li>
                 <li><span class="option-label">D.</span> Externalize configuration (S3 paths, database names) to Glue job parameters or AWS Systems Manager Parameter Store, add input validation with descriptive error messages, extract duplicated logic into reusable functions, and move SQL to separate files or use parameterized templates</li>
             
             </ul>
@@ -143,9 +143,9 @@
             <div class="question-text">A data pipeline processes financial transactions and must handle various error scenarios: source database unavailable, malformed records, network timeouts to target system, and disk space exhaustion on EMR. The current pipeline fails completely on any error, requiring full reruns. Which error handling pattern BEST improves resilience?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Ignore errors and continue processing, logging them for later review with exponential backoff</li>
-                <li><span class="option-label">B.</span> Add a 5-minute sleep between operations to avoid all errors</li>
-                <li><span class="option-label">C.</span> Wrap the entire pipeline in a single try-except block that catches all exceptions and retries from the beginning</li>
+                <li><span class="option-label">A.</span> Ignore errors and continue processing, logging them for later review with exponential backoff, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Add a 5-minute sleep between operations to avoid all errors, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> Wrap the entire pipeline in a single try-except block that catches all exceptions and retries from the beginning, integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">D.</span> Implement a tiered error handling strategy: retry transient errors (network timeouts, throttling) with exponential backoff, route malformed records to a dead-letter queue for later investigation, use checkpointing to enable resumption from the last successful point, and alert on non-retryable errors (disk full, permission denied)</li>
             
             </ul>
@@ -162,9 +162,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use AWS CodePipeline with CodeBuild stages: source from CodeCommit/GitHub triggers the pipeline, CodeBuild runs unit tests, then deploys via CloudFormation/CDK with environment-specific parameter files (dev.json, staging.json, prod.json) that contain S3 paths, IAM roles, and worker counts for each environment</li>
-                <li><span class="option-label">B.</span> Deploy only to production and use production as the test environment</li>
-                <li><span class="option-label">C.</span> Manually upload Glue scripts to S3 and update job configurations through the AWS Console for each environment with CodeBuild stages: source from CodeCommit/GitHub triggers the pipeline and worker counts for each environment</li>
-                <li><span class="option-label">D.</span> Use a single Glue job configuration across all environments with if/else statements in the code to switch behavior</li>
+                <li><span class="option-label">B.</span> Deploy only to production and use production as the test environment, satisfying strict compliance and audit requirements and enforcing encryption and fine-grained access control and satisfying all of the stated requirements with minimal effort and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Manually upload Glue scripts to S3 and update job configurations through the AWS Console for each environment with CodeBuild stages: source from CodeCommit/GitHub triggers the pipeline and worker counts for each environment, handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Use a single Glue job configuration across all environments with if/else statements in the code to switch behavior, satisfying strict compliance and audit requirements and satisfying all of the stated requirements with minimal effort and enforcing encryption and fine-grained access control</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -179,10 +179,10 @@
             <div class="question-text">A data engineering team manages configurations for 30 Glue jobs that connect to various databases across environments. Connection strings, API keys, and feature flags differ between dev, staging, and production. Engineers occasionally deploy with wrong configurations, causing pipeline failures. Which configuration management approach is MOST secure and maintainable?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Store all configurations in a config.py file committed to the Git repository</li>
-                <li><span class="option-label">B.</span> Maintain a shared spreadsheet with all configuration values that engineers reference during deployment</li>
+                <li><span class="option-label">A.</span> Store all configurations in a config.py file committed to the Git repository, meeting the latency and throughput goals of the design and handling the described workload reliably at scale and integrating natively with the rest of the pipeline and enforcing encryption and fine-grained access control</li>
+                <li><span class="option-label">B.</span> Maintain a shared spreadsheet with all configuration values that engineers reference during deployment, satisfying strict compliance and audit requirements and meeting the latency and throughput goals of the design and protecting the data both in transit and at rest and enforcing encryption and fine-grained access control</li>
                 <li><span class="option-label">C.</span> Store sensitive values (connection strings, API keys) in AWS Secrets Manager with environment-specific secret names, store non-sensitive configuration (feature flags, batch sizes) in AWS Systems Manager Parameter Store with hierarchical paths (/app/prod/glue/batch-size), and have Glue jobs retrieve configurations at runtime based on an environment parameter</li>
-                <li><span class="option-label">D.</span> Use environment variables hardcoded in each Glue job definition with environment-specific secret names</li>
+                <li><span class="option-label">D.</span> Use environment variables hardcoded in each Glue job definition with environment-specific secret names, protecting the data both in transit and at rest and satisfying strict compliance and audit requirements and enforcing encryption and fine-grained access control and satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -197,10 +197,10 @@
             <div class="question-text">A new data engineer joins the team and must take over maintenance of a complex pipeline that processes healthcare data through 12 Glue jobs, 5 Step Functions workflows, and 8 Lambda functions. There is no documentation. The original engineer has left the company. What documentation should the team prioritize creating to ensure pipeline supportability?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Write inline code comments explaining every line of code in all 25 components</li>
-                <li><span class="option-label">B.</span> Create a single README.md with a high-level description of the project</li>
+                <li><span class="option-label">A.</span> Write inline code comments explaining every line of code in all 25 components, requiring no servers to manage or scale manually and removing the need to provision or patch any infrastructure and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Create a single README.md with a high-level description of the project, handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">C.</span> Create a runbook containing: architecture diagram showing data flow between components, SLA requirements per pipeline stage, common failure scenarios with remediation steps, escalation procedures, monitoring dashboard locations, and a data dictionary describing input/output schemas at each stage</li>
-                <li><span class="option-label">D.</span> Record a video walkthrough of the AWS Console showing each resource with remediation steps</li>
+                <li><span class="option-label">D.</span> Record a video walkthrough of the AWS Console showing each resource with remediation steps, handling the described workload reliably at scale and running as a fully managed service with minimal operational overhead and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

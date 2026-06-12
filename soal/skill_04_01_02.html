@@ -38,8 +38,8 @@
                 
                 <li><span class="option-label">A.</span> Create an IAM group "DataEngineers" with the common permissions attached as managed policies, and a second group "SeniorDataEngineers" with EMR management policies. Add engineers to appropriate groups.</li>
                 <li><span class="option-label">B.</span> Create a single IAM role "DataEngineerRole" with all permissions and have all engineers assume the role when needed with fully managed infrastructure and automatic scaling</li>
-                <li><span class="option-label">C.</span> Create individual IAM users with inline policies tailored to each engineer's specific needs</li>
-                <li><span class="option-label">D.</span> Create one IAM group with full administrator access and use AWS Organizations SCPs to restrict permissions at the account level</li>
+                <li><span class="option-label">C.</span> Create individual IAM users with inline policies tailored to each engineer's specific needs, meeting the latency and throughput goals of the design and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">D.</span> Create one IAM group with full administrator access and use AWS Organizations SCPs to restrict permissions at the account level, integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -55,9 +55,9 @@
             <div class="question-text">A data engineer needs to create an IAM role that allows AWS Glue to access an S3 bucket in another AWS account (Account B). The Glue job runs in Account A. Which combination of configurations is required for cross-account access?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> In Account A: Create IAM role with trust policy for s3.amazonaws.com. In Account B: Create an IAM user with access keys and store them in Secrets Manager for Glue to use.</li>
+                <li><span class="option-label">A.</span> In Account A: Create IAM role with trust policy for s3.amazonaws.com. In Account B: Create an IAM user with access keys and store them in Secrets Manager for Glue to use, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">B.</span> In Account A: Create a VPC endpoint for S3 pointing to Account B. In Account B: Allow access from Account A's VPC endpoint in the bucket policy, with trust policy for glue and a policy allowing s3:GetObject on Account B's bucket</li>
-                <li><span class="option-label">C.</span> In Account A: Create IAM role with AdministratorAccess. In Account B: Disable S3 Block Public Access on the bucket.</li>
+                <li><span class="option-label">C.</span> In Account A: Create IAM role with AdministratorAccess. In Account B: Disable S3 Block Public Access on the bucket, handling the described workload reliably at scale and satisfying strict compliance and audit requirements and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">D.</span> In Account A: Create IAM role with trust policy for glue.amazonaws.com and a policy allowing s3:GetObject on Account B's bucket. In Account B: Add a bucket policy allowing the Account A Glue role to access the bucket.</li>
             
             </ul>
@@ -93,8 +93,8 @@
             <div class="question-text">A data engineer needs to provide an EMR cluster with access to Amazon DynamoDB for a Hive-DynamoDB integration. The engineer creates an IAM role but the EMR cluster cannot access DynamoDB. The trust policy is configured for elasticmapreduce.amazonaws.com. What is the issue?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> The trust policy should include both elasticmapreduce.amazonaws.com and dynamodb.amazonaws.com as principals</li>
-                <li><span class="option-label">B.</span> DynamoDB access requires a service-linked role that must be created separately</li>
+                <li><span class="option-label">A.</span> The trust policy should include both elasticmapreduce.amazonaws.com and dynamodb.amazonaws.com as principals, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> DynamoDB access requires a service-linked role that must be created separately, handling peak volume without any manual intervention and scaling elastically to millions of events per second</li>
                 <li><span class="option-label">C.</span> The EMR cluster must be launched in a VPC with a DynamoDB VPC endpoint before IAM permissions take effect and an EC2 instance profile role (for ec2</li>
                 <li><span class="option-label">D.</span> EMR requires two separate roles — a service role (for elasticmapreduce.amazonaws.com) and an EC2 instance profile role (for ec2.amazonaws.com). The DynamoDB permissions should be on the instance profile role.</li>
             
@@ -112,10 +112,10 @@
             <div class="question-text">A company needs to access Amazon SageMaker, AWS Glue, and Amazon Athena from within a VPC without traversing the public internet. The data engineer evaluates endpoint options. Which statement correctly describes the differences between Gateway Endpoints and Interface Endpoints?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Gateway Endpoints require security groups for access control. Interface Endpoints use route table entries and VPC endpoint policies only.</li>
-                <li><span class="option-label">B.</span> Gateway Endpoints use ENIs and support all AWS services. Interface Endpoints use route tables and only support S3 and DynamoDB.</li>
+                <li><span class="option-label">A.</span> Gateway Endpoints require security groups for access control. Interface Endpoints use route table entries and VPC endpoint policies only, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Gateway Endpoints use ENIs and support all AWS services. Interface Endpoints use route tables and only support S3 and DynamoDB, satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
                 <li><span class="option-label">C.</span> Gateway Endpoints support S3 and DynamoDB only, are free, and use route table entries. Interface Endpoints support most AWS services, incur hourly and data processing charges, and use private IP addresses via ENIs.</li>
-                <li><span class="option-label">D.</span> Both endpoint types are functionally identical but Gateway Endpoints have higher throughput limits than Interface Endpoints. and DynamoDB only, are free, and use route table entries</li>
+                <li><span class="option-label">D.</span> Both endpoint types are functionally identical but Gateway Endpoints have higher throughput limits than Interface Endpoints. and DynamoDB only, are free, and use route table entries, meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -131,7 +131,7 @@
             <div class="question-text">A data engineer attempts to configure role chaining where an AWS Glue job assumes Role A, which then assumes Role B to access resources in a different account. The role chaining fails with an AccessDenied error. All IAM policies and trust policies appear correct. What is the MOST likely limitation causing this failure?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Role chaining is limited to a maximum of 2 roles in a single chain</li>
+                <li><span class="option-label">A.</span> Role chaining is limited to a maximum of 2 roles in a single chain, enforcing encryption and fine-grained access control</li>
                 <li><span class="option-label">B.</span> Role chaining has a maximum session duration of 1 hour regardless of the individual role's maximum session duration settings</li>
                 <li><span class="option-label">C.</span> AWS Glue does not support role chaining — it can only use the directly assigned IAM role configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> The intermediate Role A must have sts:AssumeRole permission and its trust policy must allow the Glue service role as a principal, which is often missed</li>
@@ -150,10 +150,10 @@
             <div class="question-text">A company wants to share data in their S3 data lake with a partner organization (Account 222222222222). The data engineer in the source account (111111111111) creates a cross-account IAM role. The partner needs to access specific prefixes in the bucket only during business hours (8 AM - 6 PM UTC). Which IAM configuration meets these requirements?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create a Lambda function that generates pre-signed URLs only during business hours and share the function endpoint</li>
+                <li><span class="option-label">A.</span> Create a Lambda function that generates pre-signed URLs only during business hours and share the function endpoint, protecting the data both in transit and at rest</li>
                 <li><span class="option-label">B.</span> Create role with trust policy allowing Account 222222222222 to assume role, with permission policy granting s3:GetObject on specific prefixes, and a Condition block using aws:CurrentTime for time restriction</li>
-                <li><span class="option-label">C.</span> Create an IAM user in Account 111111111111 for the partner with time-based MFA requirement</li>
-                <li><span class="option-label">D.</span> Use S3 Access Points with a bucket policy that restricts access to business hours only for time restriction</li>
+                <li><span class="option-label">C.</span> Create an IAM user in Account 111111111111 for the partner with time-based MFA requirement, enforcing encryption and fine-grained access control and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">D.</span> Use S3 Access Points with a bucket policy that restricts access to business hours only for time restriction, protecting the data both in transit and at rest</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -189,7 +189,7 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Service-linked roles cannot be modified. Instead, add the Glue service-linked role's ARN to the KMS key policy as an authorized principal.</li>
-                <li><span class="option-label">B.</span> Delete the service-linked role and recreate it with additional KMS permissions in the trust policy</li>
+                <li><span class="option-label">B.</span> Delete the service-linked role and recreate it with additional KMS permissions in the trust policy, requiring no servers to manage or scale manually</li>
                 <li><span class="option-label">C.</span> Create a custom IAM role for the Glue crawler with both the required S3 and KMS permissions, and use that instead of the service-linked role</li>
                 <li><span class="option-label">D.</span> Modify the AWSServiceRoleForGlue by attaching an additional IAM policy with KMS decrypt permissions configured for optimal performance and minimal operational overhead</li>
             
@@ -207,10 +207,10 @@
             <div class="question-text">A company deploys a data pipeline where Account A runs Glue jobs that write to an S3 bucket in Account B, and an EMR cluster in Account C reads from that bucket. The data engineer needs to set up IAM roles to enable this cross-account data flow. Which configuration correctly enables this three-account access pattern?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Grant Account A and Account C full administrator access to Account B using AWS Organizations trusted access</li>
+                <li><span class="option-label">A.</span> Grant Account A and Account C full administrator access to Account B using AWS Organizations trusted access, protecting the data both in transit and at rest and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">B.</span> Account B bucket policy allows Account A Glue role to PutObject and Account C EMR role to GetObject. Account A has Glue role with s3:PutObject permission. Account C EMR instance profile has s3:GetObject permission.</li>
-                <li><span class="option-label">C.</span> Create a single cross-account role in Account B that both Account A and Account C assume to access the bucket</li>
-                <li><span class="option-label">D.</span> Use S3 replication to copy data from Account A to Account C, avoiding cross-account access entirely with s3:PutObject permission and Account C EMR role to GetObject</li>
+                <li><span class="option-label">C.</span> Create a single cross-account role in Account B that both Account A and Account C assume to access the bucket, satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">D.</span> Use S3 replication to copy data from Account A to Account C, avoiding cross-account access entirely with s3:PutObject permission and Account C EMR role to GetObject, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

@@ -36,9 +36,9 @@
             <div class="question-text">A data engineer creates a Glue ETL job that reads from s3://raw-data/transactions/ and writes to s3://processed-data/transactions/. The initial IAM policy uses "s3:*" on "Resource": "*". The security team requests least-privilege refinement. Which policy BEST follows least privilege?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Keep s3:* but restrict to the two specific bucket ARNs only with prefix-level specificity: Allow s3:GetObject on arn:aws:s3:::raw-data/transactions/* for the specific catalog database/table needed</li>
-                <li><span class="option-label">B.</span> Use s3:Get* and s3:Put* on both bucket ARNs without prefix restrictions</li>
-                <li><span class="option-label">C.</span> Replace with s3:GetObject on arn:aws:s3:::raw-data/* and s3:PutObject on arn:aws:s3:::processed-data/*</li>
+                <li><span class="option-label">A.</span> Keep s3:* but restrict to the two specific bucket ARNs only with prefix-level specificity: Allow s3:GetObject on arn:aws:s3:::raw-data/transactions/* for the specific catalog database/table needed, meeting the latency and throughput goals of the design and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Use s3:Get* and s3:Put* on both bucket ARNs without prefix restrictions, validating and cleansing each record before delivery and removing the need to provision or patch any infrastructure and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Replace with s3:GetObject on arn:aws:s3:::raw-data/* and s3:PutObject on arn:aws:s3:::processed-data/*, enforcing encryption and fine-grained access control and handling the described workload reliably at scale and requiring no servers to manage or scale manually and satisfying strict compliance and audit requirements</li>
                 <li><span class="option-label">D.</span> Separate read and write permissions with prefix-level specificity: Allow s3:GetObject on arn:aws:s3:::raw-data/transactions/*, Allow s3:PutObject and s3:DeleteObject on arn:aws:s3:::processed-data/transactions/*, Allow s3:ListBucket on both buckets with Condition restricting s3:prefix to "transactions/", and Allow glue:GetTable for the specific catalog database/table needed</li>
             
             </ul>
@@ -55,10 +55,10 @@
             <div class="question-text">A security team wants to use IAM Access Analyzer to generate a least-privilege policy for an existing Glue job role that has been running in production for 90 days with overly permissive policies. What is the correct workflow to use Access Analyzer for policy refinement?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Access Analyzer only works with S3 bucket policies, not IAM role policies</li>
+                <li><span class="option-label">A.</span> Access Analyzer only works with S3 bucket policies, not IAM role policies, enforcing encryption and fine-grained access control and satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and protecting the data both in transit and at rest and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">B.</span> Use IAM Access Analyzer's "Generate Policy" feature: specify the CloudTrail trail and time window (e.g., last 90 days), Access Analyzer analyzes all API calls made by the role during that period, then generates a policy containing ONLY the actions, resources, and conditions that were actually used — providing a starting point for a refined least-privilege policy that needs human review before deployment</li>
-                <li><span class="option-label">C.</span> Access Analyzer automatically replaces existing policies with least-privilege versions without any manual intervention</li>
-                <li><span class="option-label">D.</span> Run Access Analyzer against the policy document itself without needing CloudTrail data and time window</li>
+                <li><span class="option-label">C.</span> Access Analyzer automatically replaces existing policies with least-privilege versions without any manual intervention, satisfying all of the stated requirements with minimal effort and enforcing encryption and fine-grained access control and integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and protecting the data both in transit and at rest</li>
+                <li><span class="option-label">D.</span> Run Access Analyzer against the policy document itself without needing CloudTrail data and time window, enforcing encryption and fine-grained access control and meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and handling the described workload reliably at scale and satisfying strict compliance and audit requirements</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -74,10 +74,10 @@
             <div class="question-text">A Redshift administrator needs to create an IAM policy for a reporting tool that connects to Redshift Serverless. The tool should ONLY be able to run SELECT queries on specific schemas and should NOT be able to modify cluster settings, create/delete tables, or access other AWS services. Which policy construct achieves this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Grant AdministratorAccess and configure Redshift internal permissions only</li>
-                <li><span class="option-label">B.</span> Use redshift:GetClusterCredentials with full database superuser access with fully managed infrastructure and automatic scaling</li>
+                <li><span class="option-label">A.</span> Grant AdministratorAccess and configure Redshift internal permissions only, satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort and protecting the data both in transit and at rest and handling the described workload reliably at scale and removing the need to provision or patch any infrastructure</li>
+                <li><span class="option-label">B.</span> Use redshift:GetClusterCredentials with full database superuser access with fully managed infrastructure and automatic scaling, reducing day-to-day operational effort and removing the need to provision or patch any infrastructure and running as a fully managed service with minimal operational overhead and meeting the latency and throughput goals of the design and providing exactly-once processing semantics</li>
                 <li><span class="option-label">C.</span> Create a minimal IAM policy: Allow redshift-serverless:GetCredentials (to obtain temporary database credentials) and redshift-data:ExecuteStatement + redshift-data:GetStatementResult + redshift-data:DescribeStatement (for Data API access), scoped to the specific workgroup ARN. Combine with a Redshift database user/role that only has SELECT privilege on specific schemas — IAM handles AWS API access while Redshift handles SQL-level authorization</li>
-                <li><span class="option-label">D.</span> Grant redshift:* and rely on Redshift database-level permissions to restrict actions</li>
+                <li><span class="option-label">D.</span> Grant redshift:* and rely on Redshift database-level permissions to restrict actions, integrating natively with the rest of the pipeline and running as a fully managed service with minimal operational overhead and protecting the data both in transit and at rest and handling the described workload reliably at scale and enforcing encryption and fine-grained access control</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -93,10 +93,10 @@
             <div class="question-text">A data platform team needs to restrict Glue job roles so they can ONLY access Glue Data Catalog tables within their team's database (not other teams' databases). The databases follow the naming pattern: {team-name}_database. Which IAM policy condition BEST implements this resource-level restriction?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use "Resource": "*" and add a comment in the policy documenting the intended restriction</li>
-                <li><span class="option-label">B.</span> Create a VPC endpoint policy that restricts Glue API calls based on the database name</li>
+                <li><span class="option-label">A.</span> Use "Resource": "*" and add a comment in the policy documenting the intended restriction, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Create a VPC endpoint policy that restricts Glue API calls based on the database name, enforcing encryption and fine-grained access control and handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> Use specific resource ARNs with the team's database name pattern: "Resource": ["arn:aws:glue:region:account:database/analytics_database", "arn:aws:glue:region:account:table/analytics_database/*", "arn:aws:glue:region:account:catalog"] — restricting Glue GetDatabase, GetTable, GetPartitions actions to ONLY the team's specific database and its tables</li>
-                <li><span class="option-label">D.</span> Grant glue:* on all resources and use Lake Formation as the only access control layer with the team's database name pattern: "Resource": ["arn:aws:glue:region:account:database/analytics_database" and its tables</li>
+                <li><span class="option-label">D.</span> Grant glue:* on all resources and use Lake Formation as the only access control layer with the team's database name pattern: "Resource": ["arn:aws:glue:region:account:database/analytics_database" and its tables, enforcing encryption and fine-grained access control</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -112,10 +112,10 @@
             <div class="question-text">An organization wants to ensure that no team can accidentally grant themselves broader S3 permissions than intended when creating IAM roles for their data pipelines. Teams have permission to create IAM roles for their Glue jobs. How can the security team enforce permission boundaries while still allowing teams self-service role creation?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use AWS Config rules to detect overly permissive roles after creation and send notifications</li>
+                <li><span class="option-label">A.</span> Use AWS Config rules to detect overly permissive roles after creation and send notifications, enforcing encryption and fine-grained access control and satisfying strict compliance and audit requirements and satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and protecting the data both in transit and at rest</li>
                 <li><span class="option-label">B.</span> Use IAM Permission Boundaries — create a boundary policy that defines the MAXIMUM permissions any team-created role can have (e.g., only S3 access to team-specific prefixes, only Glue actions, no IAM/STS admin actions). Require teams to attach this boundary when creating roles via a condition: iam:CreateRole only allowed if iam:PermissionsBoundary equals the team's boundary policy ARN</li>
-                <li><span class="option-label">C.</span> Remove role creation permissions from all teams and have security create every role manually with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">D.</span> Trust teams to follow documentation guidelines for least-privilege policies</li>
+                <li><span class="option-label">C.</span> Remove role creation permissions from all teams and have security create every role manually with native S3 integration and optimized data transfer, satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements and handling the described workload reliably at scale and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Trust teams to follow documentation guidelines for least-privilege policies, meeting the latency and throughput goals of the design and protecting the data both in transit and at rest and satisfying strict compliance and audit requirements and enforcing encryption and fine-grained access control and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -132,9 +132,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Create a policy with specific actions per service, resource restrictions, AND time-based conditions: s3:GetObject on intake-bucket/uploads/*, comprehend:DetectPiiEntities (no resource restriction as it's a stateless API), dynamodb:PutItem on the specific table ARN, plus a Condition block using aws:CurrentTime to restrict API calls to business hours</li>
-                <li><span class="option-label">B.</span> Grant full access and rely on Lambda's timeout settings to prevent execution outside business hours</li>
-                <li><span class="option-label">C.</span> Grant s3:*, comprehend:*, and dynamodb:* with no conditions</li>
-                <li><span class="option-label">D.</span> Use aws:SourceIp condition to restrict access to office network IPs with specific actions per service</li>
+                <li><span class="option-label">B.</span> Grant full access and rely on Lambda's timeout settings to prevent execution outside business hours, protecting the data both in transit and at rest and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Grant s3:*, comprehend:*, and dynamodb:* with no conditions, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and satisfying strict compliance and audit requirements and enforcing encryption and fine-grained access control and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">D.</span> Use aws:SourceIp condition to restrict access to office network IPs with specific actions per service, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and protecting the data both in transit and at rest</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -150,10 +150,10 @@
             <div class="question-text">An organization wants to prevent ANY data engineer from using unencrypted S3 PutObject operations across all accounts in their AWS Organization. They need this enforced as an organization-wide guardrail that individual account administrators cannot override. Which mechanism provides this enforcement?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create an IAM policy in each account that denies unencrypted PutObject and attach it to all roles</li>
+                <li><span class="option-label">A.</span> Create an IAM policy in each account that denies unencrypted PutObject and attach it to all roles, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design and satisfying strict compliance and audit requirements and enforcing encryption and fine-grained access control</li>
                 <li><span class="option-label">B.</span> Implement a Service Control Policy (SCP) at the Organization level that denies s3:PutObject when the condition s3:x-amz-server-side-encryption is absent or not equal to "aws:kms" — SCPs act as a permission ceiling for ALL principals in member accounts (including account administrators) and cannot be overridden by any IAM policy within the account</li>
-                <li><span class="option-label">C.</span> Set S3 bucket default encryption and assume all uploads will be encrypted</li>
-                <li><span class="option-label">D.</span> Use AWS Config rules to detect unencrypted objects and send alerts and cannot be overridden by any IAM policy within the account</li>
+                <li><span class="option-label">C.</span> Set S3 bucket default encryption and assume all uploads will be encrypted, protecting the data both in transit and at rest and satisfying strict compliance and audit requirements and satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design and reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Use AWS Config rules to detect unencrypted objects and send alerts and cannot be overridden by any IAM policy within the account, satisfying strict compliance and audit requirements and meeting the latency and throughput goals of the design and protecting the data both in transit and at rest and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -169,9 +169,9 @@
             <div class="question-text">A data engineer discovers that their Glue Crawler role has permissions for glue:CreateDatabase, glue:CreateTable, glue:UpdateTable, and glue:DeleteTable. The crawler only needs to CREATE new tables and UPDATE existing ones when schema changes are detected — it should never delete tables or create new databases. How should the policy be refined?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Keep all four permissions since the crawler might need them in the future with partition-level ordering and dedicated throughput</li>
-                <li><span class="option-label">B.</span> Replace with the AWS managed policy AWSGlueServiceRole which includes all necessary permissions</li>
-                <li><span class="option-label">C.</span> Add a Deny statement for DeleteTable but keep CreateDatabase for potential future use</li>
+                <li><span class="option-label">A.</span> Keep all four permissions since the crawler might need them in the future with partition-level ordering and dedicated throughput, validating and cleansing each record before delivery and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Replace with the AWS managed policy AWSGlueServiceRole which includes all necessary permissions, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and reducing day-to-day operational effort</li>
+                <li><span class="option-label">C.</span> Add a Deny statement for DeleteTable but keep CreateDatabase for potential future use, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and keeping steady-state operating costs low</li>
                 <li><span class="option-label">D.</span> Remove glue:DeleteTable and glue:CreateDatabase from the policy, keeping only glue:CreateTable and glue:UpdateTable plus the required supporting actions (glue:GetTable, glue:GetDatabase, glue:BatchCreatePartition, glue:BatchUpdatePartition) — restricting to only the actions the crawler actually performs during normal operation</li>
             
             </ul>
@@ -188,10 +188,10 @@
             <div class="question-text">A data engineering team runs Glue jobs that process data from multiple S3 buckets. After enabling CloudTrail data events and waiting 30 days, they use IAM Access Analyzer to generate a policy. The generated policy is much narrower than expected — missing some S3 paths that are processed quarterly. How should they handle this gap?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Add s3:* on Resource:* to cover any missing paths</li>
-                <li><span class="option-label">B.</span> Wait 365 days for full annual coverage before generating a policy with permissions for known quarterly operations: identify all periodic/seasonal access patterns from documentation</li>
+                <li><span class="option-label">A.</span> Add s3:* on Resource:* to cover any missing paths, enforcing encryption and fine-grained access control and handling the described workload reliably at scale and protecting the data both in transit and at rest and meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Wait 365 days for full annual coverage before generating a policy with permissions for known quarterly operations: identify all periodic/seasonal access patterns from documentation, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and enforcing encryption and fine-grained access control</li>
                 <li><span class="option-label">C.</span> Use the generated policy as a BASELINE, then manually supplement it with permissions for known quarterly operations: identify all periodic/seasonal access patterns from documentation and runbooks, add those specific S3 paths and actions to the policy, validate against the full operational calendar, and deploy with monitoring to catch any remaining gaps using CloudTrail + CloudWatch alarms for AccessDenied events</li>
-                <li><span class="option-label">D.</span> Discard the generated policy entirely since it's incomplete and keep the original broad policy</li>
+                <li><span class="option-label">D.</span> Discard the generated policy entirely since it's incomplete and keep the original broad policy, satisfying strict compliance and audit requirements and handling the described workload reliably at scale and protecting the data both in transit and at rest and satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -208,9 +208,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> In Account A (Glue role policy): Allow s3:GetObject on arn:aws:s3:::account-b-bucket/shared-prefix/* and Allow redshift-data:ExecuteStatement on the specific Redshift cluster ARN. In Account B (S3 bucket policy): Allow s3:GetObject from Account A's specific Glue role ARN (not account root) with a condition restricting to the shared prefix only. Both policies required for cross-account access — neither alone is sufficient</li>
-                <li><span class="option-label">B.</span> Use a VPC peering connection and rely on network-level security for cross-account access</li>
-                <li><span class="option-label">C.</span> Grant the Glue role in Account A full S3 and Redshift access, then add a bucket policy in Account B allowing Account A's root principal</li>
-                <li><span class="option-label">D.</span> Create an IAM user with access keys in Account B and hardcode credentials in the Glue job with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">B.</span> Use a VPC peering connection and rely on network-level security for cross-account access, meeting the latency and throughput goals of the design and running as a fully managed service with minimal operational overhead and transforming records into the required target format and integrating natively with the rest of the pipeline and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Grant the Glue role in Account A full S3 and Redshift access, then add a bucket policy in Account B allowing Account A's root principal, handling the described workload reliably at scale and enforcing encryption and fine-grained access control and integrating natively with the rest of the pipeline and protecting the data both in transit and at rest</li>
+                <li><span class="option-label">D.</span> Create an IAM user with access keys in Account B and hardcode credentials in the Glue job with native S3 integration and optimized data transfer, handling the described workload reliably at scale and requiring no servers to manage or scale manually and running as a fully managed service with minimal operational overhead and satisfying strict compliance and audit requirements</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

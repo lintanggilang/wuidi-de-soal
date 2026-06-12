@@ -35,9 +35,9 @@
             <div class="question-text">A data engineer discovers that an ETL pipeline had a bug that corrupted 3 days of data in the data warehouse. The pipeline reads from Amazon Kinesis Data Streams (retention set to 24 hours). The raw data beyond 24 hours is no longer in Kinesis. What design pattern would have enabled replay for this scenario?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Enable Kinesis Enhanced Fan-Out for the ETL consumer</li>
-                <li><span class="option-label">B.</span> Use DynamoDB Streams instead of Kinesis for unlimited retention</li>
-                <li><span class="option-label">C.</span> Increase Kinesis retention to 365 days with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">A.</span> Enable Kinesis Enhanced Fan-Out for the ETL consumer, integrating natively with the rest of the pipeline and providing exactly-once processing semantics</li>
+                <li><span class="option-label">B.</span> Use DynamoDB Streams instead of Kinesis for unlimited retention, meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> Increase Kinesis retention to 365 days with native S3 integration and optimized data transfer, transforming records into the required target format</li>
                 <li><span class="option-label">D.</span> Archive raw Kinesis data to S3 using Amazon Data Firehose before ETL processing, creating a replayable raw data layer</li>
             
             </ul>
@@ -53,10 +53,10 @@
             <div class="question-text">A company wants to implement a replayable data pipeline architecture. They want to be able to reprocess any day's data from the last 7 years. The daily data volume is 500 GB. Which storage strategy provides the MOST cost-effective replay capability?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Keep all data in S3 Standard storage class with versioning enabled</li>
+                <li><span class="option-label">A.</span> Keep all data in S3 Standard storage class with versioning enabled, avoiding charges for idle provisioned capacity and integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">B.</span> Store raw data in S3 with lifecycle policies: Standard for 30 days, Glacier Instant Retrieval for 1 year, Glacier Deep Archive for remaining years, partitioned by date</li>
-                <li><span class="option-label">C.</span> Use Amazon Kinesis with 7-year retention period for 30 days</li>
-                <li><span class="option-label">D.</span> Store raw data in Amazon Redshift with Historical tables</li>
+                <li><span class="option-label">C.</span> Use Amazon Kinesis with 7-year retention period for 30 days, avoiding charges for idle provisioned capacity and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">D.</span> Store raw data in Amazon Redshift with Historical tables, avoiding charges for idle provisioned capacity and keeping steady-state operating costs low and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -72,9 +72,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use a natural unique key from the source data as the DynamoDB partition key, so replaying the same record overwrites rather than duplicates</li>
-                <li><span class="option-label">B.</span> Delete all DynamoDB data before each replay</li>
-                <li><span class="option-label">C.</span> Use DynamoDB conditional writes with attribute_not_exists to reject duplicates</li>
-                <li><span class="option-label">D.</span> Generate a UUID for each record's partition key to ensure uniqueness with partition-level ordering and dedicated throughput</li>
+                <li><span class="option-label">B.</span> Delete all DynamoDB data before each replay, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">C.</span> Use DynamoDB conditional writes with attribute_not_exists to reject duplicates, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Generate a UUID for each record's partition key to ensure uniqueness with partition-level ordering and dedicated throughput, integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -89,10 +89,10 @@
             <div class="question-text">A data engineer uses Apache Kafka (Amazon MSK) for event streaming. A consumer application crashed and needs to replay events from 48 hours ago. The topic retention is set to 7 days. How does Kafka's architecture inherently support replay?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Kafka automatically replays messages to any new consumer group from the beginning configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Kafka queues messages until acknowledged; unacknowledged messages are automatically redelivered</li>
+                <li><span class="option-label">A.</span> Kafka automatically replays messages to any new consumer group from the beginning configured for optimal performance and minimal operational overhead, handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Kafka queues messages until acknowledged; unacknowledged messages are automatically redelivered, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">C.</span> Kafka stores messages in an immutable log; consumers can reset their consumer group offset to any point within the retention period to replay from that position</li>
-                <li><span class="option-label">D.</span> Kafka maintains a backup of consumed messages in a separate replay topic</li>
+                <li><span class="option-label">D.</span> Kafka maintains a backup of consumed messages in a separate replay topic, satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -107,10 +107,10 @@
             <div class="question-text">A data lake architecture uses the medallion pattern (bronze/silver/gold layers) stored in S3. A bug is found in the silver layer transformation logic. The engineer needs to replay bronze data through the corrected transformation. Which characteristic of the bronze layer enables this replay?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Bronze layer uses ACID transactions to maintain data consistency</li>
-                <li><span class="option-label">B.</span> Bronze layer stores pre-processed and deduplicated data with append-only writes</li>
+                <li><span class="option-label">A.</span> Bronze layer uses ACID transactions to maintain data consistency, validating and cleansing each record before delivery</li>
+                <li><span class="option-label">B.</span> Bronze layer stores pre-processed and deduplicated data with append-only writes, satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">C.</span> Bronze layer stores raw, immutable data in its original format with append-only writes, partitioned by ingestion timestamp</li>
-                <li><span class="option-label">D.</span> Bronze layer automatically version-controls all transformations</li>
+                <li><span class="option-label">D.</span> Bronze layer automatically version-controls all transformations, handling the described workload reliably at scale and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -125,8 +125,8 @@
             <div class="question-text">An e-commerce company processes order events in real-time. They need to guarantee that replaying the pipeline produces exactly the same output regardless of how many times it's run. The pipeline involves aggregating order totals per customer per day. What makes this pipeline safely replayable?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Process records in any order since aggregation is commutative</li>
-                <li><span class="option-label">B.</span> Use exactly-once delivery in the messaging system</li>
+                <li><span class="option-label">A.</span> Process records in any order since aggregation is commutative, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">B.</span> Use exactly-once delivery in the messaging system, preserving strict per-key ordering across all partitions and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">C.</span> Cache aggregation results and return cached values on replay and source data that doesn't change between replays</li>
                 <li><span class="option-label">D.</span> Use deterministic processing logic, idempotent writes (upsert by customer_id + date), and source data that doesn't change between replays</li>
             
@@ -144,9 +144,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Kinesis → Amazon Data Firehose → S3 (raw layer, 30-day retention) with the ETL pipeline reading from S3 for replay scenarios</li>
-                <li><span class="option-label">B.</span> Kinesis → Lambda → DynamoDB (raw events) with 30-day TTL for replay scenarios</li>
-                <li><span class="option-label">C.</span> Increase Kinesis retention to 30 days (720 hours)</li>
-                <li><span class="option-label">D.</span> Use Kinesis on-demand mode for automatic extended retention</li>
+                <li><span class="option-label">B.</span> Kinesis → Lambda → DynamoDB (raw events) with 30-day TTL for replay scenarios, running as a fully managed service with minimal operational overhead</li>
+                <li><span class="option-label">C.</span> Increase Kinesis retention to 30 days (720 hours), handling the described workload reliably at scale and optimizing cost for the described workload</li>
+                <li><span class="option-label">D.</span> Use Kinesis on-demand mode for automatic extended retention, avoiding charges for idle provisioned capacity and integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -161,9 +161,9 @@
             <div class="question-text">A data pipeline writes processed data to Amazon Redshift. After a replay, the engineer notices duplicate rows in Redshift because the pipeline ran twice for the same time window. How should the pipeline be modified to support idempotent replay into Redshift?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Run VACUUM DELETE after each pipeline run to remove duplicates</li>
-                <li><span class="option-label">B.</span> Add a UNIQUE constraint on all columns to prevent duplicates</li>
-                <li><span class="option-label">C.</span> Use INSERT with no-duplicate detection with partition-level ordering and dedicated throughput</li>
+                <li><span class="option-label">A.</span> Run VACUUM DELETE after each pipeline run to remove duplicates, meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> Add a UNIQUE constraint on all columns to prevent duplicates, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Use INSERT with no-duplicate detection with partition-level ordering and dedicated throughput, handling the described workload reliably at scale</li>
                 <li><span class="option-label">D.</span> Use a staging table pattern: TRUNCATE the target partition, then INSERT new data within a transaction (DELETE+INSERT or MERGE)</li>
             
             </ul>
@@ -179,10 +179,10 @@
             <div class="question-text">A company is evaluating whether their data pipeline is replayable. The pipeline reads from a third-party API that provides data for a specific date range. The API has a 7-day lookback limit. After 7 days, historical data is no longer available from the API. What is the impact on replayability?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> The pipeline is fully replayable if the API is called with the original date range parameters</li>
+                <li><span class="option-label">A.</span> The pipeline is fully replayable if the API is called with the original date range parameters, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale</li>
                 <li><span class="option-label">B.</span> The pipeline is NOT fully replayable from source after 7 days; the company must capture and persist raw API responses in S3 at ingestion time to enable replay beyond 7 days</li>
-                <li><span class="option-label">C.</span> Replayability is not affected because AWS services maintain copies of all API responses</li>
-                <li><span class="option-label">D.</span> The pipeline is fully replayable because the data is already in the data warehouse with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">C.</span> Replayability is not affected because AWS services maintain copies of all API responses, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> The pipeline is fully replayable because the data is already in the data warehouse with native S3 integration and optimized data transfer, satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -197,10 +197,10 @@
             <div class="question-text">A streaming pipeline uses Apache Kafka (MSK) for ingestion and writes to an Apache Iceberg table on S3. A data engineer needs to replay and recompute the last 5 days of data in the Iceberg table after fixing a transformation bug. Which Iceberg feature enables safe replay without affecting downstream consumers during the process?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Overwrite the last 5 partitions directly in the main table</li>
-                <li><span class="option-label">B.</span> Delete the Iceberg table and recreate it from scratch</li>
+                <li><span class="option-label">A.</span> Overwrite the last 5 partitions directly in the main table, meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> Delete the Iceberg table and recreate it from scratch, validating and cleansing each record before delivery and applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">C.</span> Use Iceberg's time travel to identify the snapshot before the buggy data, create a branch, reprocess into the branch, then fast-forward merge when validated</li>
-                <li><span class="option-label">D.</span> Use Iceberg's expire_snapshots to remove buggy data configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Use Iceberg's expire_snapshots to remove buggy data configured for optimal performance and minimal operational overhead, satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
