@@ -37,7 +37,7 @@
                 
                 <li><span class="option-label">A.</span> A single Lambda function with internal branching logic</li>
                 <li><span class="option-label">B.</span> AWS Step Functions with Amazon States Language (ASL) defined in CloudFormation/CDK</li>
-                <li><span class="option-label">C.</span> EventBridge rules chained together</li>
+                <li><span class="option-label">C.</span> EventBridge rules chained together, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">D.</span> AWS Glue Workflows with triggers configured for optimal performance and minimal operational overhead</li>
             
             </ul>
@@ -54,9 +54,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use a Parallel state with 5 branches (one per database), each containing extraction and transformation steps. After the Parallel state completes (all branches done), execute the join and load steps sequentially</li>
-                <li><span class="option-label">B.</span> Use 5 separate state machines triggered simultaneously with 5 branches (one per database) and transformation steps</li>
-                <li><span class="option-label">C.</span> Use a Map state iterating over 5 database configurations</li>
-                <li><span class="option-label">D.</span> Chain 5 sequential extraction tasks followed by 5 sequential transformations</li>
+                <li><span class="option-label">B.</span> Use 5 separate state machines triggered simultaneously with 5 branches (one per database) and transformation steps, satisfying all of the stated requirements with minimal effort and validating and cleansing each record before delivery</li>
+                <li><span class="option-label">C.</span> Use a Map state iterating over 5 database configurations, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design and providing exactly-once processing semantics</li>
+                <li><span class="option-label">D.</span> Chain 5 sequential extraction tasks followed by 5 sequential transformations, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and applying schema conversion and enrichment inline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -71,10 +71,10 @@
             <div class="question-text">A data pipeline uses Amazon MWAA (Apache Airflow) for orchestration. The DAG has a task that calls an AWS Glue job. The Glue job takes 45 minutes to complete. How should the Airflow task be configured to wait for the Glue job to finish without consuming Airflow worker resources during the wait?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use a BashOperator with a while loop checking job status configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">A.</span> Use a BashOperator with a while loop checking job status configured for optimal performance and minimal operational overhead, handling the described workload reliably at scale</li>
                 <li><span class="option-label">B.</span> Use the GlueJobOperator with a deferrable (async) mode or AwsGlueJobSensor in deferrable mode that uses asyncio to wait without occupying a worker slot</li>
-                <li><span class="option-label">C.</span> Use a PythonOperator with time.sleep() polling</li>
-                <li><span class="option-label">D.</span> Set the task timeout to 60 minutes and use synchronous GlueJobOperator</li>
+                <li><span class="option-label">C.</span> Use a PythonOperator with time.sleep() polling, handling the described workload reliably at scale and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Set the task timeout to 60 minutes and use synchronous GlueJobOperator, integrating natively with the rest of the pipeline and keeping steady-state operating costs low</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -89,10 +89,10 @@
             <div class="question-text">A data engineer needs to orchestrate a simple 3-step pipeline: (1) trigger a Glue crawler, (2) wait for crawler to finish, (3) start a Glue ETL job. This runs daily. The team wants the LEAST operational overhead. Which orchestration approach is SIMPLEST?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> EventBridge scheduled rule triggering Lambda that manages both steps</li>
-                <li><span class="option-label">B.</span> Amazon MWAA DAG with GlueCrawlerOperator and GlueJobOperator</li>
+                <li><span class="option-label">A.</span> EventBridge scheduled rule triggering Lambda that manages both steps, transforming records into the required target format and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> Amazon MWAA DAG with GlueCrawlerOperator and GlueJobOperator, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> AWS Glue Workflow with a scheduled trigger starting the crawler, and a conditional trigger starting the ETL job upon crawler success</li>
-                <li><span class="option-label">D.</span> AWS Step Functions state machine with Glue API calls configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> AWS Step Functions state machine with Glue API calls configured for optimal performance and minimal operational overhead, reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -108,9 +108,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Map state in Distributed mode with MaxConcurrency set to control parallelism, iterating over the list of files</li>
-                <li><span class="option-label">B.</span> Parallel state with 10,000 branches with parallel processing and horizontal scaling capabilities</li>
-                <li><span class="option-label">C.</span> Task state with a loop using Wait state</li>
-                <li><span class="option-label">D.</span> Choice state routing each file to different processors</li>
+                <li><span class="option-label">B.</span> Parallel state with 10,000 branches with parallel processing and horizontal scaling capabilities, validating and cleansing each record before delivery</li>
+                <li><span class="option-label">C.</span> Task state with a loop using Wait state, applying schema conversion and enrichment inline and reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Choice state routing each file to different processors, integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -125,10 +125,10 @@
             <div class="question-text">A data engineering team manages 100+ DAGs in Amazon MWAA. Several DAGs have cross-DAG dependencies (DAG B should only run after DAG A completes successfully). How should these inter-DAG dependencies be implemented in MWAA?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use Airflow variables to communicate state between DAGs for a specific task completion in DAG</li>
-                <li><span class="option-label">B.</span> Use cron schedules ensuring DAG B starts after DAG A's estimated completion time</li>
+                <li><span class="option-label">A.</span> Use Airflow variables to communicate state between DAGs for a specific task completion in DAG, handling the described workload reliably at scale and keeping steady-state operating costs low</li>
+                <li><span class="option-label">B.</span> Use cron schedules ensuring DAG B starts after DAG A's estimated completion time, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> Use the ExternalTaskSensor in DAG B to wait for a specific task completion in DAG A, or use TriggerDagRunOperator in DAG A to trigger DAG B upon completion</li>
-                <li><span class="option-label">D.</span> Combine all dependent DAGs into a single large DAG</li>
+                <li><span class="option-label">D.</span> Combine all dependent DAGs into a single large DAG, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -143,9 +143,9 @@
             <div class="question-text">A Step Functions workflow calls a Glue ETL job using the StartJobRun API. The workflow needs to wait for the Glue job to complete before proceeding to the next step. The Glue job takes 30 minutes. Which integration pattern should be used?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use the Request Response pattern and immediately proceed with .sync) which automatically waits for the Glue job</li>
-                <li><span class="option-label">B.</span> Use a Lambda function in a loop to poll the Glue job status</li>
-                <li><span class="option-label">C.</span> Use a Wait state for 30 minutes after starting the job</li>
+                <li><span class="option-label">A.</span> Use the Request Response pattern and immediately proceed with .sync) which automatically waits for the Glue job, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Use a Lambda function in a loop to poll the Glue job status, validating and cleansing each record before delivery and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Use a Wait state for 30 minutes after starting the job, satisfying all of the stated requirements with minimal effort and applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">D.</span> Use the .sync integration pattern (resource ARN ending with .sync) which automatically waits for the Glue job to complete before transitioning to the next state</li>
             
             </ul>
@@ -161,9 +161,9 @@
             <div class="question-text">A data pipeline uses AWS Step Functions. When any step fails, the team needs to be notified via SNS and the failure details must be logged. Currently, each task state has its own Catch block with duplicate error handling logic. How should error handling be simplified?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Keep individual Catch blocks on each state for granular control</li>
-                <li><span class="option-label">B.</span> Use Step Functions Express Workflows which have automatic error handling</li>
-                <li><span class="option-label">C.</span> Remove all error handling and rely on CloudWatch Alarms and logs details</li>
+                <li><span class="option-label">A.</span> Keep individual Catch blocks on each state for granular control, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> Use Step Functions Express Workflows which have automatic error handling, integrating natively with the rest of the pipeline and handling the described workload reliably at scale and reducing day-to-day operational effort</li>
+                <li><span class="option-label">C.</span> Remove all error handling and rely on CloudWatch Alarms and logs details, handling the described workload reliably at scale and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">D.</span> Wrap all task states in a single Parallel state (with one branch) that has a Catch block, redirecting to a shared error-handling state that publishes to SNS and logs details</li>
             
             </ul>
@@ -182,7 +182,7 @@
                 <li><span class="option-label">A.</span> Use the EcsRunTaskOperator to run containerized tasks on Amazon ECS (Fargate or EC2), replacing KubernetesPodOperator</li>
                 <li><span class="option-label">B.</span> Set up a separate EKS cluster and configure MWAA to use KubernetesPodOperator with it</li>
                 <li><span class="option-label">C.</span> Use BashOperator to run Docker commands on the MWAA worker configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Convert all containerized tasks to PythonOperator</li>
+                <li><span class="option-label">D.</span> Convert all containerized tasks to PythonOperator, integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -197,9 +197,9 @@
             <div class="question-text">A data engineer needs to orchestrate a workflow that: starts a Glue job, waits up to 1 hour for completion, and if the job hasn't finished, sends an alert and continues waiting. The total workflow might run for up to 3 hours. Which Step Functions workflow type should be used and why?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Standard Workflow with a nested Express Workflow for the wait logic</li>
-                <li><span class="option-label">B.</span> Express Workflow — for faster execution and lower cost with timeout-based transitions and allows Wait states with timeout-based transitions</li>
-                <li><span class="option-label">C.</span> Express Workflow with increased timeout setting</li>
+                <li><span class="option-label">A.</span> Standard Workflow with a nested Express Workflow for the wait logic, handling the described workload reliably at scale and providing exactly-once processing semantics</li>
+                <li><span class="option-label">B.</span> Express Workflow — for faster execution and lower cost with timeout-based transitions and allows Wait states with timeout-based transitions, keeping steady-state operating costs low</li>
+                <li><span class="option-label">C.</span> Express Workflow with increased timeout setting, handling the described workload reliably at scale and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">D.</span> Standard Workflow — supports executions up to 1 year, .sync integrations for waiting on external jobs, and allows Wait states with timeout-based transitions</li>
             
             </ul>

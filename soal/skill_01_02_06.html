@@ -53,10 +53,10 @@
             <div class="question-text">A streaming pipeline delivers data to Amazon S3 via Amazon Data Firehose. The data arrives as JSON and needs to be converted to Parquet format for efficient querying. Which Firehose feature handles this conversion without additional services?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use a Lambda transformation function to convert JSON to Parquet within Firehose</li>
+                <li><span class="option-label">A.</span> Use a Lambda transformation function to convert JSON to Parquet within Firehose, handling the described workload reliably at scale</li>
                 <li><span class="option-label">B.</span> Enable Firehose format conversion with output format set to Parquet, referencing a schema from the AWS Glue Data Catalog</li>
-                <li><span class="option-label">C.</span> Use Firehose data partitioning to output as Parquet with output format set</li>
-                <li><span class="option-label">D.</span> Configure S3 to automatically convert JSON to Parquet on write</li>
+                <li><span class="option-label">C.</span> Use Firehose data partitioning to output as Parquet with output format set, handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Configure S3 to automatically convert JSON to Parquet on write, applying schema conversion and enrichment inline and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -72,9 +72,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use a Redshift UDF to interpret INT96 timestamps with Spark config spark</li>
-                <li><span class="option-label">B.</span> Update the Glue Data Catalog table to change the timestamp format</li>
+                <li><span class="option-label">B.</span> Update the Glue Data Catalog table to change the timestamp format, applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">C.</span> Re-write the Parquet file using Glue ETL with Spark config spark.sql.parquet.outputTimestampType set to TIMESTAMP_MICROS (INT64)</li>
-                <li><span class="option-label">D.</span> Cast the timestamp column in the Redshift Spectrum query</li>
+                <li><span class="option-label">D.</span> Cast the timestamp column in the Redshift Spectrum query, integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -89,9 +89,9 @@
             <div class="question-text">A data engineer needs to convert a 500 GB CSV dataset to Parquet using AWS Glue. The target Parquet files should be between 128 MB and 256 MB each for optimal query performance. How should the output file size be controlled?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Set maxRecordsPerFile in the write options to control records per file</li>
-                <li><span class="option-label">B.</span> The file size is automatically optimized by Glue</li>
-                <li><span class="option-label">C.</span> Set the S3 multipart upload size to 256 MB with partition-level ordering and dedicated throughput</li>
+                <li><span class="option-label">A.</span> Set maxRecordsPerFile in the write options to control records per file, meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> The file size is automatically optimized by Glue, transforming records into the required target format and keeping steady-state operating costs low</li>
+                <li><span class="option-label">C.</span> Set the S3 multipart upload size to 256 MB with partition-level ordering and dedicated throughput, applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">D.</span> Use the Glue DynamicFrame's repartition() or coalesce() before writing, calculating the number of partitions based on target file size</li>
             
             </ul>
@@ -108,9 +108,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use AWS Glue ETL with schema evolution enabled — Glue reads Avro schemas automatically and can merge schemas when writing to Parquet</li>
-                <li><span class="option-label">B.</span> Reject files with new fields until the pipeline is updated and can merge schemas when writing to Parquet</li>
-                <li><span class="option-label">C.</span> Manually update the target Parquet schema definition each time the Avro schema changes</li>
-                <li><span class="option-label">D.</span> Convert to JSON first as an intermediate format</li>
+                <li><span class="option-label">B.</span> Reject files with new fields until the pipeline is updated and can merge schemas when writing to Parquet, applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Manually update the target Parquet schema definition each time the Avro schema changes, validating and cleansing each record before delivery</li>
+                <li><span class="option-label">D.</span> Convert to JSON first as an intermediate format, transforming records into the required target format and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -125,9 +125,9 @@
             <div class="question-text">A data engineer needs to choose between Snappy and GZIP compression for Parquet files in a data lake. The data is primarily read by Amazon Athena and Amazon Redshift Spectrum. Queries are latency-sensitive dashboards. Which compression is MORE appropriate and why?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> GZIP — because it produces smaller files which reduce Athena scan costs</li>
-                <li><span class="option-label">B.</span> LZO — because it is splittable unlike Snappy configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> No compression — for fastest read performance</li>
+                <li><span class="option-label">A.</span> GZIP — because it produces smaller files which reduce Athena scan costs, meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> LZO — because it is splittable unlike Snappy configured for optimal performance and minimal operational overhead, enforcing encryption and fine-grained access control</li>
+                <li><span class="option-label">C.</span> No compression — for fastest read performance, satisfying all of the stated requirements with minimal effort and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">D.</span> Snappy — because it provides faster decompression speed which reduces query latency, despite slightly larger file sizes compared to GZIP</li>
             
             </ul>
@@ -143,10 +143,10 @@
             <div class="question-text">A data engineer needs to convert nested JSON data (with arrays and nested objects) to a flat Parquet structure for analytical queries. The JSON has 5 levels of nesting. Which AWS Glue transform handles this flattening?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use AWS Glue DataBrew to flatten before the ETL job with foreign key relationships</li>
-                <li><span class="option-label">B.</span> Glue automatically flattens nested JSON when writing to Parquet</li>
+                <li><span class="option-label">A.</span> Use AWS Glue DataBrew to flatten before the ETL job with foreign key relationships, validating and cleansing each record before delivery</li>
+                <li><span class="option-label">B.</span> Glue automatically flattens nested JSON when writing to Parquet, satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">C.</span> Use the Relationalize transform in Glue DynamicFrames to flatten nested structures into separate flat tables with foreign key relationships</li>
-                <li><span class="option-label">D.</span> Use standard Spark explode() and select() functions manually for each nested level</li>
+                <li><span class="option-label">D.</span> Use standard Spark explode() and select() functions manually for each nested level, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -163,7 +163,7 @@
                 
                 <li><span class="option-label">A.</span> Create an external table in Redshift Spectrum and write to it with FORMAT PARQUET option</li>
                 <li><span class="option-label">B.</span> Use the UNLOAD command with FORMAT PARQUET option to export query results directly to S3 in Parquet format</li>
-                <li><span class="option-label">C.</span> Use a Python script with psycopg2 to fetch results and write Parquet using PyArrow</li>
+                <li><span class="option-label">C.</span> Use a Python script with psycopg2 to fetch results and write Parquet using PyArrow, applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">D.</span> Use UNLOAD to export as CSV, then run a Glue job to convert to Parquet</li>
             
             </ul>
@@ -179,9 +179,9 @@
             <div class="question-text">A data lake stores historical data in ORC format (legacy from a previous Hive-based system). The company is migrating to an architecture that primarily uses Athena and Redshift Spectrum. The team wants to standardize on Parquet. What should they consider about ORC vs Parquet for this migration?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> ORC must be converted to Parquet immediately because Athena cannot read ORC</li>
-                <li><span class="option-label">B.</span> ORC is always superior to Parquet for analytical queries</li>
-                <li><span class="option-label">C.</span> Parquet and ORC are identical formats with different names for new workloads</li>
+                <li><span class="option-label">A.</span> ORC must be converted to Parquet immediately because Athena cannot read ORC, satisfying all of the stated requirements with minimal effort and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> ORC is always superior to Parquet for analytical queries, integrating natively with the rest of the pipeline and transforming records into the required target format and reducing day-to-day operational effort</li>
+                <li><span class="option-label">C.</span> Parquet and ORC are identical formats with different names for new workloads, transforming records into the required target format and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">D.</span> Both Athena and Redshift Spectrum support ORC natively, so conversion to Parquet is optional; however, Parquet has broader ecosystem support and is the AWS recommended format for new workloads</li>
             
             </ul>
@@ -197,10 +197,10 @@
             <div class="question-text">A data engineer needs to convert CSV files that contain columns with mixed data types (some rows have integers, others have strings in the same column) to Parquet. Parquet requires strongly-typed columns. What issue arises and how should it be resolved?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Remove rows with incorrect types before conversion for each detected type</li>
+                <li><span class="option-label">A.</span> Remove rows with incorrect types before conversion for each detected type, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">B.</span> Use AWS Glue's ResolveChoice transform to handle ambiguous types by casting to a common type (e.g., cast to string) or creating separate columns for each detected type</li>
-                <li><span class="option-label">C.</span> Parquet will automatically handle mixed types using variant type</li>
-                <li><span class="option-label">D.</span> Use CSV format permanently since it handles mixed types</li>
+                <li><span class="option-label">C.</span> Parquet will automatically handle mixed types using variant type, applying schema conversion and enrichment inline and integrating natively with the rest of the pipeline and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">D.</span> Use CSV format permanently since it handles mixed types, handling the described workload reliably at scale and applying schema conversion and enrichment inline and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

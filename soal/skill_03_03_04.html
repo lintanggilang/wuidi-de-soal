@@ -36,9 +36,9 @@
             <div class="question-text">A data engineer notices that an AWS Glue ETL job that previously completed in 45 minutes is now taking over 3 hours. The job reads from S3, performs joins and aggregations, and writes to Amazon Redshift. CloudWatch metrics show that the Glue job's DPU utilization is consistently at 100%. The Spark UI reveals significant shuffle spill to disk. What is the MOST likely root cause and solution?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> The S3 source files are too small, creating excessive task overhead. Consolidate files using Glue's groupFiles option.</li>
+                <li><span class="option-label">A.</span> The S3 source files are too small, creating excessive task overhead. Consolidate files using Glue's groupFiles option, transforming records into the required target format</li>
                 <li><span class="option-label">B.</span> Data skew in the join key is causing uneven partition distribution. Repartition the data using a salted key before the join operation.</li>
-                <li><span class="option-label">C.</span> The Redshift COPY command is bottlenecked by WLM queue concurrency. Increase WLM slots for the loading queue.</li>
+                <li><span class="option-label">C.</span> The Redshift COPY command is bottlenecked by WLM queue concurrency. Increase WLM slots for the loading queue, handling the described workload reliably at scale</li>
                 <li><span class="option-label">D.</span> The Glue job's IAM role has been throttled by AWS, reducing S3 read throughput, with partition-level ordering and dedicated throughput</li>
             
             </ul>
@@ -55,8 +55,8 @@
             <div class="question-text">A Redshift cluster is experiencing slow query performance for a critical dashboard query. The EXPLAIN plan shows a "DS_DIST_ALL" distribution for a large fact table join. The query joins a 500 million row fact table with a 10,000 row dimension table. Both tables use EVEN distribution style. What change would MOST improve this query's performance?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Change the fact table's distribution style to ALL to ensure all data is available on every node.</li>
-                <li><span class="option-label">B.</span> Add a sort key on the join column for both tables to speed up the join operation.</li>
+                <li><span class="option-label">A.</span> Change the fact table's distribution style to ALL to ensure all data is available on every node, scaling horizontally as ingestion throughput keeps growing</li>
+                <li><span class="option-label">B.</span> Add a sort key on the join column for both tables to speed up the join operation, absorbing sudden traffic spikes without throttling</li>
                 <li><span class="option-label">C.</span> Change the dimension table's distribution style to ALL so it's replicated to every node, eliminating the redistribution of the large fact table.</li>
                 <li><span class="option-label">D.</span> Increase the number of nodes in the Redshift cluster to distribute the workload. configured for optimal performance and minimal operational overhead</li>
             
@@ -76,8 +76,8 @@
                 
                 <li><span class="option-label">A.</span> Switch from DataFrame API to RDD API to have more control over memory management, with -XX:+UseG1GC for the executor JVM options and set spark</li>
                 <li><span class="option-label">B.</span> Increase spark.executor.memory and set spark.memory.fraction to 0.8 to allocate more heap space. Configure G1GC with -XX:+UseG1GC for the executor JVM options.</li>
-                <li><span class="option-label">C.</span> Increase spark.sql.shuffle.partitions to 2000 to reduce the data size per partition.</li>
-                <li><span class="option-label">D.</span> Reduce the number of executors and increase cores per executor to minimize GC overhead across JVMs.</li>
+                <li><span class="option-label">C.</span> Increase spark.sql.shuffle.partitions to 2000 to reduce the data size per partition, validating and cleansing each record before delivery and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">D.</span> Reduce the number of executors and increase cores per executor to minimize GC overhead across JVMs, applying schema conversion and enrichment inline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -94,7 +94,7 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> The read throughput limit is exceeded. With standard consumers sharing 2 MB/s per shard read capacity, the total read capacity is 20 MB/s which should be sufficient.</li>
-                <li><span class="option-label">B.</span> The Kinesis Data Stream retention period is too short, causing data expiration before consumers read it, with partition-level ordering and dedicated throughput</li>
+                <li><span class="option-label">B.</span> The Kinesis Data Stream retention period is too short, causing data expiration before consumers read it, with partition-level ordering and dedicated throughput, minimizing end-to-end processing latency</li>
                 <li><span class="option-label">C.</span> The stream's write capacity is exhausted. Each shard supports 1 MB/s write, so 10 shards handle 10 MB/s which is close to the 8 MB/s incoming rate.</li>
                 <li><span class="option-label">D.</span> The consumer processing logic is slower than the incoming data rate. The 5 KCL workers cannot process 8 MB/s of data fast enough across 10 shards.</li>
             
@@ -115,7 +115,7 @@
                 <li><span class="option-label">A.</span> Enable DynamoDB Auto Scaling with a target utilization of 70% and increase the maximum capacity to 10,000 WCU.</li>
                 <li><span class="option-label">B.</span> Increase provisioned WCU to 10,000 to handle peak spikes, with a target utilization of 70% and increase the maximum capacity to 10,000 WCU</li>
                 <li><span class="option-label">C.</span> Implement a write buffer using SQS to smooth out traffic spikes before writing to DynamoDB.</li>
-                <li><span class="option-label">D.</span> Switch to on-demand capacity mode to automatically handle traffic spikes without pre-provisioning.</li>
+                <li><span class="option-label">D.</span> Switch to on-demand capacity mode to automatically handle traffic spikes without pre-provisioning, scaling elastically to millions of events per second</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -131,10 +131,10 @@
             <div class="question-text">A data engineer is troubleshooting a slow AWS Glue job. The job reads 500,000 small JSON files (average 50 KB each) from S3. The Spark UI shows that the job creates 500,000 tasks in the first stage, each processing a single file. The stage takes 2 hours despite low DPU utilization. What is the PRIMARY performance issue and how should it be resolved?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> The DPU count is too low. Increase MaxCapacity to allocate more workers for parallel file reading.</li>
+                <li><span class="option-label">A.</span> The DPU count is too low. Increase MaxCapacity to allocate more workers for parallel file reading, meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">B.</span> S3 request throttling is limiting file read performance. Add random prefixes to the file keys. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> The small file problem is causing excessive task scheduling overhead. Use Glue's groupFiles and groupSize parameters to combine multiple files into single tasks.</li>
-                <li><span class="option-label">D.</span> The JSON parsing is slow. Convert source files to Parquet format before running the Glue job.</li>
+                <li><span class="option-label">D.</span> The JSON parsing is slow. Convert source files to Parquet format before running the Glue job, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -151,9 +151,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Configure Workload Management (WLM) with separate queues for ETL and analytics workloads. Assign higher memory allocation and concurrency limits to the analytics queue during business hours.</li>
-                <li><span class="option-label">B.</span> Enable concurrency scaling to automatically add temporary cluster capacity when queues are backed up, with separate queues for ETL and analytics workloads</li>
-                <li><span class="option-label">C.</span> Increase the cluster size by adding more nodes to handle both workloads simultaneously.</li>
-                <li><span class="option-label">D.</span> Schedule the ETL load to run during off-peak hours (e.g., 3 AM) to avoid contention with analytics queries.</li>
+                <li><span class="option-label">B.</span> Enable concurrency scaling to automatically add temporary cluster capacity when queues are backed up, with separate queues for ETL and analytics workloads, applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Increase the cluster size by adding more nodes to handle both workloads simultaneously, handling the described workload reliably at scale and transforming records into the required target format</li>
+                <li><span class="option-label">D.</span> Schedule the ETL load to run during off-peak hours (e.g., 3 AM) to avoid contention with analytics queries, validating and cleansing each record before delivery</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -169,10 +169,10 @@
             <div class="question-text">A data engineer notices that an Amazon Kinesis Data Analytics (Apache Flink) application has increasing backpressure metrics. The application reads from a Kinesis stream, performs windowed aggregations, and writes to S3. The operator metrics show that the sink operator has high busy time while the source and transformation operators have low utilization. What is the MOST likely bottleneck?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> The Kinesis source is not reading fast enough, causing backpressure that propagates to the sink.</li>
-                <li><span class="option-label">B.</span> The Flink application needs more Kinesis Processing Units (KPUs) for overall throughput, with parallel processing and horizontal scaling capabilities</li>
+                <li><span class="option-label">A.</span> The Kinesis source is not reading fast enough, causing backpressure that propagates to the sink, satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
+                <li><span class="option-label">B.</span> The Flink application needs more Kinesis Processing Units (KPUs) for overall throughput, with parallel processing and horizontal scaling capabilities, transforming records into the required target format</li>
                 <li><span class="option-label">C.</span> The S3 sink is the bottleneck due to small file writes or high-latency put operations. Increasing the sink parallelism or buffering more data before flushing would help.</li>
-                <li><span class="option-label">D.</span> The windowed aggregation requires more memory allocation for state management.</li>
+                <li><span class="option-label">D.</span> The windowed aggregation requires more memory allocation for state management, handling the described workload reliably at scale and integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -189,8 +189,8 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> DynamoDB batch writes are limited to 25 items, causing artificial throttling when more items are sent per batch, with partition-level ordering and dedicated throughput</li>
-                <li><span class="option-label">B.</span> The sort key (timestamp) is causing write conflicts when multiple records have the same timestamp for the same customer.</li>
-                <li><span class="option-label">C.</span> The table's provisioned capacity has not been fully allocated yet due to the recent capacity increase taking time to propagate.</li>
+                <li><span class="option-label">B.</span> The sort key (timestamp) is causing write conflicts when multiple records have the same timestamp for the same customer, handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> The table's provisioned capacity has not been fully allocated yet due to the recent capacity increase taking time to propagate, handling the described workload reliably at scale</li>
                 <li><span class="option-label">D.</span> Hot partition key problem. DynamoDB distributes WCU across physical partitions, and the 5 hot customer_ids are concentrated on fewer partitions that exceed their per-partition throughput limit.</li>
             
             </ul>
@@ -208,9 +208,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Glue charges per DPU-hour (including 10-minute billing minimum per job) with no cluster management overhead, while EMR charges per instance-hour plus EC2 costs and requires managing cluster lifecycle, patching, and monitoring — making total cost of ownership (TCO) the key comparison metric.</li>
-                <li><span class="option-label">B.</span> Glue is always more expensive than EMR for the same workload because of the managed service premium, with no cluster management overhead</li>
-                <li><span class="option-label">C.</span> The comparison should focus solely on compute costs since both services use the same underlying EC2 instances.</li>
-                <li><span class="option-label">D.</span> EMR is always cheaper because it allows custom Spark tuning that reduces execution time.</li>
+                <li><span class="option-label">B.</span> Glue is always more expensive than EMR for the same workload because of the managed service premium, with no cluster management overhead, applying schema conversion and enrichment inline and meeting the latency and throughput goals of the design and keeping steady-state operating costs low</li>
+                <li><span class="option-label">C.</span> The comparison should focus solely on compute costs since both services use the same underlying EC2 instances, transforming records into the required target format and meeting the latency and throughput goals of the design and avoiding charges for idle provisioned capacity</li>
+                <li><span class="option-label">D.</span> EMR is always cheaper because it allows custom Spark tuning that reduces execution time, integrating natively with the rest of the pipeline and transforming records into the required target format and meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

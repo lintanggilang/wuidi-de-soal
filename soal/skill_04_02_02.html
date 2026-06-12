@@ -36,10 +36,10 @@
             <div class="question-text">A data engineering team has a Glue ETL job that connects to an Amazon RDS PostgreSQL database. Currently, the database credentials (username/password) are hardcoded in the job script. The security team mandates that credentials must be rotated every 30 days automatically without any pipeline downtime. Which solution meets ALL requirements?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Store credentials in AWS Systems Manager Parameter Store (Standard tier) and create a CloudWatch Events rule to trigger rotation every 30 days</li>
-                <li><span class="option-label">B.</span> Use environment variables in the Glue job configuration and update them manually every 30 days with a 30-day schedule using the built-in RDS rotation Lambda function</li>
+                <li><span class="option-label">A.</span> Store credentials in AWS Systems Manager Parameter Store (Standard tier) and create a CloudWatch Events rule to trigger rotation every 30 days, meeting the latency and throughput goals of the design and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">B.</span> Use environment variables in the Glue job configuration and update them manually every 30 days with a 30-day schedule using the built-in RDS rotation Lambda function, applying schema conversion and enrichment inline and reducing day-to-day operational effort</li>
                 <li><span class="option-label">C.</span> Use AWS Secrets Manager to store the RDS credentials, enable automatic rotation with a 30-day schedule using the built-in RDS rotation Lambda function, and configure the Glue job to retrieve credentials from Secrets Manager at runtime</li>
-                <li><span class="option-label">D.</span> Store credentials in an S3 file encrypted with SSE-KMS and update the file monthly using a scheduled Lambda function</li>
+                <li><span class="option-label">D.</span> Store credentials in an S3 file encrypted with SSE-KMS and update the file monthly using a scheduled Lambda function, applying schema conversion and enrichment inline and satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -55,9 +55,9 @@
             <div class="question-text">A data engineer needs to store configuration values for a data pipeline: a non-sensitive S3 bucket name, an API endpoint URL, and a sensitive database connection string. Budget is a concern. Which combination of AWS services provides the MOST cost-effective secure storage?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Store all values in a DynamoDB table with server-side encryption</li>
-                <li><span class="option-label">B.</span> Store all values in environment variables within the application code</li>
-                <li><span class="option-label">C.</span> Store all three values in AWS Secrets Manager with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">A.</span> Store all values in a DynamoDB table with server-side encryption, meeting the latency and throughput goals of the design and handling the described workload reliably at scale and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">B.</span> Store all values in environment variables within the application code, protecting the data both in transit and at rest and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Store all three values in AWS Secrets Manager with native S3 integration and optimized data transfer, satisfying all of the stated requirements with minimal effort and avoiding charges for idle provisioned capacity</li>
                 <li><span class="option-label">D.</span> Store the S3 bucket name and API endpoint in SSM Parameter Store (Standard tier, free), and store the database connection string in AWS Secrets Manager (for encryption and rotation capability)</li>
             
             </ul>
@@ -75,9 +75,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> The Glue job is caching the old credentials — it retrieved the secret value at startup and stores it in memory for the duration of the job, not re-fetching after rotation occurs mid-job execution</li>
-                <li><span class="option-label">B.</span> The KMS key used to encrypt the secret has expired for the duration of the job</li>
-                <li><span class="option-label">C.</span> Secrets Manager automatically revokes the old password immediately upon rotation</li>
-                <li><span class="option-label">D.</span> The rotation Lambda function is in a different VPC than the database</li>
+                <li><span class="option-label">B.</span> The KMS key used to encrypt the secret has expired for the duration of the job, integrating natively with the rest of the pipeline and applying schema conversion and enrichment inline and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">C.</span> Secrets Manager automatically revokes the old password immediately upon rotation, meeting the latency and throughput goals of the design and handling the described workload reliably at scale and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> The rotation Lambda function is in a different VPC than the database, meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -94,9 +94,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> In the Security account: add a resource-based policy on the secret allowing the Analytics account's role to call secretsmanager:GetSecretValue; ensure the KMS key policy also grants Decrypt to the Analytics account's role. In the Analytics account: the role's IAM policy allows secretsmanager:GetSecretValue on the secret ARN in the Security account</li>
-                <li><span class="option-label">B.</span> Create an identical secret in both accounts and synchronize manually configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> Share the AWS account credentials of the Security account with the Analytics team</li>
-                <li><span class="option-label">D.</span> Copy the secret to the Analytics account using cross-region replication</li>
+                <li><span class="option-label">B.</span> Create an identical secret in both accounts and synchronize manually configured for optimal performance and minimal operational overhead, meeting the latency and throughput goals of the design and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">C.</span> Share the AWS account credentials of the Security account with the Analytics team, enforcing encryption and fine-grained access control and meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">D.</span> Copy the secret to the Analytics account using cross-region replication, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -112,9 +112,9 @@
             <div class="question-text">A data engineer is migrating a legacy application that has database credentials hardcoded in 15 different configuration files across multiple Lambda functions, Glue jobs, and Step Functions. The engineer wants to centralize credential management with minimal code changes. Which approach provides the SMOOTHEST migration path?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Store credentials in SSM Parameter Store and set them as environment variables at deployment time in all services</li>
-                <li><span class="option-label">B.</span> Use AWS Config to automatically find and replace hardcoded credentials in source code configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> Rewrite all 15 applications from scratch to use Secrets Manager SDK calls</li>
+                <li><span class="option-label">A.</span> Store credentials in SSM Parameter Store and set them as environment variables at deployment time in all services, removing the need to provision or patch any infrastructure and integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Use AWS Config to automatically find and replace hardcoded credentials in source code configured for optimal performance and minimal operational overhead, running as a fully managed service with minimal operational overhead and removing the need to provision or patch any infrastructure</li>
+                <li><span class="option-label">C.</span> Rewrite all 15 applications from scratch to use Secrets Manager SDK calls, handling the described workload reliably at scale and removing the need to provision or patch any infrastructure and satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">D.</span> Store credentials in Secrets Manager, then for Lambda functions use the Secrets Manager Lambda extension (caches secrets as environment variables automatically); for Glue jobs use Glue Connection properties that reference Secrets Manager; for Step Functions use the native GetSecretValue integration action</li>
             
             </ul>
@@ -132,9 +132,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> AWS Secrets Manager with: customer-managed KMS key for encryption, resource-based policy restricting GetSecretValue to specific Lambda function role ARNs, and CloudTrail logging enabled for the secret to audit all access attempts</li>
-                <li><span class="option-label">B.</span> Store the API key in a private S3 bucket with SSE-S3 encryption for encryption</li>
-                <li><span class="option-label">C.</span> AWS Certificate Manager for storing API keys</li>
-                <li><span class="option-label">D.</span> SSM Parameter Store SecureString with default AWS-managed KMS key</li>
+                <li><span class="option-label">B.</span> Store the API key in a private S3 bucket with SSE-S3 encryption for encryption, satisfying strict compliance and audit requirements and running as a fully managed service with minimal operational overhead</li>
+                <li><span class="option-label">C.</span> AWS Certificate Manager for storing API keys, satisfying all of the stated requirements with minimal effort and avoiding charges for idle provisioned capacity and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">D.</span> SSM Parameter Store SecureString with default AWS-managed KMS key, satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements and avoiding charges for idle provisioned capacity</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -150,9 +150,9 @@
             <div class="question-text">A data engineer implements Secrets Manager rotation for an Aurora MySQL cluster. During the rotation, applications experience brief connection failures. The rotation Lambda function uses the "single user" rotation strategy. The engineer wants to eliminate connection failures during rotation. Which rotation strategy should they switch to?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Disable rotation and manually update credentials during maintenance windows</li>
-                <li><span class="option-label">B.</span> Increase the rotation Lambda timeout to avoid failures configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> Use IAM database authentication instead of password rotation</li>
+                <li><span class="option-label">A.</span> Disable rotation and manually update credentials during maintenance windows, handling the described workload reliably at scale and meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and delivering records with consistent sub-second latency</li>
+                <li><span class="option-label">B.</span> Increase the rotation Lambda timeout to avoid failures configured for optimal performance and minimal operational overhead, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Use IAM database authentication instead of password rotation, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and enforcing encryption and fine-grained access control</li>
                 <li><span class="option-label">D.</span> Switch to the "alternating users" rotation strategy — this uses TWO database users that alternate between active roles, so the previous user's credentials remain valid while the new user is being set up, eliminating any window where no valid credentials exist</li>
             
             </ul>
@@ -169,10 +169,10 @@
             <div class="question-text">An EMR cluster needs to access credentials stored in Secrets Manager to connect to an external Oracle database. The cluster runs in a private subnet with no internet access. How should the data engineer configure network access to Secrets Manager for the EMR nodes?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Add a NAT Gateway to the private subnet to allow EMR nodes to reach Secrets Manager over the internet</li>
-                <li><span class="option-label">B.</span> Move the EMR cluster to a public subnet</li>
+                <li><span class="option-label">A.</span> Add a NAT Gateway to the private subnet to allow EMR nodes to reach Secrets Manager over the internet, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">B.</span> Move the EMR cluster to a public subnet, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">C.</span> Create a VPC Interface Endpoint for Secrets Manager (com.amazonaws.region.secretsmanager) in the VPC, ensuring the endpoint's security group allows HTTPS (443) from the EMR nodes' security group</li>
-                <li><span class="option-label">D.</span> Store credentials in the EMR bootstrap script instead of Secrets Manager for Secrets Manager</li>
+                <li><span class="option-label">D.</span> Store credentials in the EMR bootstrap script instead of Secrets Manager for Secrets Manager, satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -188,10 +188,10 @@
             <div class="question-text">A data engineer stores database credentials in Secrets Manager with versioning enabled. They need to implement a rollback capability — if a new credential version causes issues, they should be able to quickly revert to the previous working version. How does Secrets Manager versioning support this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Secrets Manager only keeps the latest version; previous versions are permanently deleted</li>
+                <li><span class="option-label">A.</span> Secrets Manager only keeps the latest version; previous versions are permanently deleted, meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">B.</span> Use staging labels — the current version has label AWSCURRENT, and the previous version has label AWSPREVIOUS. To rollback, move the AWSCURRENT label to the previous version using UpdateSecretVersionStage API, making applications immediately retrieve the old (working) credential</li>
-                <li><span class="option-label">C.</span> Delete the current secret and recreate it with the old value</li>
-                <li><span class="option-label">D.</span> Contact AWS Support to restore a previous secret version and the previous version has label AWSPREVIOUS</li>
+                <li><span class="option-label">C.</span> Delete the current secret and recreate it with the old value, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">D.</span> Contact AWS Support to restore a previous secret version and the previous version has label AWSPREVIOUS, integrating natively with the rest of the pipeline and handling the described workload reliably at scale and guaranteeing no data loss during component failures</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -207,10 +207,10 @@
             <div class="question-text">A data platform stores 500 configuration parameters and 20 database credentials. The team needs to optimize costs while maintaining security best practices. Currently, ALL 520 values are stored in Secrets Manager costing $208/month in secret storage fees alone. Which optimization reduces costs without sacrificing security for sensitive credentials?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Store all values in a single Secrets Manager secret as a large JSON object to pay for only one secret</li>
+                <li><span class="option-label">A.</span> Store all values in a single Secrets Manager secret as a large JSON object to pay for only one secret, meeting the latency and throughput goals of the design and keeping steady-state operating costs low and avoiding charges for idle provisioned capacity</li>
                 <li><span class="option-label">B.</span> Migrate the 500 non-sensitive configuration parameters to SSM Parameter Store Standard tier (free, up to 10,000 parameters); keep the 20 database credentials in Secrets Manager ($8/month) for rotation capability and enhanced security features. Use SecureString parameter type for any sensitive config values</li>
-                <li><span class="option-label">C.</span> Move all 520 values to SSM Parameter Store Standard tier to eliminate all storage costs</li>
-                <li><span class="option-label">D.</span> Move everything to environment variables to eliminate all AWS service costs and enhanced security features</li>
+                <li><span class="option-label">C.</span> Move all 520 values to SSM Parameter Store Standard tier to eliminate all storage costs, avoiding charges for idle provisioned capacity and protecting the data both in transit and at rest and keeping steady-state operating costs low and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">D.</span> Move everything to environment variables to eliminate all AWS service costs and enhanced security features, keeping steady-state operating costs low and enforcing encryption and fine-grained access control and satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

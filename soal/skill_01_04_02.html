@@ -35,10 +35,10 @@
             <div class="question-text">A Lambda function processes batches of records from a Kinesis stream. During peak hours, the function's duration increases from 5 seconds to 14 seconds (close to the 15-second timeout configured). CloudWatch metrics show memory utilization at 95% of allocated 512 MB. What configuration change MOST likely resolves both issues?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Enable provisioned concurrency</li>
-                <li><span class="option-label">B.</span> Change the runtime from Python to Java for faster processing</li>
+                <li><span class="option-label">A.</span> Enable provisioned concurrency, meeting the latency and throughput goals of the design and scaling elastically to millions of events per second and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Change the runtime from Python to Java for faster processing, scaling elastically to millions of events per second and handling peak volume without any manual intervention</li>
                 <li><span class="option-label">C.</span> Increase memory allocation to 1024 MB or higher — Lambda proportionally allocates more CPU and network bandwidth with memory, reducing duration. Increase timeout as a safety margin</li>
-                <li><span class="option-label">D.</span> Decrease batch size in the event source mapping with memory and network bandwidth with memory, reducing duration</li>
+                <li><span class="option-label">D.</span> Decrease batch size in the event source mapping with memory and network bandwidth with memory, reducing duration, handling the described workload reliably at scale and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -54,8 +54,8 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> 1,000 concurrent executions for safety margin configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> 10 concurrent executions with batch size of 10</li>
-                <li><span class="option-label">C.</span> 50,000 concurrent executions (one per message)</li>
+                <li><span class="option-label">B.</span> 10 concurrent executions with batch size of 10, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> 50,000 concurrent executions (one per message), meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">D.</span> Approximately 167 concurrent executions (50,000 messages/minute ÷ 60 seconds × 0.2 seconds per message = 167)</li>
             
             </ul>
@@ -71,10 +71,10 @@
             <div class="question-text">A data engineer has a Lambda function that writes to an RDS PostgreSQL database. Under high concurrency (500 simultaneous invocations), the database reaches its max_connections limit (100). How should the Lambda function be configured to prevent connection exhaustion?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Increase Lambda timeout so connections are held longer</li>
-                <li><span class="option-label">B.</span> Increase RDS max_connections to 500</li>
+                <li><span class="option-label">A.</span> Increase Lambda timeout so connections are held longer, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Increase RDS max_connections to 500, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and providing exactly-once processing semantics</li>
                 <li><span class="option-label">C.</span> Set reserved concurrency on the Lambda function to a value at or below the database's max_connections (e.g., 80), and use Amazon RDS Proxy for connection pooling</li>
-                <li><span class="option-label">D.</span> Remove the VPC configuration from the Lambda function and use Amazon RDS Proxy for connection pooling</li>
+                <li><span class="option-label">D.</span> Remove the VPC configuration from the Lambda function and use Amazon RDS Proxy for connection pooling, satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -89,10 +89,10 @@
             <div class="question-text">A Lambda function is configured as a Kinesis stream consumer with 10 shards. The function uses the default parallelization factor of 1. Processing each batch takes 10 seconds. What is the maximum throughput (batches processed per second) for this configuration?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Unlimited — Lambda auto-scales with partition-level ordering and dedicated throughput</li>
+                <li><span class="option-label">A.</span> Unlimited — Lambda auto-scales with partition-level ordering and dedicated throughput, providing exactly-once processing semantics and scaling horizontally as ingestion throughput keeps growing</li>
                 <li><span class="option-label">B.</span> 1 batch per shard per 10 seconds = 10 shards × (1/10 batch per second) = 1 batch per second total (sequential per shard)</li>
-                <li><span class="option-label">C.</span> 10 batches per second (one per shard concurrently)</li>
-                <li><span class="option-label">D.</span> 100 batches per second</li>
+                <li><span class="option-label">C.</span> 10 batches per second (one per shard concurrently), providing exactly-once processing semantics and integrating natively with the rest of the pipeline and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">D.</span> 100 batches per second, guaranteeing no data loss during component failures and absorbing sudden traffic spikes without throttling and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -110,7 +110,7 @@
                 <li><span class="option-label">A.</span> Move the model loading from handler initialization to inside the handler function with a value of 1</li>
                 <li><span class="option-label">B.</span> Configure Provisioned Concurrency with a value of 1 to keep at least one warm execution environment always ready</li>
                 <li><span class="option-label">C.</span> Use a CloudWatch Events rule to ping the function every 4 minutes to keep it warm</li>
-                <li><span class="option-label">D.</span> Increase memory to 10 GB for faster model loading</li>
+                <li><span class="option-label">D.</span> Increase memory to 10 GB for faster model loading, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -126,9 +126,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Configure Lambda ephemeral storage (/tmp) to 10 GB (maximum), stream the file from S3 to /tmp, process it, and stream output back to S3</li>
-                <li><span class="option-label">B.</span> Use Lambda's 512 MB default /tmp storage and stream output back to S3</li>
-                <li><span class="option-label">C.</span> Include the file in the Lambda deployment package</li>
-                <li><span class="option-label">D.</span> Mount an EFS volume and store the file there</li>
+                <li><span class="option-label">B.</span> Use Lambda's 512 MB default /tmp storage and stream output back to S3, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Include the file in the Lambda deployment package, handling the described workload reliably at scale and validating and cleansing each record before delivery</li>
+                <li><span class="option-label">D.</span> Mount an EFS volume and store the file there, applying schema conversion and enrichment inline and meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -144,9 +144,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Set reserved concurrency on Function A (e.g., 200) to guarantee its availability, and set reserved concurrency on batch functions to limit their maximum (e.g., 200 each for B-E)</li>
-                <li><span class="option-label">B.</span> Request account concurrency increase to 5000 for B-E)</li>
-                <li><span class="option-label">C.</span> Set provisioned concurrency on Function A only</li>
-                <li><span class="option-label">D.</span> Remove batch functions and use Glue instead</li>
+                <li><span class="option-label">B.</span> Request account concurrency increase to 5000 for B-E), integrating natively with the rest of the pipeline and streaming results downstream in near real time and providing exactly-once processing semantics</li>
+                <li><span class="option-label">C.</span> Set provisioned concurrency on Function A only, minimizing end-to-end processing latency and scaling horizontally as ingestion throughput keeps growing and handling peak volume without any manual intervention</li>
+                <li><span class="option-label">D.</span> Remove batch functions and use Glue instead, requiring no servers to manage or scale manually and scaling horizontally as ingestion throughput keeps growing and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -161,10 +161,10 @@
             <div class="question-text">A Lambda function processes data from DynamoDB Streams. The function needs to initialize a database connection pool and load configuration from Parameter Store during cold start. This initialization takes 2 seconds. Which coding pattern minimizes the impact of initialization across invocations?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create a new connection for each record processed and is reused across subsequent warm invocations</li>
-                <li><span class="option-label">B.</span> Place all initialization inside the handler function to ensure fresh state every time</li>
+                <li><span class="option-label">A.</span> Create a new connection for each record processed and is reused across subsequent warm invocations, meeting the latency and throughput goals of the design and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Place all initialization inside the handler function to ensure fresh state every time, reducing day-to-day operational effort and removing the need to provision or patch any infrastructure</li>
                 <li><span class="option-label">C.</span> Place initialization code (connection pool, config loading) OUTSIDE the handler function at module level — this code runs only during cold start and is reused across subsequent warm invocations</li>
-                <li><span class="option-label">D.</span> Use environment variables for all configuration to avoid Parameter Store calls</li>
+                <li><span class="option-label">D.</span> Use environment variables for all configuration to avoid Parameter Store calls, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -179,9 +179,9 @@
             <div class="question-text">A data engineer's Lambda function receives events from SQS with a batch size of 10. The function processes each message independently. If message 7 out of 10 fails, what happens with the default configuration, and how should it be configured for partial batch failure handling?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Default: all 10 messages are discarded. Configure DLQ for failed messages</li>
-                <li><span class="option-label">B.</span> Default: only message 7 is retried. No configuration change needed with the messageId of only message 7</li>
-                <li><span class="option-label">C.</span> Default: Lambda automatically splits the batch and retries only the failed half</li>
+                <li><span class="option-label">A.</span> Default: all 10 messages are discarded. Configure DLQ for failed messages, handling the described workload reliably at scale and durably storing every event with built-in fault tolerance and providing exactly-once processing semantics</li>
+                <li><span class="option-label">B.</span> Default: only message 7 is retried. No configuration change needed with the messageId of only message 7, providing exactly-once processing semantics and integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
+                <li><span class="option-label">C.</span> Default: Lambda automatically splits the batch and retries only the failed half, guaranteeing no data loss during component failures and handling the described workload reliably at scale and providing exactly-once processing semantics</li>
                 <li><span class="option-label">D.</span> Default: entire batch of 10 returns to the queue (all messages retry including successful ones). Fix: enable ReportBatchItemFailures in the event source mapping and return batchItemFailures with the messageId of only message 7</li>
             
             </ul>

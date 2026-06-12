@@ -36,10 +36,10 @@
             <div class="question-text">A data engineering team operates a Kinesis Data Stream that feeds a real-time analytics dashboard. They need to be alerted when the stream's consumer applications fall more than 5 minutes behind the latest data. The alert must trigger an SNS notification to the on-call team. Which CloudWatch alarm configuration is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create a CloudWatch alarm on the ReadProvisionedThroughputExceeded metric with any threshold greater than 0.</li>
-                <li><span class="option-label">B.</span> Create a CloudWatch alarm on the GetRecords.Latency metric with a threshold of 300000ms. and an SNS action on ALARM state for 3 consecutive datapoints</li>
+                <li><span class="option-label">A.</span> Create a CloudWatch alarm on the ReadProvisionedThroughputExceeded metric with any threshold greater than 0, streaming results downstream in near real time and making the data queryable within seconds of arrival</li>
+                <li><span class="option-label">B.</span> Create a CloudWatch alarm on the GetRecords.Latency metric with a threshold of 300000ms. and an SNS action on ALARM state for 3 consecutive datapoints, handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> Create a CloudWatch alarm on the GetRecords.IteratorAgeMilliseconds metric with a static threshold of 300000ms, evaluation period of 1 minute for 3 consecutive datapoints, and an SNS action on ALARM state.</li>
-                <li><span class="option-label">D.</span> Create a CloudWatch alarm on the IncomingRecords metric with a threshold of 0 for 5 minutes to detect when no new data arrives.</li>
+                <li><span class="option-label">D.</span> Create a CloudWatch alarm on the IncomingRecords metric with a threshold of 0 for 5 minutes to detect when no new data arrives, delivering records with consistent sub-second latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -55,7 +55,7 @@
             <div class="question-text">A company has a complex data pipeline with multiple stages: ingestion (Kinesis), transformation (Glue), and loading (Redshift). They want a single alert that fires ONLY when BOTH the Kinesis consumer lag exceeds 10 minutes AND the Glue job error rate exceeds 5%. Alerting on either condition alone would generate too much noise. Which approach achieves this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create a single CloudWatch alarm using a math expression that multiplies both metrics together.</li>
+                <li><span class="option-label">A.</span> Create a single CloudWatch alarm using a math expression that multiplies both metrics together, transforming records into the required target format</li>
                 <li><span class="option-label">B.</span> Create a CloudWatch composite alarm that uses an AND rule combining the Kinesis IteratorAge alarm and the Glue job error rate alarm.</li>
                 <li><span class="option-label">C.</span> Create an EventBridge rule with two event patterns that must both match before triggering the alert. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Create two separate CloudWatch alarms and configure a Lambda function to check if both are in ALARM state before sending SNS.</li>
@@ -95,7 +95,7 @@
                 
                 <li><span class="option-label">A.</span> Set evaluation periods to 15, datapoints to alarm to 15 out of 15. configured for optimal performance</li>
                 <li><span class="option-label">B.</span> Set evaluation periods to 1, datapoints to alarm to 1, with a very high threshold value.</li>
-                <li><span class="option-label">C.</span> Use anomaly detection band instead of static threshold with a sensitivity of 1 (lowest).</li>
+                <li><span class="option-label">C.</span> Use anomaly detection band instead of static threshold with a sensitivity of 1 (lowest), absorbing sudden traffic spikes without throttling</li>
                 <li><span class="option-label">D.</span> Set evaluation periods to 5, datapoints to alarm to 4 out of 5 (M out of N evaluation).</li>
             
             </ul>
@@ -112,9 +112,9 @@
             <div class="question-text">A company wants to receive different types of notifications based on the severity of data pipeline issues. Critical failures (Glue job failures) should page the on-call engineer via PagerDuty, while warning conditions (high latency) should send an email to the team. Both should be managed through CloudWatch alarms. Which architecture achieves this routing?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create one SNS topic subscribed by a Lambda function that reads the alarm severity and routes to PagerDuty or email accordingly.</li>
-                <li><span class="option-label">B.</span> Create separate CloudWatch dashboards for critical and warning alarms, each with different notification preferences. and warning-alerts)</li>
-                <li><span class="option-label">C.</span> Create one SNS topic with filter policies that route critical messages to PagerDuty and warning messages to email based on message attributes.</li>
+                <li><span class="option-label">A.</span> Create one SNS topic subscribed by a Lambda function that reads the alarm severity and routes to PagerDuty or email accordingly, meeting the latency and throughput goals of the design and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">B.</span> Create separate CloudWatch dashboards for critical and warning alarms, each with different notification preferences. and warning-alerts), streaming results downstream in near real time and delivering records with consistent sub-second latency and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">C.</span> Create one SNS topic with filter policies that route critical messages to PagerDuty and warning messages to email based on message attributes, minimizing end-to-end processing latency and streaming results downstream in near real time</li>
                 <li><span class="option-label">D.</span> Create two separate SNS topics (critical-alerts and warning-alerts). Configure critical alarms to publish to the critical-alerts topic (subscribed by PagerDuty HTTPS endpoint) and warning alarms to publish to the warning-alerts topic (subscribed by email).</li>
             
             </ul>
@@ -131,9 +131,9 @@
             <div class="question-text">A data engineer notices that a CloudWatch alarm for their Redshift cluster's CPU utilization is stuck in INSUFFICIENT_DATA state. The alarm was configured with an evaluation period of 1 minute and a threshold of 80%. The Redshift cluster is running and healthy. What is the MOST likely cause?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> The alarm's threshold is set too high and Redshift never reaches 80% CPU, causing INSUFFICIENT_DATA.</li>
-                <li><span class="option-label">B.</span> The Redshift cluster is in a different region than the CloudWatch alarm. for Redshift standard metrics is 5 minutes</li>
-                <li><span class="option-label">C.</span> The CloudWatch alarm does not have the correct IAM permissions to read Redshift metrics.</li>
+                <li><span class="option-label">A.</span> The alarm's threshold is set too high and Redshift never reaches 80% CPU, causing INSUFFICIENT_DATA, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> The Redshift cluster is in a different region than the CloudWatch alarm. for Redshift standard metrics is 5 minutes, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">C.</span> The CloudWatch alarm does not have the correct IAM permissions to read Redshift metrics, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale</li>
                 <li><span class="option-label">D.</span> The Amazon Redshift enhanced monitoring metric is published at 1-minute intervals but the alarm's period must match the metric's reporting frequency, which for Redshift standard metrics is 5 minutes.</li>
             
             </ul>
@@ -150,10 +150,10 @@
             <div class="question-text">A data pipeline team wants to automatically remediate a common failure scenario: when their Glue ETL job fails due to transient DynamoDB throttling, the job should be automatically retried after a 5-minute delay. Which solution implements this auto-remediation using CloudWatch alarms?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Configure the Glue job with automatic retries set to 3 and a retry delay of 5 minutes in the job properties.</li>
-                <li><span class="option-label">B.</span> Create a CloudWatch alarm on the DynamoDB ThrottledRequests metric. Configure the alarm to trigger a Lambda function that restarts the Glue job.</li>
+                <li><span class="option-label">A.</span> Configure the Glue job with automatic retries set to 3 and a retry delay of 5 minutes in the job properties, meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> Create a CloudWatch alarm on the DynamoDB ThrottledRequests metric. Configure the alarm to trigger a Lambda function that restarts the Glue job, validating and cleansing each record before delivery and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">C.</span> Create a CloudWatch alarm on the Glue job failure metric. Configure the alarm action to trigger an EventBridge rule that invokes a Step Functions state machine with a Wait state (5 minutes) followed by a Glue StartJobRun action.</li>
-                <li><span class="option-label">D.</span> Create a CloudWatch alarm on the Glue job failure metric. Configure the alarm action to directly invoke the Glue StartJobRun API, with a Wait state (5 minutes) followed by a Glue StartJobRun action</li>
+                <li><span class="option-label">D.</span> Create a CloudWatch alarm on the Glue job failure metric. Configure the alarm action to directly invoke the Glue StartJobRun API, with a Wait state (5 minutes) followed by a Glue StartJobRun action, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -170,8 +170,8 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Enable EMR managed scaling metrics that include YARNMemoryAvailablePercentage. Create a CloudWatch alarm with the threshold at less than 10% available, evaluated over 10 minutes.</li>
-                <li><span class="option-label">B.</span> Install the CloudWatch agent on the EMR master node to collect custom YARN metrics from the ResourceManager JMX port.</li>
-                <li><span class="option-label">C.</span> Query the EMR cluster's Ganglia dashboard metrics and set up alerts based on the Ganglia data.</li>
+                <li><span class="option-label">B.</span> Install the CloudWatch agent on the EMR master node to collect custom YARN metrics from the ResourceManager JMX port, absorbing sudden traffic spikes without throttling</li>
+                <li><span class="option-label">C.</span> Query the EMR cluster's Ganglia dashboard metrics and set up alerts based on the Ganglia data, absorbing sudden traffic spikes without throttling</li>
                 <li><span class="option-label">D.</span> Use the default EC2 CloudWatch metrics for memory utilization on EMR core nodes, with the threshold at less than 10% available</li>
             
             </ul>
@@ -190,7 +190,7 @@
                 
                 <li><span class="option-label">A.</span> Create a CloudWatch alarm on the EventBridge ThrottledRules metric with a threshold greater than 0. configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> Create a CloudWatch alarm on the EventBridge FailedInvocations metric filtered by the specific rule name, with a threshold greater than 0.</li>
-                <li><span class="option-label">C.</span> Create an EventBridge rule that monitors itself for failure events using a self-referencing pattern.</li>
+                <li><span class="option-label">C.</span> Create an EventBridge rule that monitors itself for failure events using a self-referencing pattern, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">D.</span> Create a CloudWatch alarm on the EventBridge Invocations metric, alerting when it drops to 0 (indicating no rules are firing).</li>
             
             </ul>
@@ -207,10 +207,10 @@
             <div class="question-text">A data platform team manages 50+ CloudWatch alarms for their data pipelines. They want to set up a notification system where a single daily summary email is sent if any alarms were in ALARM state during the past 24 hours, rather than receiving individual notifications for each state change. Which approach provides daily alarm summary notifications?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Configure all alarms to publish to a single SNS topic with a daily digest delivery option enabled.</li>
+                <li><span class="option-label">A.</span> Configure all alarms to publish to a single SNS topic with a daily digest delivery option enabled, meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">B.</span> Create a scheduled EventBridge rule (daily) that triggers a Lambda function. The function calls DescribeAlarms API to list alarms in ALARM state and sends a summary via SES.</li>
-                <li><span class="option-label">C.</span> Use CloudWatch dashboards with automatic daily email subscription for alarm status.</li>
-                <li><span class="option-label">D.</span> Create a composite alarm that aggregates all 50 alarms and sends a single notification per day. and sends a summary via SES</li>
+                <li><span class="option-label">C.</span> Use CloudWatch dashboards with automatic daily email subscription for alarm status, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">D.</span> Create a composite alarm that aggregates all 50 alarms and sends a single notification per day. and sends a summary via SES, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

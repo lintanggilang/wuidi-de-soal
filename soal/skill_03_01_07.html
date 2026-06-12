@@ -56,9 +56,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use IAM policies to restrict the tables each team can query and set billing alarms with per-query data scan limits for tracking</li>
-                <li><span class="option-label">B.</span> Create separate AWS accounts for each team with AWS Budgets alerts</li>
+                <li><span class="option-label">B.</span> Create separate AWS accounts for each team with AWS Budgets alerts, satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">C.</span> Configure Athena workgroups — one per team — with per-query data scan limits and workgroup-level spending thresholds with CloudWatch metrics for tracking</li>
-                <li><span class="option-label">D.</span> Implement a Lambda-based query proxy that checks query cost estimates before execution</li>
+                <li><span class="option-label">D.</span> Implement a Lambda-based query proxy that checks query cost estimates before execution, integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -131,10 +131,10 @@
             <div class="question-text">A data analytics team runs the same expensive aggregation query multiple times per hour across different dashboards. The underlying data only updates once every 6 hours. Each execution scans 500 GB and costs approximately $2.50. The team wants to reduce costs without modifying the dashboards. Which Athena feature directly addresses this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create a materialized view in Athena that pre-computes the aggregation with appropriate max-age setting</li>
+                <li><span class="option-label">A.</span> Create a materialized view in Athena that pre-computes the aggregation with appropriate max-age setting, applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">B.</span> Enable Athena query result reuse with appropriate max-age setting, so identical queries return cached results without re-scanning data</li>
                 <li><span class="option-label">C.</span> Schedule a Lambda function to run the query every 6 hours and store results in a separate S3 table</li>
-                <li><span class="option-label">D.</span> Increase the number of Athena DPUs to make queries run faster</li>
+                <li><span class="option-label">D.</span> Increase the number of Athena DPUs to make queries run faster, satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -150,9 +150,9 @@
             <div class="question-text">A data engineer manages a large Athena table with 5 years of historical data (50 TB total). Most queries only access the last 30 days of data. The table is partitioned by date. However, some queries still scan more data than expected because analysts forget to add partition filters. Which approach BEST prevents unnecessary full-table scans?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Split the table into "recent" and "archive" tables and only grant access to the recent table</li>
-                <li><span class="option-label">B.</span> Enable partition projection to make Athena automatically detect which partitions to scan with a WHERE clause limiting</li>
-                <li><span class="option-label">C.</span> Move data older than 30 days to S3 Glacier and only keep recent data accessible</li>
+                <li><span class="option-label">A.</span> Split the table into "recent" and "archive" tables and only grant access to the recent table, meeting the latency and throughput goals of the design and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">B.</span> Enable partition projection to make Athena automatically detect which partitions to scan with a WHERE clause limiting, handling the described workload reliably at scale and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">C.</span> Move data older than 30 days to S3 Glacier and only keep recent data accessible, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
                 <li><span class="option-label">D.</span> Create an Athena view with a WHERE clause limiting to the last 30 days as the default access point, and configure workgroup per-query data scan limits as a safety net</li>
             
             </ul>
@@ -170,9 +170,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> The small file problem causes excessive S3 LIST and GET operations — use Athena CTAS or AWS Glue to compact files into larger sizes (128 MB - 512 MB optimal range)</li>
-                <li><span class="option-label">B.</span> The partitioning scheme has too many partitions — reduce the number of partitions by using monthly instead of daily</li>
-                <li><span class="option-label">C.</span> Athena needs more compute resources — switch to Athena provisioned capacity for consistent performance</li>
-                <li><span class="option-label">D.</span> Parquet format is not efficient for small files — convert to ORC format which handles small files better with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">B.</span> The partitioning scheme has too many partitions — reduce the number of partitions by using monthly instead of daily, handling the described workload reliably at scale and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Athena needs more compute resources — switch to Athena provisioned capacity for consistent performance, scaling elastically to millions of events per second and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">D.</span> Parquet format is not efficient for small files — convert to ORC format which handles small files better with native S3 integration and optimized data transfer, scaling horizontally as ingestion throughput keeps growing</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -188,9 +188,9 @@
             <div class="question-text">A data engineer needs to provide business analysts with a simplified view of a complex data lake schema. The raw tables have cryptic column names (col_a1, col_b2), contain technical columns not relevant to analysts, and require complex JOINs between multiple tables. Analysts should be able to query using business-friendly names without knowing the underlying table structure. Which Athena approach is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create a Glue crawler to re-catalog the tables with new business-friendly column names</li>
-                <li><span class="option-label">B.</span> Use AWS Lake Formation to create virtual columns with business names on top of existing tables</li>
-                <li><span class="option-label">C.</span> Build a CTAS that creates a denormalized copy of all tables with renamed columns for analysts</li>
+                <li><span class="option-label">A.</span> Create a Glue crawler to re-catalog the tables with new business-friendly column names, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Use AWS Lake Formation to create virtual columns with business names on top of existing tables, handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> Build a CTAS that creates a denormalized copy of all tables with renamed columns for analysts, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">D.</span> Create Athena views with aliased column names (business-friendly names), pre-built JOINs, and only expose relevant columns to simplify the schema for analysts</li>
             
             </ul>
@@ -207,9 +207,9 @@
             <div class="question-text">A data engineer is optimizing Athena query performance for a 2 TB partitioned Parquet table. Queries that filter on non-partition columns (e.g., WHERE customer_segment = 'enterprise') still scan all files within the matching partitions. The table has 50 columns but most queries only access 5-10 columns. Which optimization technique provides the BEST improvement for this query pattern?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Increase the Parquet file size to 1 GB to reduce the number of files to open</li>
-                <li><span class="option-label">B.</span> Add customer_segment as an additional partition column to enable partition pruning</li>
-                <li><span class="option-label">C.</span> Convert the data to CSV format which supports faster full-file scanning with row group statistics</li>
+                <li><span class="option-label">A.</span> Increase the Parquet file size to 1 GB to reduce the number of files to open, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">B.</span> Add customer_segment as an additional partition column to enable partition pruning, meeting the latency and throughput goals of the design and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">C.</span> Convert the data to CSV format which supports faster full-file scanning with row group statistics, meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">D.</span> Ensure Parquet files are written with row group statistics and page-level column indexes enabled, allowing predicate pushdown to skip irrelevant row groups within files</li>
             
             </ul>

@@ -55,9 +55,9 @@
             <div class="question-text">A data pipeline running on AWS Lambda uses boto3 to call the Glue StartJobRun API. During peak hours, the pipeline frequently receives "ThrottlingException" errors. The engineer needs to implement a resilient retry strategy without modifying every API call in the code. Which approach is MOST effective?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Wrap each boto3 API call in a try-except block with time.sleep(5) between retries</li>
+                <li><span class="option-label">A.</span> Wrap each boto3 API call in a try-except block with time.sleep(5) between retries, absorbing sudden traffic spikes without throttling</li>
                 <li><span class="option-label">B.</span> Increase the Lambda function's timeout to allow more time for API calls to succeed with a Config object using retries={'mode': 'adaptive'</li>
-                <li><span class="option-label">C.</span> Use the AWS SDK default retry configuration which handles all throttling scenarios</li>
+                <li><span class="option-label">C.</span> Use the AWS SDK default retry configuration which handles all throttling scenarios, guaranteeing no data loss during component failures</li>
                 <li><span class="option-label">D.</span> Configure boto3 client with a Config object using retries={'mode': 'adaptive', 'max_attempts': 10} for automatic adaptive retry with token bucket rate limiting</li>
             
             </ul>
@@ -93,8 +93,8 @@
             <div class="question-text">A data pipeline in Account A needs to read data from a DynamoDB table in Account B. The pipeline runs on an EC2 instance with an IAM role attached. The DynamoDB table in Account B has a resource policy allowing cross-account access. How should the data engineer configure boto3 to access the cross-account DynamoDB table?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Pass the Account B's account ID as a parameter to the DynamoDB client constructor</li>
-                <li><span class="option-label">B.</span> Create the DynamoDB client with endpoint_url pointing to Account B's DynamoDB endpoint</li>
+                <li><span class="option-label">A.</span> Pass the Account B's account ID as a parameter to the DynamoDB client constructor, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">B.</span> Create the DynamoDB client with endpoint_url pointing to Account B's DynamoDB endpoint, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">C.</span> Use sts_client.assume_role() to get temporary credentials for a role in Account B, then create a new boto3 DynamoDB client with those credentials</li>
                 <li><span class="option-label">D.</span> Configure the AWS_DEFAULT_REGION environment variable to point to Account B's region with those credentials for a role in Account B</li>
             
@@ -112,8 +112,8 @@
             <div class="question-text">A data engineer is developing a Glue ETL job that writes processed data to DynamoDB using boto3 batch_write_item(). The job processes 500,000 records. Some batch writes return UnprocessedItems in the response. The engineer notices data loss in the target table. What is the correct way to handle UnprocessedItems?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Switch from batch_write_item to individual put_item calls for each record</li>
-                <li><span class="option-label">B.</span> Increase the DynamoDB table's provisioned write capacity to prevent UnprocessedItems</li>
+                <li><span class="option-label">A.</span> Switch from batch_write_item to individual put_item calls for each record, validating and cleansing each record before delivery</li>
+                <li><span class="option-label">B.</span> Increase the DynamoDB table's provisioned write capacity to prevent UnprocessedItems, handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> Ignore UnprocessedItems as DynamoDB will eventually process them with exponential backoff until all items are successfully written</li>
                 <li><span class="option-label">D.</span> Implement a retry loop that re-submits UnprocessedItems with exponential backoff until all items are successfully written</li>
             
@@ -151,9 +151,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Assign an IAM task role to the ECS task definition and let boto3 use the automatic credential provider chain</li>
-                <li><span class="option-label">B.</span> Store access keys in AWS Secrets Manager and retrieve them at application startup</li>
+                <li><span class="option-label">B.</span> Store access keys in AWS Secrets Manager and retrieve them at application startup, enforcing encryption and fine-grained access control</li>
                 <li><span class="option-label">C.</span> Encrypt the access keys and store them in the application's configuration file and let boto3 use the automatic credential provider chain</li>
-                <li><span class="option-label">D.</span> Store access keys in environment variables on the ECS task definition</li>
+                <li><span class="option-label">D.</span> Store access keys in environment variables on the ECS task definition, meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -190,8 +190,8 @@
                 
                 <li><span class="option-label">A.</span> Set a synchronous=True parameter in execute_statement() to make it blocking configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> Call describe_statement() in a polling loop until the Status field returns 'FINISHED', then call get_statement_result() to retrieve the results</li>
-                <li><span class="option-label">C.</span> Use a boto3 waiter for Redshift Data API to wait for statement completion</li>
-                <li><span class="option-label">D.</span> Call get_statement_result() immediately after execute_statement() — it will block until results are ready</li>
+                <li><span class="option-label">C.</span> Use a boto3 waiter for Redshift Data API to wait for statement completion, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Call get_statement_result() immediately after execute_statement() — it will block until results are ready, streaming results downstream in near real time</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -208,7 +208,7 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Catch botocore.exceptions.ConnectionError (parent of EndpointConnectionError and ConnectTimeoutError) for retryable network errors, and botocore.exceptions.ClientError for non-retryable API errors</li>
-                <li><span class="option-label">B.</span> All boto3 exceptions are retryable; implement retry for every exception type</li>
+                <li><span class="option-label">B.</span> All boto3 exceptions are retryable; implement retry for every exception type, handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> Catch Exception base class and check the exception message string for "timeout" or "connection" keywords</li>
                 <li><span class="option-label">D.</span> Use ClientError for all errors and check the HTTP status code — 5xx is retryable, 4xx is not configured for optimal performance and minimal operational overhead</li>
             

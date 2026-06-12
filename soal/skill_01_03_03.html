@@ -36,9 +36,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use Step Functions Map state with MaxConcurrency set to a value below the Lambda limit (e.g., 100) to control how many files are processed simultaneously</li>
-                <li><span class="option-label">B.</span> Process all files sequentially in a single Lambda invocation</li>
-                <li><span class="option-label">C.</span> Use reserved concurrency on the Lambda function set to 1,000</li>
-                <li><span class="option-label">D.</span> Add Wait states between each Lambda invocation with MaxConcurrency set</li>
+                <li><span class="option-label">B.</span> Process all files sequentially in a single Lambda invocation, absorbing sudden traffic spikes without throttling and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> Use reserved concurrency on the Lambda function set to 1,000, validating and cleansing each record before delivery and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">D.</span> Add Wait states between each Lambda invocation with MaxConcurrency set, validating and cleansing each record before delivery and integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -53,10 +53,10 @@
             <div class="question-text">A serverless data pipeline uses EventBridge → Lambda → S3. The Lambda function processes events but occasionally takes longer than 15 minutes for large datasets. The function hits the maximum timeout limit. Which serverless redesign resolves this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Switch to an EC2 instance for processing with a Step Functions workflow that breaks processing into smaller chunks</li>
-                <li><span class="option-label">B.</span> Increase Lambda timeout beyond 15 minutes</li>
+                <li><span class="option-label">A.</span> Switch to an EC2 instance for processing with a Step Functions workflow that breaks processing into smaller chunks, handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Increase Lambda timeout beyond 15 minutes, integrating natively with the rest of the pipeline and removing the need to provision or patch any infrastructure</li>
                 <li><span class="option-label">C.</span> Replace the single Lambda with a Step Functions workflow that breaks processing into smaller chunks, each handled by a separate Lambda invocation within the 15-minute limit</li>
-                <li><span class="option-label">D.</span> Use Lambda provisioned concurrency to run longer</li>
+                <li><span class="option-label">D.</span> Use Lambda provisioned concurrency to run longer, removing the need to provision or patch any infrastructure and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -72,9 +72,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Enable AWS Glue Auto Scaling to dynamically reduce workers when utilization is low, and review if the number of workers can be reduced in the job configuration</li>
-                <li><span class="option-label">B.</span> Increase the Glue job timeout to allow slower processing with fewer DPUs</li>
-                <li><span class="option-label">C.</span> Switch from Glue to a self-managed Spark cluster configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Run the workflow less frequently (daily instead of hourly)</li>
+                <li><span class="option-label">B.</span> Increase the Glue job timeout to allow slower processing with fewer DPUs, meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Switch from Glue to a self-managed Spark cluster configured for optimal performance and minimal operational overhead, validating and cleansing each record before delivery and reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Run the workflow less frequently (daily instead of hourly), transforming records into the required target format and applying schema conversion and enrichment inline and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -90,9 +90,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Step Functions automatically passes output from each state as input to the next state via the state machine's JSON data flow (InputPath, OutputPath, ResultPath)</li>
-                <li><span class="option-label">B.</span> Use environment variables shared across Lambda functions</li>
-                <li><span class="option-label">C.</span> Use DynamoDB to store state between steps</li>
-                <li><span class="option-label">D.</span> Use S3 to store intermediate state files configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> Use environment variables shared across Lambda functions, requiring no servers to manage or scale manually and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> Use DynamoDB to store state between steps, satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort and providing exactly-once processing semantics</li>
+                <li><span class="option-label">D.</span> Use S3 to store intermediate state files configured for optimal performance and minimal operational overhead, running as a fully managed service with minimal operational overhead</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -125,10 +125,10 @@
             <div class="question-text">A serverless data pipeline uses Lambda functions. After a deployment, a Lambda function's cold start adds 10 seconds of latency to time-sensitive data processing. The function runs approximately every 30 seconds. How can cold starts be eliminated while maintaining serverless architecture?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Move the function to a container on ECS Fargate</li>
+                <li><span class="option-label">A.</span> Move the function to a container on ECS Fargate, reducing day-to-day operational effort and satisfying strict compliance and audit requirements</li>
                 <li><span class="option-label">B.</span> Configure Provisioned Concurrency on the Lambda function to keep a specified number of execution environments warm and ready</li>
-                <li><span class="option-label">C.</span> Use a CloudWatch Events rule to "ping" the function every 5 minutes</li>
-                <li><span class="option-label">D.</span> Increase Lambda memory allocation to reduce cold start time and ready</li>
+                <li><span class="option-label">C.</span> Use a CloudWatch Events rule to "ping" the function every 5 minutes, reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Increase Lambda memory allocation to reduce cold start time and ready, reducing day-to-day operational effort and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -143,10 +143,10 @@
             <div class="question-text">A data engineer maintains a serverless workflow deployed with AWS SAM. The workflow includes multiple Lambda functions, Step Functions, and DynamoDB tables. A recent deployment introduced a bug. The engineer needs to quickly revert to the previous working version. What is the FASTEST rollback approach?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create a new stack with the previous version alongside the current one</li>
+                <li><span class="option-label">A.</span> Create a new stack with the previous version alongside the current one, removing the need to provision or patch any infrastructure</li>
                 <li><span class="option-label">B.</span> Use CloudFormation rollback — update the SAM stack to the previous template version or trigger automatic rollback via the CloudFormation console/CLI</li>
-                <li><span class="option-label">C.</span> Update each Lambda function individually to the previous version configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> Manually delete all resources and redeploy from the previous git commit</li>
+                <li><span class="option-label">C.</span> Update each Lambda function individually to the previous version configured for optimal performance and minimal operational overhead, reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Manually delete all resources and redeploy from the previous git commit, removing the need to provision or patch any infrastructure</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -161,9 +161,9 @@
             <div class="question-text">A serverless ETL pipeline uses Step Functions Express Workflow for high-frequency, short-duration processing. The workflow is invoked 100,000 times per day, each execution lasting 10 seconds. The team notices unexpected costs. What is the MOST likely billing consideration they missed?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Step Functions charges for failed executions too and duration (memory × time), not just per execution</li>
-                <li><span class="option-label">B.</span> Standard Workflows would be cheaper at this scale</li>
-                <li><span class="option-label">C.</span> The Lambda invocations inside the workflow are double-billed</li>
+                <li><span class="option-label">A.</span> Step Functions charges for failed executions too and duration (memory × time), not just per execution, reducing day-to-day operational effort and handling the described workload reliably at scale and keeping steady-state operating costs low</li>
+                <li><span class="option-label">B.</span> Standard Workflows would be cheaper at this scale, running as a fully managed service with minimal operational overhead and avoiding charges for idle provisioned capacity and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> The Lambda invocations inside the workflow are double-billed, reducing day-to-day operational effort and requiring no servers to manage or scale manually and running as a fully managed service with minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Express Workflows are billed per number of state transitions AND duration (memory × time), not just per execution. High state count per execution multiplied by 100K daily executions results in significant transition charges</li>
             
             </ul>
@@ -179,10 +179,10 @@
             <div class="question-text">A serverless workflow uses EventBridge Pipes to connect Amazon SQS (source) → Lambda (enrichment) → Step Functions (target). The engineer needs to filter messages so only orders above $100 are processed. Where should this filtering be applied for MAXIMUM cost efficiency?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Add filtering logic inside the Lambda enrichment function and Step Functions execution costs</li>
-                <li><span class="option-label">B.</span> Add a Choice state in Step Functions to discard low-value orders</li>
+                <li><span class="option-label">A.</span> Add filtering logic inside the Lambda enrichment function and Step Functions execution costs, handling the described workload reliably at scale and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> Add a Choice state in Step Functions to discard low-value orders, preserving strict per-key ordering across all partitions and meeting the latency and throughput goals of the design and reducing day-to-day operational effort</li>
                 <li><span class="option-label">C.</span> Configure filtering in the EventBridge Pipe's filter criteria — messages not matching the filter are discarded before reaching the enrichment Lambda or target, saving Lambda invocation and Step Functions execution costs</li>
-                <li><span class="option-label">D.</span> Configure SQS message filtering on the queue</li>
+                <li><span class="option-label">D.</span> Configure SQS message filtering on the queue, reducing day-to-day operational effort and meeting the latency and throughput goals of the design and validating and cleansing each record before delivery</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -197,10 +197,10 @@
             <div class="question-text">A data engineer is troubleshooting a serverless workflow. A Step Functions execution failed but the error details are unclear from the execution history. The Lambda function inside didn't log sufficient information. Which approach provides BEST observability for serverless workflows?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Check the Step Functions console execution history only</li>
-                <li><span class="option-label">B.</span> Enable VPC Flow Logs for the Lambda function</li>
+                <li><span class="option-label">A.</span> Check the Step Functions console execution history only, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Enable VPC Flow Logs for the Lambda function, reducing day-to-day operational effort and applying schema conversion and enrichment inline and satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">C.</span> Enable Step Functions X-Ray tracing for distributed tracing, configure CloudWatch Logs for the state machine execution logs (ALL level), and add structured logging with correlation IDs in Lambda functions</li>
-                <li><span class="option-label">D.</span> Add print statements throughout the Lambda code with correlation IDs in Lambda functions for distributed tracing</li>
+                <li><span class="option-label">D.</span> Add print statements throughout the Lambda code with correlation IDs in Lambda functions for distributed tracing, handling the described workload reliably at scale and validating and cleansing each record before delivery</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

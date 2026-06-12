@@ -37,9 +37,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Create a Redshift role "analysts_readonly" with SELECT on all tables in "sales" schema, and a role "engineers_full" with ALL on all schemas; then GRANT each role to the respective users. When new users join, simply GRANT the appropriate role</li>
-                <li><span class="option-label">B.</span> Create separate Redshift clusters for analysts and engineers with SELECT on all tables in "sales" schema</li>
-                <li><span class="option-label">C.</span> Create a superuser account shared by all analysts and another shared by all engineers</li>
-                <li><span class="option-label">D.</span> Use Redshift Spectrum to isolate analyst queries from engineer queries</li>
+                <li><span class="option-label">B.</span> Create separate Redshift clusters for analysts and engineers with SELECT on all tables in "sales" schema, handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and transforming records into the required target format</li>
+                <li><span class="option-label">C.</span> Create a superuser account shared by all analysts and another shared by all engineers, transforming records into the required target format and satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Use Redshift Spectrum to isolate analyst queries from engineer queries, integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and transforming records into the required target format and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -55,10 +55,10 @@
             <div class="question-text">A healthcare company stores patient data in Redshift. Regulations require that customer service representatives can see patient names and appointment dates, but NOT diagnosis codes or treatment details. All data is in a single "patients" table with columns: patient_id, name, appointment_date, diagnosis_code, treatment_details, billing_amount. Which Redshift feature enforces this MOST effectively?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Separate the table into two tables and restrict access to the sensitive table configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Use dynamic data masking to show NULL for restricted columns</li>
+                <li><span class="option-label">A.</span> Separate the table into two tables and restrict access to the sensitive table configured for optimal performance and minimal operational overhead, handling the described workload reliably at scale and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Use dynamic data masking to show NULL for restricted columns, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">C.</span> Use column-level access control — GRANT SELECT (patient_id, name, appointment_date) ON patients TO ROLE customer_service; this ensures the role can only query permitted columns, and any attempt to SELECT diagnosis_code will return a permission error</li>
-                <li><span class="option-label">D.</span> Create a view that excludes sensitive columns and grant access only to the view</li>
+                <li><span class="option-label">D.</span> Create a view that excludes sensitive columns and grant access only to the view, handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -74,10 +74,10 @@
             <div class="question-text">A multi-tenant SaaS company uses Amazon Redshift to store data for 200 customers. Each customer's data is identified by a "tenant_id" column in every table. The company needs to ensure that when a customer's analyst runs queries, they can ONLY see their own tenant's data — without relying on application-level WHERE clause filtering. Which Redshift feature provides this server-enforced row-level security?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use Redshift Spectrum with S3 bucket-per-tenant partitioning and enable for the analyst role</li>
+                <li><span class="option-label">A.</span> Use Redshift Spectrum with S3 bucket-per-tenant partitioning and enable for the analyst role, satisfying strict compliance and audit requirements and enforcing encryption and fine-grained access control and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">B.</span> Implement Row-Level Security (RLS) policies in Redshift — CREATE RLS POLICY tenant_isolation USING (tenant_id = current_setting('app.tenant_id')); ATTACH RLS POLICY to tables and enable for the analyst role. The policy automatically filters rows based on the session variable</li>
-                <li><span class="option-label">C.</span> Create separate schemas for each tenant and grant access to only their schema</li>
-                <li><span class="option-label">D.</span> Add WHERE tenant_id = ? to all views accessed by customers</li>
+                <li><span class="option-label">C.</span> Create separate schemas for each tenant and grant access to only their schema, satisfying strict compliance and audit requirements and integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Add WHERE tenant_id = ? to all views accessed by customers, integrating natively with the rest of the pipeline and protecting the data both in transit and at rest and satisfying strict compliance and audit requirements</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -93,7 +93,7 @@
             <div class="question-text">A data engineer needs to audit who has access to what in their Redshift cluster. The security team requests a report showing: all users, their group memberships, and effective permissions on the "finance" schema. Which system tables/views should the engineer query?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use AWS Config to evaluate Redshift database permissions</li>
+                <li><span class="option-label">A.</span> Use AWS Config to evaluate Redshift database permissions, applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">B.</span> Query STL_QUERY system table for all SELECT statements on the finance schema configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Check CloudTrail logs for all Redshift GRANT statements executed in the past year</li>
                 <li><span class="option-label">D.</span> Query pg_catalog.pg_user for users, pg_catalog.pg_group for group memberships, and SVV_RELATION_PRIVILEGES for effective permissions on schema objects</li>
@@ -112,10 +112,10 @@
             <div class="question-text">A data engineer wants to implement IAM-based authentication for an Amazon RDS PostgreSQL database, eliminating the need for database passwords entirely. Application Lambda functions should authenticate to RDS using their IAM role. Which configuration steps are required?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Store IAM credentials in the RDS parameter group and enable auto-authentication configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Simply attach the AmazonRDSFullAccess policy to the Lambda role — RDS will automatically recognize it</li>
+                <li><span class="option-label">A.</span> Store IAM credentials in the RDS parameter group and enable auto-authentication configured for optimal performance and minimal operational overhead, integrating natively with the rest of the pipeline and protecting the data both in transit and at rest and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> Simply attach the AmazonRDSFullAccess policy to the Lambda role — RDS will automatically recognize it, protecting the data both in transit and at rest and satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">C.</span> Enable IAM database authentication on the RDS instance, create a database user mapped to the IAM role using GRANT rds_iam TO db_user, and configure the Lambda function to generate an authentication token using the RDS API (generate-db-auth-token) which is used as the password when connecting</li>
-                <li><span class="option-label">D.</span> Create an RDS Proxy and it will automatically handle IAM authentication without any database-level configuration</li>
+                <li><span class="option-label">D.</span> Create an RDS Proxy and it will automatically handle IAM authentication without any database-level configuration, enforcing encryption and fine-grained access control and meeting the latency and throughput goals of the design and satisfying strict compliance and audit requirements and integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -131,10 +131,10 @@
             <div class="question-text">A Redshift administrator creates the following permission structure: Group "analytics" has SELECT on schema "reporting". User "john" is a member of group "analytics". An explicit REVOKE SELECT on reporting.revenue_table FROM john is also applied. What happens when john tries to SELECT from reporting.revenue_table?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Access is allowed because group permissions override individual user revocations</li>
-                <li><span class="option-label">B.</span> Access is denied because REVOKE always overrides GRANT regardless of source</li>
+                <li><span class="option-label">A.</span> Access is allowed because group permissions override individual user revocations, applying schema conversion and enrichment inline and transforming records into the required target format and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">B.</span> Access is denied because REVOKE always overrides GRANT regardless of source, integrating natively with the rest of the pipeline and handling the described workload reliably at scale and validating and cleansing each record before delivery</li>
                 <li><span class="option-label">C.</span> Access is allowed because john inherits SELECT from the "analytics" group, and the individual REVOKE only removes directly-granted permissions, not group-inherited permissions — in Redshift, group grants and user grants are evaluated independently</li>
-                <li><span class="option-label">D.</span> Access results in an error because conflicting permissions are not allowed configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Access results in an error because conflicting permissions are not allowed configured for optimal performance and minimal operational overhead, applying schema conversion and enrichment inline and integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -151,9 +151,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly; combined with ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES TO ROLE bi_readonly; — the first covers existing tables, the second ensures future tables automatically get the same grant</li>
-                <li><span class="option-label">B.</span> GRANT ALL ON SCHEMA analytics TO ROLE bi_readonly; with ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES</li>
-                <li><span class="option-label">C.</span> GRANT USAGE ON SCHEMA analytics TO ROLE bi_readonly; only</li>
-                <li><span class="option-label">D.</span> GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly;</li>
+                <li><span class="option-label">B.</span> GRANT ALL ON SCHEMA analytics TO ROLE bi_readonly; with ALTER DEFAULT PRIVILEGES IN SCHEMA analytics GRANT SELECT ON TABLES, applying schema conversion and enrichment inline and validating and cleansing each record before delivery and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> GRANT USAGE ON SCHEMA analytics TO ROLE bi_readonly; only, validating and cleansing each record before delivery and transforming records into the required target format and handling the described workload reliably at scale and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO ROLE bi_readonly;, transforming records into the required target format and handling the described workload reliably at scale and meeting the latency and throughput goals of the design and validating and cleansing each record before delivery</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -169,10 +169,10 @@
             <div class="question-text">A company federates access to Amazon Redshift using IAM roles with SAML-based identity federation. Different teams assume different IAM roles. The DBA needs to map these federated IAM roles to appropriate Redshift database permissions. Which approach correctly maps IAM roles to Redshift database roles?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create Redshift database users matching the IAM role names and manually assign permissions</li>
+                <li><span class="option-label">A.</span> Create Redshift database users matching the IAM role names and manually assign permissions, satisfying strict compliance and audit requirements and integrating natively with the rest of the pipeline and enforcing encryption and fine-grained access control and handling the described workload reliably at scale</li>
                 <li><span class="option-label">B.</span> Use Redshift's native IAM role integration — when federated users connect using GetClusterCredentials API with DbGroup parameter, they are automatically added to specified Redshift database groups; OR use role-based identity mapping where IAM roles are mapped to Redshift roles via the Redshift identity provider configuration</li>
-                <li><span class="option-label">C.</span> Federated users always get superuser access to Redshift with DbGroup parameter</li>
-                <li><span class="option-label">D.</span> Use S3 bucket policies to control Redshift access for federated users</li>
+                <li><span class="option-label">C.</span> Federated users always get superuser access to Redshift with DbGroup parameter, protecting the data both in transit and at rest and meeting the latency and throughput goals of the design and handling the described workload reliably at scale and enforcing encryption and fine-grained access control</li>
+                <li><span class="option-label">D.</span> Use S3 bucket policies to control Redshift access for federated users, integrating natively with the rest of the pipeline and enforcing encryption and fine-grained access control and satisfying strict compliance and audit requirements and meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -188,9 +188,9 @@
             <div class="question-text">A data engineer discovers that a former contractor's database user in Redshift still has active permissions. The contractor's access was supposed to be revoked when they left 3 months ago. The DBA needs to: (1) immediately revoke all access, (2) audit what the user accessed in the past 3 months, and (3) prevent this from happening again. What is the correct remediation approach?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Wait for the password to expire naturally configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">B.</span> Only disable the user's password — their permissions will automatically expire</li>
-                <li><span class="option-label">C.</span> Delete the Redshift cluster and recreate it without the user</li>
+                <li><span class="option-label">A.</span> Wait for the password to expire naturally configured for optimal performance and minimal operational overhead, streaming results downstream in near real time and minimizing end-to-end processing latency and handling the described workload reliably at scale and delivering records with consistent sub-second latency and enforcing encryption and fine-grained access control</li>
+                <li><span class="option-label">B.</span> Only disable the user's password — their permissions will automatically expire, protecting the data both in transit and at rest and meeting the latency and throughput goals of the design and streaming results downstream in near real time and delivering records with consistent sub-second latency</li>
+                <li><span class="option-label">C.</span> Delete the Redshift cluster and recreate it without the user, minimizing end-to-end processing latency and meeting the latency and throughput goals of the design and enforcing encryption and fine-grained access control and protecting the data both in transit and at rest and streaming results downstream in near real time</li>
                 <li><span class="option-label">D.</span> Execute ALTER USER contractor_user DISABLE; to immediately prevent login, then query STL_CONNECTION_LOG and STL_QUERY for the user's activity over the past 3 months, and implement a process using IAM-based temporary credentials (GetClusterCredentials) instead of persistent database passwords to ensure access automatically expires when IAM access is revoked</li>
             
             </ul>
@@ -207,9 +207,9 @@
             <div class="question-text">A data warehouse team is implementing schema-level isolation in Redshift. They have schemas: "raw" (ETL landing), "staging" (transformations), and "presentation" (BI access). The requirements are: ETL role can write to raw and staging but NOT presentation; transformation role can read raw, write staging, and write presentation; BI role can ONLY read presentation. Which GRANT structure correctly implements this isolation?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use only views in the presentation schema that reference staging tables, and grant SELECT on views only</li>
-                <li><span class="option-label">B.</span> Create separate Redshift clusters for each schema</li>
-                <li><span class="option-label">C.</span> Grant ALL on ALL schemas to all three roles for simplicity configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">A.</span> Use only views in the presentation schema that reference staging tables, and grant SELECT on views only, satisfying all of the stated requirements with minimal effort and transforming records into the required target format and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Create separate Redshift clusters for each schema, validating and cleansing each record before delivery and applying schema conversion and enrichment inline and transforming records into the required target format and handling the described workload reliably at scale and absorbing sudden traffic spikes without throttling</li>
+                <li><span class="option-label">C.</span> Grant ALL on ALL schemas to all three roles for simplicity configured for optimal performance and minimal operational overhead, validating and cleansing each record before delivery and transforming records into the required target format and satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">D.</span> ETL role: GRANT USAGE, CREATE, INSERT, SELECT ON raw/staging schemas; Transformation role: GRANT SELECT ON raw, GRANT ALL ON staging/presentation; BI role: GRANT USAGE ON SCHEMA presentation + GRANT SELECT ON ALL TABLES IN SCHEMA presentation. Each role gets ONLY what's needed</li>
             
             </ul>

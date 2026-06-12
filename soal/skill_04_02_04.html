@@ -37,9 +37,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> When Lake Formation is enabled for a database/table, it becomes the authoritative permission layer — the IAMAllowedPrincipals group (which previously gave broad S3/Glue access) must be removed, and explicit Lake Formation GRANT permissions must be given to each principal that needs access. Existing IAM policies alone are no longer sufficient</li>
-                <li><span class="option-label">B.</span> Athena is not compatible with Lake Formation for a database/table</li>
-                <li><span class="option-label">C.</span> The S3 bucket was encrypted and Lake Formation cannot read encrypted data</li>
-                <li><span class="option-label">D.</span> Lake Formation requires all tables to be re-crawled before access is granted</li>
+                <li><span class="option-label">B.</span> Athena is not compatible with Lake Formation for a database/table, meeting the latency and throughput goals of the design and handling the described workload reliably at scale and satisfying strict compliance and audit requirements and integrating natively with the rest of the pipeline and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> The S3 bucket was encrypted and Lake Formation cannot read encrypted data, satisfying strict compliance and audit requirements and transforming records into the required target format and meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
+                <li><span class="option-label">D.</span> Lake Formation requires all tables to be re-crawled before access is granted, enforcing encryption and fine-grained access control and validating and cleansing each record before delivery and handling the described workload reliably at scale and satisfying strict compliance and audit requirements and protecting the data both in transit and at rest</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -55,9 +55,9 @@
             <div class="question-text">A data engineer needs to implement row-level and cell-level security for a data lake table accessed via Athena and Redshift Spectrum. The "transactions" table contains a "region" column and a "ssn" column. The US team should only see US region rows and the SSN column should be masked for all non-admin users. Which Lake Formation feature provides this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Implement client-side filtering in the application query layer</li>
-                <li><span class="option-label">B.</span> Create separate tables for each region and grant access accordingly with column-level exclusion or masking (exclude/mask SSN column)</li>
-                <li><span class="option-label">C.</span> Use S3 bucket policies to restrict access to specific S3 partitions</li>
+                <li><span class="option-label">A.</span> Implement client-side filtering in the application query layer, handling the described workload reliably at scale and protecting the data both in transit and at rest and integrating natively with the rest of the pipeline and satisfying strict compliance and audit requirements</li>
+                <li><span class="option-label">B.</span> Create separate tables for each region and grant access accordingly with column-level exclusion or masking (exclude/mask SSN column), validating and cleansing each record before delivery and transforming records into the required target format and enforcing encryption and fine-grained access control</li>
+                <li><span class="option-label">C.</span> Use S3 bucket policies to restrict access to specific S3 partitions, satisfying strict compliance and audit requirements and satisfying all of the stated requirements with minimal effort and transforming records into the required target format and providing exactly-once processing semantics</li>
                 <li><span class="option-label">D.</span> Use Lake Formation Data Filters — create a filter that combines row-level filtering (WHERE region = 'US') with column-level exclusion or masking (exclude/mask SSN column), then grant table access WITH the data filter applied to the US team's principal</li>
             
             </ul>
@@ -74,10 +74,10 @@
             <div class="question-text">A large organization has 500+ tables in their data lake catalog and 200+ IAM roles that need different levels of access. Managing individual GRANT statements for each role-table combination is becoming unscalable. Which Lake Formation feature dramatically simplifies permission management at scale?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Write a custom Lambda function to auto-generate GRANT statements nightly</li>
+                <li><span class="option-label">A.</span> Write a custom Lambda function to auto-generate GRANT statements nightly, absorbing sudden traffic spikes without throttling and satisfying strict compliance and audit requirements and validating and cleansing each record before delivery and applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">B.</span> Use LF-Tags (Tag-Based Access Control) — assign key-value tags to databases/tables/columns (e.g., "classification"="confidential", "domain"="finance"), then GRANT permissions based on tag expressions rather than specific resource ARNs. When new tables are created with matching tags, permissions are automatically applied</li>
-                <li><span class="option-label">C.</span> Create a single "data lake admin" role that has access to everything and share credentials</li>
-                <li><span class="option-label">D.</span> Use AWS Organizations SCPs to manage all data lake permissions with matching tags</li>
+                <li><span class="option-label">C.</span> Create a single "data lake admin" role that has access to everything and share credentials, handling the described workload reliably at scale and validating and cleansing each record before delivery and protecting the data both in transit and at rest</li>
+                <li><span class="option-label">D.</span> Use AWS Organizations SCPs to manage all data lake permissions with matching tags, integrating natively with the rest of the pipeline and scaling elastically to millions of events per second and absorbing sudden traffic spikes without throttling</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -93,10 +93,10 @@
             <div class="question-text">A multi-account organization wants to share specific data lake tables from the central data account (Account A) with an analytics account (Account B) using Lake Formation. Account B's Athena users should be able to query the shared tables. What is the correct cross-account sharing configuration?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use AWS Glue crawlers in Account B to re-crawl Account A's S3 data</li>
-                <li><span class="option-label">B.</span> Export data from Account A to Account B nightly using Glue ETL jobs configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">A.</span> Use AWS Glue crawlers in Account B to re-crawl Account A's S3 data, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline and validating and cleansing each record before delivery and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Export data from Account A to Account B nightly using Glue ETL jobs configured for optimal performance and minimal operational overhead, meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline and integrating natively with the rest of the pipeline and transforming records into the required target format and validating and cleansing each record before delivery</li>
                 <li><span class="option-label">C.</span> In Account A: use Lake Formation to GRANT SELECT on specific tables to Account B's AWS account ID (or specific IAM roles/Organization). In Account B: accept the RAM share (if using RAM method) or create a resource link in the local Glue catalog pointing to the shared database; then grant Lake Formation permissions to local principals on the resource link</li>
-                <li><span class="option-label">D.</span> Create S3 cross-account bucket policies and share the Glue catalog ARNs directly</li>
+                <li><span class="option-label">D.</span> Create S3 cross-account bucket policies and share the Glue catalog ARNs directly, validating and cleansing each record before delivery and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and transforming records into the required target format and meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -112,10 +112,10 @@
             <div class="question-text">A data engineer has both Lake Formation permissions AND S3 bucket policies configured for their data lake. An Athena user has Lake Formation GRANT (SELECT on table "orders") but the S3 bucket policy explicitly DENIES the user's role from accessing the underlying S3 path. What happens when the user queries the "orders" table via Athena?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> The query succeeds but returns empty results with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">B.</span> Lake Formation disables all S3 bucket policies automatically when enabled</li>
+                <li><span class="option-label">A.</span> The query succeeds but returns empty results with native S3 integration and optimized data transfer, keeping every related record in its produced order and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> Lake Formation disables all S3 bucket policies automatically when enabled, integrating natively with the rest of the pipeline and transforming records into the required target format and satisfying all of the stated requirements with minimal effort and validating and cleansing each record before delivery and guaranteeing exactly-ordered delivery within each key group</li>
                 <li><span class="option-label">C.</span> Access is denied — S3 bucket policies still apply as an additional layer. Lake Formation grants permission at the catalog/metadata level, but the actual data read from S3 still requires the S3 access to not be explicitly denied. However, when Lake Formation manages S3 access through its service role, the user's direct S3 permissions are not evaluated — the Lake Formation service role reads S3 on the user's behalf</li>
-                <li><span class="option-label">D.</span> Access is allowed because Lake Formation permissions override S3 bucket policies</li>
+                <li><span class="option-label">D.</span> Access is allowed because Lake Formation permissions override S3 bucket policies, meeting the latency and throughput goals of the design and guaranteeing exactly-ordered delivery within each key group and integrating natively with the rest of the pipeline and transforming records into the required target format and validating and cleansing each record before delivery</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -132,9 +132,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Register the S3 location in Lake Formation, specifying the IAM role that Lake Formation uses to access the data. This role must have: s3:GetObject/PutObject/ListBucket on the S3 path AND kms:Decrypt/kms:GenerateDataKey on the customer-managed KMS key. The KMS key policy must also allow this role to use the key</li>
-                <li><span class="option-label">B.</span> Disable KMS encryption before registering with Lake Formation since they are incompatible</li>
-                <li><span class="option-label">C.</span> Use the root account credentials to register the S3 location</li>
-                <li><span class="option-label">D.</span> Only register the S3 path in Lake Formation — KMS permissions are handled automatically with fully managed infrastructure and automatic scaling</li>
+                <li><span class="option-label">B.</span> Disable KMS encryption before registering with Lake Formation since they are incompatible, reducing day-to-day operational effort and handling the described workload reliably at scale and protecting the data both in transit and at rest and integrating natively with the rest of the pipeline and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Use the root account credentials to register the S3 location, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design and running as a fully managed service with minimal operational overhead and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">D.</span> Only register the S3 path in Lake Formation — KMS permissions are handled automatically with fully managed infrastructure and automatic scaling, enforcing encryption and fine-grained access control and satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -151,9 +151,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> In hybrid mode: databases opted-in to Lake Formation require BOTH Lake Formation grants AND IAM permissions; databases NOT opted-in (legacy) continue using IAM permissions only (with IAMAllowedPrincipals granting Super). This allows gradual migration without breaking existing access patterns</li>
-                <li><span class="option-label">B.</span> In hybrid mode, permissions are randomly applied from either Lake Formation or IAM depending on the query engine</li>
-                <li><span class="option-label">C.</span> Hybrid mode means Lake Formation is disabled and only IAM policies apply configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">D.</span> All databases use Lake Formation permissions regardless of the hybrid mode setting</li>
+                <li><span class="option-label">B.</span> In hybrid mode, permissions are randomly applied from either Lake Formation or IAM depending on the query engine, protecting the data both in transit and at rest and validating and cleansing each record before delivery and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">C.</span> Hybrid mode means Lake Formation is disabled and only IAM policies apply configured for optimal performance and minimal operational overhead, validating and cleansing each record before delivery and enforcing encryption and fine-grained access control and reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> All databases use Lake Formation permissions regardless of the hybrid mode setting, protecting the data both in transit and at rest and meeting the latency and throughput goals of the design and enforcing encryption and fine-grained access control</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -169,10 +169,10 @@
             <div class="question-text">A data engineer grants Lake Formation permissions: GRANT SELECT ON TABLE "sales" TO ROLE "analyst_role" WITH GRANT OPTION. An analyst with this role then tries to grant SELECT on "sales" to another role "intern_role". What happens and what are the implications of WITH GRANT OPTION?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> The grant fails because only Lake Formation Admins can grant permissions with GRANT OPTION delegates granting authority — the analyst becomes a data steward for this table and can further distribute access</li>
+                <li><span class="option-label">A.</span> The grant fails because only Lake Formation Admins can grant permissions with GRANT OPTION delegates granting authority — the analyst becomes a data steward for this table and can further distribute access, handling the described workload reliably at scale and integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">B.</span> The analyst can successfully grant SELECT on "sales" to "intern_role" because WITH GRANT OPTION delegates granting authority — the analyst becomes a data steward for this table and can further distribute access. However, they can only grant permissions they themselves possess and cannot grant higher-level permissions (like ALTER or DROP)</li>
-                <li><span class="option-label">C.</span> WITH GRANT OPTION means the permission will automatically expire after a set time</li>
-                <li><span class="option-label">D.</span> The analyst can grant ANY permission on any table because WITH GRANT OPTION provides administrative access</li>
+                <li><span class="option-label">C.</span> WITH GRANT OPTION means the permission will automatically expire after a set time, satisfying all of the stated requirements with minimal effort and transforming records into the required target format and validating and cleansing each record before delivery and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">D.</span> The analyst can grant ANY permission on any table because WITH GRANT OPTION provides administrative access, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -188,9 +188,9 @@
             <div class="question-text">An EMR cluster needs to query Lake Formation-governed tables. The cluster uses instance profiles for IAM authentication. The data engineer discovers that EMR jobs fail with permission errors even though the instance profile has Lake Formation grants. What additional configuration is required for EMR to work with Lake Formation?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> EMR does not support Lake Formation integration with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">B.</span> Grant the EMR instance profile s3:* permissions on all data lake buckets</li>
-                <li><span class="option-label">C.</span> Run EMR jobs only during Lake Formation's scheduled permission evaluation window</li>
+                <li><span class="option-label">A.</span> EMR does not support Lake Formation integration with native S3 integration and optimized data transfer, validating and cleansing each record before delivery and transforming records into the required target format and meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> Grant the EMR instance profile s3:* permissions on all data lake buckets, applying schema conversion and enrichment inline and satisfying all of the stated requirements with minimal effort and validating and cleansing each record before delivery and transforming records into the required target format</li>
+                <li><span class="option-label">C.</span> Run EMR jobs only during Lake Formation's scheduled permission evaluation window, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and protecting the data both in transit and at rest</li>
                 <li><span class="option-label">D.</span> Enable Lake Formation integration for the EMR cluster by specifying a "Runtime Role" or configuring the EMR security configuration to use Lake Formation session-level credentials; the EMR cluster must use credential vending through Lake Formation's GetDataAccess API rather than direct S3 access via the instance profile</li>
             
             </ul>
@@ -207,9 +207,9 @@
             <div class="question-text">A data governance team wants to understand the precedence rules when Lake Formation permissions, IAM policies, and S3 bucket policies all exist. A principal has: Lake Formation GRANT SELECT on table "orders", IAM policy DENY on glue:GetTable for the "orders" table resource, and S3 bucket policy ALLOW for the underlying S3 path. What is the final access result when querying the "orders" table through Athena?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Access is allowed because Lake Formation GRANT and S3 Allow combine to override the IAM Deny</li>
-                <li><span class="option-label">B.</span> The request enters an infinite evaluation loop and times out</li>
-                <li><span class="option-label">C.</span> Access is allowed because Lake Formation permissions have higher priority than IAM policies with native S3 integration and optimized data transfer</li>
+                <li><span class="option-label">A.</span> Access is allowed because Lake Formation GRANT and S3 Allow combine to override the IAM Deny, preserving strict per-key ordering across all partitions and handling the described workload reliably at scale and transforming records into the required target format and guaranteeing exactly-ordered delivery within each key group and providing exactly-once processing semantics</li>
+                <li><span class="option-label">B.</span> The request enters an infinite evaluation loop and times out, satisfying strict compliance and audit requirements and transforming records into the required target format and applying schema conversion and enrichment inline and preserving strict per-key ordering across all partitions and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">C.</span> Access is allowed because Lake Formation permissions have higher priority than IAM policies with native S3 integration and optimized data transfer, satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements and guaranteeing exactly-ordered delivery within each key group and applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">D.</span> Access is DENIED — IAM explicit Deny ALWAYS takes precedence over everything else. Even though Lake Formation grants SELECT and S3 allows the path, the IAM Deny on glue:GetTable prevents the query engine from reading table metadata, which blocks the entire query. Lake Formation permissions cannot override IAM explicit Deny</li>
             
             </ul>

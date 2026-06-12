@@ -37,8 +37,8 @@
                 
                 <li><span class="option-label">A.</span> Use PySpark in an AWS Glue job to process the data in a distributed manner across multiple workers</li>
                 <li><span class="option-label">B.</span> Use Python pandas library in an AWS Lambda function to read and process S3 files</li>
-                <li><span class="option-label">C.</span> Write a custom Python script running on a single large EC2 instance using multiprocessing</li>
-                <li><span class="option-label">D.</span> Use Python pandas in an Amazon SageMaker notebook to process the data interactively</li>
+                <li><span class="option-label">C.</span> Write a custom Python script running on a single large EC2 instance using multiprocessing, applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">D.</span> Use Python pandas in an Amazon SageMaker notebook to process the data interactively, validating and cleansing each record before delivery</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -55,8 +55,8 @@
                 
                 <li><span class="option-label">A.</span> Python with boto3 in a Lambda function, caching the DynamoDB reference data in the function's memory between invocations</li>
                 <li><span class="option-label">B.</span> R script on an EC2 instance processing data in micro-batches with boto3 in a Lambda function</li>
-                <li><span class="option-label">C.</span> Scala on Amazon EMR with a long-running Spark Structured Streaming job</li>
-                <li><span class="option-label">D.</span> Java on Amazon ECS Fargate with a continuously running container</li>
+                <li><span class="option-label">C.</span> Scala on Amazon EMR with a long-running Spark Structured Streaming job, keeping steady-state operating costs low</li>
+                <li><span class="option-label">D.</span> Java on Amazon ECS Fargate with a continuously running container, validating and cleansing each record before delivery</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -71,8 +71,8 @@
             <div class="question-text">A company runs complex analytical queries on Amazon Redshift that involve window functions, CTEs, and multi-table joins. A data engineer needs to create a new transformation that calculates running totals, ranks customers by lifetime value within each region, and identifies gaps in sequential order IDs. Which approach is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Extract data to Python, process using pandas groupby and rolling functions, then reload to Redshift</li>
-                <li><span class="option-label">B.</span> Use PySpark in AWS Glue to perform the window functions and write back to Redshift</li>
+                <li><span class="option-label">A.</span> Extract data to Python, process using pandas groupby and rolling functions, then reload to Redshift, preserving strict per-key ordering across all partitions</li>
+                <li><span class="option-label">B.</span> Use PySpark in AWS Glue to perform the window functions and write back to Redshift, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">C.</span> Write the transformations directly in SQL using Redshift's native window functions (ROW_NUMBER, SUM OVER, LAG/LEAD) within a stored procedure or scheduled query</li>
                 <li><span class="option-label">D.</span> Use R with dplyr to calculate rankings and running totals, then write results to Redshift via JDBC configured for optimal performance and minimal operational overhead</li>
             
@@ -89,9 +89,9 @@
             <div class="question-text">A data engineering team is migrating a legacy on-premises Spark pipeline from Scala to AWS. The pipeline performs complex graph traversals and custom aggregations on 2 TB of relationship data. The team debates whether to rewrite in Python (PySpark) or keep Scala. The pipeline runs on Amazon EMR. Which recommendation is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Rewrite in PySpark because Python is easier to maintain and performance is identical</li>
-                <li><span class="option-label">B.</span> Rewrite in Python pandas to simplify the code and executors</li>
-                <li><span class="option-label">C.</span> Convert to SQL-only transformations in Amazon Athena</li>
+                <li><span class="option-label">A.</span> Rewrite in PySpark because Python is easier to maintain and performance is identical, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> Rewrite in Python pandas to simplify the code and executors, transforming records into the required target format and meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Convert to SQL-only transformations in Amazon Athena, satisfying all of the stated requirements with minimal effort and validating and cleansing each record before delivery and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">D.</span> Keep the pipeline in Scala because it runs directly on the JVM without serialization overhead, which is critical for iterative graph algorithms that require frequent data shuffling between the driver and executors</li>
             
             </ul>
@@ -107,10 +107,10 @@
             <div class="question-text">A data engineer needs to write a bootstrap action for an Amazon EMR cluster that installs custom Python libraries, configures environment variables, downloads configuration files from S3, and sets file permissions. Which scripting language is MOST appropriate for this bootstrap action?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Scala script compiled and uploaded as a JAR file</li>
-                <li><span class="option-label">B.</span> PowerShell script with AWS.Tools modules and pip install for Python packages for file downloads</li>
+                <li><span class="option-label">A.</span> Scala script compiled and uploaded as a JAR file, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> PowerShell script with AWS.Tools modules and pip install for Python packages for file downloads, satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">C.</span> Bash shell script that uses aws s3 cp for file downloads, export for environment variables, chmod for permissions, and pip install for Python packages</li>
-                <li><span class="option-label">D.</span> Python script using boto3 and os modules</li>
+                <li><span class="option-label">D.</span> Python script using boto3 and os modules, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -125,10 +125,10 @@
             <div class="question-text">A data engineer uses Python boto3 SDK to automate the creation of AWS Glue crawlers and jobs across 15 AWS accounts. The script must assume roles in each account, create crawlers with specific configurations, and handle API throttling gracefully. Which boto3 pattern is MOST appropriate?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Store IAM access keys for all 15 accounts in the script and create separate boto3 sessions for each</li>
+                <li><span class="option-label">A.</span> Store IAM access keys for all 15 accounts in the script and create separate boto3 sessions for each, handling the described workload reliably at scale</li>
                 <li><span class="option-label">B.</span> Use boto3 STS assume_role() to get temporary credentials for each account, create account-specific Glue clients, and implement exponential backoff with jitter using botocore's built-in retry configuration</li>
-                <li><span class="option-label">C.</span> Use AWS CLI commands via subprocess calls in Python for each account</li>
-                <li><span class="option-label">D.</span> Use a single IAM user with cross-account permissions and no retry logic for each account</li>
+                <li><span class="option-label">C.</span> Use AWS CLI commands via subprocess calls in Python for each account, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Use a single IAM user with cross-account permissions and no retry logic for each account, satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -143,10 +143,10 @@
             <div class="question-text">A data analyst team runs SQL queries on Amazon Athena to generate weekly reports. They need to calculate the 7-day moving average of daily sales, the percentage contribution of each product to its category total, and the difference between current and previous month's revenue. Which SQL constructs should the data engineer recommend?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Self-joins with subqueries to calculate moving averages and GROUP BY with HAVING for category totals</li>
-                <li><span class="option-label">B.</span> Extract data to Python pandas and use rolling() and groupby() functions instead of SQL</li>
+                <li><span class="option-label">A.</span> Self-joins with subqueries to calculate moving averages and GROUP BY with HAVING for category totals, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Extract data to Python pandas and use rolling() and groupby() functions instead of SQL, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
                 <li><span class="option-label">C.</span> Window functions: AVG() OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) for moving average, SUM() OVER (PARTITION BY category) for percentage contribution, and LAG() OVER (ORDER BY month) for month-over-month difference</li>
-                <li><span class="option-label">D.</span> Multiple CTEs with correlated subqueries for each calculation with partition-level ordering and dedicated throughput</li>
+                <li><span class="option-label">D.</span> Multiple CTEs with correlated subqueries for each calculation with partition-level ordering and dedicated throughput, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -162,9 +162,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Python 3.12 runtime, because Python has one of the fastest Lambda cold start times, and the required operations (JSON parsing, math, boto3 DynamoDB writes) are all available in the standard library and included SDK</li>
-                <li><span class="option-label">B.</span> .NET 6 runtime with full ASP.NET framework</li>
-                <li><span class="option-label">C.</span> Java 17 runtime with Spring Boot framework for enterprise-grade structure</li>
-                <li><span class="option-label">D.</span> Node.js 20 runtime with TypeScript compilation configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> .NET 6 runtime with full ASP.NET framework, integrating natively with the rest of the pipeline and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Java 17 runtime with Spring Boot framework for enterprise-grade structure, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Node.js 20 runtime with TypeScript compilation configured for optimal performance and minimal operational overhead, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -179,9 +179,9 @@
             <div class="question-text">A data engineer processes datasets that range from 100 MB to 50 GB depending on the day. Small datasets (under 1 GB) arrive on weekdays, while large weekend batch files reach 50 GB. The pipeline runs on AWS Glue. The engineer wants to use a single codebase that automatically adapts to both scenarios. Which framework selection strategy is BEST?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Always provision for the 50 GB case and accept over-provisioning on weekdays with parallel processing and horizontal scaling capabilities</li>
-                <li><span class="option-label">B.</span> Use Dask as a middle ground between pandas and Spark</li>
-                <li><span class="option-label">C.</span> Use pandas for weekday processing and PySpark for weekend processing with conditional logic to switch</li>
+                <li><span class="option-label">A.</span> Always provision for the 50 GB case and accept over-provisioning on weekdays with parallel processing and horizontal scaling capabilities, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Use Dask as a middle ground between pandas and Spark, handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">C.</span> Use pandas for weekday processing and PySpark for weekend processing with conditional logic to switch, meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">D.</span> Use PySpark (AWS Glue's native framework) for all datasets — Glue Auto Scaling automatically adjusts workers for small datasets (reducing to minimum workers) and scales up for large datasets, providing a single codebase that handles both scenarios</li>
             
             </ul>
@@ -197,10 +197,10 @@
             <div class="question-text">A data engineer deploys a Python-based ETL job to AWS Glue that uses several third-party libraries (great_expectations, cryptography, custom internal packages). The job fails at runtime with ModuleNotFoundError. How should the engineer package and deploy these dependencies following best practices?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Include a requirements.txt file alongside the Glue script in S3</li>
+                <li><span class="option-label">A.</span> Include a requirements.txt file alongside the Glue script in S3, applying schema conversion and enrichment inline and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and transforming records into the required target format</li>
                 <li><span class="option-label">B.</span> Package the dependencies as a .whl (wheel) file or .zip archive and upload to S3, then reference the S3 path in the Glue job's --extra-py-files parameter. For compiled libraries (like cryptography), use a wheel built for the Glue runtime's Python version and Linux platform</li>
-                <li><span class="option-label">C.</span> Copy all library source files into the same S3 folder as the Glue script for compiled libraries (like cryptography)</li>
-                <li><span class="option-label">D.</span> Install libraries at runtime using subprocess pip install at the beginning of the script</li>
+                <li><span class="option-label">C.</span> Copy all library source files into the same S3 folder as the Glue script for compiled libraries (like cryptography), applying schema conversion and enrichment inline and handling the described workload reliably at scale and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">D.</span> Install libraries at runtime using subprocess pip install at the beginning of the script, validating and cleansing each record before delivery and handling the described workload reliably at scale and meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

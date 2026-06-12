@@ -36,9 +36,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Increase the ParallelizationFactor in the event source mapping to process multiple batches per shard concurrently</li>
-                <li><span class="option-label">B.</span> Decrease the Lambda function timeout to force faster processing</li>
+                <li><span class="option-label">B.</span> Decrease the Lambda function timeout to force faster processing, scaling horizontally as ingestion throughput keeps growing</li>
                 <li><span class="option-label">C.</span> Enable Enhanced Fan-Out on the Kinesis stream with parallel processing and horizontal scaling capabilities</li>
-                <li><span class="option-label">D.</span> Increase the batch size to process more records per invocation</li>
+                <li><span class="option-label">D.</span> Increase the batch size to process more records per invocation, scaling horizontally as ingestion throughput keeps growing</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -54,7 +54,7 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Reduce batch size to 1 so only one record fails at a time</li>
-                <li><span class="option-label">B.</span> Implement try-catch in the Lambda function to suppress all errors</li>
+                <li><span class="option-label">B.</span> Implement try-catch in the Lambda function to suppress all errors, handling the described workload reliably at scale</li>
                 <li><span class="option-label">C.</span> Set MaximumRetryAttempts to 0 to skip all failures immediately with an on-failure destination</li>
                 <li><span class="option-label">D.</span> Enable BisectBatchOnFunctionError to split failed batches and configure a MaximumRetryAttempts limit with an on-failure destination</li>
             
@@ -125,7 +125,7 @@
             <div class="question-text">A data engineer needs to process Kinesis records where each record must be transformed and then sent to different SQS queues based on the record content. Some records require enrichment from a DynamoDB table. The Lambda function must handle records that fail enrichment differently from records that fail SQS delivery. How should error handling be implemented?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use BisectBatchOnFunctionError for all error types</li>
+                <li><span class="option-label">A.</span> Use BisectBatchOnFunctionError for all error types, handling the described workload reliably at scale and minimizing end-to-end processing latency</li>
                 <li><span class="option-label">B.</span> Implement item-level error handling using ReportBatchItemFailures in the Lambda response, returning only failed record sequence numbers</li>
                 <li><span class="option-label">C.</span> Catch all exceptions in a single try-catch and write to a dead-letter S3 bucket</li>
                 <li><span class="option-label">D.</span> Configure two separate event source mappings for the same stream configured for optimal performance and minimal operational overhead</li>
@@ -145,8 +145,8 @@
                 
                 <li><span class="option-label">A.</span> Configure Tumbling Windows on the event source mapping with a window size of 300 seconds and use the state parameter in the function response</li>
                 <li><span class="option-label">B.</span> Set MaximumBatchingWindowInSeconds to 300 to batch 5 minutes of records with a window size of 300 seconds and use the state parameter in the function response</li>
-                <li><span class="option-label">C.</span> Store intermediate state in DynamoDB and aggregate manually in the Lambda function</li>
-                <li><span class="option-label">D.</span> Use Kinesis Data Analytics (Apache Flink) instead of Lambda for windowed aggregation</li>
+                <li><span class="option-label">C.</span> Store intermediate state in DynamoDB and aggregate manually in the Lambda function, meeting the latency and throughput goals of the design and reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Use Kinesis Data Analytics (Apache Flink) instead of Lambda for windowed aggregation, integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -180,9 +180,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Configure event filtering criteria on the Lambda event source mapping with a filter pattern matching {"data": {"eventType": ["PURCHASE"]}}</li>
-                <li><span class="option-label">B.</span> Use Kinesis Data Analytics to filter records before they reach Lambda</li>
+                <li><span class="option-label">B.</span> Use Kinesis Data Analytics to filter records before they reach Lambda, meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">C.</span> Configure the Kinesis producer to only send PURCHASE events to a dedicated stream with a filter pattern matching {"data": {"eventType": ["PURCHASE"]}}</li>
-                <li><span class="option-label">D.</span> Add an if-statement at the beginning of the Lambda function to skip non-PURCHASE records</li>
+                <li><span class="option-label">D.</span> Add an if-statement at the beginning of the Lambda function to skip non-PURCHASE records, keeping steady-state operating costs low</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -199,7 +199,7 @@
                 
                 <li><span class="option-label">A.</span> Lambda automatically replays all 30 hours of records from a backup configured for optimal performance and minimal operational overhead</li>
                 <li><span class="option-label">B.</span> Records older than 24 hours are permanently lost; Lambda resumes from the oldest available record (TRIM_HORIZON of current data)</li>
-                <li><span class="option-label">C.</span> The event source mapping fails with an error and must be recreated</li>
+                <li><span class="option-label">C.</span> The event source mapping fails with an error and must be recreated, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">D.</span> Lambda resumes from where it left off using the last checkpoint, including expired records from DynamoDB backup</li>
             
             </ul>

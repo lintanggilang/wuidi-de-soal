@@ -36,10 +36,10 @@
             <div class="question-text">A data engineer needs to trigger a data processing pipeline every weekday at 2:00 AM UTC, but also needs to trigger the same pipeline on-demand when a specific S3 object is uploaded. The pipeline is implemented as a Step Functions state machine. Which EventBridge configuration supports BOTH trigger patterns with MINIMAL components?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use CloudWatch Events for the schedule and EventBridge for the S3 event pattern</li>
+                <li><span class="option-label">A.</span> Use CloudWatch Events for the schedule and EventBridge for the S3 event pattern, meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
                 <li><span class="option-label">B.</span> Create two EventBridge rules on the default event bus — one schedule rule (cron expression for weekdays at 2 AM) and one event pattern rule matching S3 PutObject — both targeting the same Step Functions state machine</li>
-                <li><span class="option-label">C.</span> Create a single EventBridge rule with a complex pattern matching both schedule and S3 events with native S3 integration and optimized data transfer</li>
-                <li><span class="option-label">D.</span> Use EventBridge Scheduler for the cron job and a separate S3 Event Notification directly triggering Step Functions</li>
+                <li><span class="option-label">C.</span> Create a single EventBridge rule with a complex pattern matching both schedule and S3 events with native S3 integration and optimized data transfer, requiring no servers to manage or scale manually and reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Use EventBridge Scheduler for the cron job and a separate S3 Event Notification directly triggering Step Functions, handling the described workload reliably at scale and meeting the latency and throughput goals of the design and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -74,9 +74,9 @@
             <div class="question-text">A data platform team needs to route AWS Glue job state change events (SUCCEEDED, FAILED, TIMEOUT) to different targets: successful completions trigger a downstream pipeline, failures send notifications to the ops team, and timeouts restart the job with increased resources. Which EventBridge configuration implements this routing logic?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Configure Glue job notifications directly to SNS, SQS, and Step Functions for each state with event patterns matching specific "detail</li>
-                <li><span class="option-label">B.</span> Use a single Lambda function as the target that reads the state and routes accordingly</li>
-                <li><span class="option-label">C.</span> Create one rule matching all Glue job state changes and use input transformers to route to different targets</li>
+                <li><span class="option-label">A.</span> Configure Glue job notifications directly to SNS, SQS, and Step Functions for each state with event patterns matching specific "detail, handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Use a single Lambda function as the target that reads the state and routes accordingly, satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
+                <li><span class="option-label">C.</span> Create one rule matching all Glue job state changes and use input transformers to route to different targets, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">D.</span> Create three separate EventBridge rules with event patterns matching specific "detail.state" values (SUCCEEDED, FAILED, TIMEOUT) on the Glue Job State Change event, each with its own target</li>
             
             </ul>
@@ -93,10 +93,10 @@
             <div class="question-text">A multi-account organization has a centralized data lake account. Data engineering teams in 5 different AWS accounts need to send events when their ETL jobs complete, so the central account can trigger consolidation pipelines. Which EventBridge architecture enables this cross-account event routing?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Set up AWS Organizations EventBridge integration to automatically share all events across member accounts with a resource-based policy allowing PutEvents from the 5 source accounts</li>
+                <li><span class="option-label">A.</span> Set up AWS Organizations EventBridge integration to automatically share all events across member accounts with a resource-based policy allowing PutEvents from the 5 source accounts, applying schema conversion and enrichment inline and reducing day-to-day operational effort</li>
                 <li><span class="option-label">B.</span> Create a custom event bus in the central account with a resource-based policy allowing PutEvents from the 5 source accounts, and configure rules in source accounts to forward events to the central event bus</li>
-                <li><span class="option-label">C.</span> Use the default event bus in each account with cross-account rules that directly invoke targets in the central account</li>
-                <li><span class="option-label">D.</span> Deploy identical EventBridge rules in all accounts and use SNS cross-account subscriptions for event delivery</li>
+                <li><span class="option-label">C.</span> Use the default event bus in each account with cross-account rules that directly invoke targets in the central account, transforming records into the required target format and validating and cleansing each record before delivery</li>
+                <li><span class="option-label">D.</span> Deploy identical EventBridge rules in all accounts and use SNS cross-account subscriptions for event delivery, integrating natively with the rest of the pipeline and validating and cleansing each record before delivery and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -112,8 +112,8 @@
             <div class="question-text">A data engineer needs to build a point-to-point integration that reads records from a DynamoDB Stream, filters them based on item attributes, enriches the payload with additional metadata, and delivers them to a Kinesis Data Stream. The solution should not require custom Lambda code for simple transformations. Which EventBridge feature provides this capability?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> EventBridge event bus with multiple rules for filtering and a Lambda enrichment function</li>
-                <li><span class="option-label">B.</span> EventBridge Scheduler with a recurring poll of DynamoDB Stream</li>
+                <li><span class="option-label">A.</span> EventBridge event bus with multiple rules for filtering and a Lambda enrichment function, transforming records into the required target format</li>
+                <li><span class="option-label">B.</span> EventBridge Scheduler with a recurring poll of DynamoDB Stream, handling the described workload reliably at scale and reducing day-to-day operational effort</li>
                 <li><span class="option-label">C.</span> Amazon EventBridge Pipes — connecting DynamoDB Stream as source, with filtering and enrichment stages, to Kinesis Data Stream as target</li>
                 <li><span class="option-label">D.</span> EventBridge rules with input transformers to modify the event payload before delivery and enrichment stages, to Kinesis Data Stream as target</li>
             
@@ -131,10 +131,10 @@
             <div class="question-text">A data pipeline uses EventBridge to trigger Lambda functions for processing. Occasionally, the target Lambda function is throttled or temporarily unavailable, causing event delivery to fail. The team needs to ensure no events are permanently lost and failed events can be investigated later. Which EventBridge mechanism handles this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Enable EventBridge event replay to automatically redeliver failed events</li>
+                <li><span class="option-label">A.</span> Enable EventBridge event replay to automatically redeliver failed events, meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">B.</span> Configure a dead-letter queue (SQS) on the EventBridge rule and set retry policy with maximum age and retry attempts</li>
                 <li><span class="option-label">C.</span> Use CloudWatch Logs to record all failed delivery attempts and manually reprocess them with maximum age and set retry policy with maximum</li>
-                <li><span class="option-label">D.</span> Configure Lambda's async invocation DLQ to capture events that EventBridge couldn't deliver</li>
+                <li><span class="option-label">D.</span> Configure Lambda's async invocation DLQ to capture events that EventBridge couldn't deliver, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -152,8 +152,8 @@
                 
                 <li><span class="option-label">A.</span> Use EventBridge archive and replay — replay archived events from the specific time window to a new rule that triggers the corrected pipeline</li>
                 <li><span class="option-label">B.</span> Enable EventBridge event bus logging and extract events from CloudWatch Logs for reprocessing configured for optimal performance and minimal operational overhead</li>
-                <li><span class="option-label">C.</span> Configure the event source to resend all events from the past 3 hours</li>
-                <li><span class="option-label">D.</span> Query CloudTrail logs for the events that were published and manually re-invoke the pipeline for each</li>
+                <li><span class="option-label">C.</span> Configure the event source to resend all events from the past 3 hours, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Query CloudTrail logs for the events that were published and manually re-invoke the pipeline for each, integrating natively with the rest of the pipeline</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -170,7 +170,7 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Create one rule that sends all S3 events to a Lambda router function that inspects the file extension and invokes the appropriate service</li>
-                <li><span class="option-label">B.</span> Use a Step Functions state machine with a Choice state that routes based on file extension</li>
+                <li><span class="option-label">B.</span> Use a Step Functions state machine with a Choice state that routes based on file extension, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">C.</span> Create three EventBridge rules with event patterns that match on the S3 object key suffix (.csv, .parquet, .json), each routing to its respective target</li>
                 <li><span class="option-label">D.</span> Configure three separate S3 event notifications with prefix/suffix filters, each pointing to the respective service with native S3 integration and optimized data transfer</li>
             
@@ -189,9 +189,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Create a custom event bus for the data platform with a resource-based policy restricting PutEvents to authorized service roles, and configure archive with appropriate retention on the custom bus</li>
-                <li><span class="option-label">B.</span> Use EventBridge Pipes from each microservice directly to the data platform's processing targets</li>
-                <li><span class="option-label">C.</span> Create an SNS topic for inter-service communication and subscribe EventBridge as a target with a resource-based policy restricting PutEvents</li>
-                <li><span class="option-label">D.</span> Use the default event bus with IAM policies to restrict which services can publish specific event types</li>
+                <li><span class="option-label">B.</span> Use EventBridge Pipes from each microservice directly to the data platform's processing targets, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">C.</span> Create an SNS topic for inter-service communication and subscribe EventBridge as a target with a resource-based policy restricting PutEvents, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">D.</span> Use the default event bus with IAM policies to restrict which services can publish specific event types, meeting the latency and throughput goals of the design and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -207,9 +207,9 @@
             <div class="question-text">A data platform runs daily ETL jobs triggered by EventBridge Scheduler. The team notices that some jobs occasionally fail to start at the scheduled time due to transient service issues. They need a scheduling solution that: retries if the target is temporarily unavailable, allows a flexible time window for execution, and provides visibility into schedule execution history. Which EventBridge Scheduler configuration addresses all requirements?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use EventBridge rules with cron expressions and configure dead-letter queues for failed invocations</li>
-                <li><span class="option-label">B.</span> Use AWS Step Functions with a Wait state and built-in retry logic to manage scheduling</li>
-                <li><span class="option-label">C.</span> Implement a Lambda function that polls for missed schedule executions and retriggers them with a retry policy (MaximumRetryAttempts</li>
+                <li><span class="option-label">A.</span> Use EventBridge rules with cron expressions and configure dead-letter queues for failed invocations, meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> Use AWS Step Functions with a Wait state and built-in retry logic to manage scheduling, transforming records into the required target format</li>
+                <li><span class="option-label">C.</span> Implement a Lambda function that polls for missed schedule executions and retriggers them with a retry policy (MaximumRetryAttempts, applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">D.</span> Configure EventBridge Scheduler with a retry policy (MaximumRetryAttempts and MaximumEventAgeInSeconds), FlexibleTimeWindow for execution jitter, and use CloudWatch metrics (InvocationAttemptCount, TargetErrorCount) for monitoring</li>
             
             </ul>

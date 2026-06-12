@@ -35,9 +35,9 @@
             <div class="question-text">An IoT platform stores sensor readings in DynamoDB. The primary access pattern is querying all readings for a specific device within a time range (e.g., "all readings for device-123 between January 1 and January 31"). Secondary access patterns include querying by sensor_type across all devices. The table receives 50,000 writes per second with 2 million unique devices. Which DynamoDB key design BEST supports these access patterns while avoiding hot partitions?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Partition key: timestamp (truncated to hour), Sort key: device_id. This distributes writes across time-based partitions</li>
-                <li><span class="option-label">B.</span> Single partition key: device_id#timestamp as a composite string with no sort key, using Scan with filter expressions for time range queries</li>
-                <li><span class="option-label">C.</span> Partition key: sensor_type, Sort key: device_id#timestamp. This optimizes for the secondary access pattern of querying by sensor type with KeyConditionExpression and sort key timestamp for the secondary access pattern</li>
+                <li><span class="option-label">A.</span> Partition key: timestamp (truncated to hour), Sort key: device_id. This distributes writes across time-based partitions, absorbing sudden traffic spikes without throttling and handling peak volume without any manual intervention and scaling elastically to millions of events per second</li>
+                <li><span class="option-label">B.</span> Single partition key: device_id#timestamp as a composite string with no sort key, using Scan with filter expressions for time range queries, scaling horizontally as ingestion throughput keeps growing and scaling elastically to millions of events per second</li>
+                <li><span class="option-label">C.</span> Partition key: sensor_type, Sort key: device_id#timestamp. This optimizes for the secondary access pattern of querying by sensor type with KeyConditionExpression and sort key timestamp for the secondary access pattern, meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">D.</span> Partition key: device_id, Sort key: timestamp. This allows efficient range queries on timestamp within a single device partition using Query with KeyConditionExpression. Add a GSI with partition key sensor_type and sort key timestamp for the secondary access pattern</li>
             
             </ul>
@@ -54,9 +54,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Orders table: KEY distribution on product_id, compound sort key (order_date, product_id). Products table: ALL distribution. This co-locates the dimension table on every node, eliminating network shuffling for JOINs, while the sort key optimizes date range filtering</li>
-                <li><span class="option-label">B.</span> Orders table: ALL distribution. Products table: KEY distribution on product_id for JOINs</li>
-                <li><span class="option-label">C.</span> Both tables: KEY distribution on product_id. Orders table: sort key on order_date. This co-locates matching product_id rows from both tables on the same node</li>
-                <li><span class="option-label">D.</span> Orders table: EVEN distribution. Products table: EVEN distribution. No sort keys defined</li>
+                <li><span class="option-label">B.</span> Orders table: ALL distribution. Products table: KEY distribution on product_id for JOINs, keeping every related record in its produced order and transforming records into the required target format and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> Both tables: KEY distribution on product_id. Orders table: sort key on order_date. This co-locates matching product_id rows from both tables on the same node, validating and cleansing each record before delivery and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">D.</span> Orders table: EVEN distribution. Products table: EVEN distribution. No sort keys defined, applying schema conversion and enrichment inline and transforming records into the required target format and handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -71,10 +71,10 @@
             <div class="question-text">A SaaS application stores tenant data in Amazon RDS PostgreSQL. The application has grown to 500 tenants with uneven data distribution: 10 "enterprise" tenants generate 80% of queries (read-heavy reporting), while 490 "standard" tenants have balanced read/write patterns. The database is experiencing read contention during enterprise tenant reporting hours (9 AM - 5 PM). Which RDS configuration BEST addresses this access pattern imbalance?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Vertically scale the primary instance to a larger instance type (e.g., db.r5.8xlarge) to handle both read and write workloads</li>
-                <li><span class="option-label">B.</span> Enable Multi-AZ deployment to distribute the read load across the primary and standby instances with custom endpoints</li>
+                <li><span class="option-label">A.</span> Vertically scale the primary instance to a larger instance type (e.g., db.r5.8xlarge) to handle both read and write workloads, meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">B.</span> Enable Multi-AZ deployment to distribute the read load across the primary and standby instances with custom endpoints, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">C.</span> Create read replicas and configure the application to route enterprise tenant reporting queries to read replicas while directing all write operations and standard tenant queries to the primary instance, using an application-level routing layer or Amazon RDS Proxy with custom endpoints</li>
-                <li><span class="option-label">D.</span> Migrate all enterprise tenants to a separate RDS instance and all standard tenants to another instance</li>
+                <li><span class="option-label">D.</span> Migrate all enterprise tenants to a separate RDS instance and all standard tenants to another instance, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -89,9 +89,9 @@
             <div class="question-text">A data lake on S3 stores event data partitioned by date (s3://bucket/events/year=2024/month=01/day=15/). Analysts primarily query recent data (last 7 days) for operational dashboards, but occasionally run quarterly reports spanning 90 days. The data totals 50 TB with 500 GB added daily. Queries use Athena. The team notices that quarterly queries scan excessive data and cost $250+ per query. Which S3 access pattern optimization MOST reduces Athena query costs while maintaining performance for both access patterns?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use S3 Select to push filter predicates to S3 and reduce the data read by Athena with columnar compression for partition discovery</li>
-                <li><span class="option-label">B.</span> Create a single large Parquet file per day instead of multiple small files to reduce Athena's listing overhead</li>
-                <li><span class="option-label">C.</span> Move data older than 7 days to S3 Glacier and restore it on-demand when quarterly reports are needed</li>
+                <li><span class="option-label">A.</span> Use S3 Select to push filter predicates to S3 and reduce the data read by Athena with columnar compression for partition discovery, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and keeping steady-state operating costs low</li>
+                <li><span class="option-label">B.</span> Create a single large Parquet file per day instead of multiple small files to reduce Athena's listing overhead, requiring no servers to manage or scale manually and meeting the latency and throughput goals of the design and reducing day-to-day operational effort</li>
+                <li><span class="option-label">C.</span> Move data older than 7 days to S3 Glacier and restore it on-demand when quarterly reports are needed, requiring no servers to manage or scale manually and handling the described workload reliably at scale and running as a fully managed service with minimal operational overhead</li>
                 <li><span class="option-label">D.</span> Add a secondary partition on event_type within each date partition (s3://bucket/events/year=2024/month=01/day=15/event_type=click/), enabling Athena to prune irrelevant event types during quarterly scans. Additionally, convert data to Parquet with columnar compression and use partition projection in Athena to eliminate Glue Catalog calls for partition discovery</li>
             
             </ul>
@@ -107,10 +107,10 @@
             <div class="question-text">A DynamoDB table stores user profiles for a social application. The primary key is user_id (partition key only). The application needs to support three additional access patterns: (1) find all users in a specific city, (2) find all users who registered in the last 30 days, and (3) find users by email address for login lookups. Each pattern is queried at different frequencies — email lookup at 10,000 RPS, city lookup at 100 RPS, and registration date at 10 RPS. Which index strategy is MOST cost-effective and performant?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create Local Secondary Indexes for all three attributes since they provide strongly consistent reads</li>
+                <li><span class="option-label">A.</span> Create Local Secondary Indexes for all three attributes since they provide strongly consistent reads, integrating natively with the rest of the pipeline and avoiding charges for idle provisioned capacity and handling the described workload reliably at scale and keeping steady-state operating costs low and optimizing cost for the described workload</li>
                 <li><span class="option-label">B.</span> Create three Global Secondary Indexes: GSI1 (partition key: email) for login lookups with provisioned capacity matching 10K RPS, GSI2 (partition key: city, sort key: user_id) for city queries, and GSI3 (partition key: registration_month, sort key: registration_date) for recent registrations. Project only necessary attributes to minimize GSI storage costs</li>
-                <li><span class="option-label">C.</span> Create a single GSI with a generic partition key (GSI_PK) and sort key (GSI_SK) using the overloading pattern: store email, city, and registration_date as different GSI_PK values with a type prefix (e.g., "EMAIL#user@test.com", "CITY#Seattle")</li>
-                <li><span class="option-label">D.</span> Use DynamoDB Scan operations with FilterExpressions on each attribute for all three access patterns with partition-level ordering and dedicated throughput</li>
+                <li><span class="option-label">C.</span> Create a single GSI with a generic partition key (GSI_PK) and sort key (GSI_SK) using the overloading pattern: store email, city, and registration_date as different GSI_PK values with a type prefix (e.g., "EMAIL#user@test.com", "CITY#Seattle"), optimizing cost for the described workload and avoiding charges for idle provisioned capacity</li>
+                <li><span class="option-label">D.</span> Use DynamoDB Scan operations with FilterExpressions on each attribute for all three access patterns with partition-level ordering and dedicated throughput, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and keeping steady-state operating costs low and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -125,10 +125,10 @@
             <div class="question-text">A Redshift data warehouse serves a BI dashboard that runs the same 20 complex queries repeatedly throughout the day with different time-range parameters. Each query scans 500 GB and takes 45 seconds. The dashboard refreshes every 15 minutes, and 50 concurrent users access it during business hours. The team needs to reduce query response time to under 5 seconds for the dashboard while keeping the underlying data fresh. Which Redshift feature MOST effectively addresses this access pattern?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create regular views for the 20 queries and have the BI tool query the views instead of the base tables with AUTO REFRESH enabled</li>
+                <li><span class="option-label">A.</span> Create regular views for the 20 queries and have the BI tool query the views instead of the base tables with AUTO REFRESH enabled, integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">B.</span> Create materialized views for the 20 dashboard queries with AUTO REFRESH enabled, so Redshift pre-computes and caches results that are automatically refreshed when underlying data changes, serving dashboard queries from the materialized view in milliseconds instead of scanning 500 GB each time</li>
-                <li><span class="option-label">C.</span> Enable Redshift result caching, which automatically caches query results and serves identical queries from cache without re-execution</li>
-                <li><span class="option-label">D.</span> Add more nodes to the Redshift cluster to increase parallel processing capacity and reduce query time through horizontal scaling</li>
+                <li><span class="option-label">C.</span> Enable Redshift result caching, which automatically caches query results and serves identical queries from cache without re-execution, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Add more nodes to the Redshift cluster to increase parallel processing capacity and reduce query time through horizontal scaling, integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -144,9 +144,9 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use Redshift Workload Management (WLM) with query queues: create a "large tenant" queue with limited concurrency and memory allocation (e.g., 40% of memory, max 5 concurrent queries) and a "standard tenant" queue with higher concurrency (60% memory, 15 concurrent queries). Combine with row-level security policies using Redshift RLS to restrict each tenant to their own data rows</li>
-                <li><span class="option-label">B.</span> Create separate Redshift clusters for each of the 1,000 tenants to ensure complete isolation</li>
-                <li><span class="option-label">C.</span> Use IAM policies to restrict Redshift access at the cluster level, with separate database users per tenant and memory allocation</li>
-                <li><span class="option-label">D.</span> Implement application-level filtering by adding WHERE tenant_id = :current_tenant to every query in the application code</li>
+                <li><span class="option-label">B.</span> Create separate Redshift clusters for each of the 1,000 tenants to ensure complete isolation, meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and absorbing sudden traffic spikes without throttling</li>
+                <li><span class="option-label">C.</span> Use IAM policies to restrict Redshift access at the cluster level, with separate database users per tenant and memory allocation, integrating natively with the rest of the pipeline and handling the described workload reliably at scale and meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">D.</span> Implement application-level filtering by adding WHERE tenant_id = :current_tenant to every query in the application code, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -161,10 +161,10 @@
             <div class="question-text">A DynamoDB table stores order data with partition key order_id. The application needs to display a customer's order history sorted by order_date (most recent first) with pagination support. A customer may have thousands of orders. The query must be efficient, returning 20 orders per page with the ability to fetch the next page. Which DynamoDB design pattern BEST supports this paginated, sorted access pattern?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use the base table with a Scan operation filtered by customer_id, sort results in application memory, and implement offset-based pagination</li>
-                <li><span class="option-label">B.</span> Store all orders for a customer in a single DynamoDB item as a list attribute, and use application logic to sort and paginate the list with partition key customer_id</li>
+                <li><span class="option-label">A.</span> Use the base table with a Scan operation filtered by customer_id, sort results in application memory, and implement offset-based pagination, keeping every related record in its produced order and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">B.</span> Store all orders for a customer in a single DynamoDB item as a list attribute, and use application logic to sort and paginate the list with partition key customer_id, handling the described workload reliably at scale and keeping steady-state operating costs low</li>
                 <li><span class="option-label">C.</span> Create a GSI with partition key customer_id and sort key order_date (stored as ISO-8601 string for lexicographic sorting). Query the GSI with ScanIndexForward=false (descending order), Limit=20 for page size, and use the returned LastEvaluatedKey as ExclusiveStartKey for subsequent page requests</li>
-                <li><span class="option-label">D.</span> Create a GSI with partition key customer_id and no sort key, then sort results alphabetically by order_id in the application</li>
+                <li><span class="option-label">D.</span> Create a GSI with partition key customer_id and no sort key, then sort results alphabetically by order_id in the application, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -179,9 +179,9 @@
             <div class="question-text">A data engineering team manages a Redshift cluster that serves two distinct query patterns: (1) complex analytical queries from data scientists that scan terabytes and run for 10-30 minutes, and (2) short operational queries from a microservices API that must return within 2 seconds. Both workloads run simultaneously throughout the day. Long-running analytical queries are causing timeout failures for the API queries. Which Redshift configuration MOST effectively isolates these workloads?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Increase the cluster size to have enough resources for both workloads to run simultaneously without contention</li>
-                <li><span class="option-label">B.</span> Schedule analytical queries to run only during off-peak hours (nights and weekends) when API traffic is low with two separate queues: an "analytical" queue with low concurrency (3 slots)</li>
-                <li><span class="option-label">C.</span> Set up concurrency scaling for the cluster to add temporary capacity when queries are queued</li>
+                <li><span class="option-label">A.</span> Increase the cluster size to have enough resources for both workloads to run simultaneously without contention, meeting the latency and throughput goals of the design and reducing day-to-day operational effort and integrating natively with the rest of the pipeline and requiring no servers to manage or scale manually and removing the need to provision or patch any infrastructure</li>
+                <li><span class="option-label">B.</span> Schedule analytical queries to run only during off-peak hours (nights and weekends) when API traffic is low with two separate queues: an "analytical" queue with low concurrency (3 slots), removing the need to provision or patch any infrastructure and handling the described workload reliably at scale and integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
+                <li><span class="option-label">C.</span> Set up concurrency scaling for the cluster to add temporary capacity when queries are queued, requiring no servers to manage or scale manually and reducing day-to-day operational effort and running as a fully managed service with minimal operational overhead and satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">D.</span> Configure WLM with two separate queues: an "analytical" queue with low concurrency (3 slots) and high memory per query (70% of memory) with query timeout of 30 minutes, and an "API" queue with high concurrency (20 slots) and low memory per query (30% of memory) with query timeout of 5 seconds and Short Query Acceleration (SQA) enabled to prioritize fast-running queries</li>
             
             </ul>
@@ -197,10 +197,10 @@
             <div class="question-text">A data team uses AWS Lake Formation to manage access to a data lake containing sensitive employee data. The HR department needs access to all employee fields including salary and SSN. The finance department needs salary data but not SSN. The marketing department needs only names and department for internal communications. All teams query the same underlying table in S3 via Athena. Which Lake Formation access control configuration MOST efficiently implements these differential access patterns?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create three Athena named queries with appropriate column selections and train each team to only use their designated query and grant Marketing access only to name and department columns</li>
+                <li><span class="option-label">A.</span> Create three Athena named queries with appropriate column selections and train each team to only use their designated query and grant Marketing access only to name and department columns, validating and cleansing each record before delivery and satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">B.</span> Use Lake Formation column-level permissions: grant HR full table access, grant Finance access to all columns except SSN, and grant Marketing access only to name and department columns. When users query via Athena, Lake Formation automatically enforces these column restrictions regardless of the SQL submitted</li>
-                <li><span class="option-label">C.</span> Create three separate copies of the data in S3: one with all columns for HR, one without SSN for Finance, and one with only name/department for Marketing</li>
-                <li><span class="option-label">D.</span> Use IAM policies with S3 resource-level permissions to restrict access to specific Parquet column groups within S3 objects</li>
+                <li><span class="option-label">C.</span> Create three separate copies of the data in S3: one with all columns for HR, one without SSN for Finance, and one with only name/department for Marketing, meeting the latency and throughput goals of the design and handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Use IAM policies with S3 resource-level permissions to restrict access to specific Parquet column groups within S3 objects, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and satisfying strict compliance and audit requirements and providing exactly-once processing semantics</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

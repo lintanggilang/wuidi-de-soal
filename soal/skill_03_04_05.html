@@ -37,8 +37,8 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Data skew exists on certain customer_id values. Apply a salting technique by appending a random suffix to the skewed keys before the join.</li>
-                <li><span class="option-label">B.</span> The cluster has insufficient memory. Increase the instance type to provide more RAM per executor.</li>
-                <li><span class="option-label">C.</span> The data is not compressed. Convert both tables to Snappy-compressed Parquet format.</li>
+                <li><span class="option-label">B.</span> The cluster has insufficient memory. Increase the instance type to provide more RAM per executor, handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> The data is not compressed. Convert both tables to Snappy-compressed Parquet format, handling the described workload reliably at scale and reducing day-to-day operational effort</li>
                 <li><span class="option-label">D.</span> The shuffle partitions are too few. Increase spark.sql.shuffle.partitions from 200 to 2000. configured for optimal performance and minimal operational overhead</li>
             
             </ul>
@@ -93,8 +93,8 @@
             <div class="question-text">An e-commerce company uses Amazon DynamoDB to store order data with order_status as the partition key. During peak sales events, the "pending" status receives 90% of all writes, causing hot partition throttling. Which approach BEST resolves this hot partition issue while maintaining query efficiency?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Create a Global Secondary Index (GSI) with a different partition key to distribute the load</li>
-                <li><span class="option-label">B.</span> Increase the provisioned write capacity units (WCU) for the table to handle the peak load</li>
+                <li><span class="option-label">A.</span> Create a Global Secondary Index (GSI) with a different partition key to distribute the load, handling peak volume without any manual intervention</li>
+                <li><span class="option-label">B.</span> Increase the provisioned write capacity units (WCU) for the table to handle the peak load, guaranteeing exactly-ordered delivery within each key group</li>
                 <li><span class="option-label">C.</span> Switch to DynamoDB On-Demand capacity mode to automatically handle traffic spikes and use parallel scatter-gather queries for reads</li>
                 <li><span class="option-label">D.</span> Add a random suffix (0-9) to the partition key to create write sharding, and use parallel scatter-gather queries for reads</li>
             
@@ -112,10 +112,10 @@
             <div class="question-text">A data engineer observes that an Amazon Kinesis Data Stream with 10 shards has uneven data distribution. CloudWatch metrics show that 2 shards consistently receive 70% of all incoming records while the other 8 shards are underutilized. The records use user_country as the partition key, and most users are from the United States and India. What is the MOST effective solution?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Switch to Kinesis On-Demand capacity mode for automatic scaling</li>
+                <li><span class="option-label">A.</span> Switch to Kinesis On-Demand capacity mode for automatic scaling, handling the described workload reliably at scale and meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">B.</span> Change the partition key strategy to use a more granular key such as user_id or a composite key combining country with a random suffix</li>
-                <li><span class="option-label">C.</span> Increase the number of shards from 10 to 50 to reduce per-shard load</li>
-                <li><span class="option-label">D.</span> Enable Kinesis Enhanced Fan-Out to increase per-shard throughput with a random suffix</li>
+                <li><span class="option-label">C.</span> Increase the number of shards from 10 to 50 to reduce per-shard load, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">D.</span> Enable Kinesis Enhanced Fan-Out to increase per-shard throughput with a random suffix, integrating natively with the rest of the pipeline and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -131,8 +131,8 @@
             <div class="question-text">A data engineer is implementing a salting technique to handle data skew in a Spark join on AWS Glue. The left table has 1 billion rows with a skewed join key (product_id), and the right table has 100,000 rows. What is the correct approach for implementing salt-based join?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Repartition both tables by the join key with N partitions, then perform a sort-merge join</li>
-                <li><span class="option-label">B.</span> Add a random integer column (0 to N-1) to both tables independently, then join on both original key and salt column</li>
+                <li><span class="option-label">A.</span> Repartition both tables by the join key with N partitions, then perform a sort-merge join, applying schema conversion and enrichment inline and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">B.</span> Add a random integer column (0 to N-1) to both tables independently, then join on both original key and salt column, integrating natively with the rest of the pipeline</li>
                 <li><span class="option-label">C.</span> Add a random integer column (0 to N-1) to the left table, explode the right table N times with each salt value, then join on both original key and salt column</li>
                 <li><span class="option-label">D.</span> Add a hash column based on the join key to both tables and join on the hash column instead of the original key with each salt value and salt column</li>
             
@@ -150,8 +150,8 @@
             <div class="question-text">A data engineer notices that a Spark job on Amazon EMR has significant performance degradation after a data source change. Examining the Spark UI, they see that Stage 3 (a shuffle stage) has 200 tasks where 195 tasks complete in 10 seconds but 5 tasks take 20 minutes each. The Summary Metrics tab shows the 75th percentile shuffle read size is 50 MB but the max is 8 GB. Which Spark UI metric BEST confirms that this is a data skew problem?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Peak Execution Memory exceeding the executor memory allocation</li>
-                <li><span class="option-label">B.</span> High Scheduler Delay metric indicating cluster resource contention</li>
+                <li><span class="option-label">A.</span> Peak Execution Memory exceeding the executor memory allocation, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> High Scheduler Delay metric indicating cluster resource contention, meeting the latency and throughput goals of the design</li>
                 <li><span class="option-label">C.</span> High GC time percentage in the executors running the slow tasks configured for optimal performance and minimal</li>
                 <li><span class="option-label">D.</span> Large disparity between median and maximum values in the Shuffle Read Size/Records metric per task</li>
             
@@ -169,10 +169,10 @@
             <div class="question-text">A data engineer is processing a 2 TB dataset with AWS Glue Spark job. The job aggregates sales data by store_id using groupBy and sum operations. Analysis shows that 3 flagship stores account for 60% of all transactions. The job consistently fails with OutOfMemoryError on executors processing these stores. Which combination of techniques should the engineer apply? (Select the BEST approach)</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Replace groupBy with reduceByKey and increase spark.sql.shuffle.partitions to 10000</li>
-                <li><span class="option-label">B.</span> Increase executor memory to 64 GB and enable off-heap memory with spark.memory.offHeap.enabled=true</li>
+                <li><span class="option-label">A.</span> Replace groupBy with reduceByKey and increase spark.sql.shuffle.partitions to 10000, transforming records into the required target format and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Increase executor memory to 64 GB and enable off-heap memory with spark.memory.offHeap.enabled=true, validating and cleansing each record before delivery and reducing day-to-day operational effort</li>
                 <li><span class="option-label">C.</span> Use a two-phase aggregation: first partial aggregate with a salt column to distribute skewed keys, then remove salt and perform final aggregation</li>
-                <li><span class="option-label">D.</span> Convert the job to use DynamicFrames with AWS Glue's built-in groupFilter transformation and perform final aggregation</li>
+                <li><span class="option-label">D.</span> Convert the job to use DynamicFrames with AWS Glue's built-in groupFilter transformation and perform final aggregation, validating and cleansing each record before delivery</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -209,8 +209,8 @@
                 
                 <li><span class="option-label">A.</span> Enable Kinesis Enhanced Fan-Out for all consumers and increase the data retention period to 7 days with a calculated hash that evenly distributes records across all shards</li>
                 <li><span class="option-label">B.</span> Modify the producer to use ExplicitHashKey with a calculated hash that evenly distributes records across all shards, bypassing the partition key hash</li>
-                <li><span class="option-label">C.</span> Split the hot shards using the UpdateShardCount API and configure consumers to process from child shards</li>
-                <li><span class="option-label">D.</span> Switch to Amazon MSK with more partitions since Kafka handles hot partitions better than Kinesis</li>
+                <li><span class="option-label">C.</span> Split the hot shards using the UpdateShardCount API and configure consumers to process from child shards, delivering records with consistent sub-second latency</li>
+                <li><span class="option-label">D.</span> Switch to Amazon MSK with more partitions since Kafka handles hot partitions better than Kinesis, minimizing end-to-end processing latency and reducing day-to-day operational effort</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>

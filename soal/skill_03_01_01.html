@@ -74,7 +74,7 @@
             <div class="question-text">A data engineer is designing a Step Functions workflow that starts an AWS Glue ETL job which typically runs for 45 minutes. The workflow must wait for the Glue job to complete before proceeding to the next step. Which Step Functions integration pattern should the engineer use?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Request Response pattern (.waitForTaskToken) with a callback from the Glue job</li>
+                <li><span class="option-label">A.</span> Request Response pattern (.waitForTaskToken) with a callback from the Glue job, applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">B.</span> Fire and Forget pattern with an EventBridge rule to detect Glue job completion</li>
                 <li><span class="option-label">C.</span> Run a Job (.sync) integration pattern that automatically waits for the Glue job to complete</li>
                 <li><span class="option-label">D.</span> Request Response pattern with a Wait state polling the Glue job status every 5 minutes</li>
@@ -94,7 +94,7 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> A single state machine with a Map state that processes all 200 feeds concurrently with configurable max concurrency</li>
-                <li><span class="option-label">B.</span> 200 separate state machine executions triggered by a parent state machine using nested workflows</li>
+                <li><span class="option-label">B.</span> 200 separate state machine executions triggered by a parent state machine using nested workflows, applying schema conversion and enrichment inline</li>
                 <li><span class="option-label">C.</span> A Choice state that routes each feed to a different branch based on feed type</li>
                 <li><span class="option-label">D.</span> A sequential loop using a Wait state between each feed processing iteration with a Map state that processes all 200 feeds concurrently</li>
             
@@ -131,8 +131,8 @@
             <div class="question-text">A company runs a nightly ETL pipeline that must complete by 6:00 AM. The pipeline involves: (1) extracting data from 3 source systems in parallel, (2) running a Glue job to join all extracted data, (3) loading results to Redshift, and (4) triggering a QuickSight dataset refresh. Step 2 cannot start until all 3 extractions in step 1 are complete. The team uses Amazon MWAA. Which DAG pattern correctly implements this dependency?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use a TaskGroup with three parallel extraction tasks, then set downstream dependencies to the Glue job task</li>
-                <li><span class="option-label">B.</span> Use ExternalTaskSensor for each extraction and start the Glue job when all sensors pass</li>
+                <li><span class="option-label">A.</span> Use a TaskGroup with three parallel extraction tasks, then set downstream dependencies to the Glue job task, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Use ExternalTaskSensor for each extraction and start the Glue job when all sensors pass, satisfying all of the stated requirements with minimal effort</li>
                 <li><span class="option-label">C.</span> Use SubDAGs for each extraction, then chain them sequentially before the Glue job with a dummy/empty task as a join point (using trigger_rule='all_success') and QuickSight tasks in sequence</li>
                 <li><span class="option-label">D.</span> Use three parallel extraction tasks with a dummy/empty task as a join point (using trigger_rule='all_success'), followed by Glue, Redshift, and QuickSight tasks in sequence</li>
             
@@ -150,7 +150,7 @@
             <div class="question-text">A data engineering team needs to orchestrate a pipeline that spans multiple AWS services across different accounts: a Glue job in the data lake account, a Redshift query in the warehouse account, and an EMR job in the processing account. The orchestration must use a single workflow with centralized monitoring. Which approach provides the MOST secure cross-account orchestration?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> EventBridge event bus in the central account that forwards events to target account services</li>
+                <li><span class="option-label">A.</span> EventBridge event bus in the central account that forwards events to target account services, satisfying strict compliance and audit requirements</li>
                 <li><span class="option-label">B.</span> AWS Step Functions in the central account with IAM roles that assume cross-account roles in each target account</li>
                 <li><span class="option-label">C.</span> AWS Lambda in the central account that uses hardcoded credentials to invoke services in other accounts</li>
                 <li><span class="option-label">D.</span> Amazon MWAA in the central account with access keys for each target account stored in Airflow connections</li>
@@ -169,10 +169,10 @@
             <div class="question-text">A Step Functions workflow for a data pipeline needs to handle the following error scenario: if a Glue job fails with a "ConcurrentRunsExceededException", the workflow should wait 10 minutes and retry up to 3 times. For any other error type, the workflow should immediately transition to a failure notification step. Which Step Functions error handling configuration achieves this?</div>
             <ul class="options">
                 
-                <li><span class="option-label">A.</span> Use a single Catch block with a Choice state that examines the error type for the specific Glue exception</li>
+                <li><span class="option-label">A.</span> Use a single Catch block with a Choice state that examines the error type for the specific Glue exception, minimizing end-to-end processing latency</li>
                 <li><span class="option-label">B.</span> Use a Retry field with ErrorEquals for the specific Glue exception, and a Catch field for all other errors routing to the notification step</li>
-                <li><span class="option-label">C.</span> Use a Parallel state with one branch for the job and another for error monitoring</li>
-                <li><span class="option-label">D.</span> Implement the retry logic in a Lambda function wrapper that calls the Glue API</li>
+                <li><span class="option-label">C.</span> Use a Parallel state with one branch for the job and another for error monitoring, minimizing end-to-end processing latency and delivering records with consistent sub-second latency</li>
+                <li><span class="option-label">D.</span> Implement the retry logic in a Lambda function wrapper that calls the Glue API, streaming results downstream in near real time and minimizing end-to-end processing latency</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -190,8 +190,8 @@
                 
                 <li><span class="option-label">A.</span> Create two separate DAGs — one with an S3KeySensor and one with a cron schedule — both with max_active_runs=1 with native S3 integration and optimized data transfer</li>
                 <li><span class="option-label">B.</span> Create one DAG with schedule_interval='0 0 * * *' and an EventBridge rule that triggers the DAG via MWAA CLI on S3 events, with max_active_runs=1 and catchup=False</li>
-                <li><span class="option-label">C.</span> Set the DAG schedule_interval to every minute and check for new S3 files within the first task</li>
-                <li><span class="option-label">D.</span> Use EventBridge to trigger the same Lambda function from both S3 events and cron schedule, then Lambda triggers the DAG</li>
+                <li><span class="option-label">C.</span> Set the DAG schedule_interval to every minute and check for new S3 files within the first task, satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">D.</span> Use EventBridge to trigger the same Lambda function from both S3 events and cron schedule, then Lambda triggers the DAG, handling the described workload reliably at scale</li>
             
             </ul>
             <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
@@ -208,7 +208,7 @@
             <ul class="options">
                 
                 <li><span class="option-label">A.</span> Use Express Workflows for the Glue and Redshift steps to make them run faster with parallel processing and horizontal scaling capabilities</li>
-                <li><span class="option-label">B.</span> Use a Map state to distribute EMR output to multiple processing targets simultaneously</li>
+                <li><span class="option-label">B.</span> Use a Map state to distribute EMR output to multiple processing targets simultaneously, running as a fully managed service with minimal operational overhead</li>
                 <li><span class="option-label">C.</span> Use a Parallel state after EMR to run both Glue and Redshift load concurrently, reducing total time to approximately 35 minutes</li>
                 <li><span class="option-label">D.</span> Create two separate Step Functions workflows — one for Glue and one for Redshift — triggered by EMR completion event</li>
             
