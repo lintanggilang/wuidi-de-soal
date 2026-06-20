@@ -13,7 +13,7 @@ Kumpulan soal latihan untuk sertifikasi **AWS Certified Data Engineer — Associ
 | Total Skills | 120 |
 | Total Soal | 1.200 |
 | Materi Belajar | 120 halaman teori (1 per skill) |
-| Simulasi Ujian | 10 set (masing-masing 120 soal) |
+| Simulasi Ujian | 30 set (masing-masing 40 soal) |
 | Domain | 4 |
 | Format | HTML statis (tanpa backend) |
 
@@ -198,7 +198,7 @@ Soal-soal mencakup kompetensi berikut:
 1. Buka [https://lintanggilang.github.io/wuidi-de-soal/](https://lintanggilang.github.io/wuidi-de-soal/)
 2. Klik **Belajar** untuk membaca materi teori per skill (layanan AWS terkait, poin-poin kunci, dan miskonsepsi umum), lalu lanjut ke latihan via tombol **Go Exam**
 3. Pilih **Domain** → **Task** → **Skill** untuk latihan soal per topik
-4. Atau klik **Simulasi Ujian** untuk latihan 120 soal sekaligus dengan skor realtime — Simulasi N berisi soal nomor N dari setiap skill
+4. Atau klik **Simulasi Ujian** untuk latihan dengan skor realtime — tersedia 30 set, masing-masing 40 soal (1.200 soal terbagi rata: 120 skill dibagi 3 grup, tiap grup mengisi 10 simulasi)
 5. Klik pilihan jawaban untuk melihat apakah benar/salah
 6. Penjelasan otomatis muncul setelah menjawab
 

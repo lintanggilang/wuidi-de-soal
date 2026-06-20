@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x26A1;</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi 23 - AWS Data Engineer Practice Exam</title>
+    <style>
+        :root{--bg:#f8fafc;--bg-card:#ffffff;--text:#1e293b;--text-2:#475569;--text-3:#94a3b8;--accent:#2563eb;--accent-hover:#1d4ed8;--border:#e2e8f0;--success:#16a34a;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px rgba(0,0,0,0.1)}
+        @media(prefers-color-scheme:dark){:root{--bg:#0f172a;--bg-card:#1e293b;--text:#f1f5f9;--text-2:#94a3b8;--text-3:#64748b;--accent:#3b82f6;--accent-hover:#60a5fa;--border:#334155;--success:#4ade80;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px rgba(0,0,0,0.3)}}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+        .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+        .header{text-align:center;margin-bottom:2rem;padding:1.5rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}
+        .header h1{font-size:1.5rem;margin-bottom:.3rem;color:var(--accent)}
+        .header .desc{font-size:.85rem;color:var(--text-2)}
+        .score-bar{position:sticky;top:0;z-index:100;background:var(--bg-card);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;box-shadow:var(--shadow)}
+        .score-bar .score-text{font-size:.85rem;font-weight:600;color:var(--text)}
+        .score-bar .score-detail{font-size:.75rem;color:var(--text-2)}
+        .score-bar .progress-wrap{flex:1;max-width:300px;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+        .score-bar .progress-fill{height:100%;background:var(--success);border-radius:4px;transition:width .3s ease}
+        .question-card{background:var(--bg-card);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border)}
+        .question-card:hover{box-shadow:var(--shadow-lg)}
+        .question-number{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:.85rem;margin-bottom:.5rem}
+        .skill-tag{display:inline-block;font-size:.65rem;font-weight:500;color:var(--text-3);background:var(--bg);border:1px solid var(--border);padding:.15rem .5rem;border-radius:100px;margin-left:.5rem;vertical-align:middle}
+        .question-text{font-size:1rem;font-weight:500;margin-bottom:1.25rem;color:var(--text)}
+        .options{list-style:none;margin-bottom:1.5rem}
+        .options li{padding:.75rem 1rem;margin-bottom:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;transition:all .2s}
+        .options li:hover{background:var(--bg-card);border-color:var(--text-3)}
+        .options li.correct{background:#dbeafe;border-color:#2563eb;color:#1e40af;font-weight:500}
+        .options li.wrong{background:#fee2e2;border-color:#dc2626;color:#991b1b}
+        .answered .options li{cursor:default}
+        .answered .options li:hover{background:inherit}
+        @media(prefers-color-scheme:dark){.options li.correct{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd}.options li.wrong{background:#450a0a;border-color:#ef4444;color:#fca5a5}}
+        .option-label{font-weight:600;color:var(--accent);margin-right:.5rem}
+        .answer-toggle{background:var(--accent);color:white;border:none;padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:500;transition:background .2s}
+        .answer-toggle:hover{background:var(--accent-hover)}
+        .answer-section{display:none;margin-top:1rem;padding:1rem;background:var(--bg);border-radius:8px;border-left:4px solid var(--success)}
+        .answer-section.visible{display:block}
+        .correct-answer{font-weight:700;color:var(--success);margin-bottom:.4rem}
+        .explanation{color:var(--text-2);font-size:.9rem}
+        .footer{text-align:center;padding:2rem 1rem;margin-top:2rem;border-top:1px solid var(--border);color:var(--text-3);font-size:.8rem}
+        @media(max-width:640px){.container{padding:1rem}.question-card{padding:1.25rem}.score-bar{flex-wrap:wrap;padding:.5rem 1rem}}
+    </style>
+</head>
+<body>
+    <div class="score-bar" id="scoreBar">
+        <div><span class="score-text" id="scoreText">0%</span> <span class="score-detail" id="scoreDetail">(0/0 answered)</span></div>
+        <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="container">
+        <div class="header">
+            <h1>Simulasi 23</h1>
+            <p class="desc">40 Questions</p>
+        </div>
+
+        <div class="question-card" id="q1">
+            <div class="question-number">1</div><span class="skill-tag">Skill 1.1.3</span>
+            <div class="question-text">A company runs a daily AWS Glue ETL job that reads from multiple S3 partitions. The job processes yesterday's data only, but the crawler detects 10,000 partitions in total. The job takes 20 minutes just to plan the query. How should the data engineer configure the job to reduce planning time?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Switch from DynamicFrame to native Spark DataFrame, applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> Increase the number of Glue DPUs allocated to the job</li>
+                <li><span class="option-label">C.</span> Delete old partitions from the Glue Data Catalog with partition filtering in the Glue DynamicFrame reader</li>
+                <li><span class="option-label">D.</span> Use push-down predicates with partition filtering in the Glue DynamicFrame reader</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Push-down predicates memungkinkan Glue memfilter partisi di level Data Catalog sebelum membaca data. Dengan menentukan filter (misalnya partition_date = yesterday), Glue hanya merencanakan dan membaca partisi yang diperlukan, mengurangi planning time drastis.<br><br>Opsi A: SALAH. Tidak menyelesaikan masalah partition pruning tanpa konfigurasi tambahan.<br>Opsi B: SALAH. Tidak mempercepat planning phase.<br>Opsi C: SALAH. Menghapus metadata yang mungkin masih diperlukan — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q2">
+            <div class="question-number">2</div><span class="skill-tag">Skill 1.1.6</span>
+            <div class="question-text">A data pipeline is triggered by S3 Event Notifications sent to an SQS queue. The processing Lambda function occasionally fails, causing messages to return to the queue and trigger duplicate processing. How should the engineer prevent duplicate processing while ensuring no data is lost?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Delete messages from the queue immediately before processing starts, integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Use an SQS FIFO queue with deduplication enabled, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> Set the SQS visibility timeout to 24 hours to prevent reprocessing configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Configure a dead-letter queue (DLQ) for failed messages and implement idempotent processing in the Lambda function using DynamoDB to track processed files</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">DLQ menangkap messages yang gagal diproses setelah max retries, mencegah infinite reprocessing. Idempotent processing dengan DynamoDB tracking memastikan bahwa jika message diproses ulang, hasilnya sama (tidak ada duplikasi data).<br><br>Opsi A: SALAH. Menyebabkan data loss jika processing gagal.<br>Opsi B: SALAH. Membatasi throughput ke 300 msg/s dan S3 events tidak guarantee deduplication ID.<br>Opsi C: SALAH. Menunda retry terlalu lama tanpa menyelesaikan masalah root cause — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q3">
+            <div class="question-number">3</div><span class="skill-tag">Skill 1.1.9</span>
+            <div class="question-text">An AWS Glue ETL job reads from an Amazon RDS MySQL database with max_connections set to 150. The Glue job uses 100 DPUs, and each DPU opens multiple connections. The job fails with "Too many connections" error. Which configuration change resolves this without modifying the RDS instance?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Amazon RDS Proxy in front of the database to pool connections, applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> Reduce the Glue job's number of workers and use hashpartitions with a value lower than max_connections</li>
+                <li><span class="option-label">C.</span> Enable Glue Auto Scaling to dynamically adjust the number of connections, validating and cleansing each record before delivery</li>
+                <li><span class="option-label">D.</span> Increase the Glue job timeout to allow connections to queue with a value lower than max_connections and use</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Glue hashpartitions menentukan jumlah koneksi paralel ke database. Dengan menetapkan hashpartitions ke nilai di bawah max_connections (misalnya 50), Glue membatasi jumlah concurrent connections. Mengurangi workers juga mengurangi parallelism.<br><br>Opsi A: SALAH. Valid tapi "without modifying the RDS instance" — RDS Proxy adalah komponen terpisah yang bisa ditambahkan.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Bisa menambah lebih banyak workers yang memperburuk masalah.<br>Opsi D: SALAH. Tidak menyelesaikan connection limit — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q4">
+            <div class="question-number">4</div><span class="skill-tag">Skill 1.1.12</span>
+            <div class="question-text">A fraud detection system processes financial transactions in real-time. It needs to flag a transaction as suspicious if a user makes more than 5 transactions in different countries within 1 hour. Which approach correctly implements this stateful detection?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use a stateless filter in Amazon Data Firehose transformation with keyed state and a 1-hour event-time window grouped by user_id</li>
+                <li><span class="option-label">B.</span> Use Kinesis Data Analytics SQL with a simple SELECT query, making the data queryable within seconds of arrival</li>
+                <li><span class="option-label">C.</span> Use Apache Flink (Amazon Managed Service for Apache Flink) with keyed state and a 1-hour event-time window grouped by user_id</li>
+                <li><span class="option-label">D.</span> Use a Lambda function that queries DynamoDB for the user's recent transaction count each time, minimizing end-to-end processing latency</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Apache Flink excels at stateful stream processing. Keyed state (grouped by user_id) memungkinkan Flink melacak jumlah transaksi per user dalam windowed time frame. Event-time processing menangani late-arriving events. Flink mengelola state secara internal dengan checkpointing untuk fault tolerance.<br><br>Opsi A: SALAH. Hanya untuk transformasi record-by-record stateless — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Tidak memiliki state management yang robust.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Bisa bekerja tapi menambah latency DynamoDB lookup setiap transaction dan race conditions.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q5">
+            <div class="question-number">5</div><span class="skill-tag">Skill 1.2.3</span>
+            <div class="question-text">A healthcare company wants to integrate patient records from five different hospital databases (MySQL, PostgreSQL, Oracle, SQL Server, and MongoDB) into a centralized data lake. Each database has different schemas for patient data. Which approach creates the MOST maintainable integration?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use AWS Glue with crawlers to discover schemas from each source, create a standardized canonical schema in the Data Catalog, and use Glue ETL jobs with schema mapping to transform all sources to the canonical format</li>
+                <li><span class="option-label">B.</span> Use Amazon AppFlow to connect to all five databases with crawlers, integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Use AWS DMS to replicate all databases to a single RDS instance, then export to S3, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">D.</span> Write custom Python scripts for each database connection, handling the described workload reliably at scale and applying schema conversion and enrichment inline and integrating natively with the rest of the pipeline and delivering records with consistent sub-second latency</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Glue crawlers mendeteksi schema berbagai database. Data Catalog menjadi metadata registry pusat. Glue ETL jobs dengan schema mapping (ApplyMapping transform) menstandarkan heterogeneous schemas ke format canonical yang konsisten. Ini paling maintainable karena schema changes terdeteksi otomatis.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. AppFlow tidak support RDBMS/MongoDB directly — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Memindahkan masalah schema heterogeneity.<br>Opsi D: SALAH. Sulit di-maintain untuk 5 sources.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q6">
+            <div class="question-number">6</div><span class="skill-tag">Skill 1.2.6</span>
+            <div class="question-text">A data engineer has a Parquet file in S3 that uses INT96 timestamp format. The downstream system (Amazon Redshift Spectrum) requires timestamps in INT64 (microseconds) format. The Glue ETL job reads the file correctly but Redshift Spectrum shows incorrect timestamps. How should this be resolved?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use a Redshift UDF to interpret INT96 timestamps with Spark config spark</li>
+                <li><span class="option-label">B.</span> Update the Glue Data Catalog table to change the timestamp format, applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">C.</span> Re-write the Parquet file using Glue ETL with Spark config spark.sql.parquet.outputTimestampType set to TIMESTAMP_MICROS (INT64)</li>
+                <li><span class="option-label">D.</span> Cast the timestamp column in the Redshift Spectrum query, integrating natively with the rest of the pipeline</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">INT96 timestamp adalah legacy Parquet format yang tidak semua systems support correctly. Mengkonversi ke TIMESTAMP_MICROS (INT64) menggunakan spark.sql.parquet.outputTimestampType memastikan compatibility dengan Redshift Spectrum dan services lainnya. Ini fix masalah di source.<br><br>Opsi A: SALAH. Workaround yang fragile — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Tidak mengubah physical file format.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Tidak bisa correctly interpret INT96 di Spectrum.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q7">
+            <div class="question-number">7</div><span class="skill-tag">Skill 1.2.9</span>
+            <div class="question-text">A social media company ingests data from multiple sources: user posts (JSON), images (binary), videos (binary), click events (structured logs), and relationship graphs (graph data). This data exhibits high VARIETY. Which storage strategy accommodates all these data types in a unified data lake?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use separate AWS accounts for each data type, satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and providing exactly-once processing semantics</li>
+                <li><span class="option-label">B.</span> Convert all data to CSV and store in a single S3 prefix with different prefixes per data type and format-appropriate processing services per type, handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> Store all data in Amazon RDS with BLOB columns for binary data, integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">D.</span> Amazon S3 as the central data lake with different prefixes per data type, AWS Glue Data Catalog for metadata management across all formats, and format-appropriate processing services per type</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">S3 data lake adalah solusi terbaik untuk high variety karena menerima semua format tanpa schema requirements (schema-on-read). Prefix-based organization memisahkan data types. Glue Data Catalog menyediakan unified metadata layer. Tiap tipe data bisa diproses dengan service yang sesuai (Athena untuk structured, Rekognition untuk images, dll).<br><br>Opsi A: SALAH. Menambah complexity.<br>Opsi B: SALAH. Kehilangan fidelity data dan impractical untuk images/videos — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Tidak cocok untuk binary/unstructured data at scale.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q8">
+            <div class="question-number">8</div><span class="skill-tag">Skill 1.3.2</span>
+            <div class="question-text">A data pipeline currently processes 100 GB daily and is expected to grow to 10 TB within a year. The pipeline uses a fixed-size EMR cluster. Which design change ensures the pipeline scales with data growth without manual intervention?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Manually resize the cluster each quarter based on projections, meeting the latency and throughput goals of the design and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">B.</span> Enable EMR Managed Scaling with minimum and maximum node counts, allowing the cluster to automatically add nodes as data volume increases</li>
+                <li><span class="option-label">C.</span> Pre-provision a cluster sized for 10 TB from day one with minimum, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Switch to Lambda for automatic scaling, handling peak volume without any manual intervention and satisfying all of the stated requirements with minimal effort</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">EMR Managed Scaling automatically adjusts cluster size based on workload metrics (YARN pending containers). As data grows and more processing is needed, nodes are added automatically up to the maximum. When load decreases, nodes are removed. No manual intervention needed.<br><br>Opsi A: SALAH. Reactive and may miss growth spikes.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Wastes money for months while data is only 100 GB — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Cannot process 10 TB datasets.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q9">
+            <div class="question-number">9</div><span class="skill-tag">Skill 1.4.1</span>
+            <div class="question-text">A Glue ETL job reads a 1 TB CSV dataset from S3. The job uses a filter early in the transformation (keeping only 5% of records). However, the filter is applied AFTER a costly groupBy operation. The Spark execution plan shows all 1 TB being grouped before filtering. How should the code be restructured?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Cache the filtered results, avoiding charges for idle provisioned capacity and keeping steady-state operating costs low and integrating natively with the rest of the pipeline and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">B.</span> Switch from groupBy to reduceByKey configured for optimal performance and minimal operational overhead, integrating natively with the rest of the pipeline and validating and cleansing each record before delivery</li>
+                <li><span class="option-label">C.</span> Add more DPUs to process the groupBy faster, satisfying all of the stated requirements with minimal effort and keeping steady-state operating costs low and avoiding charges for idle provisioned capacity</li>
+                <li><span class="option-label">D.</span> Move the filter operation BEFORE the groupBy — "filter early, aggregate late" principle reduces the data volume from 1 TB to 50 GB before the expensive groupBy operation</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">"Filter early, aggregate late" (predicate pushdown principle) — filtering first reduces the dataset from 1 TB to ~50 GB (5%). The subsequent groupBy only processes 50 GB instead of 1 TB, reducing shuffle volume by 95% and dramatically cutting runtime. This is one of the most impactful code optimizations.<br><br>Opsi A: SALAH. Helps for repeated reads, not for single-pass processing.<br>Opsi B: SALAH. Is RDD API, not applicable to DataFrames/DynamicFrames — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Scales the problem rather than eliminating it.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q10">
+            <div class="question-number">10</div><span class="skill-tag">Skill 1.4.4</span>
+            <div class="question-text">A data engineer needs to validate that an end-to-end data pipeline correctly ingests data from an RDS source, transforms it in Glue, and loads it into Redshift with correct schema and row counts. Unit tests pass but production still occasionally produces incorrect results. Which additional testing strategy addresses this gap?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Run the same unit tests multiple times to increase confidence, handling the described workload reliably at scale and meeting the latency and throughput goals of the design and transforming records into the required target format</li>
+                <li><span class="option-label">B.</span> Implement integration tests that run the full pipeline against a dedicated test environment with known seed data, then validate row counts, schema conformity, data types, and sample record values in the target Redshift cluster</li>
+                <li><span class="option-label">C.</span> Add more unit tests for individual transformation functions, applying schema conversion and enrichment inline and handling the described workload reliably at scale and transforming records into the required target format and keeping steady-state operating costs low</li>
+                <li><span class="option-label">D.</span> Perform manual spot-checks on production data weekly with known seed data and sample record values in the target Redshift cluster, meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Integration tests validate the interaction between components (RDS → Glue → Redshift) which unit tests cannot cover. Issues like connection timeouts, schema drift in source, Redshift COPY command failures, and data type mismatches only surface during end-to-end execution. A dedicated test environment with seed data provides repeatable, automated validation.<br><br>Opsi A: SALAH. Running the same tests repeatedly doesn't increase coverage.<br>Opsi B: BENAR.<br>Opsi C: SALAH. More unit tests don't catch integration-level issues (connectivity, permissions, schema mismatches).<br>Opsi D: SALAH. Manual checks are unreliable and not scalable — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q11">
+            <div class="question-number">11</div><span class="skill-tag">Skill 1.4.7</span>
+            <div class="question-text">A data pipeline uses multiple Lambda functions that need to share intermediate results. Function A extracts data and produces a 500MB intermediate dataset. Function B (triggered after A completes) must read this intermediate data and apply additional transformations. The intermediate data is only needed for the pipeline run duration. Which storage approach BEST enables data sharing between these Lambda invocations?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Store the data in a DynamoDB table with 500MB record items and Function B reads it from the same mount point, meeting the latency and throughput goals of the design and handling the described workload reliably at scale and providing exactly-once processing semantics</li>
+                <li><span class="option-label">B.</span> Store intermediate data in Lambda's /tmp directory and rely on the next invocation using the same container, applying schema conversion and enrichment inline and validating and cleansing each record before delivery and handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> Pass the 500MB dataset as the payload in the Step Functions state machine between states, transforming records into the required target format and integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">D.</span> Mount a shared EFS file system on both Lambda functions. Function A writes intermediate data to EFS, and Function B reads it from the same mount point. EFS provides a shared persistent filesystem accessible by both functions with POSIX file semantics</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">EFS provides a shared filesystem accessible by multiple Lambda functions simultaneously. Both functions mount the same EFS file system and can read/write to the same directories. This enables direct data sharing without object copies — Function B reads the same file Function A wrote. EFS supports concurrent access and provides file-level locking if needed.<br><br>Opsi A: SALAH. DynamoDB item size limit is 400KB, and it's not designed for large binary data storage — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. /tmp is ephemeral and local to a specific container instance. Different Lambda functions (or even different invocations of the same function) use different containers with isolated /tmp directories.<br>Opsi C: SALAH. Step Functions payload limit is 256KB, far too small for 500MB.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q12">
+            <div class="question-number">12</div><span class="skill-tag">Skill 1.4.10</span>
+            <div class="question-text">A Spark application on EMR has a driver (master) node and 20 executor nodes. During execution, 2 executor nodes fail due to hardware issues. The application is processing a critical daily ETL batch that must complete successfully. How does Spark handle this failure, and what architectural feature enables recovery?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Spark replicates all data across three nodes (like HDFS), so when two nodes fail, the data is still available on the third copy, validating and cleansing each record before delivery and satisfying all of the stated requirements with minimal effort and applying schema conversion and enrichment inline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> The entire Spark application fails and must be restarted from the beginning by the user with partition-level ordering and dedicated throughput, handling the described workload reliably at scale and validating and cleansing each record before delivery and applying schema conversion and enrichment inline and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> Spark writes checkpoints to disk after every transformation, and recovery reads from the last checkpoint, handling the described workload reliably at scale and applying schema conversion and enrichment inline and validating and cleansing each record before delivery and meeting the latency and throughput goals of the design and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Spark uses its lineage-based fault tolerance: each RDD/DataFrame records the sequence of transformations (lineage) used to create it. When executors fail, Spark recomputes only the lost partitions by replaying the lineage on other available executors. The driver reassigns the failed tasks to healthy executors, and the overall job continues without restarting from the beginning</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Spark's lineage (DAG of transformations) is its primary fault tolerance mechanism. Unlike systems that replicate data (expensive for large datasets), Spark records HOW to recreate data from its source. When executor 5 fails, Spark knows that partition 5's data was created by: read S3 file X → filter → map → ... and reruns these transformations on another executor. Only lost partitions are recomputed, not the entire dataset. The driver coordinates task reassignment automatically.<br><br>Opsi A: SALAH. Spark doesn't replicate intermediate data like HDFS replicates blocks; it uses lineage instead (more memory-efficient).<br>Opsi B: SALAH. Spark automatically handles executor failures; only driver failure requires restart (unless in cluster mode with supervision) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Checkpointing is optional and used for specific scenarios (long lineages, streaming); it's not the default mechanism.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q13">
+            <div class="question-number">13</div><span class="skill-tag">Skill 2.1.2</span>
+            <div class="question-text">A SaaS application stores tenant data in Amazon RDS PostgreSQL. The application has grown to 500 tenants with uneven data distribution: 10 "enterprise" tenants generate 80% of queries (read-heavy reporting), while 490 "standard" tenants have balanced read/write patterns. The database is experiencing read contention during enterprise tenant reporting hours (9 AM - 5 PM). Which RDS configuration BEST addresses this access pattern imbalance?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Vertically scale the primary instance to a larger instance type (e.g., db.r5.8xlarge) to handle both read and write workloads, meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">B.</span> Enable Multi-AZ deployment to distribute the read load across the primary and standby instances with custom endpoints, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Create read replicas and configure the application to route enterprise tenant reporting queries to read replicas while directing all write operations and standard tenant queries to the primary instance, using an application-level routing layer or Amazon RDS Proxy with custom endpoints</li>
+                <li><span class="option-label">D.</span> Migrate all enterprise tenants to a separate RDS instance and all standard tenants to another instance, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Read replicas offload read-heavy reporting queries from the primary instance, eliminating contention. Routing enterprise reporting to replicas during business hours handles the 80% read load separately while the primary serves writes and standard tenant queries without contention. RDS supports up to 5 read replicas per instance, providing scalable read capacity. This targets the specific access pattern (read-heavy enterprise reporting) without over-engineering.<br><br>Opsi A: SALAH. Vertical scaling has limits (max instance size) and doesn't solve read contention — more CPU/RAM on a single instance still means shared I/O.<br>Opsi B: SALAH. Multi-AZ standby is for failover only; it does NOT serve read traffic (it's a synchronous replica that handles only failover scenarios) — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Splitting tenants into separate instances adds operational complexity, cross-instance queries, and doesn't leverage RDS's built-in read replica capability.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q14">
+            <div class="question-number">14</div><span class="skill-tag">Skill 2.1.5</span>
+            <div class="question-text">A company stores 100 TB of historical log data in Amazon S3 as compressed Parquet files, partitioned by date. Their Redshift cluster contains 5 TB of curated business metrics. Analysts need to run occasional ad-hoc queries that join Redshift business metrics with historical S3 log data (e.g., correlate website errors with revenue dips on specific dates). They do NOT want to load the 100 TB into Redshift. Which approach enables querying across both data stores efficiently?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Amazon Athena to query the S3 data and export results to Redshift for joining with business metrics and external table pointing to the S3 log data location, handling the described workload reliably at scale and validating and cleansing each record before delivery and satisfying all of the stated requirements with minimal effort and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> Use Redshift COPY command to load the relevant portions of S3 data into temporary Redshift tables before running the join queries, satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design and applying schema conversion and enrichment inline and integrating natively with the rest of the pipeline and reducing day-to-day operational effort</li>
+                <li><span class="option-label">C.</span> Use Redshift Spectrum by creating an external schema and external table pointing to the S3 log data location. Spectrum uses independent compute nodes to scan S3 data in parallel while the Redshift cluster handles the local business metrics table. JOIN operations between local Redshift tables and Spectrum external tables work in standard SQL with predicate pushdown to minimize S3 data scanned</li>
+                <li><span class="option-label">D.</span> Create a Redshift federated query connection to S3 and query the data as if it were in an external PostgreSQL database, meeting the latency and throughput goals of the design and satisfying all of the stated requirements with minimal effort and validating and cleansing each record before delivery and applying schema conversion and enrichment inline and handling the described workload reliably at scale</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Redshift Spectrum is purpose-built for this scenario: (1) it queries S3 data directly without loading it into Redshift (saving storage costs for 100 TB); (2) independent Spectrum compute layer scales automatically to scan S3 in parallel, separate from the main cluster's resources; (3) the same Redshift SQL session can JOIN local tables (business metrics) with external Spectrum tables (S3 logs) transparently; (4) partition pruning on date eliminates scanning irrelevant partitions; (5) Parquet column pruning and predicate pushdown minimize data read.<br><br>Opsi A: SALAH. Athena querying S3 and exporting to Redshift is a multi-step manual process; Spectrum provides the same capability in a single SQL statement — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Loading portions of 100 TB for ad-hoc queries requires predicting which data is needed, consumes cluster storage, and the COPY operation itself takes significant time for large datasets.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Redshift federated queries connect to RDS/Aurora databases, not directly to S3 files; Spectrum is the S3 access mechanism.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q15">
+            <div class="question-number">15</div><span class="skill-tag">Skill 2.1.8</span>
+            <div class="question-text">A data scientist working with Amazon Aurora PostgreSQL (pgvector) needs to build a semantic search application for legal documents. The corpus contains 5 million document embeddings at 1,536 dimensions (from a large language model). The application requires 99% recall — almost no relevant documents can be missed because missing a relevant legal precedent could have serious consequences. Query latency up to 500ms is acceptable. Which index configuration BEST achieves this high-recall requirement?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use an IVF index with nlist=100 clusters and nprobe=1 to minimize latency while relying on cluster quality for recall, streaming results downstream in near real time and maintaining the original event sequence from end to end and keeping every related record in its produced order and scaling horizontally as ingestion throughput keeps growing and delivering records with consistent sub-second latency</li>
+                <li><span class="option-label">B.</span> Use HNSW with default parameters (ef_construction=64, ef_search=40) and post-filter results using a re-ranking model to catch missed documents, scaling elastically to millions of events per second and maintaining the original event sequence from end to end and preserving strict per-key ordering across all partitions and keeping every related record in its produced order and integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">C.</span> Use a flat (exact) brute-force index for guaranteed 100% recall regardless of dataset characteristics with high ef_construction (512) during build time and high ef_search (200) at query time, making the data queryable within seconds of arrival and guaranteeing exactly-ordered delivery within each key group and maintaining the original event sequence from end to end and scaling horizontally as ingestion throughput keeps growing and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">D.</span> Use an HNSW index with high ef_construction (512) during build time and high ef_search (200) at query time. Higher ef_construction creates denser graph connections during index building, and higher ef_search explores more candidates during query traversal — both directly increase recall at the cost of build time and query latency respectively. At ef_search=200 for 5M vectors, HNSW typically achieves 99%+ recall within the 500ms latency budget</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">HNSW with tuned parameters provides the optimal balance of high recall and acceptable latency: (1) ef_construction=512 builds a denser graph — each node maintains connections to more neighbors, creating more paths to find relevant results; (2) ef_search=200 means the query explores 200 candidates during traversal (vs. default 40), dramatically increasing the probability of finding all 99% of true nearest neighbors; (3) at 5 million vectors and 500ms budget, HNSW with these parameters typically achieves 99%+ recall while staying within latency bounds; (4) the trade-off is ~4× slower index build and ~3× slower queries compared to defaults — but both remain acceptable (build once for static corpus, 500ms query budget is generous).<br><br>Opsi A: SALAH. IVF with nprobe=1 searches only the single nearest cluster, providing ~50-70% recall at best; achieving 99% recall with IVF requires nprobe≈50-100 which may exceed the latency budget for 5M vectors at 1,536 dimensions.<br>Opsi B: SALAH. Default HNSW parameters (ef_search=40) achieve approximately 90-95% recall; a re-ranking model can only re-rank the candidates already retrieved — it cannot find documents that HNSW missed entirely.<br>Opsi C: SALAH. Brute-force on 5M vectors at 1,536 dimensions requires computing 5M distance calculations of 1,536-dimensional vectors per query; this takes 2-5 seconds on typical Aurora instances, exceeding the 500ms budget — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q16">
+            <div class="question-number">16</div><span class="skill-tag">Skill 2.2.3</span>
+            <div class="question-text">A data lake receives IoT sensor data in a custom binary format that Glue crawlers' built-in classifiers cannot parse. The files have extension .sensordata and contain fixed-width records with a proprietary header. The team needs the crawler to correctly identify these files' format and extract column schemas. Which Glue feature enables crawling custom file formats?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create a custom Glue classifier that uses a Grok pattern (regex-based pattern matching) to define the record structure of the .sensordata files. The custom classifier specifies how to parse the fixed-width records into named columns with data types. Assign the custom classifier to the crawler — when the crawler encounters .sensordata files, it applies the custom classifier first (before built-in classifiers), extracting the schema according to the defined Grok pattern</li>
+                <li><span class="option-label">B.</span> Add a file extension mapping in the Glue crawler configuration that maps .sensordata to an existing classifier like CSVClassifier, handling the described workload reliably at scale and transforming records into the required target format and integrating natively with the rest of the pipeline and validating and cleansing each record before delivery and meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> Convert all .sensordata files to CSV using a pre-processing Lambda before the crawler runs, then crawl the CSV output with data types, integrating natively with the rest of the pipeline and validating and cleansing each record before delivery and handling the described workload reliably at scale and transforming records into the required target format and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">D.</span> Write a custom ETL job that reads the binary files and creates the catalog table definition manually, bypassing the crawler entirely, meeting the latency and throughput goals of the design and transforming records into the required target format and integrating natively with the rest of the pipeline and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Custom classifiers extend Glue crawlers to handle non-standard formats: (1) Grok classifiers use named regex patterns to define record structure — e.g., %{INT:sensor_id} %{NUMBER:temperature} %{TIMESTAMP_ISO8601:reading_time} maps fixed-width fields to named, typed columns; (2) custom classifiers are evaluated BEFORE built-in classifiers, giving priority to custom format detection; (3) when the Grok pattern matches the file content, the crawler extracts column names and types from the pattern's named captures; (4) Glue also supports JSON and XML custom classifiers for non-standard JSON/XML structures; (5) the classifier is created once and assigned to any crawler that might encounter these files.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Glue crawlers don't support custom file extension mappings to existing classifiers; classification is based on file content inspection (magic bytes, structure), not file extensions.<br>Opsi C: SALAH. Pre-processing with Lambda works but adds operational complexity (another pipeline step, Lambda concurrency limits, error handling) and doubles storage; custom classifiers eliminate this intermediate step — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Manual catalog creation works for initial setup but doesn't handle schema changes if the sensor format evolves; crawlers with custom classifiers automatically detect schema updates on subsequent runs.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q17">
+            <div class="question-number">17</div><span class="skill-tag">Skill 2.2.6</span>
+            <div class="question-text">A data producer in the Marketing project publishes a customer segmentation dataset to the DataZone catalog. A data scientist in the Analytics project discovers this dataset and submits a subscription request. The company policy requires that all access to customer data must be approved by both the data owner AND the compliance team. How should this multi-level approval workflow be configured in DataZone?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure the DataZone environment's subscription approval settings to require manual approval. Set up metadata forms on the data asset that specify required approvers (data owner + compliance). When a subscription request is submitted, DataZone routes notifications to the designated approvers. Both must approve before access is granted. Custom metadata forms can capture justification fields that approvers review</li>
+                <li><span class="option-label">B.</span> Create two separate DataZone domains — one for data owners and one for compliance — requiring subscription approval from both domains independently configured for optimal performance and minimal operational overhead, meeting the latency and throughput goals of the design and protecting the data both in transit and at rest and handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> Configure the asset with auto-approval disabled and add the compliance team as co-owners of the project. All project owners receive approval notifications, handling the described workload reliably at scale and integrating natively with the rest of the pipeline and meeting the latency and throughput goals of the design and enforcing encryption and fine-grained access control</li>
+                <li><span class="option-label">D.</span> DataZone only supports single-level approval (data owner only). To add compliance approval, create a Step Functions workflow triggered by DataZone subscription events that adds a second approval gate, satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and satisfying strict compliance and audit requirements and minimizing end-to-end processing latency</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">DataZone supports configurable approval workflows for data subscriptions: (1) subscription requests require approval before access is provisioned; (2) approval policies can be configured at the project or environment level to specify who must approve; (3) metadata forms attached to data assets can define required approvers, compliance requirements, and justification fields; (4) multiple approvers can be designated for sensitive data assets; (5) notifications route to all required approvers, and access is only granted when all approvals are obtained. This enables governance policies like "customer data requires compliance sign-off" without custom workflow development. Option B — DataZone does support configurable approval flows beyond single-level. While the exact mechanisms have evolved, the service is designed for enterprise governance where multi-level approval is a common requirement. Building custom Step Functions workflows adds unnecessary complexity. Option C — making the compliance team project co-owners gives them full project management access (publish, modify, delete assets), not just approval authority. This violates the principle of least privilege. Option D — separate domains create isolation, not collaboration. Domains are organizational boundaries — splitting governance across domains prevents the unified catalog and discovery experience that's the core value proposition.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi C: SALAH.<br>Opsi D: SALAH.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q18">
+            <div class="question-number">18</div><span class="skill-tag">Skill 2.3.3</span>
+            <div class="question-text">A data pipeline creates multipart uploads to S3 for large files (10+ GB). Occasionally, uploads fail midway (network errors, job crashes), leaving incomplete multipart uploads that consume storage but are invisible in normal S3 listing. Over time, these orphaned uploads accumulate significant storage costs. How can lifecycle policies address this hidden storage cost?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Enable S3 server access logging to detect incomplete uploads, then use a Lambda function to abort them, avoiding charges for idle provisioned capacity and satisfying all of the stated requirements with minimal effort and integrating natively with the rest of the pipeline and optimizing cost for the described workload and handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Configure the multipart upload timeout in the S3 bucket settings to automatically abort uploads after a deadline with the action "Abort incomplete multipart uploads" after a specified number of days (e and incur charges, keeping steady-state operating costs low and avoiding charges for idle provisioned capacity and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and optimizing cost for the described workload</li>
+                <li><span class="option-label">C.</span> Create a lifecycle rule with the action "Abort incomplete multipart uploads" after a specified number of days (e.g., 7 days). This rule automatically aborts multipart uploads that haven't been completed within the specified timeframe, releasing the storage consumed by uploaded parts. Incomplete multipart upload parts are not visible in standard S3 object listings but DO consume storage and incur charges. This rule is a best practice for ANY bucket that uses multipart uploads</li>
+                <li><span class="option-label">D.</span> Use S3 Inventory reports to identify incomplete multipart uploads, then run S3 Batch Operations to abort them periodically, avoiding charges for idle provisioned capacity and keeping steady-state operating costs low and satisfying all of the stated requirements with minimal effort and handling the described workload reliably at scale and meeting the latency and throughput goals of the design</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Lifecycle rules with "AbortIncompleteMultipartUpload" are the standard solution for orphaned upload cleanup: (1) S3 lifecycle natively supports this action — specify DaysAfterInitiation (e.g., 7); (2) after 7 days without completion, the multipart upload is aborted and all uploaded parts are deleted; (3) this reclaims storage that's otherwise invisible and growing indefinitely; (4) it's a set-and-forget rule that requires no custom code or monitoring; (5) AWS recommends this as a STANDARD lifecycle rule on every bucket regardless of use case — orphaned multipart uploads are a universal risk for any application using the multipart upload API (including SDK-level automatic multipart for large files). The cost savings can be significant for high-volume buckets. Option B — server access logging records API calls but doesn't directly track "incomplete" status. You'd need to correlate CreateMultipartUpload with CompleteMultipartUpload/AbortMultipartUpload — complex log analysis compared to a one-line lifecycle rule. Option C — there is no "multipart upload timeout" in S3 bucket settings. S3 doesn't have a built-in per-upload timeout configuration. Multipart uploads remain indefinitely until explicitly completed, aborted, or cleaned by a lifecycle rule. Option D — S3 Inventory doesn't include incomplete multipart uploads in its reports (Inventory lists completed objects only). You'd need to use the ListMultipartUploads API, adding custom code complexity. Lifecycle rules handle this without any custom infrastructure.<br><br>Opsi A: SALAH.<br>Opsi B: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q19">
+            <div class="question-number">19</div><span class="skill-tag">Skill 2.3.6</span>
+            <div class="question-text">A company uses S3 Cross-Region Replication (CRR) to replicate their data lake from us-east-1 to eu-west-1 for disaster recovery. They notice that some objects are not being replicated. Which of the following is a common reason for CRR replication failure?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> The destination bucket has versioning suspended</li>
+                <li><span class="option-label">B.</span> The objects were uploaded using multipart upload</li>
+                <li><span class="option-label">C.</span> The source bucket has more than 1 billion objects</li>
+                <li><span class="option-label">D.</span> The objects were created by a lifecycle rule (transition operations)</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">S3 Cross-Region Replication memerlukan versioning enabled di KEDUA bucket (source dan destination). Jika destination bucket memiliki versioning suspended, replication akan gagal. Ini adalah persyaratan dasar CRR.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Salah — multipart upload berfungsi normal dengan CRR.<br>Opsi C: SALAH. Salah — tidak ada batas jumlah objek untuk CRR.<br>Opsi D: SALAH. Salah — lifecycle transitions bukan objects baru, mereka mengubah storage class dan memang tidak direplikasi, tapi ini by design bukan "failure".</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q20">
+            <div class="question-number">20</div><span class="skill-tag">Skill 2.4.3</span>
+            <div class="question-text">A company is migrating SQL Server to Amazon Aurora PostgreSQL. The SQL Server database uses extensively T-SQL specific features including MERGE statements, CROSS APPLY, and Common Table Expressions (CTEs) with recursion. After running AWS SCT, the assessment shows 60% automatic conversion. What does this percentage indicate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> 60% of the migration will be completed by AWS DMS automatically configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">B.</span> 60% of the queries will run without modification on Aurora PostgreSQL, optimizing cost for the described workload</li>
+                <li><span class="option-label">C.</span> 60% of the database schema objects and code can be automatically converted to PostgreSQL-compatible syntax</li>
+                <li><span class="option-label">D.</span> 60% of the data can be migrated without transformation, handling the described workload reliably at scale</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">SCT assessment percentage menunjukkan proporsi schema objects (tables, views, stored procedures, functions, triggers) dan code yang bisa dikonversi secara otomatis ke target syntax. 60% berarti SCT bisa menghasilkan PostgreSQL-compatible DDL/code untuk 60% objects tanpa intervensi manual. Sisa 40% memerlukan modifikasi manual — misalnya, CROSS APPLY perlu diubah ke LATERAL JOIN di PostgreSQL.<br><br>Opsi A: SALAH. Salah — DMS menangani data migration, bukan schema conversion — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Salah — ini tentang schema objects, bukan runtime query.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Salah — ini tentang schema/code, bukan data.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q21">
+            <div class="question-number">21</div><span class="skill-tag">Skill 2.4.6</span>
+            <div class="question-text">A machine learning team needs to select an embedding model for their RAG application that will handle multilingual customer inquiries (English, Japanese, Spanish, and Arabic). The vector database has storage constraints, so embedding dimensions should be minimized while maintaining quality. Which Amazon Bedrock embedding model selection is MOST appropriate?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Cohere Embed English v3 with 1024 dimensions for highest accuracy configured for optimal performance and minimal</li>
+                <li><span class="option-label">B.</span> Amazon Titan Text Embeddings V2 with configurable output dimensions set to 256 for storage efficiency</li>
+                <li><span class="option-label">C.</span> Amazon Titan Text Embeddings V1 with fixed 1536 dimensions, handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Amazon Titan Multimodal Embeddings for handling diverse content types, integrating natively with the rest of the pipeline</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Amazon Titan Text Embeddings V2 mendukung multilingual content dan memiliki fitur configurable output dimensions (256, 512, atau 1024) yang memungkinkan tradeoff antara storage efficiency dan quality. Dimensi 256 sangat cocok untuk use case dengan storage constraints sambil tetap mempertahankan kualitas yang baik untuk retrieval.<br><br>Opsi A: SALAH. Hanya optimal untuk English, tidak multilingual — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Memiliki fixed 1536 dimensions yang boros storage.<br>Opsi D: SALAH. Dirancang untuk image+text, overkill untuk text-only queries.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q22">
+            <div class="question-number">22</div><span class="skill-tag">Skill 3.1.3</span>
+            <div class="question-text">A data engineer's Lambda function creates an EMR cluster and needs to wait until the cluster reaches the "WAITING" state before submitting steps. The function uses a polling loop with describe_cluster() calls every 30 seconds. This approach is unreliable because the Lambda function sometimes times out. What is the BEST boto3 pattern for waiting on resource state changes?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use EventBridge to detect EMR state changes and trigger a second Lambda function</li>
+                <li><span class="option-label">B.</span> Use a boto3 waiter: emr_client.get_waiter('cluster_running').wait(ClusterId=cluster_id) with WaiterConfig for custom delay and max attempts</li>
+                <li><span class="option-label">C.</span> Increase the Lambda timeout to 15 minutes to ensure enough time for polling with WaiterConfig for custom delay and max attempts</li>
+                <li><span class="option-label">D.</span> Use the EMR resource interface which blocks until the cluster is ready</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">Boto3 waiters adalah built-in polling mechanism yang menunggu resource mencapai state tertentu. Waiters memiliki configurable Delay (polling interval) dan MaxAttempts, dengan proper error handling untuk terminal failure states. Untuk EMR, 'cluster_running' waiter polls describe_cluster secara teratur. WaiterConfig memungkinkan tuning untuk fit within Lambda timeout.<br><br>Opsi A: SALAH. Adalah arsitektur yang lebih baik untuk long waits tapi pertanyaan spesifik tentang boto3 pattern.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Masih unreliable jika cluster takes longer than 15 min — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. EMR tidak memiliki "resource interface" yang blocking di boto3.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q23">
+            <div class="question-number">23</div><span class="skill-tag">Skill 3.1.6</span>
+            <div class="question-text">A machine learning team needs to prepare training data from a 500 GB dataset stored in Amazon S3. The preparation involves feature engineering, handling missing values with statistical imputation, one-hot encoding categorical variables, and normalizing numeric features. They need visual exploration capabilities and the ability to export the preparation steps as a pipeline. Which tool is MOST suitable?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Amazon Athena with CTAS for creating transformed feature tables, handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> AWS Glue DataBrew for data cleaning with export to Glue ETL job and export to SageMaker Pipeline</li>
+                <li><span class="option-label">C.</span> Amazon EMR with Jupyter Notebook for interactive Spark-based feature engineering, meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">D.</span> Amazon SageMaker Data Wrangler for visual ML data preparation with built-in transformations and export to SageMaker Pipeline</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Amazon SageMaker Data Wrangler dirancang khusus untuk ML data preparation. Ia menyediakan visual interface untuk feature engineering (one-hot encoding, normalization, imputation), data exploration dengan built-in visualizations, dan kemampuan export ke SageMaker Pipeline untuk production. Ini mencakup semua kebutuhan: visual exploration, ML-specific transforms, dan pipeline export.<br><br>Opsi A: SALAH. Terbatas pada SQL transforms tanpa ML capabilities.<br>Opsi B: SALAH. Bagus untuk data cleaning umum tetapi kurang optimal untuk ML-specific feature engineering seperti statistical imputation dan normalization — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Memerlukan coding.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q24">
+            <div class="question-number">24</div><span class="skill-tag">Skill 3.1.9</span>
+            <div class="question-text">A data platform team needs to route AWS Glue job state change events (SUCCEEDED, FAILED, TIMEOUT) to different targets: successful completions trigger a downstream pipeline, failures send notifications to the ops team, and timeouts restart the job with increased resources. Which EventBridge configuration implements this routing logic?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure Glue job notifications directly to SNS, SQS, and Step Functions for each state with event patterns matching specific "detail, handling the described workload reliably at scale</li>
+                <li><span class="option-label">B.</span> Use a single Lambda function as the target that reads the state and routes accordingly, satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
+                <li><span class="option-label">C.</span> Create one rule matching all Glue job state changes and use input transformers to route to different targets, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">D.</span> Create three separate EventBridge rules with event patterns matching specific "detail.state" values (SUCCEEDED, FAILED, TIMEOUT) on the Glue Job State Change event, each with its own target</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">EventBridge event patterns mendukung matching pada nested fields dalam event detail. Tiga rules terpisah, masing-masing matching pada "detail.state" yang spesifik, memungkinkan routing langsung ke target yang berbeda tanpa intermediate processing. Ini menggunakan EventBridge's native content-based routing.<br><br>Opsi A: SALAH. Salah — Glue tidak mendukung direct notification configuration ke multiple services per state — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Bekerja tetapi menambah latency, cost, dan maintenance dibandingkan native EventBridge routing.<br>Opsi C: SALAH. Salah — input transformers mengubah event format tetapi satu rule hanya bisa memiliki satu set targets, bukan routing conditional.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q25">
+            <div class="question-number">25</div><span class="skill-tag">Skill 3.2.3</span>
+            <div class="question-text">A data engineer is building a data transformation layer in Amazon Athena. The engineer needs to create a cleaned and enriched version of raw data that can be queried by downstream users. The output should be stored as Parquet files in a specific S3 location, partitioned by date. Which Athena feature should the engineer use?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> CREATE EXTERNAL TABLE pointing to the same S3 location with a Glue ETL job for transformation</li>
+                <li><span class="option-label">B.</span> INSERT INTO from a SELECT statement on the raw table with format</li>
+                <li><span class="option-label">C.</span> CREATE VIEW that applies transformation logic, applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">D.</span> CREATE TABLE AS SELECT (CTAS) with format and partitioning specified</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">CTAS di Athena memungkinkan pembuatan tabel baru dari hasil query SELECT. Anda bisa menentukan format output (Parquet), lokasi S3 tujuan, dan strategi partitioning. Data secara fisik ditulis ke S3 dalam format yang ditentukan. Ini ideal untuk membuat layer data yang ditransformasi.<br><br>Opsi A: SALAH. Menambah kompleksitas yang tidak perlu dengan Glue ETL job terpisah.<br>Opsi B: SALAH. Memerlukan tabel target yang sudah ada — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Hanya menyimpan definisi query tanpa materialisasi data.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q26">
+            <div class="question-number">26</div><span class="skill-tag">Skill 3.2.6</span>
+            <div class="question-text">A data engineer has a table with columns: date, product, region, and sales_amount. The business team wants a pivot table showing products as rows, regions as columns, with total sales as values. The query runs in Amazon Redshift. Which approach correctly creates this pivot?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use conditional aggregation: SELECT product, SUM(CASE WHEN region='East' THEN sales_amount END) as East, SUM(CASE WHEN region='West' THEN sales_amount END) as West, ... GROUP BY product</li>
+                <li><span class="option-label">B.</span> Use UNPIVOT to reshape and then GROUP BY configured for optimal performance and minimal operational overhead, meeting the latency and throughput goals of the design</li>
+                <li><span class="option-label">C.</span> Use PIVOT clause: SELECT * FROM sales_table PIVOT (SUM(sales_amount) FOR region IN ('East', 'West', 'North', 'South')), handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Use CROSSTAB function from the tablefunc extension, handling the described workload reliably at scale and integrating natively with the rest of the pipeline</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Conditional aggregation dengan CASE WHEN adalah teknik pivot yang paling reliable dan widely supported di Amazon Redshift. Setiap kolom output didefinisikan sebagai aggregate dengan CASE yang memfilter region tertentu.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Melakukan kebalikan dari yang diminta — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: SALAH. Tersedia di beberapa database (SQL Server, Oracle) dan Redshift baru saja menambahkan dukungannya, namun conditional aggregation tetap menjadi pendekatan paling portable dan well-understood.<br>Opsi D: SALAH. Bukan fitur Redshift.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q27">
+            <div class="question-number">27</div><span class="skill-tag">Skill 3.3.3</span>
+            <div class="question-text">A data pipeline processes batch data every hour using AWS Glue. During a planned 4-hour maintenance window, the pipeline will be intentionally stopped. The team wants to suppress all pipeline-related CloudWatch alarms during this period to avoid false alerts to the on-call team. Which approach is MOST operationally efficient?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use CloudWatch alarm actions to temporarily disable alarm actions (using disable-alarm-actions API) before maintenance and re-enable after.</li>
+                <li><span class="option-label">B.</span> Change the SNS topic subscription's filter policy to reject messages during the maintenance window.</li>
+                <li><span class="option-label">C.</span> Set the alarm evaluation period to 5 hours so it won't trigger during the 4-hour maintenance window.</li>
+                <li><span class="option-label">D.</span> Delete all pipeline alarms before maintenance and recreate them afterward using CloudFormation. and re-enable after</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">The disable-alarm-actions API temporarily suppresses alarm actions (notifications) without deleting or modifying the alarms themselves. Alarms continue to evaluate and change state, but no actions are triggered. After maintenance, enable-alarm-actions restores normal behavior. Option B: Deleting and recreating alarms is risky and loses alarm history. Option C: SNS filter policies cannot be scheduled or time-based. Option D: Changing evaluation periods affects normal operations and would delay legitimate alerts after maintenance.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH.<br>Opsi C: SALAH.<br>Opsi D: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q28">
+            <div class="question-number">28</div><span class="skill-tag">Skill 3.3.6</span>
+            <div class="question-text">A data engineer manages a Glue crawler that runs daily to update the Data Catalog. Recently, the crawler has been failing with: "Service Exception: Crawler already running." The crawler is scheduled at 6 AM but the previous day's run is sometimes still active. What is the BEST solution to prevent this issue while ensuring the catalog stays up to date?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Configure two crawlers pointing to the same source: one scheduled for 6 AM and a backup scheduled for 9 AM in case the first fails, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Use a Step Functions workflow that checks the crawler state before starting it. If running, wait with an exponential backoff loop until the previous run completes, then start the new run.</li>
+                <li><span class="option-label">C.</span> Disable the schedule and trigger the crawler from the Glue job's post-processing step only after data is written, with an exponential backoff loop until the previous run completes</li>
+                <li><span class="option-label">D.</span> Increase the crawler's timeout setting and configure the crawler to run on a longer schedule (e.g., every 2 hours instead of daily) to ensure completion before the next run.</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">A Step Functions workflow provides robust orchestration: it can check the crawler state (GetCrawler API), wait if running, and retry with backoff. This ensures the new crawl starts only when the previous one completes, preventing the "already running" error while guaranteeing catalog updates. Option A: Running more frequently doesn't solve the overlap problem and may increase costs. Option C: Two crawlers on the same source would have the same overlap problem and could cause catalog update conflicts. Option D: While event-driven triggering is good practice, it doesn't address the concurrent run issue if data writes overlap with ongoing crawls.<br><br>Opsi A: SALAH.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi D: SALAH.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q29">
+            <div class="question-number">29</div><span class="skill-tag">Skill 3.4.1</span>
+            <div class="question-text">A financial services company runs a Glue ETL pipeline that processes trade data. Regulatory requirements mandate that every batch processed must have a documented quality assessment, and if critical quality rules fail (>0.1% of records have invalid trade amounts), the entire batch must be rejected and an alert sent. How should this quality gate be implemented?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use EvaluateDataQuality with a ruleset, configure the StopJobOnFailedRules action for critical rules, publish quality metrics to CloudWatch using the publishResults parameter, and create a CloudWatch alarm on the quality metric that triggers an SNS notification.</li>
+                <li><span class="option-label">B.</span> Write custom Python code to count invalid records, calculate the percentage, and call sys.exit(1) if the threshold is exceeded, then use Glue job failure notifications, handling the described workload reliably at scale and reducing day-to-day operational effort</li>
+                <li><span class="option-label">C.</span> Configure Glue Data Quality recommendations to automatically detect anomalies and stop the job using machine learning-based thresholds, integrating natively with the rest of the pipeline and handling the described workload reliably at scale</li>
+                <li><span class="option-label">D.</span> Run the ETL job first without quality checks, then validate the output data in the target table using a separate validation query, and delete the batch if it fails, with a ruleset for critical rules</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">EvaluateDataQuality supports configurable actions on rule failure, including stopping the job (rejecting the batch). The publishResults parameter sends quality metrics to CloudWatch, providing the documented quality assessment required by regulations. Combined with CloudWatch Alarms and SNS, this creates a complete quality gate with alerting. Option B: Custom code works but lacks the structured quality reporting, metadata capture, and integration with Glue's quality framework needed for regulatory documentation. Option C: Processing first then validating violates the "check during processing" principle and risks downstream consumers seeing bad data before deletion. Option D: Glue Data Quality recommendations suggest rules based on data profiling but don't enforce hard regulatory thresholds; ML-based anomaly detection may not meet the precise 0.1% requirement.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH.<br>Opsi C: SALAH.<br>Opsi D: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q30">
+            <div class="question-number">30</div><span class="skill-tag">Skill 3.4.4</span>
+            <div class="question-text">A real-time data pipeline uses Kinesis Data Streams to ingest 100,000 events per second. The team needs to continuously monitor data quality on this stream without adding significant processing latency or cost. The monitoring should detect sudden quality degradation (e.g., spike in malformed records) within 60 seconds. Which sampling approach for the streaming context is BEST?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Implement reservoir sampling in a Lambda consumer that maintains a fixed-size sample (10,000 records) per 60-second window. At the end of each window, evaluate quality rules on the sample and publish metrics to CloudWatch.</li>
+                <li><span class="option-label">B.</span> Configure a Kinesis Data Firehose delivery stream that samples 1% of records by randomly discarding 99% in a transformation Lambda, then run quality checks on the delivered sample in S3, avoiding charges for idle provisioned capacity</li>
+                <li><span class="option-label">C.</span> Run quality checks only on the first record of each Kinesis shard to minimize processing overhead. and publish metrics to CloudWatch, handling peak volume without any manual intervention and scaling horizontally as ingestion throughput keeps growing</li>
+                <li><span class="option-label">D.</span> Use Kinesis Data Analytics to process every record with quality checks in real-time, using the full stream throughput, minimizing end-to-end processing latency and making the data queryable within seconds of arrival and providing exactly-once processing semantics</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Reservoir sampling is the ideal algorithm for streaming data quality monitoring: it maintains a statistically representative fixed-size sample regardless of stream volume, uses O(1) memory per record decision, and doesn't require knowing the total stream size in advance. A 10,000-record sample per 60-second window provides sufficient statistical power to detect quality degradation while processing overhead is minimal. Option B: Processing every record (100K/second) for quality checks adds significant cost and may introduce backpressure/latency on the stream. Option C: Firehose delivery to S3 adds latency (minimum 60-second buffer) before quality checks can run, and the Firehose → S3 → analysis path may exceed the 60-second detection requirement. Option D: Sampling only the first record per shard is not random; it introduces temporal bias and with typically few shards, provides an extremely small sample.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH.<br>Opsi C: SALAH. Meskipun terdengar meyakinkan, tetap tidak tepat untuk skenario ini.<br>Opsi D: SALAH.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q31">
+            <div class="question-number">31</div><span class="skill-tag">Skill 4.1.2</span>
+            <div class="question-text">A data engineer needs to allow an Amazon Redshift cluster to access data in Amazon S3 and also to call AWS Lambda UDFs (User-Defined Functions). The engineer creates an IAM role for Redshift. Which trust policy configuration is correct for this IAM role?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Trust policy with Principal: {"AWS": "arn:aws:iam::ACCOUNT_ID:root"} allowing any service in the account to assume the role</li>
+                <li><span class="option-label">B.</span> Trust policy with Principal: {"Service": ["redshift.amazonaws.com", "lambda.amazonaws.com"]} and permission policy allowing s3:* and lambda:InvokeFunction</li>
+                <li><span class="option-label">C.</span> Trust policy with Principal: {"Service": "redshift.amazonaws.com"} and permission policy allowing s3:* and lambda:InvokeFunction</li>
+                <li><span class="option-label">D.</span> Trust policy with Principal: {"Service": "s3.amazonaws.com"} and separate trust for lambda.amazonaws.com</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Trust policy menentukan SIAPA yang boleh assume role (Principal), sedangkan permission policy menentukan APA yang boleh dilakukan setelah assuming role. Redshift yang akan assume role, jadi trust policy harus memiliki Principal: redshift.amazonaws.com. Permission policy kemudian memberikan akses ke S3 dan izin lambda:InvokeFunction.<br><br>Opsi A: SALAH. Terlalu permissive dan tidak mengikuti service-specific trust.<br>Opsi B: SALAH. Salah karena Lambda tidak perlu assume role ini — Redshift yang memanggil Lambda menggunakan role Redshift sendiri — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Salah karena S3 tidak assume role.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q32">
+            <div class="question-number">32</div><span class="skill-tag">Skill 4.1.5</span>
+            <div class="question-text">A company needs to ensure that their S3 data lake bucket can ONLY be accessed from within their VPC — no access from the internet or other VPCs should be allowed, even if IAM policies permit it. Which approach enforces this network-level restriction?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Remove all IAM policies that allow access from outside the VPC, integrating natively with the rest of the pipeline</li>
+                <li><span class="option-label">B.</span> Configure the S3 bucket as a VPC endpoint target, enforcing encryption and fine-grained access control and minimizing end-to-end processing latency</li>
+                <li><span class="option-label">C.</span> Add a bucket policy with a Deny statement using the condition "aws:SourceVpc" not equal to the company's VPC ID</li>
+                <li><span class="option-label">D.</span> Enable S3 Block Public Access at the account level with a Deny statement using the condition "aws:SourceVpc" not equal</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Bucket policy dengan explicit Deny menggunakan condition "aws:SourceVpc" memastikan bahwa SEMUA requests yang tidak berasal dari VPC yang ditentukan akan ditolak, terlepas dari IAM permissions yang ada. Statement: {"Effect": "Deny", "Principal": "*", "Action": "s3:*", "Resource": ["bucket-arn", "bucket-arn/*"], "Condition": {"StringNotEquals": {"aws:SourceVpc": "vpc-12345"}}}. Explicit Deny selalu override Allow.<br><br>Opsi A: SALAH. Tidak scalable dan tidak mencegah policies ditambahkan kembali.<br>Opsi B: SALAH. Bukan konsep yang valid — S3 bukan "target" endpoint.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Hanya memblokir public access via ACLs/policies, bukan access dari other VPCs atau AWS accounts — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q33">
+            <div class="question-number">33</div><span class="skill-tag">Skill 4.2.1</span>
+            <div class="question-text">A data engineer's custom IAM policy is approaching the 6,144 character limit for managed policies. The policy needs to grant access to 50+ specific Glue databases and S3 paths. Which strategy allows the engineer to stay within the size limit while maintaining fine-grained access control?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use wildcard (*) in resource ARNs to cover all databases and paths with a single statement, protecting the data both in transit and at rest</li>
+                <li><span class="option-label">B.</span> Use IAM policy variables (e.g., ${aws:PrincipalTag/team}) combined with consistent resource naming conventions to dynamically reference resources, reducing the number of explicit ARN entries needed</li>
+                <li><span class="option-label">C.</span> Convert all permissions to inline policies which have no size limit, satisfying all of the stated requirements with minimal effort and reducing day-to-day operational effort</li>
+                <li><span class="option-label">D.</span> Remove all condition blocks to save characters with consistent resource naming conventions, removing the need to provision or patch any infrastructure and reducing day-to-day operational effort</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">IAM policy variables memungkinkan dynamic resource resolution berdasarkan request context. Contoh: jika databases dinamai sesuai team tag (team-analytics-db, team-ml-db), Resource ARN bisa ditulis sebagai "arn:aws:glue:*:*:database/${aws:PrincipalTag/team}-*". Satu statement ini replace 50+ explicit ARN entries. Strategi lain untuk size management: (1) Group resources by common prefix patterns, (2) Use multiple managed policies (max 10 per role), (3) Combine conditions efficiently.<br><br>Opsi A: SALAH. Sacrifices fine-grained control — memberikan akses ke SEMUA databases.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Salah — inline policies memiliki limit 2,048 characters (lebih kecil dari managed policy).<br>Opsi D: SALAH. Removes security controls dan doesn't solve root cause jika resources dominate the policy size — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q34">
+            <div class="question-number">34</div><span class="skill-tag">Skill 4.2.4</span>
+            <div class="question-text">A large organization has 500+ tables in their data lake catalog and 200+ IAM roles that need different levels of access. Managing individual GRANT statements for each role-table combination is becoming unscalable. Which Lake Formation feature dramatically simplifies permission management at scale?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Write a custom Lambda function to auto-generate GRANT statements nightly, absorbing sudden traffic spikes without throttling and satisfying strict compliance and audit requirements and validating and cleansing each record before delivery and applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> Use LF-Tags (Tag-Based Access Control) — assign key-value tags to databases/tables/columns (e.g., "classification"="confidential", "domain"="finance"), then GRANT permissions based on tag expressions rather than specific resource ARNs. When new tables are created with matching tags, permissions are automatically applied</li>
+                <li><span class="option-label">C.</span> Create a single "data lake admin" role that has access to everything and share credentials, handling the described workload reliably at scale and validating and cleansing each record before delivery and protecting the data both in transit and at rest</li>
+                <li><span class="option-label">D.</span> Use AWS Organizations SCPs to manage all data lake permissions with matching tags, integrating natively with the rest of the pipeline and scaling elastically to millions of events per second and absorbing sudden traffic spikes without throttling</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">LF-Tags (Lake Formation Tag-Based Access Control) adalah ABAC pattern untuk data lakes: Step 1 — Define LF-Tag keys: "classification" (values: public, internal, confidential), "domain" (values: finance, marketing, engineering). Step 2 — Assign tags to resources: Table "revenue" → classification=confidential, domain=finance. Table "web_analytics" → classification=internal, domain=marketing. Step 3 — Grant permissions based on tags: GRANT SELECT TO analytics_role ON TAG (classification=internal OR classification=public) AND (domain=marketing); Result: analytics_role automatically gets access ke SEMUA current and future tables yang match tag expression. Scale benefit: 500 tables × 200 roles = 100,000 potential individual grants. Dengan LF-Tags: ~10-20 tag-based grant expressions cover semua scenarios. New tables automatically get permissions saat tagged.<br><br>Opsi A: SALAH. Custom code maintenance burden, eventual consistency issues.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Massive security risk.<br>Opsi D: SALAH. SCPs are for API-level controls, not data-level — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q35">
+            <div class="question-number">35</div><span class="skill-tag">Skill 4.3.1</span>
+            <div class="question-text">A European bank must comply with GDPR's "right to be forgotten" (Article 17). Customer data exists across multiple systems: S3 data lake (raw + processed), Redshift data warehouse, and DynamoDB operational store. When a customer requests deletion, all their PII must be rendered unrecoverable within 30 days. Which masking/anonymization strategy BEST supports this requirement?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Move all customer records to a "deleted" S3 bucket with a lifecycle policy and delete individual records across distributed systems, satisfying all of the stated requirements with minimal effort and satisfying strict compliance and audit requirements and requiring no servers to manage or scale manually and reducing day-to-day operational effort</li>
+                <li><span class="option-label">B.</span> Physically scan and delete all records containing the customer's data across all systems within 30 days, requiring no servers to manage or scale manually and integrating natively with the rest of the pipeline and protecting the data both in transit and at rest and handling the described workload reliably at scale</li>
+                <li><span class="option-label">C.</span> Mark records as "deleted" with a flag and hide them from query results, removing the need to provision or patch any infrastructure and satisfying strict compliance and audit requirements and running as a fully managed service with minimal operational overhead and requiring no servers to manage or scale manually</li>
+                <li><span class="option-label">D.</span> Implement crypto-shredding (cryptographic erasure) — encrypt each customer's PII with a unique per-customer encryption key stored in KMS. When a deletion request arrives, delete ONLY the customer's encryption key from KMS. All encrypted PII across all systems becomes permanently unreadable without needing to locate and delete individual records across distributed systems</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Crypto-shredding adalah approach yang paling practical dan reliable untuk GDPR deletion: Architecture: (1) During data ingestion: Each customer gets unique KMS key (or per-customer data key encrypted by a customer-specific CMK). PII fields encrypted with customer's key: {name: ENC(key_123, "John Doe"), email: ENC(key_123, "john@example.com"), transactions: [unencrypted aggregate data]}. (2) Normal operation: Applications decrypt PII using customer's key for display/processing. Non-PII data remains accessible without the key. (3) Deletion request (GDPR Art. 17): Schedule KMS key deletion: aws kms schedule-key-deletion --key-id key_123 --pending-window-in-days 7. After pending window: key permanently deleted. ALL encrypted PII across S3, Redshift, DynamoDB → permanently unreadable. Aggregated/anonymized data derived from customer remains usable. Advantages over physical deletion: Don't need to find every copy across distributed systems (backups, caches, logs). Instant "logical deletion" — data becomes garbage without key. Works even for data in immutable storage (S3 Glacier, backups).<br><br>Opsi A: SALAH. Moving data isn't deleting it — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi B: SALAH. Extremely difficult across distributed systems, backup tapes, etc.<br>Opsi C: SALAH. Soft delete ≠ actual deletion, violates GDPR.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q36">
+            <div class="question-number">36</div><span class="skill-tag">Skill 4.3.4</span>
+            <div class="question-text">A company connects their on-premises data center to AWS using AWS Direct Connect for large data transfers to S3. They discover that Direct Connect private virtual interfaces do NOT encrypt traffic by default. How should they add encryption to Direct Connect traffic?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Direct Connect traffic is always encrypted by AWS — no additional configuration needed, guaranteeing no data loss during component failures and satisfying strict compliance and audit requirements and meeting the latency and throughput goals of the design and durably storing every event with built-in fault tolerance and enforcing encryption and fine-grained access control</li>
+                <li><span class="option-label">B.</span> Enable "encryption" toggle in the Direct Connect console settings with Transit Gateway) and the encryption of VPN, meeting the latency and throughput goals of the design and satisfying strict compliance and audit requirements and durably storing every event with built-in fault tolerance and enforcing encryption and fine-grained access control and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">C.</span> Layer a Site-to-Site VPN over the Direct Connect connection — create a VPN connection using the Direct Connect public virtual interface (or transit VIF with Transit Gateway), establishing an IPsec tunnel that encrypts all traffic traversing the Direct Connect link. This provides both the reliability/bandwidth of Direct Connect AND the encryption of VPN. Alternatively, use MACsec (802.1AE) encryption at the physical layer for dedicated connections that support it</li>
+                <li><span class="option-label">D.</span> Use S3 Transfer Acceleration which automatically encrypts Direct Connect traffic, integrating natively with the rest of the pipeline and handling the described workload reliably at scale and satisfying all of the stated requirements with minimal effort and meeting the latency and throughput goals of the design and durably storing every event with built-in fault tolerance</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: C</div>
+                <div class="explanation">Direct Connect encryption options: Option 1 — VPN over Direct Connect: Create VPN tunnels that ride over the Direct Connect link. Data path: On-prem → [IPsec encrypted] → Direct Connect → AWS VPN Gateway → VPC. Configuration: Use public VIF for VPN endpoint connectivity, OR use Transit Gateway with Direct Connect + VPN attachment. Encryption: IPsec (AES-256). Throughput: Up to 1.25 Gbps per VPN tunnel (multi-tunnel for more). Best for: Existing Direct Connect without MACsec support. Option 2 — MACsec (IEEE 802.1AE): Layer 2 encryption on the physical Direct Connect connection. Wire-speed encryption (10 Gbps, 100 Gbps — no throughput loss). Configuration: Direct Connect connection must support MACsec. Exchange MACsec keys (CKN/CAK) with AWS. Enable on connection. Best for: New dedicated connections, high-throughput requirements. Option 3 — Application-level TLS: S3 API calls use HTTPS regardless of transport. Glue, Athena, Redshift connections use TLS. Provides encryption even without VPN/MACsec. But: other protocols (NFS, custom TCP) remain unencrypted. Why encryption needed: Direct Connect is a PRIVATE connection but NOT encrypted. Traffic could theoretically be intercepted at co-location facility. Compliance standards (PCI-DSS, HIPAA) often require transit encryption.<br><br>Opsi A: SALAH. Factually wrong; DX is unencrypted by default.<br>Opsi B: SALAH. No simple toggle exists — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi C: BENAR.<br>Opsi D: SALAH. Transfer Acceleration unrelated to DX.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q37">
+            <div class="question-number">37</div><span class="skill-tag">Skill 4.4.3</span>
+            <div class="question-text">A data engineer needs to write a CloudTrail Lake SQL query to find all IAM role assumption events (AssumeRole) that originated from outside the company's known IP ranges (10.0.0.0/8 and 172.16.0.0/12) in the past 24 hours. Which query is CORRECT?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> SELECT eventTime, element_at(userIdentity, 'arn') as user_arn, sourceIPAddress FROM $EDS_ID WHERE eventName = 'AssumeRole' AND sourceIPAddress NOT LIKE '10.%' AND sourceIPAddress NOT LIKE '172.16.%' AND eventTime > '2024-01-01'</li>
+                <li><span class="option-label">B.</span> SELECT eventTime, userIdentity.arn, sourceIPAddress FROM event_data_store_id WHERE eventName = 'AssumeRole' AND sourceIPAddress NOT LIKE '10.%' AND sourceIPAddress NOT LIKE '172.16.%' AND eventTime > date_add('hour', -24, now())</li>
+                <li><span class="option-label">C.</span> SELECT eventTime, userIdentity.arn, sourceIPAddress FROM $EDS_ID WHERE eventName = 'AssumeRole' AND sourceIPAddress NOT LIKE '10.%' AND sourceIPAddress NOT LIKE '172.16.%' AND eventTime > dateadd('hour', -24, current_timestamp)</li>
+                <li><span class="option-label">D.</span> SELECT eventTime, userIdentity, sourceIPAddress FROM event_data_store WHERE eventName = 'AssumeRole' AND eventTime BETWEEN now() - INTERVAL '24' HOUR AND now() and sourceIPAddress NOT LIKE '10</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">CloudTrail Lake menggunakan SQL syntax di mana event data store direferensikan oleh ID-nya. Field userIdentity.arn mengakses nested field menggunakan dot notation. Fungsi date_add dan now() digunakan untuk time-based filtering. NOT LIKE digunakan untuk filtering IP ranges.<br><br>Opsi A: SALAH. Menggunakan element_at yang merupakan fungsi Athena/Presto, bukan CloudTrail Lake SQL, dan memiliki hardcoded date bukan relative time.<br>Opsi B: BENAR.<br>Opsi C: SALAH. Menggunakan $EDS_ID yang bukan syntax valid — CloudTrail Lake menggunakan event data store ID langsung.<br>Opsi D: SALAH. Tidak memfilter IP addresses sesuai requirement dan INTERVAL syntax tidak didukung di CloudTrail Lake — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q38">
+            <div class="question-number">38</div><span class="skill-tag">Skill 4.5.1</span>
+            <div class="question-text">A healthcare data platform uses AWS Lake Formation to manage a data lake containing patient records across multiple S3 buckets. A research team in a different AWS account needs read access to de-identified patient data tables in the Glue Data Catalog, but must NOT have access to any PII columns. Which Lake Formation feature enables this cross-account sharing with column-level restrictions?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Create a Glue Data Catalog resource policy that restricts GetTable to exclude PII column metadata, applying schema conversion and enrichment inline</li>
+                <li><span class="option-label">B.</span> Create an IAM role in the source account with column-level Glue permissions and allow the research account to assume it</li>
+                <li><span class="option-label">C.</span> Use S3 Access Points with specific prefix restrictions to limit access to non-PII data files configured for optimal performance and minimal operational overhead</li>
+                <li><span class="option-label">D.</span> Create a Lake Formation cross-account grant with column-level permissions that include only non-PII columns, then share using AWS RAM</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: D</div>
+                <div class="explanation">Lake Formation mendukung cross-account grants dengan column-level permissions. Administrator bisa GRANT SELECT pada kolom tertentu (excluding PII columns) ke external AWS account. AWS RAM (Resource Access Manager) digunakan untuk berbagi Lake Formation resources (databases, tables) cross-account. Setelah di-share, account penerima bisa melihat dan query hanya kolom yang di-grant.<br><br>Opsi A: SALAH. Tidak mendukung column-level restrictions — policies berlaku di level table atau database.<br>Opsi B: SALAH. Tidak mendukung column-level permissions untuk Glue/Lake Formation secara native.<br>Opsi C: SALAH. Bekerja di file level, bukan column level — semua kolom ada dalam file yang sama — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: BENAR.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q39">
+            <div class="question-number">39</div><span class="skill-tag">Skill 4.5.4</span>
+            <div class="question-text">A data platform team uses Amazon Redshift, AWS Glue, and Amazon S3 for their data pipeline. They want AWS Config to record configuration changes for these specific data services only, not all AWS resources in the account. This is to reduce Config costs and noise. How should they configure AWS Config recording?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Enable Config recording with tag-based filtering — only resources tagged with "data-pipeline=true" will be recorded</li>
+                <li><span class="option-label">B.</span> Configure AWS Config to record specific resource types only: AWS::Redshift::Cluster, AWS::Glue::Job, AWS::Glue::Crawler, AWS::Glue::Database, AWS::S3::Bucket</li>
+                <li><span class="option-label">C.</span> Enable Config with "Record all resources" and create a filter to display only data service resources</li>
+                <li><span class="option-label">D.</span> Use AWS Config's service-linked recording that automatically detects and records only data-related services with native S3 integration and optimized data transfer</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: B</div>
+                <div class="explanation">AWS Config mendukung selective recording — Anda bisa memilih resource types yang ingin direkam daripada merekam semua resources. Dengan memilih spesifik types (Redshift clusters, Glue jobs/crawlers/databases, S3 buckets), hanya perubahan pada resource types tersebut yang direkam. Ini mengurangi jumlah configuration items yang disimpan dan biaya.<br><br>Opsi A: SALAH. Config tidak mendukung tag-based recording selection; tag-based filtering hanya tersedia untuk Config rules evaluation scope, bukan recording.<br>Opsi B: BENAR.<br>Opsi C: SALAH. "Record all resources" merekam SEMUA resource types di account yang menambah cost; filtering hanya di display level, recording tetap terjadi.<br>Opsi D: SALAH. Tidak ada fitur "service-linked recording" yang auto-detect data services di Config — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="q40">
+            <div class="question-number">40</div><span class="skill-tag">Skill 4.5.7</span>
+            <div class="question-text">A governance framework requires that every data asset in the organization has an assigned Data Owner, Data Steward, and defined data classification level. Currently, metadata about ownership is scattered across wikis, Jira tickets, and tribal knowledge. Which AWS-native approach centralizes and enforces this governance metadata?</div>
+            <ul class="options">
+                <li><span class="option-label">A.</span> Use Amazon DataZone with custom metadata forms requiring Owner, Steward, and Classification fields before any asset can be published to the catalog — combined with Glue Data Catalog business glossary for standardized classification terms</li>
+                <li><span class="option-label">B.</span> Use AWS Config rules to check if resources have governance-related tags, integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort and enforcing encryption and fine-grained access control</li>
+                <li><span class="option-label">C.</span> Maintain a DynamoDB table with governance metadata and reference it in documentation for standardized classification terms, integrating natively with the rest of the pipeline and satisfying all of the stated requirements with minimal effort</li>
+                <li><span class="option-label">D.</span> Create AWS resource tags (DataOwner, DataSteward, Classification) on all data resources and use Tag Policies in AWS Organizations to enforce required tags, satisfying all of the stated requirements with minimal effort and providing exactly-once processing semantics</li>
+            </ul>
+            <button class="answer-toggle" onclick="toggleAnswer(this)">Tampilkan Jawaban</button>
+            <div class="answer-section">
+                <div class="correct-answer">Jawaban Benar: A</div>
+                <div class="explanation">Amazon DataZone dengan custom metadata forms menyediakan governance enforcement yang terintegrasi dengan data discovery: (1) Metadata forms — template fields wajib diisi (Data Owner, Data Steward, Classification Level) sebelum asset bisa di-publish ke catalog. Ini enforces completeness. (2) Business glossary — standardisasi terminology (Confidential, Internal, Public) sehingga classification konsisten. (3) Catalog sebagai single source of truth — semua governance metadata terpusat dan discoverable. (4) Tied to access workflows — classification bisa drive approval policies.<br><br>Opsi A: BENAR.<br>Opsi B: SALAH. Config rules hanya detect missing tags, tidak enforce rich governance metadata.<br>Opsi C: SALAH. DynamoDB table terpisah dari data catalog, mudah menjadi stale — meskipun deskripsinya terdengar meyakinkan, secara fundamental tetap tidak sesuai untuk kebutuhan ini.<br>Opsi D: SALAH. Resource tags berguna tapi tidak menyediakan discovery experience atau tidak terhubung ke data access workflows.</div>
+            </div>
+        </div>
+
+        <a href="../index.html" style="display:inline-flex;align-items:center;gap:0.4rem;margin-top:2rem;margin-bottom:1rem;padding:0.5rem 1rem;font-size:0.85rem;font-weight:500;color:var(--text-2);text-decoration:none;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);transition:all 0.2s;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back to Home</a>
+        <div class="footer">Created by Lintang Gilang and Kiro Agent at 04 June 2026</div>
+    </div>
+    <script>
+        var total=40,answered=0,correct=0;
+        function updateScore(){
+            var pct=answered>0?Math.round((correct/answered)*100):0;
+            document.getElementById('scoreText').textContent=pct+'%';
+            document.getElementById('scoreDetail').textContent='('+correct+'/'+answered+' correct)';
+            document.getElementById('progressFill').style.width=(answered/total*100)+'%';
+        }
+        (function(){
+            document.querySelectorAll('.question-card').forEach(function(card){
+                var correctEl=card.querySelector('.correct-answer');
+                if(!correctEl)return;
+                var correctLetter=correctEl.textContent.trim().slice(-1);
+                var options=card.querySelectorAll('.options li');
+                options.forEach(function(li){
+                    li.addEventListener('click',function(){
+                        if(card.classList.contains('answered'))return;
+                        card.classList.add('answered');
+                        answered++;
+                        var myLetter=li.querySelector('.option-label').textContent.trim().charAt(0);
+                        if(myLetter===correctLetter){li.classList.add('correct');correct++;}
+                        else{li.classList.add('wrong');options.forEach(function(o){if(o.querySelector('.option-label').textContent.trim().charAt(0)===correctLetter)o.classList.add('correct');});}
+                        options.forEach(function(o){o.style.cursor='default';});
+                        var ans=card.querySelector('.answer-section');if(ans)ans.classList.add('visible');
+                        var btn=card.querySelector('.answer-toggle');if(btn)btn.style.display='none';
+                        updateScore();
+                    });
+                });
+            });
+        })();
+        function toggleAnswer(btn){var s=btn.nextElementSibling;s.classList.toggle('visible');btn.textContent=s.classList.contains('visible')?'Sembunyikan Jawaban':'Tampilkan Jawaban';}
+    </script>
+</body>
+</html>
