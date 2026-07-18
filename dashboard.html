@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F355;</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wuidi Pizza Analytics — AI Dashboard</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #ffffff; --bg-surface: #f9fafb; --bg-card: #ffffff;
+            --border: #e5e7eb; --text: #111827; --text-2: #6b7280; --text-3: #9ca3af;
+            --accent: #2563eb; --accent-subtle: #eff6ff;
+            --radius: 12px; --shadow: 0 1px 3px rgba(0,0,0,0.06); --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        @media(prefers-color-scheme:dark){
+            :root {
+                --bg: #0f1117; --bg-surface: #1a1d27; --bg-card: #1e2230;
+                --border: #2d3039; --text: #f3f4f6; --text-2: #9ca3af; --text-3: #6b7280;
+                --accent: #3b82f6; --accent-subtle: #1e293b;
+                --shadow: 0 1px 3px rgba(0,0,0,0.2); --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+            }
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+
+        .layout { display: grid; grid-template-columns: 1fr 420px; grid-template-rows: auto 1fr; height: 100vh; }
+        .header { grid-column: 1 / -1; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .header h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.5rem; }
+        .header-links { display: flex; gap: 0.75rem; align-items: center; }
+        .header-links a { font-size: 0.78rem; color: var(--accent); text-decoration: none; padding: 0.35rem 0.75rem; border-radius: 6px; border: 1px solid var(--accent); transition: all 150ms; }
+        .header-links a:hover { background: var(--accent-subtle); }
+
+        .dashboard-panel { border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+        .dashboard-toolbar { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); }
+        .dashboard-toolbar .label { font-size: 0.72rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; }
+        .dashboard-toolbar a { font-size: 0.75rem; color: var(--accent); text-decoration: none; }
+        .dashboard-frame { flex: 1; background: var(--bg-surface); display: flex; align-items: center; justify-content: center; }
+        .dashboard-frame iframe { width: 100%; height: 100%; border: none; }
+        .dashboard-fallback { text-align: center; padding: 2rem; }
+        .dashboard-fallback p { color: var(--text-2); font-size: 0.88rem; margin-bottom: 1rem; }
+        .dashboard-fallback a { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.2rem; font-size: 0.85rem; font-weight: 600; color: #fff; background: var(--accent); border-radius: 8px; text-decoration: none; transition: opacity 150ms; }
+        .dashboard-fallback a:hover { opacity: 0.85; }
+
+        .chat-panel { display: flex; flex-direction: column; overflow: hidden; }
+        .chat-toolbar { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--bg-surface); }
+        .chat-toolbar .label { font-size: 0.72rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+        .msg { max-width: 95%; padding: 0.7rem 1rem; border-radius: 10px; font-size: 0.85rem; line-height: 1.5; word-wrap: break-word; }
+        .msg-user { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 3px; }
+        .msg-ai { align-self: flex-start; background: var(--bg-surface); border: 1px solid var(--border); border-bottom-left-radius: 3px; }
+        .msg-ai pre { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.75rem; margin-top: 0.5rem; overflow-x: auto; font-size: 0.75rem; font-family: 'SF Mono','Fira Code',monospace; white-space: pre-wrap; }
+        .msg-error { align-self: flex-start; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; border-bottom-left-radius: 3px; }
+        @media(prefers-color-scheme:dark){ .msg-error { background: #1c1917; border-color: #44403c; color: #fca5a5; } }
+        .msg-loading { align-self: flex-start; background: var(--bg-surface); border: 1px solid var(--border); border-bottom-left-radius: 3px; color: var(--text-3); }
+        .msg-loading .dots::after { content: ''; animation: dots 1.5s infinite; }
+        @keyframes dots { 0%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
+
+        .chat-input-wrap { padding: 0.75rem 1.25rem; border-top: 1px solid var(--border); background: var(--bg-surface); }
+        .chat-input-row { display: flex; gap: 0.5rem; }
+        .chat-input { flex: 1; padding: 0.65rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-card); color: var(--text); font-size: 0.85rem; font-family: inherit; transition: border-color 150ms, box-shadow 150ms; resize: none; }
+        .chat-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .chat-input::placeholder { color: var(--text-3); }
+        .chat-send { padding: 0.65rem 1rem; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 150ms; }
+        .chat-send:hover { opacity: 0.85; }
+        .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+        .chat-hint { font-size: 0.7rem; color: var(--text-3); margin-top: 0.4rem; }
+
+        @media(max-width:900px){
+            .layout { grid-template-columns: 1fr; grid-template-rows: auto 45vh 1fr; }
+            .dashboard-panel { border-right: none; border-bottom: 1px solid var(--border); }
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <header class="header">
+        <h1>🍕 Wuidi Pizza Analytics</h1>
+        <div class="header-links">
+            <a href="index.html">← Back to Exam</a>
+        </div>
+    </header>
+
+    <div class="dashboard-panel">
+        <div class="dashboard-toolbar">
+            <span class="label">Dashboard</span>
+            <a href="https://ap-southeast-1.quicksight.aws.amazon.com/sn/accounts/122610516830/dashboards/a4f52f54-353c-4d86-afb7-f458249d8565" target="_blank" rel="noopener">Open in new tab ↗</a>
+        </div>
+        <div class="dashboard-frame" id="dashboardFrame">
+            <div class="dashboard-fallback" id="dashboardFallback">
+                <p>Dashboard embed may be blocked by your browser's cookie policy.<br>Click below to view the full dashboard.</p>
+                <a href="https://ap-southeast-1.quicksight.aws.amazon.com/sn/accounts/122610516830/dashboards/a4f52f54-353c-4d86-afb7-f458249d8565" target="_blank" rel="noopener">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    Open Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-panel">
+        <div class="chat-toolbar">
+            <span class="label">AI Business Analyst</span>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="msg msg-ai">Hi! I'm your AI business analyst for Wuidi Pizza. Ask me anything about sales, revenue, trends, or recommendations. I'll query the data and give you insights. 🍕</div>
+        </div>
+        <div class="chat-input-wrap">
+            <div class="chat-input-row">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Ask about pizza sales..." autocomplete="off">
+                <button class="chat-send" id="chatSend" onclick="sendQuestion()">Send</button>
+            </div>
+            <div class="chat-hint">Try: "What's the top selling pizza?" or "Revenue by category"</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_URL = "https://8hnrem19fk.execute-api.ap-southeast-1.amazonaws.com/prod/ask";
+const EMBED_URL = "https://8hnrem19fk.execute-api.ap-southeast-1.amazonaws.com/prod/embed-url";
+
+// Try loading QuickSight embed
+async function loadDashboard() {
+    try {
+        const res = await fetch(EMBED_URL);
+        const data = await res.json();
+        if (data.embedUrl) {
+            const frame = document.getElementById('dashboardFrame');
+            frame.innerHTML = '<iframe src="' + data.embedUrl + '" allowfullscreen></iframe>';
+        }
+    } catch(e) {
+        console.log('Embed URL failed, showing fallback:', e);
+    }
+}
+
+loadDashboard();
+
+// Chat logic
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+
+chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendQuestion();
+    }
+});
+
+async function sendQuestion() {
+    const question = chatInput.value.trim();
+    if (!question) return;
+
+    // Add user message
+    addMessage(question, 'user');
+    chatInput.value = '';
+    chatSend.disabled = true;
+
+    // Add loading
+    const loadingEl = addMessage('Thinking<span class="dots"></span>', 'loading');
+
+    try {
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: question })
+        });
+        const data = await res.json();
+        const body = typeof data.body === 'string' ? JSON.parse(data.body) : data;
+
+        loadingEl.remove();
+
+        if (body.error) {
+            addMessage('Error: ' + body.error, 'error');
+        } else {
+            let content = body.answer || 'No answer returned.';
+            if (body.generated_sql) {
+                content += '\n<pre>' + escapeHtml(body.generated_sql) + '</pre>';
+            }
+            addMessage(content, 'ai');
+        }
+    } catch(err) {
+        loadingEl.remove();
+        addMessage('Network error: ' + err.message, 'error');
+    }
+
+    chatSend.disabled = false;
+    chatInput.focus();
+}
+
+function addMessage(text, type) {
+    const div = document.createElement('div');
+    div.className = 'msg msg-' + type;
+    if (type === 'ai') {
+        div.innerHTML = text.replace(/\n/g, '<br>');
+    } else if (type === 'loading') {
+        div.innerHTML = text;
+    } else if (type === 'error') {
+        div.textContent = text;
+    } else {
+        div.textContent = text;
+    }
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return div;
+}
+
+function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
