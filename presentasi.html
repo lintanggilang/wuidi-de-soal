@@ -32,6 +32,7 @@
         .slide .card { background: var(--bg-card); border-radius: 12px; padding: 1.5rem; border: 1px solid #334155; }
         .slide .card h4 { color: var(--accent); margin-bottom: 0.5rem; font-size: 1.1rem; }
         .slide .highlight { color: var(--accent); font-weight: 600; }
+        .slide .step-num { display: inline-block; background: var(--gradient); color: #fff; width: 2rem; height: 2rem; line-height: 2rem; text-align: center; border-radius: 50%; font-weight: 700; font-size: 0.9rem; margin-right: 0.5rem; }
 
         .nav { position: fixed; bottom: 2rem; right: 3rem; display: flex; gap: 0.75rem; z-index: 100; }
         .nav button { padding: 0.6rem 1.2rem; border: 1px solid #334155; background: var(--bg-card); color: var(--text); border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 150ms; }
@@ -59,12 +60,12 @@
 <div class="slide" data-slide="2">
     <h2>Agenda</h2>
     <ul>
-        <li>Background & Problem Statement</li>
+        <li>Background &amp; Problem Statement</li>
         <li>Solution: Contextual AI Analytics</li>
-        <li>Architecture from User Perspective</li>
-        <li>Step-by-Step Implementation</li>
+        <li>Architecture Overview</li>
+        <li>Console Walkthrough: Athena, QuickSight, Bedrock, Lambda</li>
         <li>Live Demo</li>
-        <li>Lessons Learned & Key Takeaways</li>
+        <li>Lessons Learned &amp; Key Takeaways</li>
     </ul>
 </div>
 
@@ -90,7 +91,7 @@
         </div>
         <div class="card">
             <h4>For Data Teams</h4>
-            <p style="color:var(--text-2)">"Every ad-hoc question from business means we write SQL manually and build new reports."</p>
+            <p style="color:var(--text-2)">"Every ad-hoc question means we write SQL manually and build new reports."</p>
         </div>
     </div>
     <p style="margin-top:1.5rem"><span class="highlight">Gap:</span> Dashboards show "what happened" but cannot answer "why" or "what should we do".</p>
@@ -110,49 +111,9 @@
     <p style="margin-top:1rem"><span class="highlight">Key principle:</span> AI answers from DATA, not from pretrained knowledge.</p>
 </div>
 
-<!-- Slide 6: Tech Stack -->
+<!-- Slide 6: Architecture Overview -->
 <div class="slide" data-slide="6">
-    <h2>Technology Stack</h2>
-    <div class="grid-2">
-        <div class="card">
-            <h4>Data & Visualization</h4>
-            <ul>
-                <li>AWS Glue (data catalog)</li>
-                <li>Amazon Athena (query engine)</li>
-                <li>Amazon QuickSight (dashboard)</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h4>AI & Orchestration</h4>
-            <ul>
-                <li>Amazon Bedrock (Nova Pro)</li>
-                <li>Bedrock Flows (orchestration)</li>
-                <li>AWS Lambda (serverless compute)</li>
-                <li>API Gateway (REST API)</li>
-            </ul>
-        </div>
-    </div>
-    <p style="margin-top:1.5rem">100% <span class="highlight">serverless</span> — pay per request, no servers to manage.</p>
-</div>
-
-<!-- Slide 7: User Flow -->
-<div class="slide" data-slide="7">
-    <h2>Architecture: User Perspective</h2>
-    <div class="diagram">User opens Dashboard (QuickSight + AI Chat panel)
-        |
-User views charts & KPIs, then asks AI:
-        |
-"What is the best selling pizza in January?"
-        |
-AI generates SQL -> validates -> queries Athena -> generates insight
-        |
-"The Thai Chicken Pizza is the top seller in January
- with 120 orders. Recommendation: increase ingredient stock..."</div>
-</div>
-
-<!-- Slide 8: Technical Architecture -->
-<div class="slide" data-slide="8">
-    <h2>Technical Architecture</h2>
+    <h2>Architecture Overview</h2>
     <div class="diagram">Frontend (GitHub Pages)
     |
 API Gateway (POST /ask)
@@ -173,42 +134,31 @@ Lambda (invoke Bedrock Flow)
 +--------------------------------------------+</div>
 </div>
 
-<!-- Slide 9: Why Bedrock Flows -->
-<div class="slide" data-slide="9">
-    <h2>Why Bedrock Flows?</h2>
-    <div class="grid-2">
-        <div class="card">
-            <h4>Before (Monolith Lambda)</h4>
-            <ul>
-                <li>All logic in 1 Python file</li>
-                <li>Hard to debug step by step</li>
-                <li>Prompts hardcoded in code</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h4>After (Bedrock Flows)</h4>
-            <ul>
-                <li>Visual node-based pipeline</li>
-                <li>Each step isolated & observable</li>
-                <li>Modular — add nodes without changing code</li>
-            </ul>
-        </div>
-    </div>
-    <p style="margin-top:1.5rem">Bonus: can be demoed live in the AWS Console!</p>
+<!-- Slide 7: Console Workflow Overview -->
+<div class="slide" data-slide="7">
+    <h2>Console Walkthrough</h2>
+    <h3>Step-by-step setup using AWS Console</h3>
+    <ul>
+        <li><span class="step-num">1</span> Amazon Athena — Prepare data &amp; create views</li>
+        <li><span class="step-num">2</span> Amazon QuickSight — Build dashboard &amp; enable embed</li>
+        <li><span class="step-num">3</span> Amazon Bedrock — Enable model access &amp; create Flow</li>
+        <li><span class="step-num">4</span> AWS Lambda — Create functions for API &amp; Athena node</li>
+        <li><span class="step-num">5</span> API Gateway — Expose REST endpoint</li>
+    </ul>
 </div>
 
-<!-- Slide 10: Step 1 - Data Preparation -->
-<div class="slide" data-slide="10">
-    <h2>Step 1: Data Preparation</h2>
-    <h3>CSV -> S3 -> Glue -> Athena</h3>
+<!-- Slide 8: Console - Athena Setup -->
+<div class="slide" data-slide="8">
+    <h2><span class="step-num">1</span> Athena: Data Preparation</h2>
+    <h3>Console: Amazon Athena &gt; Query Editor</h3>
     <ul>
-        <li>Dataset: Pizza Sales (orders, order_details, pizzas, pizza_types)</li>
-        <li>Upload CSV to S3 bucket <span class="highlight">wuidi-pizza</span></li>
-        <li>Create Glue Tables (schema definitions)</li>
-        <li>Create Athena View: <span class="highlight">wuidi_vw_pizza_sales</span> (joins all tables)</li>
+        <li>Create database: <span class="highlight">wuidi-pizza-db</span></li>
+        <li>Create tables via Glue: orders, order_details, pizzas, pizza_types</li>
+        <li>Create unified view joining all tables</li>
+        <li>Set output location: <span class="highlight">s3://wuidi-pizza/athena-results/</span></li>
     </ul>
     <div class="code-block">CREATE VIEW wuidi_vw_pizza_sales AS
-SELECT o.order_id, o.date as order_date, 
+SELECT o.order_id, o.date as order_date,
        od.quantity, p.size, p.price,
        pt.name as pizza_name, pt.category,
        od.quantity * p.price as total_sales
@@ -218,92 +168,147 @@ JOIN pizzas p ON od.pizza_id = p.pizza_id
 JOIN pizza_types pt ON p.pizza_type_id = pt.pizza_type_id</div>
 </div>
 
-<!-- Slide 11: Step 2 - QuickSight -->
+<!-- Slide 9: Console - Athena Verify -->
+<div class="slide" data-slide="9">
+    <h2><span class="step-num">1</span> Athena: Verify Data</h2>
+    <h3>Console: Run test queries to verify</h3>
+    <div class="code-block">-- Test: Top 5 pizzas by revenue
+SELECT pizza_name, 
+       SUM(total_sales) as revenue,
+       SUM(quantity) as units_sold
+FROM wuidi_vw_pizza_sales
+GROUP BY pizza_name
+ORDER BY revenue DESC
+LIMIT 5;
+
+-- Test: Revenue by category
+SELECT category, SUM(total_sales) as revenue
+FROM wuidi_vw_pizza_sales
+GROUP BY category
+ORDER BY revenue DESC;</div>
+    <p style="margin-top:1rem">If queries work here, they will work when AI generates them.</p>
+</div>
+
+<!-- Slide 10: Console - QuickSight Dataset -->
+<div class="slide" data-slide="10">
+    <h2><span class="step-num">2</span> QuickSight: Create Dataset</h2>
+    <h3>Console: QuickSight &gt; Datasets &gt; New Dataset</h3>
+    <ul>
+        <li>Data source: <span class="highlight">Amazon Athena</span></li>
+        <li>Database: wuidi-pizza-db</li>
+        <li>Table/View: wuidi_vw_pizza_sales</li>
+        <li>Import mode: <span class="highlight">SPICE</span> (in-memory, fast)</li>
+        <li>Add calculated fields: Total Revenue, Avg Order Value, etc.</li>
+    </ul>
+    <p style="margin-top:1rem">SPICE loads data into memory — dashboard loads instantly for users.</p>
+</div>
+
+<!-- Slide 11: Console - QuickSight Dashboard -->
 <div class="slide" data-slide="11">
-    <h2>Step 2: Dashboard (QuickSight)</h2>
-    <h3>Visual KPIs for business users</h3>
+    <h2><span class="step-num">2</span> QuickSight: Build Dashboard</h2>
+    <h3>Console: QuickSight &gt; Analyses &gt; Create</h3>
     <ul>
-        <li>Dataset mode: SPICE (in-memory, fast queries)</li>
-        <li>Revenue Trend, Orders Trend (by month)</li>
-        <li>Revenue by Hour, by Category, by Size</li>
-        <li>Detail table with calculated fields</li>
-        <li>Filters: month, category, pizza_name, size</li>
+        <li>Revenue Trend (column chart, X: month, Y: sum revenue)</li>
+        <li>Orders by Hour (column chart, X: hour, Y: count orders)</li>
+        <li>Revenue by Category (horizontal bar)</li>
+        <li>Revenue by Size (donut chart)</li>
+        <li>Detail table with pizza-level metrics</li>
+        <li>Add filters: month, category, size, pizza_name</li>
     </ul>
-    <p style="margin-top:1rem">Dashboard embedded in frontend via public share URL + iframe</p>
-    <p>Domain whitelisted: <span class="highlight">https://lintanggilang.github.io</span></p>
+    <p style="margin-top:1rem">Publish analysis as dashboard. Enable <span class="highlight">"Share publicly"</span> for embedding.</p>
 </div>
 
-<!-- Slide 12: Step 3 - Text-to-SQL -->
+<!-- Slide 12: Console - QuickSight Embed -->
 <div class="slide" data-slide="12">
-    <h2>Step 3: AI Engine (Text-to-SQL)</h2>
-    <h3>The core pipeline</h3>
-    <div class="diagram">User: "What is the best selling pizza?"
-    |
-Bedrock (Nova Pro): Generate SQL
-    -> SELECT pizza_name, SUM(quantity) ...
-    |
-Lambda: Validate (SELECT only!) + Run Athena
-    -> [{pizza_name: "Thai Chicken", total: 2371}, ...]
-    |
-Bedrock (Nova Pro): Generate Business Insight
-    -> "Thai Chicken Pizza is the best seller with
-       2,371 units sold. This is 15% above average.
-       Recommendation: ..."</div>
-</div>
-
-<!-- Slide 13: Step 4 - Bedrock Flow Nodes -->
-<div class="slide" data-slide="13">
-    <h2>Step 4: Bedrock Flow (Orchestration)</h2>
-    <h3>7 Nodes in 1 Flow</h3>
+    <h2><span class="step-num">2</span> QuickSight: Enable Embedding</h2>
+    <h3>Console: Manage QuickSight &gt; Domains &amp; Embedding</h3>
     <ul>
-        <li><span class="highlight">FlowInput</span> — Receives user question</li>
-        <li><span class="highlight">CheckRelevance</span> — Is the question about pizza data?</li>
-        <li><span class="highlight">IsRelevant</span> — Condition: RELEVANT -> proceed, NOT -> sorry</li>
-        <li><span class="highlight">GenerateSQL</span> — AI creates SQL from question</li>
-        <li><span class="highlight">ValidateAndQuery</span> — Lambda validates + runs Athena</li>
-        <li><span class="highlight">GenerateInsight</span> — AI analyzes results + creates insight</li>
-        <li><span class="highlight">FlowOutput</span> — Returns answer to user</li>
+        <li>Add allowed domain: <span class="highlight">https://lintanggilang.github.io</span></li>
+        <li>Open dashboard &gt; Share &gt; Enable public access</li>
+        <li>Copy embed URL (iframe code)</li>
     </ul>
+    <div class="code-block">&lt;iframe 
+  src="https://ap-southeast-1.quicksight.aws.amazon.com
+    /sn/account/wuidi-quick/embed/share/accounts/
+    122610516830/dashboards/a4f52f54-..."
+  width="100%" height="100%"&gt;
+&lt;/iframe&gt;</div>
+    <p style="margin-top:1rem">Dashboard now embeddable in any allowed domain via iframe.</p>
 </div>
 
-<!-- Slide 14: Relevance Check -->
+<!-- Slide 13: Console - Bedrock Model Access -->
+<div class="slide" data-slide="13">
+    <h2><span class="step-num">3</span> Bedrock: Enable Model Access</h2>
+    <h3>Console: Amazon Bedrock &gt; Model Access</h3>
+    <ul>
+        <li>Request access to <span class="highlight">Amazon Nova Pro</span></li>
+        <li>Region: ap-southeast-1 (Singapore)</li>
+        <li>Model ID: amazon.nova-pro-v1:0</li>
+        <li>Use case: Text-to-SQL generation + business insight generation</li>
+    </ul>
+    <p style="margin-top:1.5rem">Nova Pro chosen for strong SQL generation and reasoning capabilities at competitive cost.</p>
+</div>
+
+<!-- Slide 14: Console - Bedrock Flow -->
 <div class="slide" data-slide="14">
-    <h2>Feature: Relevance Guardrail</h2>
-    <h3>AI as gatekeeper</h3>
+    <h2><span class="step-num">3</span> Bedrock: Create Flow</h2>
+    <h3>Console: Bedrock &gt; Builder tools &gt; Flows</h3>
+    <ul>
+        <li>Flow name: <span class="highlight">wuidi-pizza-flow</span></li>
+        <li>Drag &amp; drop nodes in visual canvas:</li>
+        <li>Input &gt; CheckRelevance (Prompt) &gt; Condition &gt; GenerateSQL (Prompt)</li>
+        <li>GenerateSQL &gt; ValidateAndQuery (Lambda) &gt; GenerateInsight (Prompt) &gt; Output</li>
+        <li>Condition (default) &gt; SorryResponse (Prompt) &gt; Output</li>
+    </ul>
+    <p style="margin-top:1rem">Visual pipeline — each node is a step. Click any node to see input/output.</p>
+</div>
+
+<!-- Slide 15: Console - Bedrock Flow Prompts -->
+<div class="slide" data-slide="15">
+    <h2><span class="step-num">3</span> Bedrock Flow: Prompt Design</h2>
+    <h3>Each prompt node has a specific role</h3>
     <div class="grid-2">
         <div class="card">
-            <h4>Relevant Questions</h4>
-            <p style="color:var(--text-2)">"Revenue for Classic category?"<br>"What hour is busiest?"<br>"Most expensive pizza?"</p>
-            <p style="color:var(--accent);margin-top:0.5rem">-> Proceeds to SQL + Athena</p>
+            <h4>CheckRelevance Prompt</h4>
+            <p style="color:var(--text-2);font-size:0.95rem">"Is this question about pizza sales data? Answer RELEVANT or NOT_RELEVANT"</p>
         </div>
         <div class="card">
-            <h4>Irrelevant Questions</h4>
-            <p style="color:var(--text-2)">"What's the weather today?"<br>"Who is the president?"<br>"Write Python code"</p>
-            <p style="color:#f87171;margin-top:0.5rem">-> "Sorry, I can only answer pizza sales questions..."</p>
+            <h4>GenerateSQL Prompt</h4>
+            <p style="color:var(--text-2);font-size:0.95rem">"Given this schema [view + tables], generate Athena SQL for the user question. SELECT only."</p>
+        </div>
+        <div class="card">
+            <h4>GenerateInsight Prompt</h4>
+            <p style="color:var(--text-2);font-size:0.95rem">"Given question + query results, provide: direct answer, business insight, recommendation."</p>
+        </div>
+        <div class="card">
+            <h4>SorryResponse Prompt</h4>
+            <p style="color:var(--text-2);font-size:0.95rem">"Politely decline — only pizza sales questions are supported."</p>
         </div>
     </div>
 </div>
 
-<!-- Slide 15: CDK / IaC -->
-<div class="slide" data-slide="15">
-    <h2>Step 5: Infrastructure as Code (CDK)</h2>
-    <h3>Everything deployed via AWS CDK (Python)</h3>
-    <div class="code-block">cdk deploy
-# Creates:
-# - Lambda (wuidi-context-builder) — API wrapper
-# - Lambda (wuidi-flow-athena) — Athena node
-# - Bedrock Flow (wuidi-pizza-flow) — 7 nodes
-# - Flow Version + Alias
-# - IAM Role (wuidi-flow-role)
-# - API Gateway (POST /ask, GET /embed-url)
-# - CORS enabled</div>
-    <p style="margin-top:1rem">1 command = entire infrastructure created. Reproducible & version-controlled.</p>
+<!-- Slide 16: Console - Lambda -->
+<div class="slide" data-slide="16">
+    <h2><span class="step-num">4</span> Lambda: Create Functions</h2>
+    <h3>Console: AWS Lambda &gt; Create Function</h3>
+    <div class="grid-2">
+        <div class="card">
+            <h4>wuidi-context-builder</h4>
+            <p style="color:var(--text-2);font-size:0.95rem">API Gateway handler. Receives question, invokes Bedrock Flow, returns response.</p>
+            <p style="color:var(--accent);font-size:0.85rem;margin-top:0.5rem">Runtime: Python 3.12 | Memory: 512MB | Timeout: 90s</p>
+        </div>
+        <div class="card">
+            <h4>wuidi-flow-athena</h4>
+            <p style="color:var(--text-2);font-size:0.95rem">Called BY Bedrock Flow. Validates SQL safety + executes Athena query + returns results.</p>
+            <p style="color:var(--accent);font-size:0.85rem;margin-top:0.5rem">Runtime: Python 3.12 | Memory: 256MB | Timeout: 60s</p>
+        </div>
+    </div>
 </div>
 
-<!-- Slide 16: SQL Safety -->
-<div class="slide" data-slide="16">
-    <h2>Security: SQL Validation</h2>
-    <h3>AI generates SQL, but we always validate</h3>
+<!-- Slide 17: Console - Lambda SQL Safety -->
+<div class="slide" data-slide="17">
+    <h2><span class="step-num">4</span> Lambda: SQL Safety Check</h2>
+    <h3>AI generates SQL, but Lambda always validates</h3>
     <div class="code-block">def validate_sql(sql):
     forbidden = ["INSERT", "UPDATE", "DELETE", 
                  "DROP", "ALTER", "CREATE", "TRUNCATE"]
@@ -312,31 +317,32 @@ Bedrock (Nova Pro): Generate Business Insight
             raise Exception(f"Forbidden: {keyword}")
     if not sql.strip().upper().startswith("SELECT"):
         raise Exception("Only SELECT allowed")</div>
-    <p style="margin-top:1rem">AI can only <span class="highlight">read</span> data. Never modify.</p>
+    <p style="margin-top:1rem">AI can only <span class="highlight">read</span> data. Never modify. Defence in depth.</p>
 </div>
 
-<!-- Slide 17: Demo -->
-<div class="slide title-slide" data-slide="17">
+<!-- Slide 18: Demo -->
+<div class="slide title-slide" data-slide="18">
     <span class="tag">LIVE DEMO</span>
     <h1>Demo Time</h1>
     <p class="subtitle">Dashboard + AI Chat + Bedrock Flow Console</p>
+    <p style="margin-top:1.5rem; color:var(--text-2); font-size:1rem">1. Show QuickSight dashboard<br>2. Ask AI questions<br>3. Show Bedrock Flow running in console</p>
 </div>
 
-<!-- Slide 18: Lessons Learned -->
-<div class="slide" data-slide="18">
+<!-- Slide 19: Lessons Learned -->
+<div class="slide" data-slide="19">
     <h2>Lessons Learned</h2>
     <ul>
         <li><span class="highlight">Text-to-SQL</span> is more flexible than hardcoded queries — AI adapts to any question</li>
-        <li><span class="highlight">Bedrock Flows</span> makes orchestration visual & modular — easy to debug</li>
+        <li><span class="highlight">Bedrock Flows</span> makes orchestration visual &amp; modular — easy to debug in console</li>
         <li><span class="highlight">Condition nodes</span> as guardrails — prevent AI from answering out of scope</li>
-        <li><span class="highlight">Serverless = cost efficient</span> — pay per request, great for demos & MVPs</li>
-        <li><span class="highlight">CDK</span> ensures reproducibility — 1 command deploys everything</li>
+        <li><span class="highlight">Serverless = cost efficient</span> — pay per request, great for demos &amp; MVPs</li>
         <li><span class="highlight">Prompt engineering</span> is crucial — schema in prompt = AI understands data</li>
+        <li><span class="highlight">CDK optional</span> — can set up via console first, then codify later with CDK</li>
     </ul>
 </div>
 
-<!-- Slide 19: Key Takeaways -->
-<div class="slide" data-slide="19">
+<!-- Slide 20: Key Takeaways & Thank You -->
+<div class="slide" data-slide="20">
     <h2>Key Takeaways</h2>
     <div class="grid-2">
         <div class="card">
@@ -348,26 +354,17 @@ Bedrock (Nova Pro): Generate Business Insight
             <p style="color:var(--text-2)">Bedrock + Athena: AI answers from real data, not hallucination.</p>
         </div>
         <div class="card">
-            <h4>3. Flows = Orchestration</h4>
-            <p style="color:var(--text-2)">Bedrock Flows makes AI pipelines visual, modular, and maintainable.</p>
+            <h4>3. Flows = Visual Orchestration</h4>
+            <p style="color:var(--text-2)">Build, debug, and demo AI pipelines visually in the console.</p>
         </div>
         <div class="card">
             <h4>4. Serverless = Scale</h4>
-            <p style="color:var(--text-2)">From 0 requests to thousands — without managing servers.</p>
+            <p style="color:var(--text-2)">From 0 to thousands of requests — no servers to manage.</p>
         </div>
     </div>
-</div>
-
-<!-- Slide 20: Thank You -->
-<div class="slide title-slide" data-slide="20">
-    <h1>Thank You!</h1>
-    <p class="subtitle">Contextual AI Analytics with Athena and Amazon Bedrock</p>
-    <p class="author" style="margin-top:1.5rem">Lintang Gilang Pratama</p>
-    <span class="badge">&#9729; AWS Community Builder</span>
-    <p style="margin-top:2rem; font-size:1rem; color:var(--text-2)">
-        GitHub: <span class="highlight">github.com/lintanggilang</span><br>
-        Dashboard: <span class="highlight">lintanggilang.github.io/wuidi-de-soal/dashboard.html</span>
-    </p>
+    <p style="margin-top:2rem; text-align:center; font-size:1.5rem; font-weight:700; color:var(--text)">Thank You!</p>
+    <p style="text-align:center; color:var(--text-2); margin-top:0.5rem">Lintang Gilang Pratama | AWS Community Builder</p>
+    <p style="text-align:center; margin-top:0.5rem; font-size:0.95rem; color:var(--text-2)">GitHub: <span class="highlight">github.com/lintanggilang</span></p>
 </div>
 
 <div class="progress" id="progress"></div>
