@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Analitik Kontekstual dengan Athena dan Amazon Bedrock</title>
+    <title>Contextual AI Analytics with Athena and Amazon Bedrock</title>
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -23,7 +23,7 @@
         .slide p { font-size: 1.15rem; line-height: 1.7; color: var(--text-2); max-width: 900px; }
         .slide ul { list-style: none; padding: 0; }
         .slide ul li { font-size: 1.1rem; line-height: 1.8; color: var(--text-2); padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem; }
-        .slide ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
+        .slide ul li::before { content: '\2192'; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
         .slide .subtitle { font-size: 1.3rem; color: var(--text-2); margin-bottom: 0.5rem; }
         .slide .tag { display: inline-block; background: var(--accent); color: #fff; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem; }
         .slide .code-block { background: #0d1117; border: 1px solid #30363d; border-radius: 10px; padding: 1.2rem 1.5rem; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9rem; color: #c9d1d9; overflow-x: auto; margin-top: 1rem; white-space: pre; max-height: 400px; overflow-y: auto; }
@@ -32,7 +32,6 @@
         .slide .card { background: var(--bg-card); border-radius: 12px; padding: 1.5rem; border: 1px solid #334155; }
         .slide .card h4 { color: var(--accent); margin-bottom: 0.5rem; font-size: 1.1rem; }
         .slide .highlight { color: var(--accent); font-weight: 600; }
-        .slide .big-number { font-size: 4rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .nav { position: fixed; bottom: 2rem; right: 3rem; display: flex; gap: 0.75rem; z-index: 100; }
         .nav button { padding: 0.6rem 1.2rem; border: 1px solid #334155; background: var(--bg-card); color: var(--text); border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 150ms; }
@@ -51,64 +50,64 @@
 <!-- Slide 1: Title -->
 <div class="slide title-slide active" data-slide="1">
     <span class="tag">AWS Summit 2026</span>
-    <h1>AI Analitik Kontekstual<br>dengan Athena dan Amazon Bedrock</h1>
+    <h1>Contextual AI Analytics<br>with Athena and Amazon Bedrock</h1>
     <p class="author">Lintang Gilang Pratama</p>
-    <span class="badge">☁️ AWS Community Builder</span>
+    <span class="badge">&#9729; AWS Community Builder</span>
 </div>
 
 <!-- Slide 2: Agenda -->
 <div class="slide" data-slide="2">
     <h2>Agenda</h2>
     <ul>
-        <li>Latar belakang masalah</li>
-        <li>Solusi: AI Analitik Kontekstual</li>
-        <li>Arsitektur dari sisi user</li>
-        <li>Step-by-step pengerjaan</li>
-        <li>Demo langsung</li>
-        <li>Pelajaran & takeaways</li>
+        <li>Background & Problem Statement</li>
+        <li>Solution: Contextual AI Analytics</li>
+        <li>Architecture from User Perspective</li>
+        <li>Step-by-Step Implementation</li>
+        <li>Live Demo</li>
+        <li>Lessons Learned & Key Takeaways</li>
     </ul>
 </div>
 
-<!-- Slide 3: Latar Belakang -->
+<!-- Slide 3: Background -->
 <div class="slide" data-slide="3">
-    <h2>Latar Belakang Masalah</h2>
-    <h3>Dashboard tradisional punya keterbatasan</h3>
+    <h2>Background: The Dashboard Gap</h2>
+    <h3>Traditional dashboards have limitations</h3>
     <ul>
-        <li>Dashboard hanya menampilkan KPI dan chart yang sudah di-design</li>
-        <li>Untuk deep drill-down → perlu ubah filter, buat chart baru</li>
-        <li>Bisnis user tidak bisa "bertanya" ke data secara langsung</li>
-        <li>Insight tersembunyi sulit ditemukan tanpa skill SQL/analytics</li>
+        <li>Dashboards only display pre-designed KPIs and charts</li>
+        <li>Deep drill-downs require filter changes or new visualizations</li>
+        <li>Business users cannot "ask" questions to data directly</li>
+        <li>Hidden insights are hard to discover without SQL/analytics skills</li>
     </ul>
 </div>
 
 <!-- Slide 4: Problem Statement -->
 <div class="slide" data-slide="4">
-    <h2>Masalah Spesifik</h2>
+    <h2>The Problem</h2>
     <div class="grid-2">
         <div class="card">
-            <h4>Untuk Business User</h4>
-            <p style="color:var(--text-2)">"Saya lihat revenue turun di chart, tapi kenapa? Pizza mana yang turun? Jam berapa yang sepi?"</p>
+            <h4>For Business Users</h4>
+            <p style="color:var(--text-2)">"I see revenue dropped in the chart, but why? Which pizza? What hour is slow?"</p>
         </div>
         <div class="card">
-            <h4>Untuk Data Team</h4>
-            <p style="color:var(--text-2)">"Setiap pertanyaan ad-hoc dari bisnis → kami harus tulis SQL manual, buat report baru."</p>
+            <h4>For Data Teams</h4>
+            <p style="color:var(--text-2)">"Every ad-hoc question from business means we write SQL manually and build new reports."</p>
         </div>
     </div>
-    <p style="margin-top:1.5rem"><span class="highlight">Gap:</span> Dashboard bisa menampilkan "apa", tapi tidak bisa menjawab "kenapa" dan "apa yang harus dilakukan".</p>
+    <p style="margin-top:1.5rem"><span class="highlight">Gap:</span> Dashboards show "what happened" but cannot answer "why" or "what should we do".</p>
 </div>
 
-<!-- Slide 5: Solusi -->
+<!-- Slide 5: Solution -->
 <div class="slide" data-slide="5">
-    <h2>Solusi: AI Analitik Kontekstual</h2>
-    <h3>Dashboard tetap simpel. AI jadi analis.</h3>
+    <h2>Solution: Contextual AI Analytics</h2>
+    <h3>Keep the dashboard simple. Let AI be the analyst.</h3>
     <ul>
-        <li>User melihat dashboard KPI (QuickSight)</li>
-        <li>User bertanya dalam bahasa natural ke AI</li>
-        <li>AI generate SQL otomatis (Text-to-SQL)</li>
-        <li>AI query data langsung dari Athena</li>
-        <li>AI berikan insight + rekomendasi bisnis</li>
+        <li>User views dashboard KPIs (QuickSight)</li>
+        <li>User asks questions in natural language</li>
+        <li>AI generates SQL automatically (Text-to-SQL)</li>
+        <li>AI queries data directly from Athena</li>
+        <li>AI provides insight + business recommendation</li>
     </ul>
-    <p style="margin-top:1rem"><span class="highlight">Kunci:</span> AI menjawab dari DATA, bukan dari pengetahuan umum.</p>
+    <p style="margin-top:1rem"><span class="highlight">Key principle:</span> AI answers from DATA, not from pretrained knowledge.</p>
 </div>
 
 <!-- Slide 6: Tech Stack -->
@@ -133,80 +132,80 @@
             </ul>
         </div>
     </div>
-    <p style="margin-top:1.5rem">Semua <span class="highlight">serverless</span> — bayar per request, tidak ada server yang dikelola.</p>
+    <p style="margin-top:1.5rem">100% <span class="highlight">serverless</span> — pay per request, no servers to manage.</p>
 </div>
 
-<!-- Slide 7: Arsitektur User Flow -->
+<!-- Slide 7: User Flow -->
 <div class="slide" data-slide="7">
-    <h2>Arsitektur dari Sisi User</h2>
-    <div class="diagram">User buka Dashboard (QuickSight + AI Chat)
-        ↓
-User lihat chart & KPI → lalu bertanya ke AI
-        ↓
-"Pizza apa yang paling laku bulan Januari?"
-        ↓
-AI generate SQL → validate → query Athena → generate insight
-        ↓
-"The Thai Chicken Pizza adalah yang paling laku di Januari
- dengan 120 orders. Rekomendasi: tingkatkan stok bahan..."</div>
+    <h2>Architecture: User Perspective</h2>
+    <div class="diagram">User opens Dashboard (QuickSight + AI Chat panel)
+        |
+User views charts & KPIs, then asks AI:
+        |
+"What is the best selling pizza in January?"
+        |
+AI generates SQL -> validates -> queries Athena -> generates insight
+        |
+"The Thai Chicken Pizza is the top seller in January
+ with 120 orders. Recommendation: increase ingredient stock..."</div>
 </div>
 
-<!-- Slide 8: Architecture Diagram -->
+<!-- Slide 8: Technical Architecture -->
 <div class="slide" data-slide="8">
-    <h2>Arsitektur Teknis</h2>
+    <h2>Technical Architecture</h2>
     <div class="diagram">Frontend (GitHub Pages)
-    ↓
+    |
 API Gateway (POST /ask)
-    ↓
+    |
 Lambda (invoke Bedrock Flow)
-    ↓
-┌─────────────── Bedrock Flow ───────────────┐
-│                                            │
-│  [Input] → [CheckRelevance] → [Condition] │
-│                 ↓ relevant       ↓ not     │
-│         [GenerateSQL]    [SorryResponse]   │
-│              ↓                    ↓        │
-│     [Lambda: Athena]        [Output]       │
-│              ↓                             │
-│      [GenerateInsight]                     │
-│              ↓                             │
-│          [Output]                          │
-└────────────────────────────────────────────┘</div>
+    |
++-------------- Bedrock Flow ----------------+
+|                                            |
+|  [Input] -> [CheckRelevance] -> [Condition]|
+|                 | relevant       | default |
+|         [GenerateSQL]    [SorryResponse]   |
+|              |                    |        |
+|     [Lambda: Athena]        [Output]       |
+|              |                             |
+|      [GenerateInsight]                     |
+|              |                             |
+|          [Output]                          |
++--------------------------------------------+</div>
 </div>
 
-<!-- Slide 9: Bedrock Flows -->
+<!-- Slide 9: Why Bedrock Flows -->
 <div class="slide" data-slide="9">
-    <h2>Kenapa Bedrock Flows?</h2>
+    <h2>Why Bedrock Flows?</h2>
     <div class="grid-2">
         <div class="card">
-            <h4>Sebelum (Monolith Lambda)</h4>
+            <h4>Before (Monolith Lambda)</h4>
             <ul>
-                <li>Semua logic di 1 file Python</li>
-                <li>Sulit debug step by step</li>
-                <li>Prompt hardcoded di code</li>
+                <li>All logic in 1 Python file</li>
+                <li>Hard to debug step by step</li>
+                <li>Prompts hardcoded in code</li>
             </ul>
         </div>
         <div class="card">
-            <h4>Sesudah (Bedrock Flows)</h4>
+            <h4>After (Bedrock Flows)</h4>
             <ul>
                 <li>Visual node-based pipeline</li>
-                <li>Tiap step terpisah & observable</li>
-                <li>Modular — tambah node tanpa ubah code</li>
+                <li>Each step isolated & observable</li>
+                <li>Modular — add nodes without changing code</li>
             </ul>
         </div>
     </div>
-    <p style="margin-top:1.5rem">Bonus: bisa di-demo langsung di console! 🎯</p>
+    <p style="margin-top:1.5rem">Bonus: can be demoed live in the AWS Console!</p>
 </div>
 
 <!-- Slide 10: Step 1 - Data Preparation -->
 <div class="slide" data-slide="10">
-    <h2>Step 1: Persiapan Data</h2>
-    <h3>MySQL → S3 → Glue → Athena</h3>
+    <h2>Step 1: Data Preparation</h2>
+    <h3>CSV -> S3 -> Glue -> Athena</h3>
     <ul>
         <li>Dataset: Pizza Sales (orders, order_details, pizzas, pizza_types)</li>
-        <li>Upload CSV ke S3 bucket <span class="highlight">wuidi-pizza</span></li>
-        <li>Buat Glue Tables (schema definition)</li>
-        <li>Buat Athena View: <span class="highlight">wuidi_vw_pizza_sales</span> (join semua tabel)</li>
+        <li>Upload CSV to S3 bucket <span class="highlight">wuidi-pizza</span></li>
+        <li>Create Glue Tables (schema definitions)</li>
+        <li>Create Athena View: <span class="highlight">wuidi_vw_pizza_sales</span> (joins all tables)</li>
     </ul>
     <div class="code-block">CREATE VIEW wuidi_vw_pizza_sales AS
 SELECT o.order_id, o.date as order_date, 
@@ -221,66 +220,66 @@ JOIN pizza_types pt ON p.pizza_type_id = pt.pizza_type_id</div>
 
 <!-- Slide 11: Step 2 - QuickSight -->
 <div class="slide" data-slide="11">
-    <h2>Step 2: Dashboard di QuickSight</h2>
-    <h3>Visualisasi KPI untuk user</h3>
+    <h2>Step 2: Dashboard (QuickSight)</h2>
+    <h3>Visual KPIs for business users</h3>
     <ul>
-        <li>Dataset mode: SPICE (in-memory, fast)</li>
+        <li>Dataset mode: SPICE (in-memory, fast queries)</li>
         <li>Revenue Trend, Orders Trend (by month)</li>
         <li>Revenue by Hour, by Category, by Size</li>
-        <li>Detail table dengan calculated fields</li>
+        <li>Detail table with calculated fields</li>
         <li>Filters: month, category, pizza_name, size</li>
     </ul>
-    <p style="margin-top:1rem">Dashboard di-embed ke frontend via public share URL + iframe</p>
-    <p>Domain whitelist: <span class="highlight">https://lintanggilang.github.io</span></p>
+    <p style="margin-top:1rem">Dashboard embedded in frontend via public share URL + iframe</p>
+    <p>Domain whitelisted: <span class="highlight">https://lintanggilang.github.io</span></p>
 </div>
 
-<!-- Slide 12: Step 3 - Lambda & Bedrock -->
+<!-- Slide 12: Step 3 - Text-to-SQL -->
 <div class="slide" data-slide="12">
-    <h2>Step 3: AI Engine (Lambda + Bedrock)</h2>
-    <h3>Text-to-SQL Pipeline</h3>
-    <div class="diagram">User: "Pizza apa yang paling laku?"
-    ↓
+    <h2>Step 3: AI Engine (Text-to-SQL)</h2>
+    <h3>The core pipeline</h3>
+    <div class="diagram">User: "What is the best selling pizza?"
+    |
 Bedrock (Nova Pro): Generate SQL
-    → SELECT pizza_name, SUM(quantity) ...
-    ↓
+    -> SELECT pizza_name, SUM(quantity) ...
+    |
 Lambda: Validate (SELECT only!) + Run Athena
-    → [{pizza_name: "Thai Chicken", total: 2371}, ...]
-    ↓
+    -> [{pizza_name: "Thai Chicken", total: 2371}, ...]
+    |
 Bedrock (Nova Pro): Generate Business Insight
-    → "Thai Chicken Pizza adalah yang paling laku dengan
-       2,371 pizza terjual. Ini 15% lebih tinggi dari
-       rata-rata. Rekomendasi: ..."</div>
+    -> "Thai Chicken Pizza is the best seller with
+       2,371 units sold. This is 15% above average.
+       Recommendation: ..."</div>
 </div>
 
-<!-- Slide 13: Step 4 - Bedrock Flow Detail -->
+<!-- Slide 13: Step 4 - Bedrock Flow Nodes -->
 <div class="slide" data-slide="13">
     <h2>Step 4: Bedrock Flow (Orchestration)</h2>
-    <h3>7 Nodes dalam 1 Flow</h3>
+    <h3>7 Nodes in 1 Flow</h3>
     <ul>
-        <li><span class="highlight">FlowInput</span> — Terima pertanyaan user</li>
-        <li><span class="highlight">CheckRelevance</span> — Apakah pertanyaan terkait data pizza?</li>
-        <li><span class="highlight">IsRelevant</span> — Condition: RELEVANT → lanjut, NOT → maaf</li>
-        <li><span class="highlight">GenerateSQL</span> — AI buat SQL dari pertanyaan</li>
-        <li><span class="highlight">ValidateAndQuery</span> — Lambda validate + jalankan Athena</li>
-        <li><span class="highlight">GenerateInsight</span> — AI analisa hasil + buat insight</li>
-        <li><span class="highlight">FlowOutput</span> — Return jawaban ke user</li>
+        <li><span class="highlight">FlowInput</span> — Receives user question</li>
+        <li><span class="highlight">CheckRelevance</span> — Is the question about pizza data?</li>
+        <li><span class="highlight">IsRelevant</span> — Condition: RELEVANT -> proceed, NOT -> sorry</li>
+        <li><span class="highlight">GenerateSQL</span> — AI creates SQL from question</li>
+        <li><span class="highlight">ValidateAndQuery</span> — Lambda validates + runs Athena</li>
+        <li><span class="highlight">GenerateInsight</span> — AI analyzes results + creates insight</li>
+        <li><span class="highlight">FlowOutput</span> — Returns answer to user</li>
     </ul>
 </div>
 
 <!-- Slide 14: Relevance Check -->
 <div class="slide" data-slide="14">
-    <h2>Fitur: Relevance Check</h2>
-    <h3>AI sebagai gatekeeper</h3>
+    <h2>Feature: Relevance Guardrail</h2>
+    <h3>AI as gatekeeper</h3>
     <div class="grid-2">
         <div class="card">
-            <h4>✅ Pertanyaan Relevan</h4>
-            <p style="color:var(--text-2)">"Revenue kategori Classic berapa?"<br>"Jam berapa paling ramai?"<br>"Pizza mana yang paling mahal?"</p>
-            <p style="color:var(--accent);margin-top:0.5rem">→ Lanjut ke SQL + Athena</p>
+            <h4>Relevant Questions</h4>
+            <p style="color:var(--text-2)">"Revenue for Classic category?"<br>"What hour is busiest?"<br>"Most expensive pizza?"</p>
+            <p style="color:var(--accent);margin-top:0.5rem">-> Proceeds to SQL + Athena</p>
         </div>
         <div class="card">
-            <h4>❌ Pertanyaan Tidak Relevan</h4>
-            <p style="color:var(--text-2)">"Cuaca hari ini?"<br>"Siapa presiden Indonesia?"<br>"Buatkan code Python"</p>
-            <p style="color:#f87171;margin-top:0.5rem">→ "Maaf, saya hanya bisa menjawab tentang data pizza..."</p>
+            <h4>Irrelevant Questions</h4>
+            <p style="color:var(--text-2)">"What's the weather today?"<br>"Who is the president?"<br>"Write Python code"</p>
+            <p style="color:#f87171;margin-top:0.5rem">-> "Sorry, I can only answer pizza sales questions..."</p>
         </div>
     </div>
 </div>
@@ -288,23 +287,23 @@ Bedrock (Nova Pro): Generate Business Insight
 <!-- Slide 15: CDK / IaC -->
 <div class="slide" data-slide="15">
     <h2>Step 5: Infrastructure as Code (CDK)</h2>
-    <h3>Semua di-deploy via AWS CDK (Python)</h3>
+    <h3>Everything deployed via AWS CDK (Python)</h3>
     <div class="code-block">cdk deploy
 # Creates:
-# ✅ Lambda (wuidi-context-builder) — API wrapper
-# ✅ Lambda (wuidi-flow-athena) — Athena node
-# ✅ Bedrock Flow (wuidi-pizza-flow) — 7 nodes
-# ✅ Flow Version + Alias
-# ✅ IAM Role (wuidi-flow-role)
-# ✅ API Gateway (POST /ask, GET /embed-url)
-# ✅ CORS enabled</div>
-    <p style="margin-top:1rem">1 command = seluruh infrastruktur terbuat. Reproducible, version-controlled.</p>
+# - Lambda (wuidi-context-builder) — API wrapper
+# - Lambda (wuidi-flow-athena) — Athena node
+# - Bedrock Flow (wuidi-pizza-flow) — 7 nodes
+# - Flow Version + Alias
+# - IAM Role (wuidi-flow-role)
+# - API Gateway (POST /ask, GET /embed-url)
+# - CORS enabled</div>
+    <p style="margin-top:1rem">1 command = entire infrastructure created. Reproducible & version-controlled.</p>
 </div>
 
 <!-- Slide 16: SQL Safety -->
 <div class="slide" data-slide="16">
     <h2>Security: SQL Validation</h2>
-    <h3>AI generate SQL, tapi kita tetap validasi</h3>
+    <h3>AI generates SQL, but we always validate</h3>
     <div class="code-block">def validate_sql(sql):
     forbidden = ["INSERT", "UPDATE", "DELETE", 
                  "DROP", "ALTER", "CREATE", "TRUNCATE"]
@@ -313,26 +312,26 @@ Bedrock (Nova Pro): Generate Business Insight
             raise Exception(f"Forbidden: {keyword}")
     if not sql.strip().upper().startswith("SELECT"):
         raise Exception("Only SELECT allowed")</div>
-    <p style="margin-top:1rem">AI hanya boleh <span class="highlight">membaca</span> data. Tidak pernah memodifikasi.</p>
+    <p style="margin-top:1rem">AI can only <span class="highlight">read</span> data. Never modify.</p>
 </div>
 
 <!-- Slide 17: Demo -->
 <div class="slide title-slide" data-slide="17">
     <span class="tag">LIVE DEMO</span>
-    <h1>🍕 Demo Time</h1>
+    <h1>Demo Time</h1>
     <p class="subtitle">Dashboard + AI Chat + Bedrock Flow Console</p>
 </div>
 
 <!-- Slide 18: Lessons Learned -->
 <div class="slide" data-slide="18">
-    <h2>Pelajaran yang Dipetik</h2>
+    <h2>Lessons Learned</h2>
     <ul>
-        <li><span class="highlight">Text-to-SQL</span> lebih fleksibel dari hardcoded query — AI adaptasi ke pertanyaan apapun</li>
-        <li><span class="highlight">Bedrock Flows</span> bikin orchestration visual & modular — gampang debug</li>
-        <li><span class="highlight">Condition node</span> sebagai guardrail — cegah AI jawab di luar scope</li>
-        <li><span class="highlight">Serverless = cost efficient</span> — bayar per request, cocok untuk demo & MVP</li>
-        <li><span class="highlight">CDK</span> memastikan reproducibility — 1 command deploy semua</li>
-        <li><span class="highlight">Prompt engineering</span> sangat krusial — schema di prompt = AI paham data</li>
+        <li><span class="highlight">Text-to-SQL</span> is more flexible than hardcoded queries — AI adapts to any question</li>
+        <li><span class="highlight">Bedrock Flows</span> makes orchestration visual & modular — easy to debug</li>
+        <li><span class="highlight">Condition nodes</span> as guardrails — prevent AI from answering out of scope</li>
+        <li><span class="highlight">Serverless = cost efficient</span> — pay per request, great for demos & MVPs</li>
+        <li><span class="highlight">CDK</span> ensures reproducibility — 1 command deploys everything</li>
+        <li><span class="highlight">Prompt engineering</span> is crucial — schema in prompt = AI understands data</li>
     </ul>
 </div>
 
@@ -341,30 +340,30 @@ Bedrock (Nova Pro): Generate Business Insight
     <h2>Key Takeaways</h2>
     <div class="grid-2">
         <div class="card">
-            <h4>1. Dashboard ≠ Analytics</h4>
-            <p style="color:var(--text-2)">Dashboard menampilkan data. AI yang menganalisa dan menjawab pertanyaan.</p>
+            <h4>1. Dashboard &#8800; Analytics</h4>
+            <p style="color:var(--text-2)">Dashboards display data. AI analyzes and answers questions.</p>
         </div>
         <div class="card">
             <h4>2. AI + Data = Powerful</h4>
-            <p style="color:var(--text-2)">Bedrock + Athena: AI yang menjawab dari data real, bukan hallucination.</p>
+            <p style="color:var(--text-2)">Bedrock + Athena: AI answers from real data, not hallucination.</p>
         </div>
         <div class="card">
             <h4>3. Flows = Orchestration</h4>
-            <p style="color:var(--text-2)">Bedrock Flows membuat pipeline AI visual, modular, dan maintainable.</p>
+            <p style="color:var(--text-2)">Bedrock Flows makes AI pipelines visual, modular, and maintainable.</p>
         </div>
         <div class="card">
             <h4>4. Serverless = Scale</h4>
-            <p style="color:var(--text-2)">Dari 0 request sampai ribuan — tanpa manage server.</p>
+            <p style="color:var(--text-2)">From 0 requests to thousands — without managing servers.</p>
         </div>
     </div>
 </div>
 
 <!-- Slide 20: Thank You -->
 <div class="slide title-slide" data-slide="20">
-    <h1>Terima Kasih! 🙏</h1>
-    <p class="subtitle">AI Analitik Kontekstual dengan Athena dan Amazon Bedrock</p>
+    <h1>Thank You!</h1>
+    <p class="subtitle">Contextual AI Analytics with Athena and Amazon Bedrock</p>
     <p class="author" style="margin-top:1.5rem">Lintang Gilang Pratama</p>
-    <span class="badge">☁️ AWS Community Builder</span>
+    <span class="badge">&#9729; AWS Community Builder</span>
     <p style="margin-top:2rem; font-size:1rem; color:var(--text-2)">
         GitHub: <span class="highlight">github.com/lintanggilang</span><br>
         Dashboard: <span class="highlight">lintanggilang.github.io/wuidi-de-soal/dashboard.html</span>
@@ -374,8 +373,8 @@ Bedrock (Nova Pro): Generate Business Insight
 <div class="progress" id="progress"></div>
 <div class="slide-counter" id="counter">1 / 20</div>
 <div class="nav">
-    <button onclick="prevSlide()">← Prev</button>
-    <button onclick="nextSlide()">Next →</button>
+    <button onclick="prevSlide()">&#8592; Prev</button>
+    <button onclick="nextSlide()">Next &#8594;</button>
 </div>
 
 <script>
