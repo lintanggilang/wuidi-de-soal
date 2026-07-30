@@ -66,6 +66,10 @@
         .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
         .chat-hint { font-size: 0.7rem; color: var(--text-3); margin-top: 0.4rem; }
 
+        .chart-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; max-width: 100%; }
+        .chart-container canvas { max-height: 250px; }
+        .chart-title { font-size: 0.75rem; font-weight: 600; color: var(--text-2); margin-bottom: 0.4rem; text-align: center; }
+
         @media(max-width:900px){
             .layout { grid-template-columns: 1fr; grid-template-rows: auto 45vh 1fr; }
             .dashboard-panel { border-right: none; border-bottom: 1px solid var(--border); }
@@ -108,8 +112,9 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
-const API_URL = "https://r8lln6ipd0.execute-api.ap-southeast-1.amazonaws.com/prod/ask";
+const API_URL = "https://d9t3kqt7g7.execute-api.ap-southeast-1.amazonaws.com/prod/ask";
 
 // Chat logic
 const chatMessages = document.getElementById('chatMessages');
@@ -153,7 +158,12 @@ async function sendQuestion() {
             if (body.generated_sql) {
                 content += '\n<pre>' + escapeHtml(body.generated_sql) + '</pre>';
             }
-            addMessage(content, 'ai');
+            const msgEl = addMessage(content, 'ai');
+
+            // Render chart if present
+            if (body.chart) {
+                renderChart(msgEl, body.chart);
+            }
         }
     } catch(err) {
         loadingEl.remove();
@@ -183,6 +193,75 @@ function addMessage(text, type) {
 
 function escapeHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderChart(msgEl, chartConfig) {
+    try {
+        const container = document.createElement('div');
+        container.className = 'chart-container';
+
+        if (chartConfig.title) {
+            const titleEl = document.createElement('div');
+            titleEl.className = 'chart-title';
+            titleEl.textContent = chartConfig.title;
+            container.appendChild(titleEl);
+        }
+
+        const canvas = document.createElement('canvas');
+        container.appendChild(canvas);
+        msgEl.appendChild(container);
+
+        // Map horizontalBar to bar with indexAxis
+        let chartType = chartConfig.type || 'bar';
+        let indexAxis = undefined;
+        if (chartType === 'horizontalBar') {
+            chartType = 'bar';
+            indexAxis = 'y';
+        }
+
+        // Build datasets
+        const datasets = (chartConfig.datasets || []).map((ds, i) => {
+            const colors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec4899','#06b6d4','#84cc16'];
+            const isPieOrDoughnut = (chartType === 'pie' || chartType === 'doughnut');
+            return {
+                label: ds.label || 'Data',
+                data: ds.data || [],
+                backgroundColor: isPieOrDoughnut
+                    ? (chartConfig.labels || []).map((_, j) => colors[j % colors.length])
+                    : colors[i % colors.length],
+                borderColor: isPieOrDoughnut
+                    ? (chartConfig.labels || []).map((_, j) => colors[j % colors.length])
+                    : colors[i % colors.length],
+                borderWidth: 1
+            };
+        });
+
+        new Chart(canvas, {
+            type: chartType,
+            data: {
+                labels: chartConfig.labels || [],
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                indexAxis: indexAxis,
+                plugins: {
+                    legend: {
+                        display: datasets.length > 1 || chartType === 'pie' || chartType === 'doughnut',
+                        position: 'bottom',
+                        labels: { font: { size: 11 } }
+                    }
+                },
+                scales: (chartType === 'pie' || chartType === 'doughnut') ? {} : {
+                    y: { beginAtZero: true, ticks: { font: { size: 11 } } },
+                    x: { ticks: { font: { size: 11 }, maxRotation: 45 } }
+                }
+            }
+        });
+    } catch (e) {
+        console.error('Chart render error:', e);
+    }
 }
 </script>
 </body>
