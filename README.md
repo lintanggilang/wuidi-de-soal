@@ -1,60 +1,60 @@
-# ⚡ AWS Data Engineer Associate (DEA-C01) — Simulasi Latihan Ujian
+# ⚡ AWS Data Engineer Associate (DEA-C01) — Practice Exam
 
-Kumpulan soal latihan untuk sertifikasi **AWS Certified Data Engineer — Associate (DEA-C01)** dalam format HTML interaktif.
+A collection of practice questions for the **AWS Certified Data Engineer — Associate (DEA-C01)** certification in interactive HTML format.
 
-🔗 **Akses langsung:** [https://lintanggilang.github.io/wuidi-de-soal/](https://lintanggilang.github.io/wuidi-de-soal/)
+🔗 **Live access:** [https://lintanggilang.github.io/wuidi-de-soal/](https://lintanggilang.github.io/wuidi-de-soal/)
 
 ---
 
-## 📊 Ringkasan
+## 📊 Summary
 
-| Item | Jumlah |
-|------|--------|
+| Item | Count |
+|------|-------|
 | Total Skills | 120 |
-| Total Soal | 1.200 |
-| Materi Belajar | 120 halaman teori (1 per skill) |
-| Simulasi Ujian | 30 set (masing-masing 40 soal) |
-| Domain | 4 |
-| Format | HTML statis (tanpa backend) |
+| Total Questions | 1,200 |
+| Study Materials | 120 theory pages (1 per skill) |
+| Practice Exams | 30 sets (40 questions each) |
+| Domains | 4 |
+| Format | Static HTML (no backend) |
 
 ---
 
-## 🎯 Tentang Ujian
+## 🎯 About the Exam
 
-| Parameter | Detail |
-|-----------|--------|
-| Kode Ujian | DEA-C01 |
-| Jumlah Soal | 65 |
-| Durasi | 170 menit |
+| Parameter | Details |
+|-----------|---------|
+| Exam Code | DEA-C01 |
+| Number of Questions | 65 |
+| Duration | 170 minutes |
 | Passing Score | 720/1000 |
-| Format | Pilihan ganda (satu jawaban benar) |
+| Format | Multiple choice (single correct answer) |
 
 ---
 
-## 📚 Cakupan Materi
+## 📚 Content Coverage
 
-Soal-soal mencakup kompetensi berikut:
+The questions cover the following competencies:
 
-- Setup dan maintenance pipeline ETL (Extract, Transform, Load) dari ingestion hingga destination
-- Penerapan konsep pemrograman tingkat tinggi yang language-agnostic sesuai kebutuhan pipeline
-- Penggunaan Git untuk source control
-- Penggunaan data lake untuk menyimpan data
-- Konsep umum networking, storage, dan compute
-- Konsep umum vector
-- Penggunaan layanan AWS untuk menyelesaikan tasks pada exam guide
-- Pemahaman layanan AWS untuk encryption, governance, protection, dan logging data dalam pipeline
-- Kemampuan membandingkan layanan AWS dari segi cost, performance, dan functional differences
-- Penyusunan dan eksekusi SQL queries pada layanan AWS
-- Pemahaman cara menganalisis data, memverifikasi data quality, dan memastikan data consistency menggunakan layanan AWS
+- Setting up and maintaining ETL (Extract, Transform, Load) pipelines from ingestion to destination
+- Applying high-level, language-agnostic programming concepts as needed for pipelines
+- Using Git for source control
+- Using data lakes for data storage
+- General networking, storage, and compute concepts
+- General vector concepts
+- Using AWS services to complete tasks in the exam guide
+- Understanding AWS services for encryption, governance, protection, and logging data in pipelines
+- Comparing AWS services in terms of cost, performance, and functional differences
+- Writing and executing SQL queries on AWS services
+- Understanding how to analyze data, verify data quality, and ensure data consistency using AWS services
 
 ---
 
-## 📋 Daftar Domain dan Skill
+## 📋 Domain and Skill List
 
 ### Domain 1: Data Ingestion and Transformation (34%)
 
-| Task | Skill | Deskripsi |
-|------|-------|-----------|
+| Task | Skill | Description |
+|------|-------|-------------|
 | Task 1.1: Perform data ingestion | Skill 1.1.1 | Read data from streaming sources (Kinesis, MSK, DynamoDB Streams, DMS, Glue, Redshift) |
 | Task 1.1: Perform data ingestion | Skill 1.1.2 | Read data from batch sources (S3, Glue, EMR, DMS, Redshift, Lambda, AppFlow) |
 | Task 1.1: Perform data ingestion | Skill 1.1.3 | Implement appropriate configuration options for batch ingestion |
@@ -95,8 +95,8 @@ Soal-soal mencakup kompetensi berikut:
 
 ### Domain 2: Data Store Management (26%)
 
-| Task | Skill | Deskripsi |
-|------|-------|-----------|
+| Task | Skill | Description |
+|------|-------|-------------|
 | Task 2.1: Choose a data store | Skill 2.1.1 | Implement storage services for cost and performance (Redshift, EMR, RDS, DynamoDB, Kinesis, MSK) |
 | Task 2.1: Choose a data store | Skill 2.1.2 | Configure storage services for access patterns |
 | Task 2.1: Choose a data store | Skill 2.1.3 | Apply storage services to use cases (HNSW, Aurora, MemoryDB) |
@@ -126,8 +126,8 @@ Soal-soal mencakup kompetensi berikut:
 
 ### Domain 3: Data Operations and Support (22%)
 
-| Task | Skill | Deskripsi |
-|------|-------|-----------|
+| Task | Skill | Description |
+|------|-------|-------------|
 | Task 3.1: Automate data processing | Skill 3.1.1 | Orchestrate data pipelines (MWAA, Step Functions) |
 | Task 3.1: Automate data processing | Skill 3.1.2 | Troubleshoot Amazon managed workflows |
 | Task 3.1: Automate data processing | Skill 3.1.3 | Call SDKs to access Amazon features from code |
@@ -159,8 +159,8 @@ Soal-soal mencakup kompetensi berikut:
 
 ### Domain 4: Data Security and Governance (18%)
 
-| Task | Skill | Deskripsi |
-|------|-------|-----------|
+| Task | Skill | Description |
+|------|-------|-------------|
 | Task 4.1: Apply authentication | Skill 4.1.1 | Update VPC security groups |
 | Task 4.1: Apply authentication | Skill 4.1.2 | Create and update IAM groups, roles, endpoints |
 | Task 4.1: Apply authentication | Skill 4.1.3 | Create and rotate credentials (Secrets Manager) |
@@ -193,21 +193,21 @@ Soal-soal mencakup kompetensi berikut:
 
 ---
 
-## 🚀 Cara Menggunakan
+## 🚀 How to Use
 
-1. Buka [https://lintanggilang.github.io/wuidi-de-soal/](https://lintanggilang.github.io/wuidi-de-soal/)
-2. Klik **Belajar** untuk membaca materi teori per skill (layanan AWS terkait, poin-poin kunci, dan miskonsepsi umum), lalu lanjut ke latihan via tombol **Go Exam**
-3. Pilih **Domain** → **Task** → **Skill** untuk latihan soal per topik
-4. Atau klik **Simulasi Ujian** untuk latihan dengan skor realtime — tersedia 30 set, masing-masing 40 soal (1.200 soal terbagi rata: 120 skill dibagi 3 grup, tiap grup mengisi 10 simulasi)
-5. Klik pilihan jawaban untuk melihat apakah benar/salah
-6. Penjelasan otomatis muncul setelah menjawab
+1. Open [https://lintanggilang.github.io/wuidi-de-soal/](https://lintanggilang.github.io/wuidi-de-soal/)
+2. Click **Learn** to read theory materials per skill (relevant AWS services, key points, and common misconceptions), then proceed to practice via the **Go Exam** button
+3. Select **Domain** → **Task** → **Skill** for topic-based practice questions
+4. Or click **Practice Exam** for timed practice with real-time scoring — 30 sets available, 40 questions each (1,200 questions evenly distributed: 120 skills divided into 3 groups, each group fills 10 simulations)
+5. Click an answer choice to see if it is correct or incorrect
+6. Explanations appear automatically after answering
 
 ---
 
-## 🛠️ Teknologi
+## 🛠️ Technology
 
-- HTML, CSS, JavaScript vanilla (tanpa framework)
-- Tanpa backend / database
+- HTML, CSS, vanilla JavaScript (no frameworks)
+- No backend / database
 - Static hosting via GitHub Pages
 - Dark mode support
 - Responsive design
@@ -224,4 +224,4 @@ Soal-soal mencakup kompetensi berikut:
 
 ## 📄 License
 
-Project ini dibuat untuk tujuan edukasi dan persiapan sertifikasi AWS Data Engineer Associate.
+This project was created for educational purposes and AWS Data Engineer Associate certification preparation.
