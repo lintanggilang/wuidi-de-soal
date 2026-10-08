@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AWS Data Engineer — Preparation</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --panel: #ffffff;
+    --panel2: #eef2f8;
+    --border: #d5dce8;
+    --text: #1c2433;
+    --muted: #5c6b85;
+    --accent: #e07b00;
+    --accent2: #2b6fd6;
+    --good: #1f9d54;
+    --bad: #d63a4a;
+    --warn: #b7791f;
+    --chip: #e8edf5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 6px rgba(0,0,0,.06);
+    padding: 16px 20px 12px;
+  }
+  h1 { margin: 0 0 4px; font-size: 20px; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+  .progress-wrap { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .bar {
+    flex: 1 1 260px; height: 14px; background: var(--panel2);
+    border-radius: 20px; overflow: hidden; border: 1px solid var(--border); min-width: 200px;
+  }
+  .bar > div {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--accent2), var(--good));
+    transition: width .3s ease;
+  }
+  .pct { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 130px; }
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .toolbar input[type="search"] {
+    flex: 1 1 220px; background: var(--panel2); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 14px;
+  }
+  button {
+    background: var(--chip); color: var(--text); border: 1px solid var(--border);
+    padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px;
+  }
+  button:hover { background: #dbe3ef; }
+  button.warn { border-color: #e0b4b4; }
+  main { max-width: 1000px; margin: 0 auto; padding: 20px; }
+  .intro {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px; margin-bottom: 20px;
+  }
+  .intro h2 { margin-top: 0; font-size: 16px; color: var(--accent); }
+  .intro ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); font-size: 14px; }
+
+  .block { margin-bottom: 26px; }
+  .block > h2 {
+    font-size: 17px; border-left: 4px solid var(--accent);
+    padding-left: 10px; margin: 0 0 4px;
+  }
+  .block-note { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+
+  details.svc {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+  }
+  details.svc > summary {
+    cursor: pointer; list-style: none; padding: 12px 16px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px; background: var(--panel2);
+  }
+  details.svc > summary::-webkit-details-marker { display: none; }
+  details.svc > summary .arrow { transition: transform .2s; color: var(--muted); }
+  details.svc[open] > summary .arrow { transform: rotate(90deg); }
+  .svc-count { margin-left: auto; font-size: 12px; color: var(--muted); font-weight: 500; padding-left: 8px; }
+  .flag-btn {
+    margin-left: 8px; background: transparent; border: 1px solid var(--border);
+    padding: 2px 7px; border-radius: 8px; font-size: 13px; line-height: 1.2;
+    filter: grayscale(1) opacity(.45); cursor: pointer;
+  }
+  .flag-btn:hover { filter: grayscale(0) opacity(1); background: var(--panel2); }
+  details.svc.flagged { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad) inset; }
+  details.svc.flagged > summary { background: rgba(214,58,74,.10); }
+  details.svc.flagged .flag-btn { filter: none; border-color: var(--bad); background: rgba(214,58,74,.12); }
+  .svc-topic { font-weight: 500; color: var(--muted); }
+  .svc-badge {
+    flex: 0 0 auto; font-size: 11px; font-weight: 700; letter-spacing: .3px;
+    background: rgba(224,123,0,.12); color: var(--accent);
+    border: 1px solid rgba(224,123,0,.35);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  details.svc[open] > summary .svc-topic { color: var(--text); }
+  details.svc > summary { flex-wrap: wrap; }
+  .svc-body { padding: 6px 16px 14px; }
+
+  .item {
+    display: flex; gap: 10px; padding: 12px 8px;
+    border-bottom: 1px dashed var(--border); align-items: flex-start;
+  }
+  .item:last-child { border-bottom: none; }
+  .item input[type="checkbox"] {
+    margin-top: 4px; width: 18px; height: 18px;
+    accent-color: var(--good); cursor: pointer; flex: 0 0 auto;
+  }
+  .item .content { flex: 1; }
+  .item.done .content { opacity: .55; color: var(--muted); }
+  .item.done .title { text-decoration: line-through; }
+  .title { font-weight: 600; }
+  .trap, .real, .signal {
+    font-size: 14px; margin-top: 5px; display: flex; gap: 6px;
+  }
+  .tag {
+    flex: 0 0 auto; font-size: 11px; font-weight: 700; padding: 1px 7px;
+    border-radius: 6px; height: fit-content; margin-top: 2px; letter-spacing: .3px;
+  }
+  .tag.trap { background: rgba(214,58,74,.12); color: var(--bad); }
+  .tag.real { background: rgba(31,157,84,.14); color: var(--good); }
+  .tag.signal { background: rgba(43,111,214,.12); color: var(--accent2); }
+
+  .qbox {
+    margin-top: 8px; border: 1px solid var(--border); border-left: 3px solid var(--accent2);
+    background: #f8fafd; border-radius: 8px; padding: 8px 12px; font-size: 13.5px;
+  }
+  .qbox .qlabel {
+    font-size: 11px; font-weight: 700; letter-spacing: .3px; color: var(--accent2);
+    text-transform: uppercase; margin-bottom: 3px;
+  }
+  .qbox .qtext { font-style: italic; }
+  .qbox .qans { margin-top: 6px; color: var(--good); font-weight: 600; }
+  .qbox .qans::before { content: "✓ "; }
+
+  .cmp {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    margin-top: 4px; font-size: 13.5px;
+  }
+  .cmp .head { background: var(--panel2); font-weight: 700; padding: 6px 10px; }
+  .cmp .cell { padding: 6px 10px; border-top: 1px solid var(--border); }
+  .cmp .cell.left { border-right: 1px solid var(--border); }
+  .cmp .head.left { border-right: 1px solid var(--border); }
+  .verdict {
+    margin-top: 6px; font-size: 13px; background: rgba(224,123,0,.08);
+    border: 1px solid rgba(224,123,0,.3); border-radius: 8px; padding: 6px 10px; color: var(--warn);
+  }
+  .verdict b { color: var(--accent); }
+  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px; }
+  .hidden { display: none !important; }
+  mark { background: #ffe29a; color: #111; border-radius: 3px; padding: 0 2px; }
+  details.svc.flash {
+    box-shadow: 0 0 0 3px var(--accent), 0 2px 12px rgba(224,123,0,.4);
+    animation: flashfade 2.2s ease forwards;
+  }
+  @keyframes flashfade {
+    0%   { box-shadow: 0 0 0 3px var(--accent), 0 2px 12px rgba(224,123,0,.55); }
+    100% { box-shadow: 0 0 0 0 rgba(224,123,0,0); }
+  }
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html" style="display:inline-block;margin-bottom:8px;color:var(--accent2);text-decoration:none;font-size:14px;font-weight:600;">← Kembali ke Daftar Materi</a>
+  <h1>🎓 AWS Data Engineer </h1>
+  <div class="sub">Bahasa awam + contoh soal (English). Centang tiap topik yang sudah kamu paham. Progress tersimpan otomatis di browser ini.</div>
+  <div class="progress-wrap">
+    <div class="bar"><div id="barFill"></div></div>
+    <div class="pct"><span id="pctText">0%</span> <span id="countText" style="color:var(--muted);font-weight:500"></span></div>
+  </div>
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="🔍 Cari topik (mis: firehose, glue, kolumnar, kms)..." />
+    <button id="expandAll">Buka semua</button>
+    <button id="collapseAll">Tutup semua</button>
+    <button id="gotoNext">⤵ Ke yang belum dibaca</button>
+    <button id="gotoFlag">🚩 Ke yang ditandai <span id="flagCount"></span></button>
+    <button id="toggleDone">Tutup yang selesai</button>
+    <button id="reset" class="warn">Reset progress</button>
+  </div>
+</header>
+
+<main>
+  <div class="intro">
+    <h2>Cara pakai halaman ini</h2>
+    <ul>
+      <li><b>Jebakan (merah)</b> = pilihan yang <i>kelihatan</i> benar tapi salah di ujian.</li>
+      <li><b>Kenyataan (hijau)</b> = fakta yang benar dan harus diingat.</li>
+      <li><b>Sinyal (biru)</b> = kata kunci di soal yang mengarahkan ke jawaban.</li>
+      <li><b>Contoh soal</b> = format soal ala ujian (English) + jawaban benarnya.</li>
+      <li>Centang kotak kalau kamu sudah benar-benar paham poin itu.</li>
+    </ul>
+  </div>
+  <div id="root"></div>
+</main>
+
+<footer>Dibuat untuk persiapan AWS Certified Data Engineer. Semua progress hanya tersimpan di perangkatmu.</footer>
+
+<script>
+const DATA = [
+{
+  block: "Jebakan Pengecoh per Layanan",
+  note: "Layanan yang sering muncul sebagai pengecoh. Ingat apa yang TIDAK bisa dilakukan tiap layanan.",
+  groups: [
+    { name: "Kinesis Data Analytics (KDA)", items: [
+      { title:"KDA bukan alat ingesti/penyimpanan",
+        trap:"Soal seolah menyuruh pakai KDA untuk menampung atau menarik data dari sumber. Itu jawaban yang salah.",
+        real:"KDA cuma MEMPROSES data. Sumbernya harus dari KDS atau Firehose dulu. Anggap KDA sebagai 'blender', bukan 'kulkas' atau 'kurir'.",
+        q:"A team wants to run real-time SQL analytics on streaming data. Which service can Kinesis Data Analytics read from directly as input?",
+        a:"Kinesis Data Streams or Kinesis Data Firehose (KDA cannot ingest from a raw source itself)." },
+    ]},
+    { name: "Kinesis Data Streams (KDS)", items: [
+      { title:"KDS tidak bisa kirim langsung ke S3",
+        trap:"Saat soal minta data streaming masuk ke S3 dan ada opsi 'KDS langsung tulis ke S3', itu jawaban yang keliru.",
+        real:"KDS tidak bisa menulis ke S3 sendiri. Butuh Kinesis Data Firehose atau Lambda sebagai perantara.",
+        q:"Streaming records in Kinesis Data Streams must land in an S3 bucket with the least custom code. What should you add?",
+        a:"Kinesis Data Firehose (KDS cannot write to S3 directly)." },
+      { title:"KDS vs Firehose untuk solusi tanpa kode",
+        trap:"Saat soal minta solusi streaming yang tanpa kode dan tanpa ribet dikelola, memilih KDS itu jebakan.",
+        real:"KDS butuh atur shard + tulis kode consumer sendiri. Kinesis Data Firehose fully-managed dan auto-scale. Kalau soal bilang 'tanpa kode', pilih Firehose.",
+        q:"You need a fully managed, no-code way to deliver streaming data to S3 with automatic scaling. Which service?",
+        a:"Kinesis Data Firehose (no shard management, no consumer code)." },
+    ]},
+    { name: "Kinesis Data Firehose", items: [
+      { title:"Tujuan valid Firehose terbatas",
+        trap:"Kalau ada opsi Kinesis Data Firehose menulis ke DynamoDB, itu jawaban yang salah.",
+        real:"Tujuan sah Firehose hanya: S3, Redshift, OpenSearch, Splunk, dan HTTP endpoint. DynamoDB TIDAK termasuk.",
+        q:"Which of the following is NOT a valid Kinesis Data Firehose delivery destination: S3, Redshift, OpenSearch, DynamoDB?",
+        a:"DynamoDB is not a valid Firehose destination." },
+      { title:"Firehose bukan real-time",
+        trap:"Saat soal minta latensi real-time murni (sub-detik) dan jawabannya Kinesis Data Firehose, itu jebakan.",
+        real:"Firehose sifatnya MENDEKATI real-time. Ada buffer beberapa detik, jadi selalu ada jeda kecil.",
+        q:"An app needs sub-second, true real-time delivery. Is Kinesis Data Firehose appropriate?",
+        a:"No. Firehose is near-real-time (buffering adds seconds of latency)." },
+    ]},
+    { name: "Amazon SQS", items: [
+      { title:"Standard tidak jamin ordering",
+        trap:"Saat soal butuh ordering (urutan pesan) yang ketat dan jawabannya SQS Standard, itu salah.",
+        real:"SQS Standard cuma menjamin ordering secara best-effort. Kalau ordering wajib ketat, pakai SQS FIFO.",
+        q:"Messages must be processed in the exact order they were sent. Which SQS queue type?",
+        a:"SQS FIFO (Standard only offers best-effort ordering)." },
+      { title:"Tidak bisa ubah Standard jadi FIFO",
+        trap:"Jawaban yang bilang queue SQS Standard bisa dikonversi langsung jadi FIFO itu keliru.",
+        real:"Tipe queue SQS tidak bisa dikonversi. Harus dihapus lalu dibuat ulang sebagai FIFO (nama wajib diakhiri .fifo).",
+        q:"How do you switch an existing Standard queue to FIFO?",
+        a:"You can't convert it — delete and recreate it as FIFO (name must end in .fifo)." },
+      { title:"Rumus throughput FIFO",
+        trap:"Saat soal menanyakan throughput SQS FIFO, kamu ragu karena mengira ada banyak angka limit yang berbeda. Padahal rumusnya cuma satu.",
+        real:"SQS FIFO punya satu rumus: throughput = 300 × ukuran batch. Dengan batch 10, jadi 3.000 pesan/detik.",
+        q:"What is the max throughput of an SQS FIFO queue using batching of 10?",
+        a:"300 × 10 = 3,000 messages/second." },
+    ]},
+    { name: "Amazon SNS", items: [
+      { title:"SNS tidak bisa kirim langsung ke KDS",
+        trap:"Kalau ada opsi Amazon SNS mengirim pesan langsung ke Kinesis Data Streams, itu salah.",
+        real:"Amazon SNS tidak bisa jadi produser langsung ke KDS.",
+        q:"Can Amazon SNS publish messages directly into a Kinesis Data Stream as a subscriber target?",
+        a:"No, SNS cannot send messages directly to KDS." },
+      { title:"S3 kirim notifikasi, bukan isi file",
+        trap:"Kalau soal seolah bilang S3 mengirim isi file ke Amazon SNS, itu keliru.",
+        real:"S3 cuma mengirim notifikasi event (metadata: nama file, bucket, dll) ke SNS — bukan isi kontennya.",
+        q:"When S3 sends an event notification to SNS, what is delivered?",
+        a:"Event metadata (bucket, key, event type) — not the file's contents." },
+    ]},
+    { name: "AWS Glue (semua varian)", items: [
+      { title:"Glue Studio bukan orkestrator",
+        trap:"Saat soal minta mengorkestrasi alur pipeline lalu jawabannya Glue Studio, itu salah.",
+        real:"Glue Studio cuma pembangun job visual. Untuk orkestrasi antar-komponen Glue, pakai Glue Workflows.",
+        q:"Which Glue feature orchestrates multiple crawlers and jobs together?",
+        a:"Glue Workflows (Glue Studio is only a visual job builder)." },
+      { title:"Glue Workflows tidak bisa panggil Lambda",
+        trap:"Saat soal butuh Lambda di dalam pipeline lalu jawabannya Glue Workflows, itu jebakan.",
+        real:"Glue Workflows hanya untuk komponen Glue (crawler + job). Kalau pipeline melibatkan Lambda, pakai Step Functions.",
+        q:"A pipeline needs to run Glue jobs AND Lambda functions in sequence. Which orchestrator?",
+        a:"AWS Step Functions (Glue Workflows is Glue-only)." },
+      { title:"DataBrew bukan dedup ML",
+        trap:"Saat soal minta deduplikasi fuzzy berbasis ML lalu jawabannya Glue DataBrew, itu salah.",
+        real:"Glue DataBrew itu 250+ transform visual (bersih-bersih tanpa kode). Untuk dedup fuzzy berbasis ML, pakai Glue FindMatches.",
+        q:"You need ML-based fuzzy deduplication of records. Which Glue capability?",
+        a:"Glue FindMatches (DataBrew is for visual no-code cleaning)." },
+      { title:"Glue tidak punya Spot Instance",
+        trap:"Saat soal minta hemat biaya Glue job lalu jawabannya pilih Spot Instance, itu keliru.",
+        real:"Glue itu serverless, tidak ada tipe EC2 apalagi Spot. Untuk hemat biaya, pakai execution class FLEX.",
+        q:"How do you reduce cost of non-urgent Glue jobs?",
+        a:"Use the FLEX execution class (Glue is serverless — no Spot/EC2)." },
+      { title:"FLEX bukan untuk yang buru-buru",
+        trap:"Saat soal minta Glue job yang cepat dan tepat waktu lalu jawabannya execution class FLEX, itu jebakan.",
+        real:"Glue FLEX pakai kapasitas cadangan, waktu mulainya bisa ngaret. Untuk job yang sensitif waktu, pakai execution class STANDARD.",
+        q:"A Glue job is time-sensitive with SLAs. Which execution class?",
+        a:"STANDARD (FLEX has variable start times)." },
+    ]},
+    { name: "Amazon Athena", items: [
+      { title:"Athena tidak bikin dashboard",
+        trap:"Saat soal minta membuat dashboard BI lalu jawabannya Athena, itu salah.",
+        real:"Athena cuma mesin query SQL. Dashboard BI dibuat oleh Amazon QuickSight.",
+        q:"You need interactive BI dashboards over query results. Which service builds the dashboard?",
+        a:"Amazon QuickSight (Athena is only a query engine)." },
+      { title:"CTAS selalu bikin tabel baru",
+        trap:"Saat soal Athena melarang membuat tabel baru tapi jawabannya CTAS, itu jebakan.",
+        real:"Athena CTAS selalu menciptakan tabel baru. Untuk output Parquet/ORC tanpa bikin tabel, pakai Athena UNLOAD.",
+        q:"You must export Athena query results to Parquet WITHOUT creating a new table. Which command?",
+        a:"UNLOAD (CTAS always creates a new table)." },
+      { title:"Limit biaya per-query vs per-workgroup",
+        trap:"Saat soal membahas kontrol biaya Athena dan kamu mengira boleh pasang banyak limit per-query dalam satu workgroup, itu keliru.",
+        real:"Limit per-query maksimal SATU per workgroup (membatalkan query individu). Limit per-workgroup boleh banyak (melacak total).",
+        q:"How many per-query data-scanned limits can a single Athena workgroup have?",
+        a:"Exactly one per-query limit (per-workgroup limits can be many)." },
+      { title:"SELECT hasilkan CSV, bukan Parquet",
+        trap:"Kalau jawaban bilang Athena SELECT biasa menghasilkan Parquet, itu keliru.",
+        real:"Athena SELECT biasa outputnya CSV. Untuk Parquet/ORC/Avro/JSON, pakai Athena UNLOAD.",
+        q:"You want Athena output in Parquet/ORC/Avro/JSON format. What must you use instead of plain SELECT?",
+        a:"UNLOAD (plain SELECT writes CSV only)." },
+    ]},
+    { name: "Amazon Redshift", items: [
+      { title:"Redshift bukan mesin Spark",
+        trap:"Saat soal butuh menjalankan job Spark lalu jawabannya Redshift, itu jebakan.",
+        real:"Redshift itu data warehouse SQL (MPP), bukan mesin Spark. Untuk Spark, pakai Amazon EMR atau AWS Glue.",
+        q:"A workload needs Apache Spark processing. Which service, NOT Redshift?",
+        a:"Amazon EMR or AWS Glue (Redshift is a SQL MPP warehouse)." },
+      { title:"Analitik kompleks tercepat = Redshift",
+        trap:"Saat soal minta analitik multi-join yang tercepat lalu jawabannya Athena + S3, itu keliru.",
+        real:"Untuk query multi-join kompleks dan berulang, Redshift lebih cepat dari Athena.",
+        q:"You need fastest performance for complex multi-join analytical queries run repeatedly. Athena or Redshift?",
+        a:"Redshift (outperforms Athena on complex joins)." },
+      { title:"Spectrum tidak load data",
+        trap:"Kalau jawaban bilang Redshift Spectrum mengunggah/memuat data ke Redshift, itu salah.",
+        real:"Redshift Spectrum query file di S3 langsung di tempat (tabel eksternal). Tidak ada proses loading ke cluster.",
+        q:"Does Redshift Spectrum load S3 data into the cluster before querying?",
+        a:"No — it queries S3 in place via external tables (no loading)." },
+      { title:"Cukup satu perintah COPY",
+        trap:"Saat soal bulk-load ke Redshift lalu jawabannya jalankan banyak perintah COPY biar cepat, itu keliru.",
+        real:"Cukup satu perintah COPY di Redshift. Arsitektur MPP-nya otomatis membagi beban ke semua slice paralel.",
+        q:"What is the fastest way to bulk-load a large dataset into Redshift?",
+        a:"A single COPY command (MPP distributes across slices automatically)." },
+    ]},
+    { name: "Amazon DynamoDB", items: [
+      { title:"ConsistentRead hanya untuk baca",
+        trap:"Kalau jawaban memakai parameter ConsistentRead pada operasi tulis DynamoDB, itu salah.",
+        real:"Di DynamoDB, ConsistentRead cuma untuk operasi baca (GetItem, Query, Scan). PutItem/UpdateItem/DeleteItem tidak punya opsi ini.",
+        q:"Which DynamoDB operations support the ConsistentRead parameter?",
+        a:"Read ops only: GetItem, Query, Scan (not PutItem/UpdateItem/DeleteItem)." },
+      { title:"Tidak ada 'truncate' / 'purge'",
+        trap:"Kalau jawaban menawarkan opsi 'Purge table' atau 'truncate' di DynamoDB, itu keliru.",
+        real:"Di DynamoDB tidak ada truncate. Hapus massal caranya DeleteTable lalu buat ulang tabelnya (tanpa biaya WCU per item).",
+        q:"What is the cheapest way to delete all items from a large DynamoDB table?",
+        a:"DeleteTable then recreate it (no per-item WCU cost; there is no truncate)." },
+      { title:"DynamoDB tidak bisa SQL",
+        trap:"Kalau jawabannya menjalankan query SQL langsung di DynamoDB, itu salah.",
+        real:"DynamoDB tidak mendukung SQL. Kalau butuh SQL, ekspor datanya ke S3 lalu query pakai Athena.",
+        q:"You want to run SQL sanity checks on DynamoDB data. What approach works?",
+        a:"Export to S3 and query with Athena (DynamoDB has no SQL)." },
+    ]},
+    { name: "Amazon S3", items: [
+      { title:"S3 strongly consistent penuh",
+        trap:"Kalau jawaban bilang operasi LIST di Amazon S3 masih eventually consistent, itu keliru.",
+        real:"Sejak Des 2020, semua operasi S3 (GET, PUT, LIST, DELETE, metadata) sudah strongly consistent.",
+        q:"Is an S3 LIST operation eventually consistent after a new object is written?",
+        a:"No — S3 is strongly consistent for all operations since Dec 2020." },
+      { title:"Access Points tidak ubah konten",
+        trap:"Saat soal minta sensor PII atau ubah isi objek lalu jawabannya S3 Access Points, itu jebakan.",
+        real:"S3 Access Points cuma atur SIAPA yang boleh akses objek MANA. Untuk mengubah/sensor isi saat objek dibaca, pakai S3 Object Lambda.",
+        q:"You must redact PII from objects as they are read. Access Points or Object Lambda?",
+        a:"S3 Object Lambda (Access Points only control access, not content)." },
+      { title:"S3 Analytics bukan alat query",
+        trap:"Kalau jawaban bilang S3 Storage Class Analytics dipakai untuk query/analitik isi data, itu salah.",
+        real:"S3 Storage Class Analytics memantau POLA AKSES objek untuk merekomendasikan aturan lifecycle. Bukan alat query data.",
+        q:"What is the purpose of S3 Storage Class Analytics?",
+        a:"Analyze access patterns to recommend lifecycle transitions (not a query tool)." },
+      { title:"Deep Archive harus di-restore dulu",
+        trap:"Kalau jawaban bilang objek di S3 Glacier Deep Archive bisa langsung dikueri dengan S3 Select, itu keliru.",
+        real:"Objek di Glacier Deep Archive harus di-restore ke S3 Standard dulu, baru bisa dipakai S3 Select.",
+        q:"Can you run S3 Select directly on an object in Glacier Deep Archive?",
+        a:"No — restore to S3 Standard first, then use S3 Select." },
+      { title:"S3/DynamoDB pakai Gateway endpoint",
+        trap:"Kalau jawabannya pakai VPC Interface endpoint untuk akses privat ke S3/DynamoDB, itu salah.",
+        real:"S3 & DynamoDB pakai VPC Gateway endpoint (lewat route table, gratis). Interface endpoint dikenai biaya per jam.",
+        q:"Which VPC endpoint type provides free private access to S3 and DynamoDB?",
+        a:"Gateway endpoints (Interface endpoints cost per hour)." },
+    ]},
+    { name: "S3 Lifecycle Rules", items: [
+      { title:"Tier lebih dalam menang",
+        trap:"Saat dua aturan S3 Lifecycle bentrok, mengira Standard-IA/One Zone-IA menang atas Glacier itu keliru.",
+        real:"Di S3 Lifecycle, kalau aturan bentrok, tier yang lebih dalam menang: Glacier Flexible Retrieval > Standard-IA > One Zone-IA.",
+        q:"Two lifecycle transitions conflict on the same object (Standard-IA vs Glacier Flexible). Which applies?",
+        a:"Glacier Flexible Retrieval (deeper tier wins)." },
+      { title:"Prioritas hapus vs transisi",
+        trap:"Mengira aturan penghapusan dan transisi S3 Lifecycle bisa berlaku bersamaan pada objek yang sama itu keliru.",
+        real:"Di S3 Lifecycle ada prioritas ketat: penghapusan permanen > transisi > pembuatan delete marker.",
+        q:"If expiration (permanent delete) and a transition target the same object, which wins?",
+        a:"Permanent deletion (delete > transition > delete marker)." },
+    ]},
+    { name: "Amazon EBS / EC2 Storage", items: [
+      { title:"I/O maksimum = Instance Store",
+        trap:"Saat soal minta performa I/O maksimum di EC2 lalu jawabannya EBS, itu jebakan.",
+        real:"EC2 Instance Store paling cepat karena terpasang fisik ke server. EBS lewat jaringan jadi sedikit lebih lambat. Catatan: Instance Store hilang saat instance restart.",
+        q:"You need maximum I/O performance for temporary scratch data on EC2. Which storage?",
+        a:"EC2 Instance Store (physically attached; EBS is network-attached)." },
+      { title:"Ubah EBS tanpa stop",
+        trap:"Kalau jawaban menyuruh stop/hibernate instance dulu untuk mengubah tipe volume EBS, itu keliru.",
+        real:"EBS Elastic Volumes bisa dimodifikasi langsung di tempat tanpa downtime, tanpa perlu stop instance.",
+        q:"How do you change an EBS volume type with no downtime?",
+        a:"EBS Elastic Volumes — modify in place, no stop needed." },
+      { title:"gp2→gp3 tanpa perbesar ukuran",
+        trap:"Mengira upgrade volume EBS dari gp2 ke gp3 harus memperbesar ukuran dulu itu keliru.",
+        real:"Di EBS gp3, IOPS dan throughput dikonfigurasi terpisah dari ukuran volume. Jadi tidak perlu memperbesar volume.",
+        q:"Do you need to increase volume size to get more IOPS when moving gp2 to gp3?",
+        a:"No — gp3 IOPS/throughput are configured independently of size." },
+    ]},
+    { name: "Amazon EFS", items: [
+      { title:"Throughput mode vs performance mode",
+        trap:"Saat soal minta performa EFS untuk big data paralel lalu jawabannya mengubah Bursting/Provisioned, itu salah sumbu — itu mode throughput, bukan performa.",
+        real:"Di EFS, Bursting & Provisioned adalah mode THROUGHPUT. Untuk big data paralel, atur mode PERFORMA ke Max I/O. Keduanya dua sumbu konfigurasi berbeda.",
+        q:"For highly parallel big-data workloads on EFS, which performance mode?",
+        a:"Max I/O performance mode (Bursting/Provisioned are throughput modes)." },
+    ]},
+    { name: "Amazon EC2", items: [
+      { title:"EC2 tetap butuh maintenance",
+        trap:"Saat soal minta overhead manajemen minimal lalu jawabannya EC2 + Auto Scaling, itu jebakan.",
+        real:"EC2 tetap butuh patch OS, update AMI, dan kelola launch template. Auto Scaling tidak menghilangkan itu. Untuk minim overhead, pilih Lambda, Glue, atau Firehose.",
+        q:"You need minimal management overhead for data processing. EC2+Auto Scaling or a serverless option?",
+        a:"Serverless (Lambda/Glue/Firehose) — EC2 still needs OS patching & AMI upkeep." },
+    ]},
+    { name: "AWS DMS", items: [
+      { title:"DMS bisa S3 → streaming",
+        trap:"Mengira AWS DMS cuma bisa migrasi dari database ke database itu keliru.",
+        real:"AWS DMS mendukung S3 sebagai sumber dan KDS/MSK sebagai target. Ini jalur tanpa kode tercepat untuk men-stream file S3 lama ke platform streaming.",
+        q:"What is the fastest no-code path to stream existing S3 files into KDS/MSK?",
+        a:"AWS DMS (supports S3 source, KDS/MSK targets)." },
+      { title:"Premigration Assessment ≠ Data Validation",
+        trap:"Saat soal minta cek akurasi data setelah migrasi DMS lalu jawabannya DMS Premigration Assessment, itu keliru.",
+        real:"Di DMS, Premigration Assessment itu cek kelayakan SEBELUM migrasi. Untuk cek akurasi data SESUDAH migrasi, pakai DMS Data Validation.",
+        q:"Which DMS feature verifies data accuracy AFTER migration?",
+        a:"DMS Data Validation (Premigration Assessment runs before migration)." },
+    ]},
+    { name: "Amazon QuickSight", items: [
+      { title:"Refresh minimal per jam",
+        trap:"Saat soal minta dashboard yang refresh tiap detik/menit lalu jawabannya QuickSight, itu jebakan.",
+        real:"Refresh terjadwal tercepat QuickSight cuma per jam (paket Enterprise). Tidak bisa memenuhi refresh 10 detik atau per menit.",
+        q:"A dashboard must refresh every 10 seconds. Can QuickSight SPICE scheduled refresh meet this?",
+        a:"No — minimum QuickSight refresh is hourly (use OpenSearch+Kibana instead)." },
+      { title:"QuickSight bukan mesin query",
+        trap:"Kalau jawabannya pakai QuickSight sebagai mesin query SQL, itu salah.",
+        real:"QuickSight itu lapisan visualisasi BI. Yang benar-benar menjalankan query data adalah Athena atau Redshift.",
+        q:"Which service actually runs the SQL behind a QuickSight dashboard on S3 data?",
+        a:"Athena (QuickSight is visualization only)." },
+    ]},
+    { name: "Step Functions vs Glue Workflows", items: [
+      { title:"Lambda dalam pipeline → Step Functions",
+        trap:"Saat pipeline berisi Lambda + Glue sekaligus lalu jawabannya Glue Workflows, itu jebakan.",
+        real:"Glue Workflows khusus komponen Glue. Kalau pipeline melibatkan Lambda, pakai Step Functions.",
+        q:"Pipeline mixes Lambda and Glue steps. Which orchestrator?",
+        a:"Step Functions (Glue Workflows is Glue-only)." },
+      { title:"MWAA overhead tertinggi",
+        trap:"Saat soal minta overhead manajemen rendah lalu jawabannya MWAA di ECS/EKS, itu keliru.",
+        real:"MWAA (Managed Airflow) justru overhead-nya tertinggi. Untuk orkestrasi pipeline AWS-native yang minim ribet, pakai Step Functions.",
+        q:"You want the lowest management overhead for an AWS-native pipeline. Step Functions or MWAA?",
+        a:"Step Functions (MWAA/Airflow has the highest overhead)." },
+    ]},
+    { name: "VPC Endpoints", items: [
+      { title:"Hanya S3 & DynamoDB pakai Gateway",
+        trap:"Mengira semua layanan (termasuk S3/DynamoDB) pakai VPC Interface endpoint itu keliru.",
+        real:"HANYA S3 & DynamoDB yang pakai VPC Gateway endpoint (route table, gratis). Semua layanan lain pakai Interface endpoint (ENI, bayar per jam).",
+        q:"Which two AWS services use Gateway VPC endpoints?",
+        a:"S3 and DynamoDB (all others use Interface endpoints)." },
+      { title:"Gateway tidak untuk on-prem/cross-region",
+        trap:"Kalau jawaban bilang VPC Gateway endpoint bisa diakses dari on-premises atau VPC peer lintas region, itu salah.",
+        real:"VPC Gateway endpoint TIDAK mendukung akses dari jaringan on-premises maupun VPC peer di region lain.",
+        q:"Can a Gateway endpoint be reached from on-premises via VPN or a cross-region peered VPC?",
+        a:"No — Gateway endpoints don't support on-prem or cross-region peered access." },
+    ]},
+    { name: "AWS KMS", items: [
+      { title:"Encryption context bukan bikin kunci",
+        trap:"Kalau jawaban bilang KMS encryption context menghasilkan kunci berbeda per objek, itu keliru.",
+        real:"KMS encryption context itu metadata audit untuk kontrol akses, bukan pembuat kunci. Yang bikin kunci unik per objek adalah SSE-S3.",
+        q:"Does a KMS encryption context generate a different key per object?",
+        a:"No — it's audit metadata for access control (SSE-S3 makes per-object keys)." },
+      { title:"Kunci default tidak lintas akun",
+        trap:"Mengira kunci KMS default (AWS-managed) bisa dibagi lintas akun itu keliru.",
+        real:"Di KMS, hanya Customer Managed Key (CMK) yang bisa dibagi lintas akun. Kunci default tidak bisa.",
+        q:"You must share an encryption key across AWS accounts. Default KMS key or CMK?",
+        a:"Customer Managed Key (default KMS keys can't be shared cross-account)." },
+      { title:"Kunci KMS spesifik per region",
+        trap:"Kalau jawaban bilang satu kunci KMS bisa dipakai lintas region, itu salah.",
+        real:"Kunci KMS terikat pada satu region. Untuk lintas region, buat kunci KMS baru di region tujuan.",
+        q:"Can the same KMS key be used to encrypt data in another region?",
+        a:"No — KMS keys are region-specific; create a new key in the target region." },
+    ]},
+    { name: "Amazon MSK", items: [
+      { title:"MSK untuk record >1 MB / ekosistem Kafka",
+        trap:"Saat ukuran record ≤1 MB dan KDS sudah cukup, tapi jawabannya malah MSK, itu berlebihan.",
+        real:"Amazon MSK dipakai kalau ukuran record >1 MB ATAU butuh kompatibilitas ekosistem Kafka. Selain itu, KDS lebih simpel dan fully-managed. (record = satu satuan data dalam stream)",
+        q:"Records are 2 MB each and you have existing Kafka producers. KDS or MSK?",
+        a:"MSK (records >1 MB and Kafka ecosystem compatibility)." },
+      { title:"Pembeda MSK vs KDS bukan ordering",
+        trap:"Mengira pembeda MSK dan KDS ada di jaminan ordering itu keliru.",
+        real:"MSK dan KDS sama-sama mendukung ordering. Pembedanya adalah ukuran record (>1 MB = MSK) dan kebutuhan ekosistem Kafka.",
+        q:"Is ordering guarantee the deciding factor between KDS and MSK?",
+        a:"No — both support ordering; the deciders are record size (>1 MB) and Kafka needs." },
+    ]},
+    { name: "S3 Transfer Acceleration", items: [
+      { title:"Transfer Acceleration ≠ Global Accelerator",
+        trap:"Saat soal minta mempercepat unggah S3 jarak jauh lalu jawabannya AWS Global Accelerator, itu jebakan.",
+        real:"Global Accelerator mengoptimalkan trafik TCP/UDP ke endpoint EC2/ALB. Untuk mempercepat unggah ke S3 jarak jauh, pakai S3 Transfer Acceleration.",
+        q:"Users worldwide upload large files to one S3 bucket slowly. Which feature speeds this up?",
+        a:"S3 Transfer Acceleration (Global Accelerator is for EC2/ALB endpoints)." },
+      { title:"Hanya berguna untuk unggah jarak jauh",
+        trap:"Mengira S3 Transfer Acceleration bermanfaat untuk semua unggahan (termasuk sesama region) itu keliru.",
+        real:"S3 Transfer Acceleration cuma bermanfaat untuk unggah jarak jauh (lintas region / pengguna global). Unggahan sesama region tidak dapat manfaat.",
+        q:"Do same-region uploads benefit from S3 Transfer Acceleration?",
+        a:"No — it only helps long-distance/cross-region uploads." },
+    ]},
+    { name: "AWS Lake Formation", items: [
+      { title:"Filter baris/kolom = Lake Formation",
+        trap:"Saat soal minta filter data level baris/kolom di data lake S3 lalu jawabannya IAM policy, itu keliru.",
+        real:"IAM cuma mengatur akses level resource (bucket, tabel, API). Untuk filter level baris/kolom/sel, pakai AWS Lake Formation.",
+        q:"You need row- and column-level access control on an S3 data lake. IAM or Lake Formation?",
+        a:"Lake Formation (IAM is resource-level only)." },
+      { title:"Bucket policy tidak filter baris/kolom",
+        trap:"Kalau jawabannya pakai S3 bucket policy untuk akses data granular level baris/kolom, itu salah.",
+        real:"S3 bucket policy mengontrol akses ke objek, tapi tidak bisa memfilter baris/kolom di dalam file. Itu tugas Lake Formation.",
+        q:"Can an S3 bucket policy restrict which rows/columns inside a file a user sees?",
+        a:"No — bucket policies control object access, not row/column filtering." },
+    ]},
+    { name: "Format File (ORC / Parquet / Avro)", items: [
+      { title:"Avro itu berbasis baris",
+        trap:"Saat soal minta format penyimpanan kolumnar lalu jawabannya Avro, itu keliru.",
+        real:"Avro itu format berbasis baris, cocok untuk evolusi skema & serialisasi Kafka/Hadoop. Bukan format kolumnar.",
+        q:"Which format is row-based, NOT columnar: ORC, Parquet, or Avro?",
+        a:"Avro (row-based; ORC and Parquet are columnar)." },
+      { title:"ORC vs Parquet tidak identik",
+        trap:"Menganggap ORC dan Parquet sama persis (bisa saling gantikan) itu keliru.",
+        real:"ORC dan Parquet sama-sama kolumnar. ORC unggul untuk tipe data kompleks (structs, maps, lists). Parquet paling luas dukungannya lintas platform (Spark, Athena, Hive, Redshift).",
+        q:"Data has complex nested types (structs, maps, lists). ORC or Parquet?",
+        a:"ORC (native support for complex types)." },
+      { title:"Kolumnar + baca cepat = ORC/Parquet",
+        trap:"Saat soal minta format kolumnar untuk baca analitik cepat lalu jawabannya Avro, itu jebakan.",
+        real:"Untuk baca analitik cepat, pilih ORC atau Parquet (kolumnar). Avro berbasis baris, dioptimalkan untuk beban write-heavy.",
+        q:"You need fast columnar analytical reads. Which formats fit?",
+        a:"ORC or Parquet (Avro is row-based, write-heavy optimized)." },
+    ]},
+    { name: "KCL (Kinesis Client Library)", items: [
+      { title:"Checkpoint KCL hanya DynamoDB",
+        trap:"Kalau jawabannya pakai RDS atau S3 sebagai backend checkpoint KCL, itu salah.",
+        real:"DynamoDB satu-satunya backend checkpoint KCL. KCL otomatis bikin satu tabel DynamoDB per aplikasi.",
+        q:"Which service does the Kinesis Client Library use to store checkpoints?",
+        a:"DynamoDB (the only supported checkpoint backend — not RDS/S3)." },
+      { title:"Tiap app KCL punya tabel sendiri",
+        trap:"Mengira beberapa aplikasi KCL bisa berbagi satu tabel checkpoint itu keliru.",
+        real:"Setiap aplikasi KCL punya tabel DynamoDB sendiri. Tidak bisa dibagi.",
+        q:"Can two KCL applications share a single checkpoint DynamoDB table?",
+        a:"No — each KCL app gets its own dedicated table." },
+    ]},
+  ]
+},
+{
+  block: "Batas Layanan Cepat (Larangan Keras)",
+  note: "Hafalan cepat 'X tidak bisa Y'. Ini yang paling sering jadi kunci eliminasi jawaban.",
+  facts: [
+    { t:"KDA tidak bisa ingest langsung dari sumber (butuh KDS/Firehose sebagai input).",
+      q:"KDA needs streaming input. What must feed it?", a:"KDS or Firehose." },
+    { t:"KDS tidak bisa menulis langsung ke S3 (butuh Firehose atau Lambda).",
+      q:"KDS must deliver to S3. What do you add?", a:"Firehose (or a custom Lambda)." },
+    { t:"Firehose tidak bisa menulis ke DynamoDB.",
+      q:"Can Firehose deliver straight to DynamoDB?", a:"No — valid targets are S3/Redshift/OpenSearch/Splunk/HTTP." },
+    { t:"Firehose tidak boleh disebut 'real-time' (hanya mendekati real-time).",
+      q:"Is Firehose real-time?", a:"No — near-real-time (buffered)." },
+    { t:"SNS tidak bisa kirim pesan langsung ke KDS.",
+      q:"Can SNS publish directly into KDS?", a:"No." },
+    { t:"SNS tidak menerima isi file mentah dari S3 (hanya notifikasi event).",
+      q:"What does S3 send to SNS?", a:"Event notifications (metadata), not file contents." },
+    { t:"SQS Standard tidak menjamin ordering ketat (gunakan FIFO).",
+      q:"Strict ordering needed. Which queue type?", a:"SQS FIFO." },
+    { t:"Tipe queue SQS tidak bisa dikonversi Standard → FIFO (hapus + buat ulang).",
+      q:"Convert Standard queue to FIFO?", a:"Not possible — delete and recreate as .fifo." },
+    { t:"Athena tidak bisa membuat dashboard BI (gunakan QuickSight).",
+      q:"Who builds the BI dashboard?", a:"QuickSight, not Athena." },
+    { t:"Athena SELECT tidak menghasilkan Parquet/ORC/Avro/JSON (gunakan UNLOAD).",
+      q:"Athena output must be Parquet. What command?", a:"UNLOAD (SELECT = CSV only)." },
+    { t:"CTAS selalu membuat tabel Athena baru.",
+      q:"Does CTAS create a new table?", a:"Yes, always." },
+    { t:"Redshift tidak bisa menjalankan job Spark (gunakan EMR/Glue).",
+      q:"Need Spark. Not Redshift — what?", a:"EMR or Glue." },
+    { t:"Redshift Spectrum tidak memuat data ke Redshift (query S3 di tempat).",
+      q:"Does Spectrum load S3 into the cluster?", a:"No — queries S3 in place." },
+    { t:"S3 Access Points tidak bisa mengubah konten objek (gunakan S3 Object Lambda).",
+      q:"Modify object content on read?", a:"S3 Object Lambda, not Access Points." },
+    { t:"S3 Analytics bukan alat query (hanya analisis pola akses).",
+      q:"Is S3 Analytics a query tool?", a:"No — it analyzes access patterns for lifecycle." },
+    { t:"Glue Workflows tidak bisa menyertakan Lambda.",
+      q:"Orchestrate Glue + Lambda?", a:"Use Step Functions (Workflows is Glue-only)." },
+    { t:"Glue Studio bukan orkestrator (hanya pembangun job visual).",
+      q:"Is Glue Studio an orchestrator?", a:"No — it's a visual job builder." },
+    { t:"Glue FLEX bukan Spot Instance (Glue serverless, tanpa tipe EC2).",
+      q:"Glue cost savings option?", a:"FLEX execution class (no Spot/EC2 in Glue)." },
+    { t:"EC2 Instance Store bersifat sementara — hilang saat restart.",
+      q:"Is Instance Store durable across restarts?", a:"No — it's ephemeral." },
+    { t:"EBS lewat jaringan — bukan I/O maksimum (Instance Store yang tercepat).",
+      q:"Max I/O storage on EC2?", a:"Instance Store (EBS is network-attached)." },
+    { t:"ConsistentRead tidak ada pada operasi tulis (Put/Update/DeleteItem).",
+      q:"Does PutItem accept ConsistentRead?", a:"No — reads only." },
+    { t:"DynamoDB tidak mendukung query SQL.",
+      q:"Run SQL on DynamoDB?", a:"No — export to S3 + Athena." },
+    { t:"Gateway endpoint hanya untuk S3 dan DynamoDB.",
+      q:"Gateway endpoints support which services?", a:"S3 and DynamoDB only." },
+    { t:"Interface endpoint dibutuhkan untuk semua layanan kecuali S3 & DynamoDB.",
+      q:"Private access to a service other than S3/DynamoDB?", a:"Interface endpoint." },
+    { t:"Kunci KMS spesifik per region — tidak bisa lintas region.",
+      q:"Use one KMS key across regions?", a:"No — region-specific." },
+    { t:"Kunci KMS default tidak bisa dibagi lintas akun (hanya CMK).",
+      q:"Share KMS key cross-account?", a:"Only Customer Managed Keys." },
+    { t:"Encryption context tidak menghasilkan kunci berbeda (hanya metadata audit).",
+      q:"Does encryption context create new keys?", a:"No — audit metadata only." },
+    { t:"Glacier/Deep Archive tidak bisa dikueri langsung — restore ke S3 dulu.",
+      q:"Query Deep Archive directly?", a:"No — restore to S3 Standard first." },
+    { t:"QuickSight refresh minimal per jam (Enterprise) — bukan sub-jam.",
+      q:"QuickSight 1-minute refresh?", a:"No — hourly minimum." },
+    { t:"MWAA di ECS/EKS = overhead manajemen tertinggi — gunakan Step Functions.",
+      q:"Lowest-overhead AWS-native orchestration?", a:"Step Functions (MWAA = highest overhead)." },
+    { t:"Limit per-query: hanya SATU per workgroup (per-workgroup boleh banyak).",
+      q:"How many per-query limits per workgroup?", a:"Exactly one." },
+    { t:"KCL checkpoint hanya DynamoDB — bukan RDS/S3.",
+      q:"KCL checkpoint backend?", a:"DynamoDB only." },
+    { t:"Tiap aplikasi KCL = satu tabel DynamoDB sendiri — tidak bisa dibagi.",
+      q:"Share one checkpoint table across KCL apps?", a:"No — one dedicated table each." },
+    { t:"S3 Transfer Acceleration bukan Global Accelerator — khusus optimasi unggah S3.",
+      q:"Speed up long-distance S3 uploads?", a:"S3 Transfer Acceleration." },
+    { t:"Global Accelerator untuk endpoint EC2/ALB — bukan unggahan S3.",
+      q:"Global Accelerator optimizes what?", a:"TCP/UDP to EC2/ALB endpoints." },
+    { t:"ORC = kolumnar, native untuk structs/maps/lists.",
+      q:"Columnar format best for complex types?", a:"ORC." },
+    { t:"Avro = berbasis baris — untuk evolusi skema / Kafka.",
+      q:"Row-based format for schema evolution?", a:"Avro." },
+    { t:"Parquet = kolumnar, lintas-platform (Spark, Athena, Hive).",
+      q:"Default cross-platform columnar format?", a:"Parquet." },
+  ]
+},
+{
+  block: "Kapan X vs Kapan Y (Perbandingan Pemilihan Layanan)",
+  note: "Saat dua layanan tampak mirip. Fokus ke 'sinyal penentu' + contoh soal di tiap kartu.",
+  cmps: [
+    { title:"KDS vs Firehose", left:"Gunakan KDS", right:"Gunakan Firehose",
+      rows:[["Banyak consumer butuh data sama","Butuh satu jalur pengiriman terkelola"],["Butuh replay (sampai 365 hari)","Tidak butuh replay, kirim & selesai"],["Ordering ketat per shard","Auto-scale tanpa kelola shard"],["Logika pemrosesan kustom (KCL/Lambda)","Transform bawaan + tujuan S3/Redshift/OpenSearch"],["Latensi sub-detik","Mendekati real-time (detik) OK"]],
+      signal:"‘Multiple consumers’ / ‘replay’ → KDS. ‘Fully managed delivery’ / ‘no code’ → Firehose.",
+      q:"Multiple independent apps must read the same stream AND replay data for 7 days. KDS or Firehose?", a:"Kinesis Data Streams." },
+    { title:"KDS vs SQS", left:"Gunakan KDS", right:"Gunakan SQS",
+      rows:[["Banyak consumer baca stream sama bersamaan","Satu consumer proses tiap pesan lalu hapus"],["Butuh replay & rewind","Pesan dikonsumsi sekali lalu hilang"],["Stream dengan ordering + persisten","Memisahkan producer & consumer"],["Ingesti throughput tinggi","Buffer untuk lonjakan trafik"]],
+      signal:"‘Same data to multiple consumers’ / ‘replay’ → KDS. ‘Decouple’ / ‘one consumer per message’ → SQS.",
+      q:"You need to decouple a producer and a single worker where each message is processed once then deleted. KDS or SQS?", a:"SQS." },
+    { title:"SQS vs SNS", left:"Gunakan SQS", right:"Gunakan SNS",
+      rows:[["Pesan bertahan sampai dikonsumsi (pull)","Notifikasi push ke banyak subscriber"],["Producer & consumer beda kecepatan","Fan-out ke Lambda + SQS + email sekaligus"],["Satu consumer proses tiap pesan","Banyak subscriber independen"]],
+      signal:"‘Buffer’ / ‘decouple speed’ → SQS. ‘Fan-out’ / ‘push to multiple’ → SNS.",
+      q:"One event must be pushed to Lambda, an SQS queue, and email simultaneously. SQS or SNS?", a:"SNS (fan-out)." },
+    { title:"SQS vs EventBridge", left:"Gunakan SQS", right:"Gunakan EventBridge",
+      rows:[["Queue tahan lama producer↔consumer","Perutean event berdasarkan aturan/pola"],["Consumer menarik sesuai kecepatannya","Event bus lintas layanan / lintas akun"],["Decoupling sederhana + retry + DLQ","Filter & rutekan event ke target beda"]],
+      signal:"‘Durable buffer’ → SQS. ‘Route events by rules’ / ‘cross-account’ → EventBridge.",
+      q:"Route events to different targets based on content patterns across accounts. SQS or EventBridge?", a:"EventBridge." },
+    { title:"SQS Standard vs FIFO", left:"Gunakan Standard", right:"Gunakan FIFO",
+      rows:[["Butuh throughput maksimum","Butuh ordering pesan ketat"],["Ordering tidak penting","Butuh exactly-once"],["At-least-once OK","≤3.000 msg/dtk (batch-10) OK"]],
+      signal:"‘Ordered’ / ‘exactly once’ → FIFO. ‘Max throughput, order irrelevant’ → Standard.",
+      q:"Financial transactions require exactly-once processing in strict order. Which queue type?", a:"SQS FIFO." },
+    { title:"KDS vs MSK", left:"Gunakan KDS", right:"Gunakan MSK",
+      rows:[["Record ≤1 MB","Record >1 MB"],["AWS-native, setup lebih simpel","Butuh kompatibilitas ekosistem Kafka"],["Tanpa pengetahuan operasional Kafka","Migrasi producer/consumer Kafka lama"]],
+      signal:"‘Records > 1 MB’ → MSK. Selain itu → KDS.",
+      q:"Records are 3 MB each from existing Kafka apps. KDS or MSK?", a:"MSK." },
+    { title:"Firehose vs DMS (S3 → KDS)", left:"Gunakan Firehose", right:"Gunakan DMS",
+      rows:[["Streaming butuh transform + kirim ke S3/Redshift/OpenSearch","Data S3 lama (full load + CDC) di-stream ke KDS/MSK"],["Ingesti real-time dari producer","Jembatani file S3 ke streaming, tanpa kode"]],
+      signal:"‘Stream existing S3 files to KDS fastest’ → DMS. ‘Capture+transform+deliver’ → Firehose.",
+      q:"Fastest no-code way to stream existing S3 files into KDS. Firehose or DMS?", a:"DMS." },
+    { title:"Glue vs EMR", left:"Gunakan Glue", right:"Gunakan EMR",
+      rows:[["ETL Spark serverless, ops minimal","Butuh kontrol klaster penuh"],["Job ETL standar S3/JDBC","Tuning Spark kustom"],["Overhead paling kecil","Banyak framework (Spark+Hive+Presto)"],["Tak perlu putuskan ukuran klaster","Klaster persisten jangka panjang"]],
+      signal:"‘Least management’ / ‘serverless ETL’ → Glue. ‘Custom Spark’ / ‘cluster control’ → EMR.",
+      q:"Serverless Spark ETL with minimal ops and no cluster sizing. Glue or EMR?", a:"Glue." },
+    { title:"Glue vs Lambda", left:"Gunakan Glue", right:"Gunakan Lambda",
+      rows:[["ETL Spark untuk dataset besar","Transform ringan berbasis event"],["Proses terabyte banyak file","Payload kecil, transformasi sub-detik"],["Pipeline ETL + katalog","Butuh Lambda dalam pipeline → gabung via Step Functions"]],
+      signal:"‘Large dataset, Spark ETL’ → Glue. ‘Event-driven, lightweight’ → Lambda.",
+      q:"Small event-driven record transform under a second. Glue or Lambda?", a:"Lambda." },
+    { title:"Glue Workflows vs Step Functions", left:"Gunakan Glue Workflows", right:"Gunakan Step Functions",
+      rows:[["Pipeline HANYA komponen Glue (crawler+job)","Pipeline ada Lambda + Glue"],["Orkestrasi Glue native, tanpa biaya tambahan","Ada layanan AWS non-Glue di pipeline"]],
+      signal:"‘Lambda in the pipeline’ → Step Functions. ‘All Glue, no Lambda’ → Glue Workflows.",
+      q:"Pipeline is only crawlers and Glue jobs, no Lambda. Which orchestrator?", a:"Glue Workflows." },
+    { title:"Step Functions vs MWAA", left:"Gunakan Step Functions", right:"Gunakan MWAA",
+      rows:[["Hanya AWS-native, overhead rendah","DAG kompleks, logika Python"],["Overhead paling kecil","Migrasi basis kode Airflow lama"]],
+      signal:"‘Least management overhead’ → Step Functions. ‘Existing Airflow’ → MWAA.",
+      q:"You must migrate an existing Apache Airflow DAG codebase. Step Functions or MWAA?", a:"MWAA." },
+    { title:"Athena vs Redshift", left:"Gunakan Athena", right:"Gunakan Redshift",
+      rows:[["SQL ad-hoc di S3, tanpa loading","Query multi-join kompleks & cepat"],["Serverless, bayar per query","Beban berat konsisten, performa MPP"],["Query jarang di data lake mentah","Dashboard BI query berulang cepat"],["Tak ada klaster dikelola","Modifikasi SQL pada data termuat"]],
+      signal:"‘Complex analytics fastest’ → Redshift. ‘SQL on S3 without loading’ → Athena.",
+      q:"Occasional ad-hoc SQL on raw S3 data with no infrastructure. Athena or Redshift?", a:"Athena." },
+    { title:"Redshift vs Redshift Spectrum", left:"Gunakan tabel Redshift", right:"Gunakan Spectrum",
+      rows:[["Data panas dikueri berulang","Data dingin/historis di S3, sesekali"],["Data sudah dimuat ke klaster","Hindari biaya loading, query S3 di tempat"],["Performa maksimum pada data termuat","Gabung S3 + Redshift dalam satu SQL"]],
+      signal:"‘Historical data in S3, no loading’ → Spectrum. ‘Hot data in cluster’ → tabel Redshift.",
+      q:"Query cold historical data in S3 occasionally without loading it. Redshift table or Spectrum?", a:"Redshift Spectrum." },
+    { title:"Athena vs S3 Select", left:"Gunakan Athena", right:"Gunakan S3 Select",
+      rows:[["SQL di banyak objek S3","Filter dari SATU objek S3"],["Join, agregasi, query kompleks","Ambil subset satu file paling murah"],["Schema-on-read + katalog Glue","Tanpa katalog, akses byte mentah"]],
+      signal:"‘Single object, cheapest’ → S3 Select. ‘Multi-object SQL’ → Athena.",
+      q:"Cheapest way to filter rows from a single CSV object. Athena or S3 Select?", a:"S3 Select." },
+    { title:"S3 Select vs Byte Range Fetch", left:"Gunakan S3 Select", right:"Gunakan Byte Range Fetch",
+      rows:[["Filter WHERE dalam satu objek","Baca tepat N byte pertama"],["Filter terstruktur CSV/JSON/Parquet","Butuh byte mentah, tanpa parsing SQL"]],
+      signal:"‘First N bytes, no parsing’ → Byte Range Fetch. ‘SQL filter within one object’ → S3 Select.",
+      q:"Read just the first 1000 bytes of a file, no parsing. S3 Select or Byte Range Fetch?", a:"Byte Range Fetch." },
+    { title:"DynamoDB vs RDS", left:"Gunakan DynamoDB", right:"Gunakan RDS",
+      rows:[["Pola key-value / dokumen","Data relasional + join kompleks"],["Latensi milidetik di skala apa pun","Transaksi ACID, stored procedure"],["Serverless, auto-scaling","App SQL-first dengan skema jelas"],["Throughput tulis tinggi","Kueri relasional kompleks skala menengah"]],
+      signal:"‘Millisecond latency at scale, serverless’ → DynamoDB. ‘Complex joins/SQL/relational’ → RDS.",
+      q:"Key-value access with single-digit ms latency at massive scale, serverless. DynamoDB or RDS?", a:"DynamoDB." },
+    { title:"S3 Standard vs Standard-IA vs Glacier", left:"Akses & latensi", right:"Kapan dipakai",
+      rows:[["S3 Standard — milidetik","Sering diakses, latensi rendah"],["Standard-IA — milidetik","Jarang diakses tapi tetap butuh cepat"],["Glacier Flexible — menit s/d jam","Arsip, tunggu menit/jam OK"],["Glacier Deep Archive — s/d 12 jam","Arsip 7–10 tahun, 1-2x/tahun"]],
+      signal:"‘Millisecond retrieval but infrequent’ → Standard-IA. ‘Compliance archival, hours OK’ → Deep Archive.",
+      q:"Rarely accessed data that still needs millisecond retrieval. Which storage class?", a:"S3 Standard-IA." },
+    { title:"S3 Access Points vs Object Lambda", left:"Gunakan Access Points", right:"Gunakan Object Lambda",
+      rows:[["Kontrol SIAPA akses objek MANA","Ubah/sensor KONTEN objek saat baca"],["Policy per-aplikasi di bucket sama","Deteksi & sensor PII sebelum kembalikan data"],["Tanpa transformasi konten","App beda butuh tampilan beda dari objek sama"]],
+      signal:"‘Redact content dynamically’ → Object Lambda. ‘Control access’ → Access Points.",
+      q:"Different apps must see PII-redacted versions of the same object on read. Which feature?", a:"S3 Object Lambda." },
+    { title:"Gateway vs Interface Endpoint", left:"Gunakan Gateway", right:"Gunakan Interface",
+      rows:[["Privat HANYA ke S3 / DynamoDB","Privat ke layanan AWS lain"],["Gratis (route table)","Bayar per jam + biaya proses data"],["Tanpa on-prem / VPC peer lintas region","Butuh on-prem / lintas region"]],
+      signal:"‘S3 or DynamoDB from VPC’ → Gateway (gratis). ‘Any other service’ → Interface.",
+      q:"Free private VPC access to S3 only. Gateway or Interface endpoint?", a:"Gateway endpoint." },
+    { title:"IAM vs Lake Formation", left:"Gunakan IAM", right:"Gunakan Lake Formation",
+      rows:[["Akses level resource (bucket, tabel, API)","Filter data level baris/kolom/sel"],["Siapa akses resource AWS mana","Kontrol granular baris/kolom yang dilihat user"]],
+      signal:"Akses data level ‘row/column/cell’ di data lake S3 → Lake Formation.",
+      q:"Restrict which columns of a data lake table each analyst can see. IAM or Lake Formation?", a:"Lake Formation." },
+    { title:"QuickSight vs OpenSearch + Kibana", left:"Gunakan QuickSight", right:"Gunakan OpenSearch+Kibana",
+      rows:[["Dashboard BI dari Redshift/Athena/S3","Refresh sub-menit / level detik"],["Pelaporan bisnis, refresh terjadwal (per jam+)","Visualisasi streaming mendekati real-time"],["Deteksi anomali ML pada data terstruktur","Analitik log, clickstream, monitoring ops"]],
+      signal:"‘10-second refresh’ / ‘near real-time dashboard’ → OpenSearch+Kibana. ‘Business BI’ → QuickSight.",
+      q:"Operational log dashboard refreshing every 10 seconds. QuickSight or OpenSearch+Kibana?", a:"OpenSearch + Kibana." },
+    { title:"QuickSight vs Athena", left:"Gunakan QuickSight", right:"Gunakan Athena",
+      rows:[["Lapisan visualisasi (dashboard, grafik, insight ML)","Mesin query (SQL di S3 → hasil)"],["Tidak bisa jalankan SQL sendiri","Tidak bisa bikin dashboard sendiri"],["Mengambil data DARI Athena","Menjadi sumber data untuk QuickSight"]],
+      signal:"‘Create a dashboard’ → QuickSight. ‘Run SQL on S3’ → Athena.",
+      q:"Business users need a shareable visual dashboard, not raw SQL. QuickSight or Athena?", a:"QuickSight." },
+    { title:"Glue ETL vs Glue DataBrew", left:"Gunakan Glue ETL", right:"Gunakan Glue DataBrew",
+      rows:[["Transformasi berbasis kode/Spark","Persiapan & pembersihan visual tanpa kode"],["Logika kompleks, join, agregasi","250+ transform siap pakai, ramah analis"],["Output ke S3/Redshift/JDBC","Profil, bersihkan, normalisasi sebelum load"],["Butuh ML transform (FindMatches)","Tanpa Spark, tanpa kode — visual saja"]],
+      signal:"‘No-code visual cleaning’ / ‘data analysts’ → DataBrew. ‘Pipeline ETL with code/Spark’ → Glue ETL.",
+      q:"Data analysts need no-code visual data cleaning. Glue ETL or DataBrew?", a:"Glue DataBrew." },
+    { title:"Athena vs EMR (proses data S3)", left:"Gunakan Athena", right:"Gunakan EMR",
+      rows:[["SQL di S3, serverless, bayar per query","Job Spark/Hive/Presto dengan kode kustom"],["Tak ada klaster dikelola","Kontrol penuh klaster & framework"],["Analisis ad-hoc / sanity check","Batch skala besar, transformasi kustom"],["SQL standar saja","Butuh kode Spark (Python/Scala/Java)"]],
+      signal:"‘SQL on S3 no infrastructure’ → Athena. ‘Custom Spark code on S3’ → EMR.",
+      q:"Custom PySpark transformations at scale on S3. Athena or EMR?", a:"EMR." },
+    { title:"ORC vs Parquet vs Avro", left:"Format & tipe", right:"Terbaik untuk",
+      rows:[["ORC — kolumnar","Tipe kompleks (structs/maps/lists), Hive/EMR"],["Parquet — kolumnar","Analitik lintas-platform (Spark/Athena/Hive/Redshift)"],["Avro — berbasis baris","Evolusi skema, write-heavy, Kafka"]],
+      signal:"‘Complex data types’ → ORC. ‘Cross-platform columnar’ → Parquet. ‘Schema evolution / Kafka’ → Avro.",
+      q:"Kafka pipeline needs frequent schema evolution and fast writes. Which format?", a:"Avro." },
+    { title:"DynamoDB vs ElastiCache", left:"Gunakan DynamoDB", right:"Gunakan ElastiCache",
+      rows:[["Database utama dengan persistensi","Lapisan cache di depan database"],["Key-value/dokumen skala besar","Baca sub-milidetik untuk data 'panas'"],["Tahan lama, multi-AZ, terkelola","Kurangi beban baca RDS/DynamoDB"],["Skema fleksibel","Sesi, leaderboard, penghitung real-time"]],
+      signal:"‘Primary durable store’ → DynamoDB. ‘Cache to reduce DB load, in-memory’ → ElastiCache.",
+      q:"Add a sub-millisecond in-memory cache in front of RDS to reduce read load. Which service?", a:"ElastiCache." },
+  ]
+}
+];
+
+const root = document.getElementById('root');
+let idCounter = 0;
+const allIds = [];
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Singkatan/nama pendek layanan untuk judul tiap kartu.
+function shortName(name){
+  const map = {
+    "Kinesis Data Analytics (KDA)": "KDA",
+    "Kinesis Data Streams (KDS)": "KDS",
+    "Kinesis Data Firehose": "Firehose",
+    "Amazon SQS": "SQS",
+    "Amazon SNS": "SNS",
+    "AWS Glue (semua varian)": "Glue",
+    "Amazon Athena": "Athena",
+    "Amazon Redshift": "Redshift",
+    "Amazon DynamoDB": "DynamoDB",
+    "Amazon S3": "S3",
+    "S3 Lifecycle Rules": "S3 Lifecycle",
+    "Amazon EBS / EC2 Storage": "EBS/EC2",
+    "Amazon EFS": "EFS",
+    "Amazon EC2": "EC2",
+    "AWS DMS": "DMS",
+    "Amazon QuickSight": "QuickSight",
+    "Step Functions vs Glue Workflows": "Step Functions",
+    "VPC Endpoints": "VPC Endpoint",
+    "AWS KMS": "KMS",
+    "Amazon MSK": "MSK",
+    "S3 Transfer Acceleration": "Transfer Accel",
+    "AWS Lake Formation": "Lake Formation",
+    "Format File (ORC / Parquet / Avro)": "Format File",
+    "KCL (Kinesis Client Library)": "KCL",
+  };
+  return map[name] || name;
+}
+
+function qHtml(q, a){
+  if(!q) return '';
+  return `<div class="qbox">
+    <div class="qlabel">Contoh soal</div>
+    <div class="qtext">${esc(q)}</div>
+    ${a ? `<div class="qans">${esc(a)}</div>` : ''}
+  </div>`;
+}
+
+function flagBtn(id){
+  return `<button type="button" class="flag-btn" data-flag="${id}" title="Tandai untuk dibahas nanti">🚩</button>`;
+}
+
+function makeItem(id, title, htmlBody){
+  allIds.push(id);
+  return `<label class="item" data-id="${id}">
+    <input type="checkbox" data-check="${id}" />
+    <span class="content">
+      <span class="title">${title}</span>
+      ${htmlBody}
+    </span>
+  </label>`;
+}
+
+DATA.forEach(block => {
+  let html = `<section class="block"><h2>${esc(block.block)}</h2>`;
+  if(block.note) html += `<p class="block-note">${esc(block.note)}</p>`;
+
+  if(block.groups){
+    block.groups.forEach(g => {
+      g.items.forEach(it => {
+        const id = 'i'+(idCounter++);
+        allIds.push(id);
+        let body = '';
+        if(it.trap) body += `<span class="trap"><span class="tag trap">JEBAKAN</span><span>${esc(it.trap)}</span></span>`;
+        if(it.real) body += `<span class="real"><span class="tag real">KENYATAAN</span><span>${esc(it.real)}</span></span>`;
+        if(it.signal) body += `<span class="signal"><span class="tag signal">SINYAL</span><span>${esc(it.signal)}</span></span>`;
+        body += qHtml(it.q, it.a);
+        const label = `<b>${esc(it.title)}</b>`;
+        html += `<details class="svc" data-card="${id}"><summary><span class="arrow">▶</span>${label}${flagBtn(id)}<span class="svc-count" data-group="${id}"></span></summary><div class="svc-body">
+          <label class="item" data-id="${id}">
+            <input type="checkbox" data-check="${id}" />
+            <span class="content">${body}</span>
+          </label>
+        </div></details>`;
+      });
+    });
+  }
+
+  if(block.facts){
+    block.facts.forEach(f => {
+      const id = 'i'+(idCounter++);
+      allIds.push(id);
+      const label = `<b>${esc(f.t)}</b>`;
+      html += `<details class="svc" data-card="${id}"><summary><span class="arrow">▶</span>${label}${flagBtn(id)}<span class="svc-count" data-group="${id}"></span></summary><div class="svc-body">
+        <label class="item" data-id="${id}">
+          <input type="checkbox" data-check="${id}" />
+          <span class="content">${qHtml(f.q, f.a) || '<span style="color:var(--muted);font-size:13px">Fakta hafalan cepat.</span>'}</span>
+        </label>
+      </div></details>`;
+    });
+  }
+
+  if(block.cmps){
+    block.cmps.forEach(c => {
+      const id = 'i'+(idCounter++);
+      let rows = '';
+      c.rows.forEach(r => {
+        rows += `<div class="cell left">${esc(r[0])}</div><div class="cell">${esc(r[1])}</div>`;
+      });
+      const body = `<div class="cmp">
+        <div class="head left">${esc(c.left)}</div><div class="head">${esc(c.right)}</div>
+        ${rows}
+      </div>
+      <div class="verdict"><b>Sinyal penentu:</b> ${esc(c.signal)}</div>
+      ${qHtml(c.q, c.a)}`;
+      allIds.push(id);
+      html += `<details class="svc" data-card="${id}"><summary><span class="arrow">▶</span><b>${esc(c.title)}</b>${flagBtn(id)}<span class="svc-count" data-group="${id}"></span></summary><div class="svc-body">
+        <label class="item" data-id="${id}">
+          <input type="checkbox" data-check="${id}" />
+          <span class="content">${body}</span>
+        </label>
+      </div></details>`;
+    });
+  }
+
+  html += `</section>`;
+  root.insertAdjacentHTML('beforeend', html);
+});
+
+const STORAGE_KEY = 'aws_de_progress_v1';
+let state = {};
+try { state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e){ state = {}; }
+
+const checks = Array.from(document.querySelectorAll('input[data-check]'));
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+// --- Flag (tandai untuk dibahas nanti) ---
+const FLAG_KEY = 'aws_de_flags_v1';
+let flags = {};
+try { flags = JSON.parse(localStorage.getItem(FLAG_KEY)) || {}; } catch(e){ flags = {}; }
+function saveFlags(){ localStorage.setItem(FLAG_KEY, JSON.stringify(flags)); }
+
+function applyFlags(){
+  document.querySelectorAll('details.svc[data-card]').forEach(det => {
+    det.classList.toggle('flagged', !!flags[det.dataset.card]);
+  });
+  const n = Object.keys(flags).length;
+  document.getElementById('flagCount').textContent = n ? `(${n})` : '';
+}
+
+document.querySelectorAll('.flag-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const id = btn.dataset.flag;
+    if(flags[id]) delete flags[id]; else flags[id] = true;
+    saveFlags();
+    applyFlags();
+  });
+});
+
+function applyState(){
+  checks.forEach(cb => {
+    const id = cb.dataset.check;
+    const done = !!state[id];
+    cb.checked = done;
+    const label = cb.closest('.item');
+    if(label) label.classList.toggle('done', done);
+  });
+  updateProgress();
+  updateGroupCounts();
+}
+
+function updateProgress(){
+  const total = allIds.length;
+  const done = allIds.filter(id => state[id]).length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('barFill').style.width = pct + '%';
+  document.getElementById('pctText').textContent = pct + '%';
+  document.getElementById('countText').textContent = `(${done}/${total} topik)`;
+}
+
+function updateGroupCounts(){
+  document.querySelectorAll('.svc-count').forEach(el => {
+    const ids = (el.dataset.group||'').split(',').filter(Boolean);
+    const done = ids.filter(id => state[id]).length;
+    el.textContent = `${done}/${ids.length} ✓`;
+  });
+}
+
+checks.forEach(cb => {
+  cb.addEventListener('change', () => {
+    const id = cb.dataset.check;
+    if(cb.checked) state[id] = true; else delete state[id];
+    const label = cb.closest('.item');
+    if(label) label.classList.toggle('done', cb.checked);
+    save(); updateProgress(); updateGroupCounts(); applyHideDone();
+  });
+});
+
+applyState();
+applyFlags();
+
+document.getElementById('expandAll').onclick = () =>
+  document.querySelectorAll('details.svc').forEach(d => d.open = true);
+document.getElementById('collapseAll').onclick = () =>
+  document.querySelectorAll('details.svc').forEach(d => d.open = false);
+
+document.getElementById('reset').onclick = () => {
+  if(confirm('Yakin reset semua progress belajar (centang)?')){
+    state = {}; save(); applyState(); applyHideDone();
+    if(Object.keys(flags).length && confirm('Hapus juga semua tanda 🚩?')){
+      flags = {}; saveFlags(); applyFlags();
+    }
+  }
+};
+
+// Buka/tutup kartu yang sudah dicentang (bukan disembunyikan).
+let doneOpen = true; // status kartu selesai saat ini: true = terbuka, false = tertutup
+const toggleDoneBtn = document.getElementById('toggleDone');
+function setDoneCardsOpen(open){
+  document.querySelectorAll('details.svc').forEach(det => {
+    const item = det.querySelector('.item');
+    if(!item) return;
+    const done = !!state[item.dataset.id];
+    if(done) det.open = open;
+  });
+}
+function applyHideDone(){ /* kompatibilitas: tidak menyembunyikan apa pun */ }
+toggleDoneBtn.onclick = () => {
+  doneOpen = !doneOpen;
+  setDoneCardsOpen(doneOpen);
+  toggleDoneBtn.textContent = doneOpen ? 'Tutup yang selesai' : 'Buka yang selesai';
+};
+
+function focusCard(target){
+  target.open = true;
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  target.classList.remove('flash');
+  void target.offsetWidth; // reset animasi
+  target.classList.add('flash');
+  setTimeout(() => target.classList.remove('flash'), 2300);
+}
+
+// Lompat ke kartu belum-dicentang yang paling atas.
+document.getElementById('gotoNext').onclick = () => {
+  const cards = Array.from(document.querySelectorAll('details.svc'))
+    .filter(det => !det.classList.contains('hidden'));
+  const target = cards.find(det => {
+    const item = det.querySelector('.item');
+    return item && !state[item.dataset.id];
+  });
+  if(!target){ alert('Semua topik yang tampil sudah dicentang. 🎉'); return; }
+  focusCard(target);
+};
+
+// Lompat ke kartu bertanda 🚩 berikutnya (berputar dari atas).
+let lastFlagIdx = -1;
+document.getElementById('gotoFlag').onclick = () => {
+  const flagged = Array.from(document.querySelectorAll('details.svc.flagged'))
+    .filter(det => !det.classList.contains('hidden'));
+  if(!flagged.length){ alert('Belum ada topik yang ditandai. Klik 🚩 pada kartu untuk menandainya.'); return; }
+  lastFlagIdx = (lastFlagIdx + 1) % flagged.length;
+  focusCard(flagged[lastFlagIdx]);
+};
+
+const search = document.getElementById('search');
+search.addEventListener('input', () => {
+  const q = search.value.trim().toLowerCase();
+  document.querySelectorAll('details.svc').forEach(det => {
+    let anyVisible = false;
+    det.querySelectorAll('.item').forEach(it => {
+      const text = it.textContent.toLowerCase();
+      const match = !q || text.includes(q);
+      it.classList.toggle('hidden', !match);
+      if(match) anyVisible = true;
+    });
+    det.classList.toggle('hidden', !anyVisible);
+    if(q && anyVisible) det.open = true;
+  });
+  if(!q){
+    document.querySelectorAll('details.svc').forEach(d => d.classList.remove('hidden'));
+    applyHideDone();
+  }
+});
+</script>
+</body>
+</html>
