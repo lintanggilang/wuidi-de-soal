@@ -24,17 +24,13 @@ Setiap soal pada `de1`–`de6` memuat:
 
 Fitur pada halaman soal: pencarian, buka/tutup semua, tandai sudah dibaca, tandai untuk review, dan progres tersimpan otomatis di `localStorage`.
 
-## Cara menjalankan
+## Cara mengakses
 
-Cukup buka file HTML langsung di browser, mulai dari `index.html`. Tidak perlu server atau proses build.
+Situs sudah dipublikasikan lewat **GitHub Pages**. Cukup buka tautan berikut di browser:
 
-Opsional, jalankan lewat server statis lokal:
+👉 **<https://lintanggilang.github.io/wuidi-de-soal/>**
 
-```bash
-# Python
-python -m http.server 8000
-# lalu buka http://localhost:8000
-```
+Tidak perlu meng-clone repo, menjalankan server, atau proses build.
 
 ## Catatan
 
