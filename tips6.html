@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AWS Data Engineer — Kumpulan Tips (tips6)</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root {
+    --bg:#f5f7fb; --panel:#fff; --panel2:#eef2f8; --border:#d5dce8;
+    --text:#1c2433; --muted:#5c6b85; --accent:#e07b00; --accent2:#2b6fd6;
+    --good:#1f9d54; --good-bg:#e7f6ee; --bad:#d63a4a; --bad-bg:#fdecee; --chip:#e8edf5;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.6; }
+  header { position:sticky; top:0; z-index:50; background:#fff;
+    border-bottom:1px solid var(--border); box-shadow:0 1px 6px rgba(0,0,0,.06); padding:14px 20px; }
+  h1 { margin:0 0 4px; font-size:20px; }
+  .sub { color:var(--muted); font-size:13px; }
+  .back { display:inline-block; margin-bottom:8px; color:var(--accent2);
+    text-decoration:none; font-size:13px; font-weight:600; }
+  .back:hover { text-decoration:underline; }
+  .toolbar { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+  .toolbar input[type=search] { flex:1 1 220px; background:var(--panel2);
+    border:1px solid var(--border); color:var(--text); padding:9px 12px; border-radius:8px; font-size:14px; }
+  button { background:var(--chip); color:var(--text); border:1px solid var(--border);
+    padding:9px 13px; border-radius:8px; cursor:pointer; font-size:13px; font-family:inherit; }
+  button:hover { background:#dbe3ef; }
+  main { max-width:860px; margin:20px auto; padding:0 16px 60px; }
+
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:12px;
+    margin-bottom:12px; box-shadow:0 1px 4px rgba(0,0,0,.04); overflow:hidden; padding:14px 16px; }
+  .chead { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px; }
+  .qnum { font-weight:700; font-size:15px; color:var(--accent2); flex:0 0 auto; }
+  .domain { font-size:11px; font-weight:600; color:var(--muted); background:var(--panel2);
+    border:1px solid var(--border); padding:2px 10px; border-radius:20px; }
+
+  .label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin:12px 0 6px; }
+  .label-tips { color:#6b3fd4; }
+  .tips { background:#f1ecfb; border:1px solid #c9b8f0; border-left:4px solid #6b3fd4;
+    border-radius:8px; padding:12px 15px; font-size:14px; }
+  .tips p { margin:0 0 8px; }
+  .tips p:last-child { margin-bottom:0; }
+  .tips b { color:#4a2a99; }
+  .tips .fact { display:block; margin-top:8px; padding:8px 10px; background:#fff;
+    border:1px dashed #c9b8f0; border-radius:6px; font-size:13px; color:#3a2a66; }
+  .tips .fact b { color:#6b3fd4; }
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← Kembali ke Daftar Materi</a>
+  <h1>AWS Data Engineer — Kumpulan Tips (tips6)</h1>
+  <div class="sub">Sumber: de6.html · 65 tips · pola hafalan "Jika → maka → karena"</div>
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="🔍 Cari tips atau kata kunci…" />
+  </div>
+</header>
+<main id="list">
+  <article class="card" id="t1" data-num="1" data-text="jika hasil select athena harus ke s3 parquet tanpa buat tabel baru maka pakai unload karena unload menulis hasil query ke s3 (parquet/orc/dll) tanpa membuat tabel. ingat: ekspor hasil athena ke s3 tanpa tabel → unload; buat tabel+data → ctas.">
+    <div class="chead">
+      <span class="qnum">Soal 1</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> hasil SELECT Athena harus ke S3 Parquet tanpa buat tabel baru <b>maka</b> pakai <b>UNLOAD</b> <b>karena</b> UNLOAD menulis hasil query ke S3 (Parquet/ORC/dll) tanpa membuat tabel.<span class='fact'><b>Ingat:</b> ekspor hasil Athena ke S3 tanpa tabel &rarr; UNLOAD; buat tabel+data &rarr; CTAS.</span></p></div>
+  </article>
+
+  <article class="card" id="t2" data-num="2" data-text="jika athena query tercepat atas output emr/spark maka tulis parquet/orc + lacak metadata di glue data catalog karena format kolumnar + katalog = scan minimal &amp; skema terkelola. ingat: format query tercepat athena = kolumnar (parquet/orc) + glue catalog.">
+    <div class="chead">
+      <span class="qnum">Soal 2</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> Athena query tercepat atas output EMR/Spark <b>maka</b> <b>tulis Parquet/ORC + lacak metadata di Glue Data Catalog</b> <b>karena</b> format kolumnar + katalog = scan minimal & skema terkelola.<span class='fact'><b>Ingat:</b> format query tercepat Athena = kolumnar (Parquet/ORC) + Glue Catalog.</span></p></div>
+  </article>
+
+  <article class="card" id="t3" data-num="3" data-text="jika cross-region snapshot redshift terenkripsi (kms) via cli maka buat kms key + snapshot copy grant di region tujuan lalu enable snapshot copy (sebut grant name) karena salinan terenkripsi lintas region butuh grant + key di region tujuan. ingat: copy snapshot terenkripsi lintas region → snapshot copy grant + kms key di region destinasi.">
+    <div class="chead">
+      <span class="qnum">Soal 3</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> cross-region snapshot Redshift terenkripsi (KMS) via CLI <b>maka</b> <b>buat KMS key + snapshot copy grant di region tujuan</b> lalu <b>enable snapshot copy (sebut grant name)</b> <b>karena</b> salinan terenkripsi lintas region butuh grant + key di region tujuan.<span class='fact'><b>Ingat:</b> copy snapshot terenkripsi lintas region &rarr; snapshot copy grant + KMS key di region destinasi.</span></p></div>
+  </article>
+
+  <article class="card" id="t4" data-num="4" data-text="jika cek kualitas (range 0–85 &amp; completeness timestamp) minim koding maka pakai glue databrew (completeness rule + numeric range) karena databrew no-code untuk aturan kualitas. ingat: validasi kualitas no-code → databrew ruleset; dalam job etl → glue data quality (dqdl).">
+    <div class="chead">
+      <span class="qnum">Soal 4</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> cek kualitas (range 0&ndash;85 & completeness timestamp) minim koding <b>maka</b> pakai <b>Glue DataBrew (completeness rule + numeric range)</b> <b>karena</b> DataBrew no-code untuk aturan kualitas.<span class='fact'><b>Ingat:</b> validasi kualitas no-code &rarr; DataBrew ruleset; dalam job ETL &rarr; Glue Data Quality (DQDL).</span></p></div>
+  </article>
+
+  <article class="card" id="t5" data-num="5" data-text="jika cek data store tiap jam, ≤8 mb/run, hemat, error handling andal maka eventbridge scheduler → lambda (deteksi) → sqs → lambda (proses, retry + dlq) karena serverless + sqs/dlq beri retry &amp; tahan error. ingat: error handling andal untuk pesan → sqs + dlq; jadwal → eventbridge scheduler.">
+    <div class="chead">
+      <span class="qnum">Soal 5</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> cek data store tiap jam, &le;8 MB/run, hemat, error handling andal <b>maka</b> <b>EventBridge Scheduler &rarr; Lambda (deteksi) &rarr; SQS &rarr; Lambda (proses, retry + DLQ)</b> <b>karena</b> serverless + SQS/DLQ beri retry & tahan error.<span class='fact'><b>Ingat:</b> error handling andal untuk pesan &rarr; SQS + DLQ; jadwal &rarr; EventBridge Scheduler.</span></p></div>
+  </article>
+
+  <article class="card" id="t6" data-num="6" data-text="jika tiap tim/grup hanya akses pii yang diperlukan, overhead minim maka lake formation data filters + grant ke iam role lalu query via athena karena lf menerapkan izin halus (kolom/baris) terpusat. ingat: akses pii granular lintas tim → lake formation data filters.">
+    <div class="chead">
+      <span class="qnum">Soal 6</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> tiap tim/grup hanya akses PII yang diperlukan, overhead minim <b>maka</b> <b>Lake Formation data filters + grant ke IAM role</b> lalu query via Athena <b>karena</b> LF menerapkan izin halus (kolom/baris) terpusat.<span class='fact'><b>Ingat:</b> akses PII granular lintas tim &rarr; Lake Formation data filters.</span></p></div>
+  </article>
+
+  <article class="card" id="t7" data-num="7" data-text="jika lambda cpu ~100% memperlambat pipeline maka naikkan memori (mis. 512 mb) karena di lambda, cpu proporsional dengan memori yang dialokasikan. ingat: lambda — naikkan memori = naikkan cpu &amp; jaringan (vcpu penuh ~1769 mb).">
+    <div class="chead">
+      <span class="qnum">Soal 7</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> Lambda CPU ~100% memperlambat pipeline <b>maka</b> <b>naikkan memori (mis. 512 MB)</b> <b>karena</b> di Lambda, CPU proporsional dengan memori yang dialokasikan.<span class='fact'><b>Ingat:</b> Lambda &mdash; naikkan memori = naikkan CPU & jaringan (vCPU penuh ~1769 MB).</span></p></div>
+  </article>
+
+  <article class="card" id="t8" data-num="8" data-text="jika cek null di kolom wajib + integritas referensial sebelum tulis, overhead minim maka glue etl evaluate data quality (iscomplete + referentialintegrity) karena transform dq bawaan menilai kualitas di dalam job. ingat dqdl: iscomplete (non-null), referentialintegrity (relasi antar dataset), uniqueness, dll.">
+    <div class="chead">
+      <span class="qnum">Soal 8</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> cek null di kolom wajib + integritas referensial sebelum tulis, overhead minim <b>maka</b> <b>Glue ETL Evaluate Data Quality (IsComplete + ReferentialIntegrity)</b> <b>karena</b> transform DQ bawaan menilai kualitas di dalam job.<span class='fact'><b>Ingat DQDL:</b> IsComplete (non-null), ReferentialIntegrity (relasi antar dataset), Uniqueness, dll.</span></p></div>
+  </article>
+
+  <article class="card" id="t9" data-num="9" data-text="jika glue etl lambat saat peak (diskspaceused tinggi), effort minim maka aktifkan glue auto scaling karena auto scaling menambah worker dinamis sesuai beban. ingat: beban glue fluktuatif → aktifkan auto scaling (worker dinamis).">
+    <div class="chead">
+      <span class="qnum">Soal 9</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> Glue ETL lambat saat peak (diskSpaceUsed tinggi), effort minim <b>maka</b> aktifkan <b>Glue Auto Scaling</b> <b>karena</b> Auto Scaling menambah worker dinamis sesuai beban.<span class='fact'><b>Ingat:</b> beban Glue fluktuatif &rarr; aktifkan Auto Scaling (worker dinamis).</span></p></div>
+  </article>
+
+  <article class="card" id="t10" data-num="10" data-text="jika dashboard klik near real-time refresh ~10 detik, cepat diproduksi maka kinesis data firehose → opensearch service + opensearch dashboards (kibana) karena opensearch dashboards mendukung visual near real-time. ingat: dashboard log/stream near real-time → opensearch + opensearch dashboards.">
+    <div class="chead">
+      <span class="qnum">Soal 10</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> dashboard klik near real-time refresh ~10 detik, cepat diproduksi <b>maka</b> <b>Kinesis Data Firehose &rarr; OpenSearch Service + OpenSearch Dashboards (Kibana)</b> <b>karena</b> OpenSearch Dashboards mendukung visual near real-time.<span class='fact'><b>Ingat:</b> dashboard log/stream near real-time &rarr; OpenSearch + OpenSearch Dashboards.</span></p></div>
+  </article>
+
+  <article class="card" id="t11" data-num="11" data-text="jika glue export redshift→s3, konektivitas sudah ada, langkah berikutnya maka buat iam role (izin tulis s3) &amp; associate ke cluster redshift karena redshift butuh iam role untuk unload/akses s3. ingat: redshift akses s3 (copy/unload) → via iam role yang di-attach ke cluster.">
+    <div class="chead">
+      <span class="qnum">Soal 11</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> Glue export Redshift&rarr;S3, konektivitas sudah ada, langkah berikutnya <b>maka</b> <b>buat IAM role (izin tulis S3) & associate ke cluster Redshift</b> <b>karena</b> Redshift butuh IAM role untuk UNLOAD/akses S3.<span class='fact'><b>Ingat:</b> Redshift akses S3 (COPY/UNLOAD) &rarr; via IAM role yang di-attach ke cluster.</span></p></div>
+  </article>
+
+  <article class="card" id="t12" data-num="12" data-text="jika pindah data historis redshift ke s3 tapi tetap cross-reference, effort &amp; biaya minim maka pakai redshift spectrum karena spectrum query data s3 digabung tabel redshift. ingat: hot (redshift) + cold (s3) tanpa load → spectrum.">
+    <div class="chead">
+      <span class="qnum">Soal 12</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> pindah data historis Redshift ke S3 tapi tetap cross-reference, effort & biaya minim <b>maka</b> pakai <b>Redshift Spectrum</b> <b>karena</b> Spectrum query data S3 digabung tabel Redshift.<span class='fact'><b>Ingat:</b> hot (Redshift) + cold (S3) tanpa load &rarr; Spectrum.</span></p></div>
+  </article>
+
+  <article class="card" id="t13" data-num="13" data-text="jika refresh penuh tiap 30 menit boros, butuh hanya 24 tabel reporting dari aurora, overhead minim maka zero-etl aurora→redshift + data filter (tabel yang perlu) + database tujuan karena zero-etl replikasi hanya tabel terfilter near real-time. ingat: zero-etl mendukung data filter untuk memilih tabel yang direplikasi.">
+    <div class="chead">
+      <span class="qnum">Soal 13</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> refresh penuh tiap 30 menit boros, butuh hanya 24 tabel reporting dari Aurora, overhead minim <b>maka</b> <b>zero-ETL Aurora&rarr;Redshift + data filter (tabel yang perlu) + database tujuan</b> <b>karena</b> zero-ETL replikasi hanya tabel terfilter near real-time.<span class='fact'><b>Ingat:</b> zero-ETL mendukung data filter untuk memilih tabel yang direplikasi.</span></p></div>
+  </article>
+
+  <article class="card" id="t14" data-num="14" data-text="jika hapus kredensial hardcode di glue script maka simpan di secrets manager + iam role (izin baca secret) di-attach ke glue job karena job ambil kredensial saat runtime via role. ingat: jangan hardcode — secrets manager + iam role; akses selalu lewat role.">
+    <div class="chead">
+      <span class="qnum">Soal 14</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> hapus kredensial hardcode di Glue script <b>maka</b> <b>simpan di Secrets Manager + IAM role (izin baca secret) di-attach ke Glue job</b> <b>karena</b> job ambil kredensial saat runtime via role.<span class='fact'><b>Ingat:</b> jangan hardcode &mdash; Secrets Manager + IAM role; akses selalu lewat role.</span></p></div>
+  </article>
+
+  <article class="card" id="t15" data-num="15" data-text="jika workload analitik memperlambat crm di rds, hemat maka buat read replica &amp; arahkan analitik ke sana karena replica memisah beban baca dari primary. ingat: offload baca/analitik dari rds primary → read replica; ha/failover → multi-az (beda tujuan).">
+    <div class="chead">
+      <span class="qnum">Soal 15</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> workload analitik memperlambat CRM di RDS, hemat <b>maka</b> buat <b>Read Replica</b> & arahkan analitik ke sana <b>karena</b> replica memisah beban baca dari primary.<span class='fact'><b>Ingat:</b> offload baca/analitik dari RDS primary &rarr; Read Replica; HA/failover &rarr; Multi-AZ (beda tujuan).</span></p></div>
+  </article>
+
+  <article class="card" id="t16" data-num="16" data-text="jika redaksi pii dinamis berbeda per aplikasi, overhead minim maka pakai s3 object lambda karena object lambda mengubah/redaksi data saat get sesuai kebutuhan aplikasi. ingat: transformasi data saat diambil dari s3 (redaksi/filter) → s3 object lambda.">
+    <div class="chead">
+      <span class="qnum">Soal 16</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> redaksi PII dinamis berbeda per aplikasi, overhead minim <b>maka</b> pakai <b>S3 Object Lambda</b> <b>karena</b> Object Lambda mengubah/redaksi data saat GET sesuai kebutuhan aplikasi.<span class='fact'><b>Ingat:</b> transformasi data saat diambil dari S3 (redaksi/filter) &rarr; S3 Object Lambda.</span></p></div>
+  </article>
+
+  <article class="card" id="t17" data-num="17" data-text="jika crawl sql server lalu etl ke s3 paling hemat (ekosistem glue) maka pakai aws glue workflows karena workflow merangkai crawler + job glue. ingat: orkestrasi crawler+job glue → glue workflows.">
+    <div class="chead">
+      <span class="qnum">Soal 17</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> crawl SQL Server lalu ETL ke S3 paling hemat (ekosistem Glue) <b>maka</b> pakai <b>AWS Glue Workflows</b> <b>karena</b> workflow merangkai crawler + job Glue.<span class='fact'><b>Ingat:</b> orkestrasi crawler+job Glue &rarr; Glue Workflows.</span></p></div>
+  </article>
+
+  <article class="card" id="t18" data-num="18" data-text="jika dua departemen punya objek sendiri di satu cluster redshift + sering join lintas, overhead minim maka schema terpisah per departemen + izin level schema karena schema mengisolasi izin tapi tetap bisa di-join dalam db sama. ingat: isolasi + join mudah dalam satu db → pisahkan per schema, grant level schema.">
+    <div class="chead">
+      <span class="qnum">Soal 18</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> dua departemen punya objek sendiri di satu cluster Redshift + sering join lintas, overhead minim <b>maka</b> <b>schema terpisah per departemen + izin level schema</b> <b>karena</b> schema mengisolasi izin tapi tetap bisa di-join dalam DB sama.<span class='fact'><b>Ingat:</b> isolasi + join mudah dalam satu DB &rarr; pisahkan per schema, grant level schema.</span></p></div>
+  </article>
+
+  <article class="card" id="t19" data-num="19" data-text="jika query pengiriman per courier by status tanpa scan seluruh tabel maka buat gsi (courierid pk, deliverystatus sk) karena gsi memungkinkan query by atribut alternatif. ingat: pola akses baru dynamodb tanpa scan → gsi (query, bukan scan).">
+    <div class="chead">
+      <span class="qnum">Soal 19</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> query pengiriman per courier by status tanpa scan seluruh tabel <b>maka</b> buat <b>GSI (CourierID PK, DeliveryStatus SK)</b> <b>karena</b> GSI memungkinkan Query by atribut alternatif.<span class='fact'><b>Ingat:</b> pola akses baru DynamoDB tanpa scan &rarr; GSI (query, bukan scan).</span></p></div>
+  </article>
+
+  <article class="card" id="t20" data-num="20" data-text="jika hapus item dynamodb &gt;retensi otomatis, konfigurasi minimal maka aktifkan ttl + tulis timestamp kedaluwarsa karena ttl hapus otomatis gratis. ingat: expiry dynamodb → ttl (atribut epoch detik).">
+    <div class="chead">
+      <span class="qnum">Soal 20</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> hapus item DynamoDB >retensi otomatis, konfigurasi minimal <b>maka</b> aktifkan <b>TTL</b> + tulis timestamp kedaluwarsa <b>karena</b> TTL hapus otomatis gratis.<span class='fact'><b>Ingat:</b> expiry DynamoDB &rarr; TTL (atribut epoch detik).</span></p></div>
+  </article>
+
+  <article class="card" id="t21" data-num="21" data-text="jika query &amp; visualisasi log near real-time untuk troubleshoot maka cloudwatch logs → subscription filter → opensearch service + dashboards karena opensearch untuk pencarian/visual log cepat. ingat: analisis &amp; dashboard log → cloudwatch logs + opensearch (subscription filter).">
+    <div class="chead">
+      <span class="qnum">Soal 21</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> query & visualisasi log near real-time untuk troubleshoot <b>maka</b> <b>CloudWatch Logs &rarr; subscription filter &rarr; OpenSearch Service + Dashboards</b> <b>karena</b> OpenSearch untuk pencarian/visual log cepat.<span class='fact'><b>Ingat:</b> analisis & dashboard log &rarr; CloudWatch Logs + OpenSearch (subscription filter).</span></p></div>
+  </article>
+
+  <article class="card" id="t22" data-num="22" data-text="jika profiling dataset (statistik kolom, missing, distribusi) paling efisien maka pakai glue databrew profile job karena databrew menghasilkan laporan profil otomatis no-code. ingat: profiling data → databrew profile job.">
+    <div class="chead">
+      <span class="qnum">Soal 22</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> profiling dataset (statistik kolom, missing, distribusi) paling efisien <b>maka</b> pakai <b>Glue DataBrew profile job</b> <b>karena</b> DataBrew menghasilkan laporan profil otomatis no-code.<span class='fact'><b>Ingat:</b> profiling data &rarr; DataBrew profile job.</span></p></div>
+  </article>
+
+  <article class="card" id="t23" data-num="23" data-text="jika glue job lambat memperlambat quicksight maka partisi data (year/month/day) + worker lebih besar karena partisi kurangi data diproses &amp; worker besar tambah daya. ingat: percepat glue → partisi sumber + skala worker (dpu/worker type).">
+    <div class="chead">
+      <span class="qnum">Soal 23</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> Glue job lambat memperlambat QuickSight <b>maka</b> <b>partisi data (year/month/day) + worker lebih besar</b> <b>karena</b> partisi kurangi data diproses & worker besar tambah daya.<span class='fact'><b>Ingat:</b> percepat Glue &rarr; partisi sumber + skala worker (DPU/worker type).</span></p></div>
+  </article>
+
+  <article class="card" id="t24" data-num="24" data-text="jika join dua tabel besar redshift lambat maka pakai redshift advisor + key distribution pada kolom join high-cardinality karena key collocate baris join &amp; advisor sarankan distkey/sortkey. ingat: optimasi join redshift → distkey sama di kolom join; redshift advisor beri rekomendasi.">
+    <div class="chead">
+      <span class="qnum">Soal 24</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> join dua tabel besar Redshift lambat <b>maka</b> <b>pakai Redshift Advisor + KEY distribution pada kolom join high-cardinality</b> <b>karena</b> KEY collocate baris join & Advisor sarankan DISTKEY/SORTKEY.<span class='fact'><b>Ingat:</b> optimasi join Redshift &rarr; DISTKEY sama di kolom join; Redshift Advisor beri rekomendasi.</span></p></div>
+  </article>
+
+  <article class="card" id="t25" data-num="25" data-text="jika jalankan lambda lalu glue job dengan overhead minim &amp; terintegrasi maka pakai step functions state machine karena step functions mengorkestrasi lintas layanan serverless. ingat: rangkai lambda + glue + layanan lain → step functions.">
+    <div class="chead">
+      <span class="qnum">Soal 25</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> jalankan Lambda lalu Glue job dengan overhead minim & terintegrasi <b>maka</b> pakai <b>Step Functions state machine</b> <b>karena</b> Step Functions mengorkestrasi lintas layanan serverless.<span class='fact'><b>Ingat:</b> rangkai Lambda + Glue + layanan lain &rarr; Step Functions.</span></p></div>
+  </article>
+
+  <article class="card" id="t26" data-num="26" data-text="jika simpan json nested + query latensi ≤10 ms, overhead minim maka kinesis data streams + lambda → dynamodb karena dynamodb nosql latensi milidetik &amp; fleksibel json. ingat: query key/value super cepat → dynamodb (ms; +dax untuk mikrodetik).">
+    <div class="chead">
+      <span class="qnum">Soal 26</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> simpan JSON nested + query latensi &le;10 ms, overhead minim <b>maka</b> <b>Kinesis Data Streams + Lambda &rarr; DynamoDB</b> <b>karena</b> DynamoDB NoSQL latensi milidetik & fleksibel JSON.<span class='fact'><b>Ingat:</b> query key/value super cepat &rarr; DynamoDB (ms; +DAX untuk mikrodetik).</span></p></div>
+  </article>
+
+  <article class="card" id="t27" data-num="27" data-text="jika sanity sql serverless di raw zone s3, hemat &amp; mudah maka pakai amazon athena karena athena serverless sql ke s3. ingat: sql ad hoc serverless → athena.">
+    <div class="chead">
+      <span class="qnum">Soal 27</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> sanity SQL serverless di raw zone S3, hemat & mudah <b>maka</b> pakai <b>Amazon Athena</b> <b>karena</b> Athena serverless SQL ke S3.<span class='fact'><b>Ingat:</b> SQL ad hoc serverless &rarr; Athena.</span></p></div>
+  </article>
+
+  <article class="card" id="t28" data-num="28" data-text="jika record dynamodb tersedia 18 bulan, arsip 6 tahun, lalu hapus, efisien maka dynamodb streams + ttl (hapus 18 bln) + lambda arsip ke glacier deep archive + s3 lifecycle expire karena ttl men-trigger stream, lambda mengarsip. ingat: item kedaluwarsa ttl muncul di dynamodb streams → bisa diarsipkan via lambda.">
+    <div class="chead">
+      <span class="qnum">Soal 28</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> record DynamoDB tersedia 18 bulan, arsip 6 tahun, lalu hapus, efisien <b>maka</b> <b>DynamoDB Streams + TTL (hapus 18 bln) + Lambda arsip ke Glacier Deep Archive + S3 Lifecycle expire</b> <b>karena</b> TTL men-trigger stream, Lambda mengarsip.<span class='fact'><b>Ingat:</b> item kedaluwarsa TTL muncul di DynamoDB Streams &rarr; bisa diarsipkan via Lambda.</span></p></div>
+  </article>
+
+  <article class="card" id="t29" data-num="29" data-text="jika dokumen sering 10 hari, jarang setelahnya tapi harus instan, simpan 6 tahun maka lifecycle ke glacier instant retrieval setelah 10 hari, expire 6 tahun karena instant retrieval murah &amp; akses milidetik. ingat: arsip tapi butuh akses instan → glacier instant retrieval (ms).">
+    <div class="chead">
+      <span class="qnum">Soal 29</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> dokumen sering 10 hari, jarang setelahnya tapi harus instan, simpan 6 tahun <b>maka</b> <b>Lifecycle ke Glacier Instant Retrieval setelah 10 hari, expire 6 tahun</b> <b>karena</b> Instant Retrieval murah & akses milidetik.<span class='fact'><b>Ingat:</b> arsip tapi butuh akses instan &rarr; Glacier Instant Retrieval (ms).</span></p></div>
+  </article>
+
+  <article class="card" id="t30" data-num="30" data-text="jika simpan audit redshift (koneksi, perubahan user, sql) di luar warehouse maka buat s3 + aktifkan audit logging &amp; user activity logging ke bucket karena audit log redshift bisa dikirim ke s3 untuk retensi. ingat: audit log redshift → s3 (connection, user activity, user log).">
+    <div class="chead">
+      <span class="qnum">Soal 30</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> simpan audit Redshift (koneksi, perubahan user, SQL) di luar warehouse <b>maka</b> <b>buat S3 + aktifkan audit logging & user activity logging ke bucket</b> <b>karena</b> audit log Redshift bisa dikirim ke S3 untuk retensi.<span class='fact'><b>Ingat:</b> audit log Redshift &rarr; S3 (connection, user activity, user log).</span></p></div>
+  </article>
+
+  <article class="card" id="t31" data-num="31" data-text="jika ec2 konek rds mysql (jdbc) di vpc sama maka izinkan inbound mysql (3306) dari sg ec2 di sg rds karena koneksi di vpc dikendalikan security group. ingat port: mysql/aurora mysql = 3306; referensikan sg, bukan ip.">
+    <div class="chead">
+      <span class="qnum">Soal 31</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> EC2 konek RDS MySQL (JDBC) di VPC sama <b>maka</b> <b>izinkan inbound MySQL (3306) dari SG EC2</b> di SG RDS <b>karena</b> koneksi di VPC dikendalikan security group.<span class='fact'><b>Ingat port:</b> MySQL/Aurora MySQL = 3306; referensikan SG, bukan IP.</span></p></div>
+  </article>
+
+  <article class="card" id="t32" data-num="32" data-text="jika migrasi oracle→aurora mysql downtime minim + validasi data akurat maka aktifkan dms data validation karena dms membandingkan sumber &amp; target serta melaporkan mismatch. ingat: dms data validation = verifikasi baris sumber vs target sebelum cutover.">
+    <div class="chead">
+      <span class="qnum">Soal 32</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> migrasi Oracle&rarr;Aurora MySQL downtime minim + validasi data akurat <b>maka</b> aktifkan <b>DMS data validation</b> <b>karena</b> DMS membandingkan sumber & target serta melaporkan mismatch.<span class='fact'><b>Ingat:</b> DMS data validation = verifikasi baris sumber vs target sebelum cutover.</span></p></div>
+  </article>
+
+  <article class="card" id="t33" data-num="33" data-text="jika bulk load s3→redshift performa tinggi maka staging table + satu copy untuk banyak file karena copy load paralel &amp; staging bantu upsert efisien. ingat: satu copy (bukan banyak) memuat semua file paralel; gunakan staging untuk merge/upsert.">
+    <div class="chead">
+      <span class="qnum">Soal 33</span>
+      <span class="domain">Domain 3: Processing</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> bulk load S3&rarr;Redshift performa tinggi <b>maka</b> <b>staging table + satu COPY untuk banyak file</b> <b>karena</b> COPY load paralel & staging bantu upsert efisien.<span class='fact'><b>Ingat:</b> satu COPY (bukan banyak) memuat semua file paralel; gunakan staging untuk MERGE/upsert.</span></p></div>
+  </article>
+
+  <article class="card" id="t34" data-num="34" data-text="jika validasi pasangan nilai kolom antar dataset di glue dq maka pakai referentialintegrity &#x27;warehouse_id,zone_id&#x27; &#x27;reference.{...}&#x27; = 1.0 karena rule ini mengecek relasi pasangan kolom antar dataset. ingat: relasi antar dataset → dqdl referentialintegrity (1.0 = 100% cocok).">
+    <div class="chead">
+      <span class="qnum">Soal 34</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> validasi pasangan nilai kolom antar dataset di Glue DQ <b>maka</b> pakai <b>ReferentialIntegrity 'warehouse_id,zone_id' 'reference.{...}' = 1.0</b> <b>karena</b> rule ini mengecek relasi pasangan kolom antar dataset.<span class='fact'><b>Ingat:</b> relasi antar dataset &rarr; DQDL ReferentialIntegrity (1.0 = 100% cocok).</span></p></div>
+  </article>
+
+  <article class="card" id="t35" data-num="35" data-text="jika tabel iceberg lambat (file kecil) maka compaction (gabung file) + generate column statistics karena compaction atasi small files &amp; statistik bantu optimizer. ingat: maintenance iceberg → compaction + column statistics (glue data catalog bisa otomatis).">
+    <div class="chead">
+      <span class="qnum">Soal 35</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> tabel Iceberg lambat (file kecil) <b>maka</b> <b>compaction (gabung file) + generate column statistics</b> <b>karena</b> compaction atasi small files & statistik bantu optimizer.<span class='fact'><b>Ingat:</b> maintenance Iceberg &rarr; compaction + column statistics (Glue Data Catalog bisa otomatis).</span></p></div>
+  </article>
+
+  <article class="card" id="t36" data-num="36" data-text="jika partisi tanggal prediktif, maintenance minim maka pakai partition projection karena athena menghitung partisi saat query tanpa simpan metadata partisi. ingat: partisi date-based prediktif → partition projection (tanpa crawler/add partition).">
+    <div class="chead">
+      <span class="qnum">Soal 36</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> partisi tanggal prediktif, maintenance minim <b>maka</b> pakai <b>partition projection</b> <b>karena</b> Athena menghitung partisi saat query tanpa simpan metadata partisi.<span class='fact'><b>Ingat:</b> partisi date-based prediktif &rarr; Partition Projection (tanpa crawler/ADD PARTITION).</span></p></div>
+  </article>
+
+  <article class="card" id="t37" data-num="37" data-text="jika ingin pakai apache spark di athena (ganti ctas sql) maka buat spark-enabled athena workgroup karena workgroup spark mengaktifkan notebook/engine spark di athena. ingat: spark di athena → spark-enabled workgroup (athena for apache spark).">
+    <div class="chead">
+      <span class="qnum">Soal 37</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> ingin pakai Apache Spark di Athena (ganti CTAS SQL) <b>maka</b> <b>buat Spark-enabled Athena workgroup</b> <b>karena</b> workgroup Spark mengaktifkan notebook/engine Spark di Athena.<span class='fact'><b>Ingat:</b> Spark di Athena &rarr; Spark-enabled workgroup (Athena for Apache Spark).</span></p></div>
+  </article>
+
+  <article class="card" id="t38" data-num="38" data-text="jika ingest json ~1 mb/s, data in-flight hilang saat ec2 restart, query near real-time scalable maka kinesis data firehose → redshift karena firehose managed, tahan hilang data &amp; kirim ke redshift untuk query. ingat: ingestion managed tanpa kelola buffer ec2 → kinesis firehose.">
+    <div class="chead">
+      <span class="qnum">Soal 38</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> ingest JSON ~1 MB/s, data in-flight hilang saat EC2 restart, query near real-time scalable <b>maka</b> <b>Kinesis Data Firehose &rarr; Redshift</b> <b>karena</b> Firehose managed, tahan hilang data & kirim ke Redshift untuk query.<span class='fact'><b>Ingat:</b> ingestion managed tanpa kelola buffer EC2 &rarr; Kinesis Firehose.</span></p></div>
+  </article>
+
+  <article class="card" id="t39" data-num="39" data-text="jika query mingguan beberapa rentang tanggal, tetap stabil saat data tumbuh, hemat maka partisi by order date + athena query partisi relevan karena partisi date membatasi scan sesuai rentang. ingat: query berbasis rentang tanggal → partisi by date.">
+    <div class="chead">
+      <span class="qnum">Soal 39</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> query mingguan beberapa rentang tanggal, tetap stabil saat data tumbuh, hemat <b>maka</b> <b>partisi by order date + Athena query partisi relevan</b> <b>karena</b> partisi date membatasi scan sesuai rentang.<span class='fact'><b>Ingat:</b> query berbasis rentang tanggal &rarr; partisi by date.</span></p></div>
+  </article>
+
+  <article class="card" id="t40" data-num="40" data-text="jika patuhi data residency per region dengan effort minim (assumerole) maka satu iam role + session policy per region (condition aws:requestedregion) karena session policy membatasi akses ke region tertentu tanpa banyak role. ingat: batasi akses per region → condition aws:requestedregion (session policy saat assumerole).">
+    <div class="chead">
+      <span class="qnum">Soal 40</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> patuhi data residency per region dengan effort minim (AssumeRole) <b>maka</b> <b>satu IAM role + session policy per region (Condition aws:RequestedRegion)</b> <b>karena</b> session policy membatasi akses ke region tertentu tanpa banyak role.<span class='fact'><b>Ingat:</b> batasi akses per region &rarr; Condition aws:RequestedRegion (session policy saat AssumeRole).</span></p></div>
+  </article>
+
+  <article class="card" id="t41" data-num="41" data-text="jika dynamodb provisioned dengan beban prediktif (spike senin pagi) maka pakai application auto scaling (jadwal kapasitas) karena beban prediktif lebih hemat dengan provisioned + scheduled scaling. ingat: beban prediktif → provisioned + (scheduled) auto scaling; tak terduga → on-demand.">
+    <div class="chead">
+      <span class="qnum">Soal 41</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> DynamoDB provisioned dengan beban prediktif (spike Senin pagi) <b>maka</b> pakai <b>Application Auto Scaling (jadwal kapasitas)</b> <b>karena</b> beban prediktif lebih hemat dengan provisioned + scheduled scaling.<span class='fact'><b>Ingat:</b> beban prediktif &rarr; Provisioned + (scheduled) auto scaling; tak terduga &rarr; on-demand.</span></p></div>
+  </article>
+
+  <article class="card" id="t42" data-num="42" data-text="jika stream gb/dtk kinesis ke redshift near real-time, overhead minim, pakai bi yang ada maka redshift streaming ingestion (external schema + materialized view auto-refresh) karena mv auto-refresh menarik data stream tanpa pipeline. ingat: kinesis/msk → redshift langsung → streaming ingestion (external schema + mv).">
+    <div class="chead">
+      <span class="qnum">Soal 42</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> stream GB/dtk Kinesis ke Redshift near real-time, overhead minim, pakai BI yang ada <b>maka</b> <b>Redshift streaming ingestion (external schema + materialized view auto-refresh)</b> <b>karena</b> MV auto-refresh menarik data stream tanpa pipeline.<span class='fact'><b>Ingat:</b> Kinesis/MSK &rarr; Redshift langsung &rarr; streaming ingestion (external schema + MV).</span></p></div>
+  </article>
+
+  <article class="card" id="t43" data-num="43" data-text="jika msk ke redshift near real-time tanpa salinan perantara, overhead minim maka external schema ke msk + materialized view karena streaming ingestion mengonsumsi topik msk langsung. ingat: redshift streaming ingestion mendukung sumber kinesis data streams &amp; amazon msk.">
+    <div class="chead">
+      <span class="qnum">Soal 43</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> MSK ke Redshift near real-time tanpa salinan perantara, overhead minim <b>maka</b> <b>external schema ke MSK + materialized view</b> <b>karena</b> streaming ingestion mengonsumsi topik MSK langsung.<span class='fact'><b>Ingat:</b> Redshift streaming ingestion mendukung sumber Kinesis Data Streams & Amazon MSK.</span></p></div>
+  </article>
+
+  <article class="card" id="t44" data-num="44" data-text="jika on-prem forward file ke layanan ingestion managed + anti hapus tak sengaja, overhead minim maka kinesis agent → data firehose → s3 (versioning aktif) karena firehose managed &amp; versioning cegah kehilangan objek. ingat: anti hapus tak sengaja → s3 versioning; ingestion managed → firehose.">
+    <div class="chead">
+      <span class="qnum">Soal 44</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> on-prem forward file ke layanan ingestion managed + anti hapus tak sengaja, overhead minim <b>maka</b> <b>Kinesis Agent &rarr; Data Firehose &rarr; S3 (versioning aktif)</b> <b>karena</b> Firehose managed & versioning cegah kehilangan objek.<span class='fact'><b>Ingat:</b> anti hapus tak sengaja &rarr; S3 Versioning; ingestion managed &rarr; Firehose.</span></p></div>
+  </article>
+
+  <article class="card" id="t45" data-num="45" data-text="jika format kolumnar s3 cepat + dukung tipe data kompleks maka pakai orc (atau parquet) karena keduanya kolumnar &amp; mendukung nested/complex types. ingat: kolumnar + tipe kompleks (nested) → orc/parquet.">
+    <div class="chead">
+      <span class="qnum">Soal 45</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> format kolumnar S3 cepat + dukung tipe data kompleks <b>maka</b> pakai <b>ORC</b> (atau Parquet) <b>karena</b> keduanya kolumnar & mendukung nested/complex types.<span class='fact'><b>Ingat:</b> kolumnar + tipe kompleks (nested) &rarr; ORC/Parquet.</span></p></div>
+  </article>
+
+  <article class="card" id="t46" data-num="46" data-text="jika validasi urutan tanggal (order maka glue data quality custom rule + row-level outcomes → s3 kedua karena row-level outcome memisah record lolos/gagal. ingat: pisahkan record gagal kualitas → glue data quality row-level outcomes.">
+    <div class="chead">
+      <span class="qnum">Soal 46</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> validasi urutan tanggal (order<pickup<arrival) & tulis yang gagal ke bucket lain, hemat <b>maka</b> <b>Glue Data Quality custom rule + row-level outcomes &rarr; S3 kedua</b> <b>karena</b> row-level outcome memisah record lolos/gagal.<span class='fact'><b>Ingat:</b> pisahkan record gagal kualitas &rarr; Glue Data Quality row-level outcomes.</span></p></div>
+  </article>
+
+  <article class="card" id="t47" data-num="47" data-text="jika telemetri per sistem diproses berurutan &amp; independen, consumer bisa sebanyak device maka sqs fifo dengan message group id = desktop id karena fifo menjaga urutan per group &amp; group terpisah diproses paralel. ingat: urutan per entitas + paralel antar entitas → sqs fifo + message group id.">
+    <div class="chead">
+      <span class="qnum">Soal 47</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> telemetri per sistem diproses berurutan & independen, consumer bisa sebanyak device <b>maka</b> <b>SQS FIFO dengan Message Group ID = Desktop ID</b> <b>karena</b> FIFO menjaga urutan per group & group terpisah diproses paralel.<span class='fact'><b>Ingat:</b> urutan per entitas + paralel antar entitas &rarr; SQS FIFO + Message Group ID.</span></p></div>
+  </article>
+
+  <article class="card" id="t48" data-num="48" data-text="jika ratusan mb/dtk event ke redshift dengan latensi query terendah maka kinesis data streams + redshift streaming ingestion (materialized view) karena streaming ingestion langsung ke mv cepat tanpa staging. ingat: stream → redshift latensi rendah → streaming ingestion ke materialized view.">
+    <div class="chead">
+      <span class="qnum">Soal 48</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> ratusan MB/dtk event ke Redshift dengan latensi query terendah <b>maka</b> <b>Kinesis Data Streams + Redshift streaming ingestion (materialized view)</b> <b>karena</b> streaming ingestion langsung ke MV cepat tanpa staging.<span class='fact'><b>Ingat:</b> stream &rarr; Redshift latensi rendah &rarr; streaming ingestion ke materialized view.</span></p></div>
+  </article>
+
+  <article class="card" id="t49" data-num="49" data-text="jika upload s3 gagal &gt;5000 req/dtk pada satu prefix maka sebar ke banyak prefix (per customer) karena throughput s3 diskalakan per prefix. ingat batas s3: 3.500 put/copy/post/delete &amp; 5.500 get per detik per prefix (sebar prefix untuk skala).">
+    <div class="chead">
+      <span class="qnum">Soal 49</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> upload S3 gagal >5000 req/dtk pada satu prefix <b>maka</b> <b>sebar ke banyak prefix (per customer)</b> <b>karena</b> throughput S3 diskalakan per prefix.<span class='fact'><b>Ingat batas S3:</b> 3.500 PUT/COPY/POST/DELETE & 5.500 GET per detik per prefix (sebar prefix untuk skala).</span></p></div>
+  </article>
+
+  <article class="card" id="t50" data-num="50" data-text="jika file tiba waktu tak tentu, proses segera tanpa polling maka event-based glue trigger: s3 putobject → cloudtrail → eventbridge → glue workflow karena event-driven memicu begitu file tiba. ingat: hindari polling → event-driven (s3 event via eventbridge/cloudtrail).">
+    <div class="chead">
+      <span class="qnum">Soal 50</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> file tiba waktu tak tentu, proses segera tanpa polling <b>maka</b> <b>event-based Glue trigger: S3 PutObject &rarr; CloudTrail &rarr; EventBridge &rarr; Glue workflow</b> <b>karena</b> event-driven memicu begitu file tiba.<span class='fact'><b>Ingat:</b> hindari polling &rarr; event-driven (S3 event via EventBridge/CloudTrail).</span></p></div>
+  </article>
+
+  <article class="card" id="t51" data-num="51" data-text="jika glue spark gagal &#x27;no space left&#x27; karena skew/shuffle spill maka cek spark ui/metrics &amp; aktifkan --write-shuffle-files-to-s3 + salting karena spill ke s3 kurangi tekanan disk &amp; salting ratakan key skewed. ingat: data skew → salting; disk shuffle penuh → shuffle ke s3.">
+    <div class="chead">
+      <span class="qnum">Soal 51</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> Glue Spark gagal 'No space left' karena skew/shuffle spill <b>maka</b> <b>cek Spark UI/metrics</b> & <b>aktifkan --write-shuffle-files-to-s3 + salting</b> <b>karena</b> spill ke S3 kurangi tekanan disk & salting ratakan key skewed.<span class='fact'><b>Ingat:</b> data skew &rarr; salting; disk shuffle penuh &rarr; shuffle ke S3.</span></p></div>
+  </article>
+
+  <article class="card" id="t52" data-num="52" data-text="jika batasi biaya athena per tim via ambang data dipindai maka pakai per-workgroup data usage control limit karena workgroup bisa set batas data yang dipindai per jam/query. ingat: kontrol biaya athena → workgroup data usage control (per-query &amp; per-workgroup/time).">
+    <div class="chead">
+      <span class="qnum">Soal 52</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> batasi biaya Athena per tim via ambang data dipindai <b>maka</b> pakai <b>per-workgroup data usage control limit</b> <b>karena</b> workgroup bisa set batas data yang dipindai per jam/query.<span class='fact'><b>Ingat:</b> kontrol biaya Athena &rarr; workgroup data usage control (per-query & per-workgroup/time).</span></p></div>
+  </article>
+
+  <article class="card" id="t53" data-num="53" data-text="jika pindah emr+glue ke fully managed serverless yang tetap pakai spark + orkestrasi maka glue spark jobs + glue workflows karena glue serverless spark &amp; workflow mengotomasi pipeline. ingat: spark serverless + orkestrasi dalam glue → glue jobs + glue workflows.">
+    <div class="chead">
+      <span class="qnum">Soal 53</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> pindah EMR+Glue ke fully managed serverless yang tetap pakai Spark + orkestrasi <b>maka</b> <b>Glue Spark jobs + Glue Workflows</b> <b>karena</b> Glue serverless Spark & workflow mengotomasi pipeline.<span class='fact'><b>Ingat:</b> Spark serverless + orkestrasi dalam Glue &rarr; Glue jobs + Glue Workflows.</span></p></div>
+  </article>
+
+  <article class="card" id="t54" data-num="54" data-text="jika migrasi teradata → redshift (konversi skema + data), effort minim maka aws sct (skema) + aws dms (data) karena migrasi heterogen butuh sct untuk skema &amp; dms untuk data. ingat: migrasi beda engine → sct + dms.">
+    <div class="chead">
+      <span class="qnum">Soal 54</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> migrasi Teradata &rarr; Redshift (konversi skema + data), effort minim <b>maka</b> <b>AWS SCT (skema) + AWS DMS (data)</b> <b>karena</b> migrasi heterogen butuh SCT untuk skema & DMS untuk data.<span class='fact'><b>Ingat:</b> migrasi beda engine &rarr; SCT + DMS.</span></p></div>
+  </article>
+
+  <article class="card" id="t55" data-num="55" data-text="jika hilangkan duplikat (fuzzy) di legacy data, effort minim maka pakai glue findmatches ml transform karena findmatches mendeteksi record duplikat/mirip tanpa kunci persis. ingat: dedup fuzzy/record matching → glue findmatches (ml transform).">
+    <div class="chead">
+      <span class="qnum">Soal 55</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> hilangkan duplikat (fuzzy) di legacy data, effort minim <b>maka</b> pakai <b>Glue FindMatches ML transform</b> <b>karena</b> FindMatches mendeteksi record duplikat/mirip tanpa kunci persis.<span class='fact'><b>Ingat:</b> dedup fuzzy/record matching &rarr; Glue FindMatches (ML transform).</span></p></div>
+  </article>
+
+  <article class="card" id="t56" data-num="56" data-text="jika query athena rentang tanggal, kurangi scan &amp; hemat maka partisi by transactiondate (prefix s3) + glue + filter tanggal karena partisi date membatasi data dipindai. ingat: filter tanggal → partisi by date (+ tambahkan partisi via crawler/msck/add).">
+    <div class="chead">
+      <span class="qnum">Soal 56</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> query Athena rentang tanggal, kurangi scan & hemat <b>maka</b> <b>partisi by TransactionDate (prefix S3) + Glue + filter tanggal</b> <b>karena</b> partisi date membatasi data dipindai.<span class='fact'><b>Ingat:</b> filter tanggal &rarr; partisi by date (+ tambahkan partisi via crawler/MSCK/ADD).</span></p></div>
+  </article>
+
+  <article class="card" id="t57" data-num="57" data-text="jika butuh 10 tb i/o maksimum + 450 tb durable + 900 tb arsip maka ec2 instance store (i/o) + s3 (durable) + glacier deep archive (arsip) karena instance store iops tertinggi, s3 durable, deep archive termurah. ingat: i/o maksimum lokal → instance store (ephemeral); durable → s3; arsip termurah → deep archive.">
+    <div class="chead">
+      <span class="qnum">Soal 57</span>
+      <span class="domain">Domain 2: Data Store Management</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> butuh 10 TB I/O maksimum + 450 TB durable + 900 TB arsip <b>maka</b> <b>EC2 Instance Store (I/O) + S3 (durable) + Glacier Deep Archive (arsip)</b> <b>karena</b> instance store IOPS tertinggi, S3 durable, Deep Archive termurah.<span class='fact'><b>Ingat:</b> I/O maksimum lokal &rarr; Instance Store (ephemeral); durable &rarr; S3; arsip termurah &rarr; Deep Archive.</span></p></div>
+  </article>
+
+  <article class="card" id="t58" data-num="58" data-text="jika tahan spike, proses urut, simpan ha, overhead minim maka kinesis data streams + lambda → dynamodb karena kds jaga urutan per shard &amp; dynamodb ha. ingat: urutan dijaga per-shard kinesis; dynamodb = penyimpanan ha otomatis.">
+    <div class="chead">
+      <span class="qnum">Soal 58</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> tahan spike, proses urut, simpan HA, overhead minim <b>maka</b> <b>Kinesis Data Streams + Lambda &rarr; DynamoDB</b> <b>karena</b> KDS jaga urutan per shard & DynamoDB HA.<span class='fact'><b>Ingat:</b> urutan dijaga per-shard Kinesis; DynamoDB = penyimpanan HA otomatis.</span></p></div>
+  </article>
+
+  <article class="card" id="t59" data-num="59" data-text="jika pertanyaan kcl + dynamodb maka tiap aplikasi kcl pakai tabel dynamodb sendiri &amp; dynamodb hanya untuk checkpoint karena kcl simpan checkpoint/lease per aplikasi di tabel dynamodb tersendiri. ingat: kcl pakai dynamodb untuk lease/checkpoint; nama tabel = nama aplikasi kcl (harus unik).">
+    <div class="chead">
+      <span class="qnum">Soal 59</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> pertanyaan KCL + DynamoDB <b>maka</b> <b>tiap aplikasi KCL pakai tabel DynamoDB sendiri</b> & <b>DynamoDB hanya untuk checkpoint</b> <b>karena</b> KCL simpan checkpoint/lease per aplikasi di tabel DynamoDB tersendiri.<span class='fact'><b>Ingat:</b> KCL pakai DynamoDB untuk lease/checkpoint; nama tabel = nama aplikasi KCL (harus unik).</span></p></div>
+  </article>
+
+  <article class="card" id="t60" data-num="60" data-text="jika log koneksi, perubahan user, &amp; tiap query + user pelaksana di redshift maka aktifkan audit logging redshift karena audit logging mencatat connection, user, &amp; user activity (query). ingat: jejak query &amp; koneksi redshift → audit logging (connection/user/user-activity log).">
+    <div class="chead">
+      <span class="qnum">Soal 60</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> log koneksi, perubahan user, & tiap query + user pelaksana di Redshift <b>maka</b> aktifkan <b>audit logging Redshift</b> <b>karena</b> audit logging mencatat connection, user, & user activity (query).<span class='fact'><b>Ingat:</b> jejak query & koneksi Redshift &rarr; audit logging (connection/user/user-activity log).</span></p></div>
+  </article>
+
+  <article class="card" id="t61" data-num="61" data-text="jika field non-sensitif untuk semua &amp; pii hanya tim compliance, overhead minim maka glue data catalog + lake formation (izin kolom) karena lf menerapkan akses kolom halus tanpa menyalin data. ingat: akses kolom berbeda per peran → lake formation column-level permissions.">
+    <div class="chead">
+      <span class="qnum">Soal 61</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> field non-sensitif untuk semua & PII hanya tim compliance, overhead minim <b>maka</b> <b>Glue Data Catalog + Lake Formation (izin kolom)</b> <b>karena</b> LF menerapkan akses kolom halus tanpa menyalin data.<span class='fact'><b>Ingat:</b> akses kolom berbeda per peran &rarr; Lake Formation column-level permissions.</span></p></div>
+  </article>
+
+  <article class="card" id="t62" data-num="62" data-text="jika stream ke warehouse + modifikasi sql + analitik tercepat + bi anomali maka kinesis firehose → redshift + quicksight (sumber redshift) karena redshift mendukung sql/update &amp; quicksight bi punya deteksi anomali. ingat: warehouse sql + bi anomali → redshift + quicksight ml insights.">
+    <div class="chead">
+      <span class="qnum">Soal 62</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> stream ke warehouse + modifikasi SQL + analitik tercepat + BI anomali <b>maka</b> <b>Kinesis Firehose &rarr; Redshift + QuickSight (sumber Redshift)</b> <b>karena</b> Redshift mendukung SQL/update & QuickSight BI punya deteksi anomali.<span class='fact'><b>Ingat:</b> warehouse SQL + BI anomali &rarr; Redshift + QuickSight ML Insights.</span></p></div>
+  </article>
+
+  <article class="card" id="t63" data-num="63" data-text="jika kumpulkan clickstream lalu simpan ke s3 dengan maintenance paling minim maka kinesis data streams + data firehose → s3 karena firehose managed menulis ke s3 tanpa kelola konsumer. ingat: stream → s3 paling sedikit maintenance → firehose (fully managed delivery).">
+    <div class="chead">
+      <span class="qnum">Soal 63</span>
+      <span class="domain">Domain 1: Data Ingestion and Transformation</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> kumpulkan clickstream lalu simpan ke S3 dengan maintenance paling minim <b>maka</b> <b>Kinesis Data Streams + Data Firehose &rarr; S3</b> <b>karena</b> Firehose managed menulis ke S3 tanpa kelola konsumer.<span class='fact'><b>Ingat:</b> stream &rarr; S3 paling sedikit maintenance &rarr; Firehose (fully managed delivery).</span></p></div>
+  </article>
+
+  <article class="card" id="t64" data-num="64" data-text="jika producer redshift bagikan datashare ke 2 akun consumer via sql maka grant usage on datashare ... to account &#x27; &#x27; untuk tiap akun karena datashare dibagikan per akun consumer dengan grant usage. ingat: redshift data sharing lintas akun → create datashare lalu grant usage to account.">
+    <div class="chead">
+      <span class="qnum">Soal 64</span>
+      <span class="domain">Domain 4: Data Security and Governance</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> producer Redshift bagikan datashare ke 2 akun consumer via SQL <b>maka</b> <b>GRANT USAGE ON DATASHARE ... TO ACCOUNT '<id>'</b> untuk tiap akun <b>karena</b> datashare dibagikan per akun consumer dengan GRANT USAGE.<span class='fact'><b>Ingat:</b> Redshift Data Sharing lintas akun &rarr; CREATE DATASHARE lalu GRANT USAGE TO ACCOUNT.</span></p></div>
+  </article>
+
+  <article class="card" id="t65" data-num="65" data-text="jika glue lambat karena 45.000 file kecil (banyak task spark) maka pakai groupfiles + groupsize pada dynamicframe karena file grouping menggabungkan file kecil jadi sedikit task. ingat: small files problem di glue → dynamicframe groupfiles=&#x27;inpartition&#x27; + groupsize.">
+    <div class="chead">
+      <span class="qnum">Soal 65</span>
+      <span class="domain">Domain 3: Data Operations and Support</span>
+    </div>
+    <div class="label label-tips">💡 Tips</div>
+    <div class="tips"><p><b>Jika</b> Glue lambat karena 45.000 file kecil (banyak task Spark) <b>maka</b> pakai <b>groupFiles + groupSize pada DynamicFrame</b> <b>karena</b> file grouping menggabungkan file kecil jadi sedikit task.<span class='fact'><b>Ingat:</b> small files problem di Glue &rarr; DynamicFrame groupFiles='inPartition' + groupSize.</span></p></div>
+  </article>
+</main>
+<script>
+(function () {
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var search = document.getElementById("search");
+  search.addEventListener("input", function () {
+    var q = search.value.trim().toLowerCase();
+    cards.forEach(function (c) { c.classList.toggle("hidden", !!q && c.getAttribute("data-text").indexOf(q) === -1); });
+  });
+})();
+</script>
+</body>
+</html>
